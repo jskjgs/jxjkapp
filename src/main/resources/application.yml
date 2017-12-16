@@ -1,0 +1,35 @@
+server:
+    port: 9001
+    # 统一接口访问前缀
+    servlet-path: /hospHealth
+
+management:
+    address: 127.0.0.1
+
+constant:
+    dynamic_code_key:
+        login_or_register: login_or_register
+        change_phone_origin: change_phone_origin
+        change_phone_new: change_phone_new
+
+#开发环境
+spring:
+    profiles:
+        active: dev
+    datasource:
+        beanPath: com.jishi.hospHealth.dao.models
+        mapperXmlPath: classpath:mapper/*.xml
+        mapperPath: com.jishi.hospHealth.dao.mapper
+        master:
+            name: ReadAndWrite
+            url: jdbc:mysql://182.92.78.118:3306/his?useUnicode=true&characterEncoding=utf-8&useSSL=false
+            username: root
+            password: root
+#        slave1:
+#            name: ReadAndWrite
+#            url: jdbc:mysql://182.92.78.118:3306/his?useUnicode=true&characterEncoding=utf-8&useSSL=false
+#            username: root
+#            password: root
+redis:
+    host: 119.29.108.150
+    port: 6379
