@@ -54,7 +54,75 @@
             <property name="enableSubPackages" value="false"/>
         </javaClientGenerator>
 
-        <table schema="mybatis" tableName="hosp_address" domainObjectName="Address"
+        <table schema="mybatis" tableName="hosp_address" domainObjectName="HospAddress"
+               enableCountByExample="fasle" enableUpdateByExample="fasle"
+               enableDeleteByExample="fasle" enableSelectByExample="fasle"
+               selectByExampleQueryId="fasle"></table>
+        <table schema="mybatis" tableName="hosp_area" domainObjectName="HospArea"
+               enableCountByExample="fasle" enableUpdateByExample="fasle"
+               enableDeleteByExample="fasle" enableSelectByExample="fasle"
+               selectByExampleQueryId="fasle"></table>
+        <table schema="mybatis" tableName="hosp_doctor_info" domainObjectName="HospDoctorInfo"
+               enableCountByExample="fasle" enableUpdateByExample="fasle"
+               enableDeleteByExample="fasle" enableSelectByExample="fasle"
+               selectByExampleQueryId="fasle"></table>
+        <table schema="mybatis" tableName="hosp_doctor_type" domainObjectName="HospDoctorType"
+               enableCountByExample="fasle" enableUpdateByExample="fasle"
+               enableDeleteByExample="fasle" enableSelectByExample="fasle"
+               selectByExampleQueryId="fasle"></table>
+        <table schema="mybatis" tableName="hosp_news" domainObjectName="HospNews"
+               enableCountByExample="fasle" enableUpdateByExample="fasle"
+               enableDeleteByExample="fasle" enableSelectByExample="fasle"
+               selectByExampleQueryId="fasle"></table>
+        <table schema="mybatis" tableName="hosp_order" domainObjectName="HospOrder"
+               enableCountByExample="fasle" enableUpdateByExample="fasle"
+               enableDeleteByExample="fasle" enableSelectByExample="fasle"
+               selectByExampleQueryId="fasle"></table>
+        <table schema="mybatis" tableName="hosp_order_grade" domainObjectName="HospOrderGrade"
+               enableCountByExample="fasle" enableUpdateByExample="fasle"
+               enableDeleteByExample="fasle" enableSelectByExample="fasle"
+               selectByExampleQueryId="fasle"></table>
+        <table schema="mybatis" tableName="hosp_order_product" domainObjectName="HospOrderProduct"
+               enableCountByExample="fasle" enableUpdateByExample="fasle"
+               enableDeleteByExample="fasle" enableSelectByExample="fasle"
+               selectByExampleQueryId="fasle"></table>
+        <table schema="mybatis" tableName="hosp_order_product_rollback" domainObjectName="HospOrderProductRollback"
+               enableCountByExample="fasle" enableUpdateByExample="fasle"
+               enableDeleteByExample="fasle" enableSelectByExample="fasle"
+               selectByExampleQueryId="fasle"></table>
+        <table schema="mybatis" tableName="hosp_order_service_details" domainObjectName="HospOrderServiceDetails"
+               enableCountByExample="fasle" enableUpdateByExample="fasle"
+               enableDeleteByExample="fasle" enableSelectByExample="fasle"
+               selectByExampleQueryId="fasle"></table>
+        <table schema="mybatis" tableName="hosp_order_service_rollback" domainObjectName="HospOrderServiceRollback"
+               enableCountByExample="fasle" enableUpdateByExample="fasle"
+               enableDeleteByExample="fasle" enableSelectByExample="fasle"
+               selectByExampleQueryId="fasle"></table>
+        <table schema="mybatis" tableName="hosp_product" domainObjectName="HospProduct"
+               enableCountByExample="fasle" enableUpdateByExample="fasle"
+               enableDeleteByExample="fasle" enableSelectByExample="fasle"
+               selectByExampleQueryId="fasle"></table>
+        <table schema="mybatis" tableName="hosp_product_sku" domainObjectName="HospProductSku"
+               enableCountByExample="fasle" enableUpdateByExample="fasle"
+               enableDeleteByExample="fasle" enableSelectByExample="fasle"
+               selectByExampleQueryId="fasle"></table>
+        <table schema="mybatis" tableName="hosp_product_stock" domainObjectName="HospProductStock"
+               enableCountByExample="fasle" enableUpdateByExample="fasle"
+               enableDeleteByExample="fasle" enableSelectByExample="fasle"
+               selectByExampleQueryId="fasle"></table>
+        <table schema="mybatis" tableName="hosp_product_type" domainObjectName="HospProductType"
+               enableCountByExample="fasle" enableUpdateByExample="fasle"
+               enableDeleteByExample="fasle" enableSelectByExample="fasle"
+               selectByExampleQueryId="fasle"></table>
+        <table schema="mybatis" tableName="hosp_promotion" domainObjectName="HospPromotion"
+               enableCountByExample="fasle" enableUpdateByExample="fasle"
+               enableDeleteByExample="fasle" enableSelectByExample="fasle"
+               selectByExampleQueryId="fasle"></table>
+        <table schema="mybatis" tableName="hosp_promotion_product" domainObjectName="HospPromotionProduct"
+               enableCountByExample="fasle" enableUpdateByExample="fasle"
+               enableDeleteByExample="fasle" enableSelectByExample="fasle"
+               selectByExampleQueryId="fasle"></table>
+        <table schema="mybatis" tableName="hosp_user_info" domainObjectName="HospUserInfo"
                enableCountByExample="fasle" enableUpdateByExample="fasle"
                enableDeleteByExample="fasle" enableSelectByExample="fasle"
                selectByExampleQueryId="fasle"></table>
