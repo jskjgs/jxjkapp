@@ -1,0 +1,39 @@
+/* flex */
+.flex {
+  display: flex;
+  flex-wrap: wrap;
+
+  &--hcenter {
+    @extend .flex;
+    justify-content: center;
+  }
+  &--vcenter {
+    @extend .flex;
+    align-items: center;
+
+    &--sb {
+      @extend .flex--vcenter;
+      justify-content: space-between;
+    }
+  }
+  &--center {
+    @extend .flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  // 竖直方向排列
+  &--col {
+    @extend .flex;
+    flex-direction: column;
+  }
+}
+
+.flex-item {
+  flex: 1;
+
+  &--none {
+    flex: none;
+  }
+}
+/* flex END */

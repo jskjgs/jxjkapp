@@ -1,0 +1,115 @@
+<style lang="scss">
+#page-health-comment {
+  .comment-content-wrap {
+    .star-comment-wrap {
+      width: 210rpx;
+    }
+    
+    .textarea-wrap {
+      position: relative;
+      margin-top: 10rpx;
+    }
+    textarea {
+      box-sizing: border-box;
+      border: 2rpx solid #ccc;
+      border-radius: 10rpx;
+      padding: 20rpx;
+      width: auto;
+      height: 230rpx;
+      background: #FAFAFA;
+      font-size: 13px;
+    }
+    .textarea-count {
+      position: absolute;
+      right: 16rpx;
+      bottom: 16rpx;
+    }
+
+    .comment-date {
+      justify-content: flex-end;
+      font-size: 12px;
+    }
+  }
+}
+</style>
+
+<template>
+  <view id="page-health-comment">
+    <CustomCard title="Thermage 热玛吉">
+      <view 
+        class="comment-content-wrap"
+        slot="content">
+        <view class="flex--center">
+          <StarComment 
+            class="star-comment-wrap"
+            total="3"
+            :value.sync="commentStar"
+            :canPicked="canComment">
+          </StarComment>
+        </view>
+        <view class="textarea-wrap">
+          <block wx:if="{{ canComment }}">
+            <textarea 
+              placeholder="请输入您的评价"
+              value="{{ textareaValue }}"
+              maxlength="{{ textareaMaxLen }}"
+              @input="handleInput">
+            </textarea>
+            <text class="textarea-count">{{ textareaValue.length }}/{{ textareaMaxLen }}</text>
+          </block>
+          <block wx:else>
+            <view class="comment-text">
+              <text>{{ textareaValue }}</text>
+            </view>
+            <view class="comment-date flex">
+              <text>{{ commentDate }}</text>
+            </view>
+          </block>
+        </view>
+      </view>
+      <button slot="button">立即评价</button>
+    </CustomCard>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import CustomCard from '@/components/customCard'
+  import StarComment from '@/components/starComment'
+
+  export default class Index extends wepy.page {
+    config = {
+      navigationBarTitleText: '评价'
+    }
+    components = {
+      CustomCard,
+      StarComment
+    }
+
+    mixins = []
+
+    data = {
+      textareaValue: '地方实弹射击',
+      textareaMaxLen: 40,
+      canComment: false,
+      commentStar: 0,
+      commentDate: '2017/09/11 23:11:04'
+    }
+
+    computed = {
+    }
+
+    methods = {
+      handleInput ({detail}) {
+        const value = detail.value
+        this.textareaValue = value
+      }
+    }
+
+    events = {
+    }
+
+    onLoad() {
+    }
+  }
+</script>

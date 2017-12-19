@@ -1,0 +1,13 @@
+
+  <view id="page-my-qrcode" class="flex--center">
+    <view class="qrcode-box flex--col">
+      <view class="row flex--vcenter">
+        <image class="thumbnail-avatar" src="../assets/images/demo.png"/>
+        <text class="username">YK 陈御珂</text>
+      </view>
+      <view class="flex-item flex--center">
+        <view class="qrcode-wrap">
+        </view>
+      </view>
+    </view>
+  </view>

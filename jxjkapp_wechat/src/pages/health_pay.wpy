@@ -1,0 +1,151 @@
+<style lang="scss">
+  @import "src/assets/style/variables/theme.scss";
+  #health-pay {
+    .order-detail {
+      border-radius: 20rpx;
+      box-shadow: 0rpx 4rpx 20rpx 0rpx #E3E3E3;
+    }
+    .order-top {
+      position: relative;
+
+      &::before, &::after {
+        content: '';
+        position: absolute;
+        z-index: 1;
+        bottom: 4rpx;
+        width: 50rpx;
+        height: 50rpx;
+        background: $page_bg;
+      }
+      &::before {
+        left: 0;
+        transform: translate3d(-100%, 50%, 0);
+      }
+      &::after {
+        right: 0;
+        transform: translate3d(100%, 50%, 0);
+      }
+    }
+    .order-image {
+      width: 630rpx;
+      height: 320rpx;
+      background: blue;
+      border-radius: 20rpx 20rpx 0 0;
+    }
+    .order-project {
+      position: relative;
+      border-bottom: 4rpx dashed #D6DAE2;
+      height: 128rpx;
+      font-size: 15px;
+      line-height: 128rpx;
+      text-align: center;
+
+      &::before, &::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        width: 50rpx;
+        height: 50rpx;
+        border-radius: 50%;
+        background: $page_bg;
+        box-shadow: 0rpx 0rpx 20rpx 0px #E3E3E3 inset;
+      }
+      &::before {
+        left: 0;
+        transform: translate3d(-50%, 50%, 0);
+      }
+      &::after {
+        right: 0;
+        transform: translate3d(50%, 50%, 0);
+      }
+    }
+
+    .order-price-wrap {
+      font-size: 14px;
+    }
+    .price-total-wrap, .price-detail {
+      border-bottom: 2rpx solid #F2F4F7;
+    }
+    .price-total-wrap {
+      padding-bottom: 30rpx;
+    }
+    .price-total {
+      font-size: 15px;
+      color: #F45E3B;
+    }
+    .price-detail, .order-date {
+      font-size: 14px;
+      .label {
+        color: #B8B8B8;
+      }
+    }
+    .price-detail {
+      padding: 20rpx 0;
+    }
+    .order-date {
+      padding-top: 20rpx;
+    }
+
+    .pay-btn {
+    }
+  }
+</style>
+
+<template>
+  <view id="health-pay">
+    <CustomCard title="Thermage 热玛吉">
+      <view class="order-price-wrap" slot="content">
+        <view class="price-total-wrap flex--vcenter--sb">
+          <text>总金额</text>
+          <text class="price-total">¥ 1000.00</text>
+        </view>
+        <view class="price-detail">
+          <view class="row flex--vcenter--sb">
+            <text class="label">单价</text>
+            <text class="value">¥ 10.00</text>
+          </view>
+          <view class="row flex--vcenter--sb" style="margin-top: 20rpx;">
+            <text class="label">数量</text>
+            <text class="value">10</text>
+          </view>
+        </view>
+        <view class="order-date flex--vcenter--sb">
+          <text class="label">开单事件</text>
+          <text class="value">2017-11-09 14:36:20</text>
+        </view>
+      </view>
+      <button slot="button">立即支付</button>
+    </CustomCard>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import CustomCard from '@/components/customCard'
+
+  export default class Index extends wepy.page {
+    config = {
+      navigationBarTitleText: '订单支付'
+    }
+    components = {
+      CustomCard
+    }
+
+    mixins = []
+
+    data = {
+    }
+
+    computed = {
+    }
+
+    methods = {
+    }
+
+    events = {
+    }
+
+    onLoad() {
+    }
+  }
+</script>

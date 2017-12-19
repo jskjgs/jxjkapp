@@ -1,0 +1,91 @@
+<style lang="scss">
+#page-project-list {
+  padding: 40rpx 30rpx;
+
+  .list {
+    margin-left: -42rpx;
+  }
+  .list-item {
+    overflow: hidden;
+    margin-left: 42rpx;
+    margin-bottom: 40rpx;
+    padding: 0 30rpx;
+    border-radius: 20rpx;
+    width: 324rpx;
+    height: 324rpx;
+    color: #fff;
+    background: center no-repeat;
+    background-size: cover;
+
+    .item-title {
+      margin-top: 84rpx;
+      text-align: center;
+      font-size: 16px;
+      font-weight: 500;
+    }
+    .item-describe {
+      margin-top: 20rpx;
+      border-top: 4rpx solid #fff;
+      padding: 20rpx 0;
+      text-align: left;
+    }
+  }
+}
+</style>
+
+<template>
+  <view id="page-project-list">
+    <view class="list-wrap">
+      <view class="list flex">
+        <repeat for="{{listData}}" key="index" item="item" index="index">
+          <navigator url="/pages/health_pay">
+            <view class="list-item flex-item--none" style="background-image: url({{item.bg}})">
+              <view class="item-title">
+                <text>硬化剂注射</text>
+              </view>
+              <view class="item-describe">
+                <text class="text-ellipsis--two">主治：这是描述描述描述描述描述描很多的述描述描述描述描述描很多的述描述描述描述描述描很多的述描述描述描述描述描很多的</text>
+              </view>
+            </view>
+          </navigator>
+        </repeat>
+      </view>
+    </view>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+
+  export default class Index extends wepy.page {
+    config = {
+      navigationBarTitleText: ''
+    }
+    components = {
+    }
+
+    mixins = []
+
+    data = {
+      listData: Array.from({length: 7}).map(item => ({
+        bg: '../assets/images/demo.png'
+      }))
+    }
+
+    computed = {
+    }
+
+    methods = {}
+
+    events = {
+    }
+
+    onLoad() {
+      // 当前的页面路由对象
+      const route = this.getCurrentPages().slice(-1)[0]
+      wx.setNavigationBarTitle({
+        title: route.options.target
+      })
+    }
+  }
+</script>

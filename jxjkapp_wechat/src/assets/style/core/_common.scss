@@ -1,0 +1,37 @@
+@import '../helpers/functions';
+.text-ellipsis--two {
+  @include text-ellipsis(2);
+}
+.text-ellipsis--three {
+  @include text-ellipsis(3);
+}
+
+%arrow {
+  position: relative;
+  display: inline-block;
+  width: 22rpx;
+  height: 22rpx;
+  &::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: -6rpx;
+    transform-origin: center;
+    width: 100%;
+    height: 100%;
+    border: 2rpx solid #B8B8B8;
+    border-color: #B8B8B8 #B8B8B8 transparent transparent;
+  }
+}
+.arrow-rt {
+  @extend %arrow;
+  &::after {
+    transform: translate3d(0, -50%, 0) rotate(45deg);
+  }
+}
+.arrow-top {
+  @extend %arrow;
+  &::after {
+    transform: translate3d(0, -50%, 0) rotate(-45deg);
+  }
+}

@@ -1,0 +1,17 @@
+
+  <view id="page-my-vip">
+    <block wx:for="{{ list }}" wx:for-index="index" wx:for-item="item" wx:key="index">
+      <view class="list-item">
+        <view class="row flex--vcenter--sb">
+          <text class="order-project">Thermage 热玛吉</text>
+          <text class="order-hospital">锦江附属医院</text>
+        </view>
+        <view class="row flex--vcenter--sb" style="margin-top: 50rpx;">
+          <text class="order-date">预约时间：2017-11-22 08:00-10:00</text>
+          <navigator url="/pages/my_vip_update">
+            <button class="order-btn">修改</button>
+          </navigator>
+        </view>
+      </view>
+    </block>
+  </view>

@@ -1,0 +1,1 @@
+.flex,.flex--hcenter,.flex--vcenter,.flex--vcenter--sb,.flex--center,.flex--col{display:flex;flex-wrap:wrap}.flex--hcenter{justify-content:center}.flex--vcenter,.flex--vcenter--sb{align-items:center}.flex--vcenter--sb{justify-content:space-between}.flex--center{align-items:center;justify-content:center}.flex--col{flex-direction:column}.flex-item{flex:1}.flex-item--none{flex:none}

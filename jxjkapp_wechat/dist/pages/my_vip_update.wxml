@@ -1,0 +1,30 @@
+
+  <view id="page-my-vip-update">
+    <view class="update-item flex--vcenter--sb">
+      <text class="item-label">院区名称</text>
+      <picker value="{{ hospital }}" range="{{ hospitalList }}" range-key="name" bindchange="handleHospitalChange">
+        <view class="item-value">
+          <text>{{ hospital }}</text>
+          <view class="arrow-rt"/>
+        </view>
+      </picker>
+    </view>
+    <view class="update-item flex--vcenter--sb">
+      <text class="item-label">项目</text>
+      <picker value="{{ projectName }}" range="{{ projectList }}" range-key="name" bindchange="handleProjectChange">
+        <view class="item-value">
+          <text>{{ projectName }}</text>
+          <view class="arrow-rt"/>
+        </view>
+      </picker>
+    </view>
+    <view class="update-item flex--vcenter--sb">
+      <text class="item-label">预约时间</text>
+      <picker mode="time" value="{{ orderDate }}" bindchange="handleDateChange">
+        <view class="item-value">
+          <text>{{ orderDate }}</text>
+          <view class="arrow-rt"/>
+        </view>
+      </picker>
+    </view>
+  </view>

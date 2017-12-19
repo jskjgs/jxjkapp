@@ -1,0 +1,1 @@
+#page-my-qrcode{width:100vw;height:100vh}#page-my-qrcode .qrcode-box{border-radius:20rpx;box-shadow:0rpx 4rpx 20rpx 0rpx #E3E3E3;padding:40rpx;width:630rpx;height:660rpx}#page-my-qrcode .qrcode-box .thumbnail-avatar{overflow:hidden;margin-right:40rpx;border-radius:50%;width:100rpx;height:100rpx}#page-my-qrcode .qrcode-box .qrcode-wrap{width:374rpx;height:374rpx;background:red}

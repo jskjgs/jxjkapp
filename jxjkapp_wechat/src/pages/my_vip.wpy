@@ -1,0 +1,74 @@
+<style lang="scss">
+#page-my-vip {
+  .list-item {
+    margin-bottom: 20rpx;
+    padding: 30rpx 50rpx;
+    background: #fff;
+
+    .order-project {
+      font-size: 14px;
+      font-weight: bold;
+    }
+    .order-btn {
+      width: 120rpx;
+      height: 52rpx;
+      line-height: 52rpx;
+      
+      color: #9190FF;
+      background: #fff;
+
+      &::after {
+        border-color: #9190FF;
+      }
+    }
+  }
+}
+</style>
+
+<template>
+  <view id="page-my-vip">
+    <repeat for="{{ list }}" key="index" item="item" index="index">
+      <view class="list-item">
+        <view class="row flex--vcenter--sb">
+          <text class="order-project">Thermage 热玛吉</text>
+          <text class="order-hospital">锦江附属医院</text>
+        </view>
+        <view class="row flex--vcenter--sb" style="margin-top: 50rpx;">
+          <text class="order-date">预约时间：2017-11-22 08:00-10:00</text>
+          <navigator url="/pages/my_vip_update">
+            <button class="order-btn">修改</button>
+          </navigator>
+        </view>
+      </view>
+    </repeat>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+
+  export default class Index extends wepy.page {
+    config = {
+      navigationBarTitleText: 'VIP预约列表'
+    }
+    components = {
+    }
+
+    mixins = []
+
+    data = {
+      list: [{}, {}]
+    }
+
+    computed = {
+    }
+
+    methods = {}
+
+    events = {
+    }
+
+    onLoad() {
+    }
+  }
+</script>

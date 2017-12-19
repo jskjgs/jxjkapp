@@ -1,0 +1,40 @@
+
+  <view id="index-page">
+    <!-- 顶部banner -->
+    <view class="top-banner">
+    </view>
+    <!-- 项目选项 -->
+    <view class="panel project-items">
+      <view class="panel__title">项目分类</view>
+      <view class="panel__body flex">
+        <block wx:for="{{projects}}" wx:for-index="index" wx:for-item="item" wx:key="index">
+          <navigator url="/pages/index_project?target={{ item.target }}">
+            <view class="project-item flex-item--none">
+              <view class="item-icon">
+                <image src="{{ item.image }}"/>
+              </view>
+              <text class="item-text">{{ item.text }}</text>
+            </view>
+          </navigator>
+        </block>
+      </view>
+    </view>
+    <!-- 医院中心 -->
+    <view class="panel hospital-center">
+      <view class="panel__title">医院中心</view>
+      <view class="panel__body flex">
+        <navigator url="/pages/health_pay" open-type="navigate">
+          <view class="item-pane">
+            <image class="pane-image"/>
+            <text class="panel-text">医护人员</text>
+          </view>
+        </navigator>
+        <navigator url="/pages/health_pay" open-type="navigate">
+          <view class="item-pane">
+            <image class="pane-image"/>
+            <text class="panel-text">新闻中心</text>
+          </view>
+        </navigator>
+      </view>
+    </view>
+  </view>

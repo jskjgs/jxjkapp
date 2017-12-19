@@ -1,0 +1,6 @@
+
+  <view class="we-container {{directionClass}}">
+    <view class="we-wrapper" bindtouchstart="touchstart" bindtouchmove="touchmove" bindtouchend="touchend" animation="{{animationData}}">
+      
+    </view>
+  </view>

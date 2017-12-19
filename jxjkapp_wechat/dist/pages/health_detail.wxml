@@ -1,0 +1,52 @@
+
+  <view id="page-health-detail">
+    <view class="top-box flex--hcenter flex--col">
+      <view class="title">Thermage 热玛吉</view>
+      <view class="process-wrap">
+        <text class="process-text">第 <text class="num">0/10</text> 次</text>
+        <progress class="process-bar" stroke-width="10" backgroundColor="rgba(249, 249, 255, 0.4)" activeColor="#56F2F2">
+        </progress>
+      </view>
+      <view class="dropdown-btn" hidden="{{projectDesVisible}}" bindtap="dropdown">
+      </view>
+    </view>
+    <view class="project-describe {{ projectDesVisible ? 'spread' : '' }}">
+      <view class="project-describe__inner">
+        <view class="dropup-btn" bindtap="dropup">
+          收起 <view class="arrow-top"/>
+        </view>
+        <text>备注 ：本症为整个毛囊细菌感染发生化脓性炎症。初起为红色丘疹，逐渐演变成
+        </text>
+      </view>
+    </view>
+    <view class="process-list">
+      <block wx:for="{{ processList }}" wx:for-index="index" wx:for-item="item" wx:key="index">
+        <view class="process-item">
+          <view class="row item-top">
+            <text class="item-date">治疗时间：{{ item.date }}</text>
+          </view>
+          <view class="item-main" bindtap="spreadSymptom" data-wpyspreadsymptom-a="{{ item.symptomSpread !== undefined }}" data-wpyspreadsymptom-b="{{ index }}">
+            <view class="row flex--vcenter--sb">
+              <text>服务人员：赵雪晴</text>
+              <text class="item-status">已完成</text>
+            </view>
+            <block wx:for="{{[0, 1]}}" wx:for-index="_index" wx:for-item="_item" wx:key="index">
+              <view class="row flex {{ _index === 1 ? 'item-symptom--clone' : 'item-symptom' }}">
+                <text class="flex-item--none">当日症状：</text>
+                <view class="item-symptom-wrap flex-item ">
+                  <text class="{{ item.symptomSpread || _index === 1 ? '' : 'text-ellipsis--two' }} item-symptom__text">{{ item.symptom }}
+                  </text>
+                  <view  wx:if="{{ item.symptomSpread !== undefined }}" class="{{ item.symptomSpread ? 'arrow-top' : 'arrow-bt' }}">
+                  </view>
+                </view>
+              </view>
+            </block>
+          </view>
+          <view class="item-btn-wrap flex">
+            <button>申请作废</button>
+            <button bindtap="toAppraise" data-wpytoappraise-a="">评价</button>
+          </view>
+        </view>
+      </block>
+    </view>
+  </view>

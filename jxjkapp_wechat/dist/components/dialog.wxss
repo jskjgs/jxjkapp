@@ -1,0 +1,1 @@
+.comp-dialog .dialog__modal,.comp-dialog .dialog__inner{position:fixed;left:0;right:0;top:0;bottom:0;z-index:11111}.comp-dialog .dialog__modal{background:rgba(0,0,0,0.4)}.comp-dialog .dialog__inner{margin:auto;border-radius:20rpx;width:630rpx;height:660rpx;background:#fff}

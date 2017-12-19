@@ -1,0 +1,92 @@
+<style lang="scss">
+.comp-star-comment {
+  .star-item {
+    .star {
+      width: 50rpx;
+      height: 50rpx;
+    }
+  }
+  .star-tip {
+    margin-top: 20rpx;
+    font-size: 12px;
+    color: #B8B8B8;
+  }
+}
+</style>
+
+<template>
+  <view class="comp-star-comment">
+    <view class="star-wrap flex--vcenter--sb">
+      <repeat for="{{ total - 0 }}" key="index" item="item" index="index">
+        <view class="star-item" @tap="pickStar({{ index }}, {{ canPicked }})">
+          <image wx:if="{{ value - 1 >= index }}" class="star" src="../assets/images/star-fill.png"></image>
+          <image wx:else class="star" src="../assets/images/star-empty.png"></image>
+        </view>
+      </repeat>
+    </view>
+    <view class="star-tip flex--center">
+      <text>{{ starTip }}</text>
+    </view>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+
+  export default class StarComment extends wepy.component {
+    components = {
+    }
+
+    props = {
+      canPicked: {
+        type: Boolean,
+        default: false
+      },
+      value: {
+        type: Number,
+        twoWay: true,
+        default: 0
+      },
+      text: {
+        type: Array,
+        default: ['差评', '一般', '满意']
+      },
+      total: {
+        type: String, // 数值字符串
+        default: '3'
+      },
+      title: String
+    }
+
+    mixins = []
+
+    data = {
+    }
+
+    computed = {
+      starTip () {
+        return this.text[this.value - 1] || '  '
+      }
+    }
+
+    watch = {
+      value (val) {
+      }
+    }
+
+    methods = {
+      pickStar (index, canPicked) {
+        console.log('canPicked', canPicked)
+        if (canPicked) {
+          this.value = index + 1
+        }
+      }
+    }
+
+    events = {
+    }
+
+    onLoad() {
+    }
+  }
+</script>

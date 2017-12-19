@@ -1,0 +1,1 @@
+.comp-custom-tabBar{position:fixed;left:0;right:0;bottom:0;height:100rpx;border-top:2rpx solid #D9D9D9;background:#fff}.comp-custom-tabBar .nav-item{text-align:center}.comp-custom-tabBar .nav-item__icon-wrap{margin-bottom:10rpx}.comp-custom-tabBar .nav-item__icon{width:44rpx;height:44rpx}.comp-custom-tabBar .nav-item__text-wrap{font-size:10px;text-align:center}

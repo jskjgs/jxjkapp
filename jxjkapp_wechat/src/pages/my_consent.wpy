@@ -1,0 +1,49 @@
+<style lang="scss">
+#page-my-consent {
+  .list-item {
+    padding: 0 30rpx;
+    height: 124rpx;
+    border-bottom: 2rpx solid #F2F2F2;
+  }
+}
+</style>
+
+<template>
+  <view id="page-my-consent">
+    <repeat for="{{ list }}" key="index" item="item" index="index">
+      <view class="list-item flex--vcenter--sb">
+        <text>同意书名称（一）</text>
+        <view class="arrow-rt"></view>
+      </view>
+    </repeat>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+
+  export default class Index extends wepy.page {
+    config = {
+      navigationBarTitleText: '知情同意书'
+    }
+    components = {
+    }
+
+    mixins = []
+
+    data = {
+      list: [{}, {}]
+    }
+
+    computed = {
+    }
+
+    methods = {}
+
+    events = {
+    }
+
+    onLoad() {
+    }
+  }
+</script>
