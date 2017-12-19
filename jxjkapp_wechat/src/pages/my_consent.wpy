@@ -1,5 +1,6 @@
 <style lang="scss">
 #page-my-consent {
+  font-size: 15px;
   .list-item {
     padding: 0 30rpx;
     height: 124rpx;

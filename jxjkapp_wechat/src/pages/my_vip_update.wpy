@@ -18,49 +18,52 @@
 
 <template>
   <view id="page-my-vip-update">
-    <view class="update-item flex--vcenter--sb">
-      <text class="item-label">院区名称</text>
-      <picker 
-        value="{{ hospital }}" 
-        range="{{ hospitalList }}" 
-        range-key="name"
-        bindchange="handleHospitalChange">
-        <view class="item-value">
-          <text>{{ hospital }}</text>
-          <view class="arrow-rt"></view>
-        </view>
-      </picker>
-    </view>
-    <view class="update-item flex--vcenter--sb">
-      <text class="item-label">项目</text>
-      <picker 
-        value="{{ projectName }}" 
-        range="{{ projectList }}" 
-        range-key="name"
-        bindchange="handleProjectChange">
-        <view class="item-value">
-          <text>{{ projectName }}</text>
-          <view class="arrow-rt"></view>
-        </view>
-      </picker>
-    </view>
-    <view class="update-item flex--vcenter--sb">
-      <text class="item-label">预约时间</text>
-      <picker 
-        mode="time"
-        value="{{ orderDate }}" 
-        bindchange="handleDateChange">
-        <view class="item-value">
-          <text>{{ orderDate }}</text>
-          <view class="arrow-rt"></view>
-        </view>
-      </picker>
-    </view>
+    <repeat for="{{ ITEMS }}" key="index" item="item" index="index">
+      <view class="update-item flex--vcenter--sb">
+        <text class="item-label">{{ item.label }}</text>
+        <picker 
+          value="{{ pickedIndex[item.picker.valueBind] }}"
+          range="{{ lists[item.picker.rangeBind] }}" 
+          range-key="label"
+          bindchange="handlePickerChange({{ item.picker.valueBind }}, {{ item.picker.rangeBind }})">
+          <view class="item-value">
+            <text>{{ pickeds[item.picker.valueBind] }}</text>
+            <view class="arrow-rt"></view>
+          </view>
+        </picker>
+      </view>
+    </repeat>
   </view>
 </template>
 
 <script>
   import wepy from 'wepy'
+
+  const ITEMS = [{
+    label: '院区名称',
+    picker: {
+      valueBind: 'hospital',
+      rangeBind: 'hospitalList'
+    }
+  }, {
+    label: '项目',
+    picker: {
+      valueBind: 'projectName',
+      rangeBind: 'projectList'
+    }
+  }, {
+    label: '预约日期',
+    picker: {
+      valueBind: 'orderDate',
+      rangeBind: 'orderDateList'
+    }
+  }, {
+    label: '预约时间',
+    picker: {
+      valueBind: 'orderTime',
+      rangeBind: 'orderTimeList'
+    }
+  }]
 
   export default class Index extends wepy.page {
     config = {
@@ -72,48 +75,62 @@
     mixins = []
 
     data = {
-      hospitalList: [{
-        id: 0,
-        name: '医院一'
-      }, {
-        id: 1,
-        name: '医院二'
-      }],
-      hospitalIndex: '',
-      projectList: [{
-        id: 0,
-        name: '项目一'
-      }, {
-        id: 1,
-        name: '项目二'
-      }],
-      projectIndex: ''
+      ITEMS,
+      lists: {
+        hospitalList: [{
+          id: 0,
+          label: '医院一'
+        }, {
+          id: 1,
+          label: '医院二'
+        }],
+        projectList: [{
+          id: 0,
+          label: '项目一'
+        }, {
+          id: 1,
+          label: '项目二'
+        }],
+        orderDateList: [{
+          label: '2017-12-1'
+        }, {
+          label: '2017-12-2'
+        }, {
+          label: '2017-12-3'
+        }],
+        orderTimeList: [{
+          label: '1:00~2:00'
+        }, {
+          label: '2:00~3:00'
+        }]
+      },
+      pickeds: {
+        hospital: '医院二',
+        projectName: '项目二',
+        orderDate: '2017-12-1',
+        orderTime: '1:00~2:00'
+      }
     }
 
     computed = {
-      hospital () {
-        return this.hospitalIndex !== '' ? this.hospitalList[this.hospitalIndex].name : ''
-      },
-      projectName () {
-        return this.projectIndex !== '' ? this.projectList[this.projectIndex].name : ''
+      pickedIndex () {
+        const lists = this.lists
+        const pickeds = this.pickeds
+        return {
+          hospital: lists.hospitalList.findIndex(item => item.label === pickeds.hospital),
+          projectName: lists.projectList.findIndex(item => item.label === pickeds.projectName),
+          orderDate: lists.orderDateList.findIndex(item => item.label === pickeds.orderDate),
+          orderTime: lists.orderTimeList.findIndex(item => item.label === pickeds.orderTime)
+        }
       }
     }
 
     methods = {
-      handleHospitalChange ({ detail }) {
-        const value = detail.value
-        if (value) {
-          this.hospitalIndex = value
+      handlePickerChange (valueBind, rangeBind, { detail }) {
+        const index = detail.value
+        if (index) {
+          this.pickeds[valueBind] = this.lists[rangeBind][index].label
         }
-      },
-      handleProjectChange ({ detail }) {
-        const value = detail.value
-        if (value) {
-          this.projectIndex = value
-        }
-      },
-      handleDateChange ({ detail }) {
-        const value = detail.value
       }
     }
 
