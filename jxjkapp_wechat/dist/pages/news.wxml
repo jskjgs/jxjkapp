@@ -1,0 +1,21 @@
+
+  <view id="page-news">
+    <view class="news-list">
+      <block wx:for="{{ listData }}" wx:for-index="index" wx:for-item="item" wx:key="index">
+        <view class="news-item flex main-bg">
+          <image class="news-photo flex-item--none" src="{{ item.photo }}"/>
+          <view class="news-main flex-item">
+            <view class="news-title">
+              <text>{{ item.title }}</text>
+            </view>
+            <view class="news-des text-ellipsis--two">
+              <text>{{ item.des }}</text>
+            </view>
+            <view class="news-date">
+              <text>{{ item.date }}</text>
+            </view>
+          </view>
+        </view>
+      </block>
+    </view>
+  </view>

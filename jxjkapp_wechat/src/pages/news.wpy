@@ -1,0 +1,98 @@
+<style lang="scss">
+#page-news {
+  .news-item {
+    margin-bottom: 20rpx;
+    padding: 30rpx;
+
+    .news-photo {
+      border-radius: 10rpx;
+      width: 200rpx;
+      height: 200rpx;
+    }
+    .news-main {
+      margin-left: 28rpx;
+    }
+    .news-title {
+      margin-top: 18rpx;
+      font-size: 14px;
+      font-weight: bold;
+    }
+    .news-des {
+      margin-top: 20rpx;
+      color: #B8B8B8;
+    }
+    .news-date {
+      margin-top: 34rpx;
+      text-align: right;
+      color: #B8B8B8;
+    }
+  }
+}
+</style>
+
+<template>
+  <view id="page-news">
+    <view class="news-list">
+      <repeat for="{{ listData }}" key="index" item="item" index="index">
+        <view class="news-item flex main-bg">
+          <image class="news-photo flex-item--none" src="{{ item.photo }}"/>
+          <view class="news-main flex-item">
+            <view class="news-title">
+              <text>{{ item.title }}</text>
+            </view>
+            <view class="news-des text-ellipsis--two">
+              <text>{{ item.des }}</text>
+            </view>
+            <view class="news-date">
+              <text>{{ item.date }}</text>
+            </view>
+          </view>
+        </view>
+      </repeat>
+    </view>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+
+  export default class Index extends wepy.page {
+    config = {
+      navigationBarTitleText: '新闻中心'
+    }
+    components = {
+    }
+
+    mixins = []
+
+    data = {
+      listData: [{
+        photo: '../assets/images/demo.png',
+        title: '为何产后关节痛？如何预防？',
+        des: '提供医疗卫生行业资讯,提供医疗卫生行业资讯,报道最新医疗科研动态,追踪提供医疗卫生行业资讯,报道最新医疗科研动态,追踪,追踪',
+        data: '2017-09-02'
+      }, {
+        photo: '../assets/images/demo.png',
+        title: '为何产后关节痛？如何预防？',
+        des: '提供医疗卫生行业资讯,提供医疗卫生行业资讯,报道最新医疗科研动态,追踪提供医疗卫生行业资讯,报道最新医疗科研动态,追踪,追踪',
+        data: '2017-09-02'
+      }, {
+        photo: '../assets/images/demo.png',
+        title: '为何产后关节痛？如何预防？',
+        des: '提供医疗卫生行业资讯,提供医疗卫生行业资讯,报道最新医疗科研动态,追踪提供医疗卫生行业资讯,报道最新医疗科研动态,追踪,追踪',
+        data: '2017-09-02'
+      }]
+    }
+
+    computed = {
+    }
+
+    methods = {}
+
+    events = {
+    }
+
+    onLoad() {
+    }
+  }
+</script>

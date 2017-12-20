@@ -1,4 +1,5 @@
 @import '../helpers/functions';
+@import '../variables/theme.scss';
 .text-ellipsis--two {
   @include text-ellipsis(2);
 }
@@ -34,4 +35,8 @@
   &::after {
     transform: translate3d(0, -50%, 0) rotate(-45deg);
   }
+}
+
+.main-bg {
+  background: $main-bg;
 }

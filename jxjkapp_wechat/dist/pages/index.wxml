@@ -23,13 +23,13 @@
     <view class="panel hospital-center">
       <view class="panel__title">医院中心</view>
       <view class="panel__body flex">
-        <navigator url="/pages/health_pay" open-type="navigate">
+        <navigator url="/pages/staff" open-type="navigate">
           <view class="item-pane">
             <image class="pane-image"/>
             <text class="panel-text">医护人员</text>
           </view>
         </navigator>
-        <navigator url="/pages/health_pay" open-type="navigate">
+        <navigator url="/pages/news" open-type="navigate">
           <view class="item-pane">
             <image class="pane-image"/>
             <text class="panel-text">新闻中心</text>

@@ -18,7 +18,9 @@ export default class extends wepy.app {
       'pages/my_vip',
       'pages/my_consent',
       'pages/my_qrcode',
-      'pages/my_vip_update'
+      'pages/my_vip_update',
+      'pages/news',
+      'pages/staff'
     ],
     window: {
       backgroundTextStyle: 'light',
@@ -58,7 +60,7 @@ export default class extends wepy.app {
       enableDebug: true
     })
     // wx.reLaunch({
-    //   url: '/pages/my_vip_update'
+    //   url: 'pages/staff'
     // })
   }
 
