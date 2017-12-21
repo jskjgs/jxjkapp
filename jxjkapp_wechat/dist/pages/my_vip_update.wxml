@@ -2,9 +2,9 @@
   <view id="page-my-vip-update">
     
   <view class="comp-order-info">
-    <view class="info-items">
+    <view class="info-items menu--default">
       <block wx:for="{{ $OrderInfo$ITEMS }}" wx:for-index="$OrderInfo$index" wx:for-item="$OrderInfo$item" wx:key="$OrderInfo$index">
-        <view class="info-item flex--vcenter--sb">
+        <view class="menu--default__item">
           <text class="item-label">{{ $OrderInfo$item.label }}</text>
           <picker value="{{ $OrderInfo$pickedIndex[$OrderInfo$item.picker.valueBind] }}" range="{{ $OrderInfo$lists[$OrderInfo$item.picker.rangeBind] }}" range-key="label" bindchange="$OrderInfo$handlePickerChange" data-wpyhandlepickerchange-a="{{ $OrderInfo$item.picker.valueBind }}" data-wpyhandlepickerchange-b="{{ $OrderInfo$item.picker.rangeBind }}">
             <view class="item-value">

@@ -6,14 +6,14 @@
         <text class="username">YK 陈御珂</text>
       </view>
     </view>
-    <view class="my-items">
+    <view class="menu--icon">
       <block wx:for="{{ myItems }}" wx:for-index="index" wx:for-item="item" wx:key="text">
-        <view class="my-item flex--vcenter" bindtap="itemClick" data-wpyitemclick-a="{{ index }}">
-          <view class="item-icon-wrap flex-item--none">
+        <view class="menu--icon__item flex--vcenter" bindtap="itemClick" data-wpyitemclick-a="{{ index }}">
+          <view class="menu--icon__item__icon">
             <image class="item-icon" src="{{ item.icon }}"/>
           </view>
-          <view class="item-text-wrap flex-item flex--vcenter--sb">
-            <text>{{ item.text }}</text>
+          <view class="menu--icon__item__main">
+            <text class="item-label">{{ item.label }}</text>
             <view class="arrow-rt"/>
           </view>
         </view>

@@ -16,21 +16,16 @@ page {
     height: 140rpx;
   }
 
-  .my-items {
+  .menu--icon {
     padding: 24rpx 30rpx; 
-  }
-  .my-item {
-    height: 120rpx;
 
-    .item-icon {
-    }
-    .item-icon-wrap {
-      width: 120rpx;
-    }
-    .item-text-wrap {
-      position: relative;
-      border-bottom: 1px solid #F2F2F2;
-      height: 100%;
+    &__item {
+      &__icon {
+        width: 120rpx;
+      }
+      &__main {
+        position: relative;
+      }
     }
   }
 
@@ -73,14 +68,14 @@ page {
         <text class="username">YK 陈御珂</text>
       </view>
     </view>
-    <view class="my-items">
+    <view class="menu--icon">
       <repeat for="{{ myItems }}" key="text" item="item" index="index">
-        <view class="my-item flex--vcenter" bindtap="itemClick({{ index }})">
-          <view class="item-icon-wrap flex-item--none">
+        <view class="menu--icon__item flex--vcenter" @tap="itemClick({{ index }})">
+          <view class="menu--icon__item__icon">
             <image class="item-icon" src="{{ item.icon }}"></image>
           </view>
-          <view class="item-text-wrap flex-item flex--vcenter--sb">
-            <text>{{ item.text }}</text>
+          <view class="menu--icon__item__main">
+            <text class="item-label">{{ item.label }}</text>
             <view class="arrow-rt"></view>
           </view>
         </view>
@@ -117,16 +112,15 @@ page {
 
   const MY_ITEMS = [{
     icon: '',
-    text: '我的二维码',
+    label: '我的二维码',
     handlerTap () {
-      // this.qrcodeVisible = true
       wx.navigateTo({
         url: '/pages/my_qrcode'
       })
     }
   }, {
     icon: '',
-    text: '知情通知书',
+    label: '知情通知书',
     handlerTap () {
       wx.navigateTo({
         url: '/pages/my_consent'
@@ -134,7 +128,7 @@ page {
     }
   }, {
     icon: '',
-    text: 'VIP预约列表',
+    label: 'VIP预约列表',
     handlerTap () {
       wx.navigateTo({
         url: '/pages/my_vip'
@@ -142,12 +136,11 @@ page {
     }
   }, {
     icon: '',
-    text: '联系我们',
+    label: '联系我们',
     handlerTap () {
       wx.showModal({
         title: '客服电话',
-        // showCancel: false,
-        confirmText: '拨打',
+        confirmlabel: '拨打',
         content: '8400561',
         success (data) {
           if (data.confirm) {
@@ -161,26 +154,13 @@ page {
           console.log('fail', arguments)
         }
       })
-      // this.telDialogVisible = true
     }
   }, {
     icon: '',
-    text: '清除缓存',
+    label: '系统设置',
     handlerTap () {
-      wx.clearStorage()
-      wx.showToast({
-        icon: 'success',
-        title: '缓存清除成功'
-      })
-    }
-  }, {
-    icon: '',
-    text: '退出当前账号',
-    handlerTap () {
-      wx.showModal({
-        title: '退出账号',
-        content: '确认退出当前账号？',
-        cancelColor: '#9190FF'
+      wx.navigateTo({
+        url: '/pages/my_setting'
       })
     }
   }]

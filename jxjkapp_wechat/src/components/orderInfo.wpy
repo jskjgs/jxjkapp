@@ -1,17 +1,14 @@
 <style lang="scss">
 @import '../assets/style/variables/theme.scss';
 .comp-order-info {
-  .info-item {
-    border-bottom: 2rpx solid #F2F2F2;
-    padding: 0 30rpx;
-    height: 126rpx;
-    font-size: 15px;
-
-    .item-label {
-      color: #818181;
-    }
-    .arrow-rt {
-      margin-left: 10rpx;
+  .menu--default {
+    &__item {
+      .item-label {
+        color: #818181;
+      }
+      .arrow-rt {
+        margin-left: 10rpx;
+      }
     }
   }
 
@@ -29,9 +26,9 @@
 
 <template>
   <view class="comp-order-info">
-    <view class="info-items">
+    <view class="info-items menu--default">
       <repeat for="{{ ITEMS }}" key="index" item="item" index="index">
-        <view class="info-item flex--vcenter--sb">
+        <view class="menu--default__item">
           <text class="item-label">{{ item.label }}</text>
           <picker 
             value="{{ pickedIndex[item.picker.valueBind] }}"

@@ -1,5 +1,6 @@
 @import '../helpers/functions';
 @import '../variables/theme.scss';
+@import './layout.scss';
 .text-ellipsis--two {
   @include text-ellipsis(2);
 }
@@ -45,4 +46,34 @@
   writing-mode: tb-rl;
   -webkit-writing-mode: vertical-rl;      
   writing-mode: vertical-rl;
+}
+
+// 菜单列表
+.menu {
+  &--icon {
+    font-size: 15px;
+    &__item {
+      @extend .flex--vcenter;
+      height: 120rpx;
+
+      &__icon {
+        @extend .flex-item--none;
+      }
+      &__main {
+        @extend .flex-item;
+        @extend .flex--vcenter--sb;
+        border-bottom: 1px solid #F2F2F2;
+        height: 100%;
+      }
+    }
+  }
+  &--default {
+    font-size: 15px;
+    &__item {
+      padding: 0 30rpx;
+      height: 120rpx;
+      border-bottom: 2rpx solid #F2F2F2;
+      @extend .flex--vcenter--sb;
+    }
+  }
 }

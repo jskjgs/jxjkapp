@@ -1,0 +1,11 @@
+
+  <view id="page-my-setting">
+    <view class="menu--default">
+      <block wx:for="{{ settings }}" wx:for-index="index" wx:for-item="item" wx:key="index">
+        <view class="menu--default__item" bindtap="itemClick" data-wpyitemclick-a="{{ index }}">
+          <text class="item-label">{{ item.label }}</text>
+          <view class="arrow-rt"/>
+        </view>
+      </block>
+    </view>
+  </view>

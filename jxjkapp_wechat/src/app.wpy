@@ -22,6 +22,7 @@ export default class extends wepy.app {
       'pages/my_consent',
       'pages/my_qrcode',
       'pages/my_vip_update',
+      'pages/my_setting',
       'pages/news',
       'pages/staff'
     ],
