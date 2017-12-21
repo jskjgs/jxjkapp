@@ -1,0 +1,19 @@
+
+  <view id="page-project-list">
+    <view class="list-wrap">
+      <view class="list flex">
+        <block wx:for="{{listData}}" wx:for-index="index" wx:for-item="item" wx:key="index">
+          <navigator url="/pages/project_order" class="list-item flex-item--none" style="background-image: url({{item.bg}});">
+            <view class="list-item__inner">
+              <view class="item-title">
+                <text>硬化剂注射</text>
+              </view>
+              <view class="item-describe">
+                <text class="text-ellipsis--two">主治：这是描述描述描述描述描述描很多的述描述描述描述描述描很多的述描述描述描述描述描很多的述描述描述描述描述描很多的</text>
+              </view>
+            </view>
+          </navigator>
+        </block>
+      </view>
+    </view>
+  </view>

@@ -9,11 +9,14 @@ export default class extends wepy.app {
   config = {
     pages: [
       'pages/index',
-      'pages/index_project',
+      'pages/project',
+      'pages/project_order',
+      'pages/project_order_info',
       'pages/health',
       'pages/health_pay',
       'pages/health_detail',
       'pages/health_comment',
+      'pages/health_cancel',
       'pages/my',
       'pages/my_vip',
       'pages/my_consent',
@@ -60,7 +63,7 @@ export default class extends wepy.app {
       enableDebug: true
     })
     // wx.reLaunch({
-    //   url: 'pages/staff'
+    //   url: 'pages/project_order_info'
     // })
   }
 

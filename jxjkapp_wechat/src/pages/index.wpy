@@ -58,7 +58,7 @@
     // 消息列表
     .notice-list {
       background: red;
-
+      
       .notice-item {
       }
     }
@@ -81,6 +81,59 @@
         margin-bottom: 18rpx;
       }
     }
+
+    // 排队通知
+    .queue-notice-wrap {
+      position: fixed;
+      bottom: 0;
+      right: 0;
+      border-radius: 16rpx 0 0 8rpx;
+      width: 68rpx;
+      height: 160rpx;
+      box-shadow: -4rpx 0 8rpx rgba(88, 73, 38, 0.3);
+      transition: all 600ms;
+      font-size: 16px;
+      background: #FFB400;
+      color: #fff;
+      &.spread {
+        padding-left: 40rpx;
+        width: 610rpx;
+        background: rgba(0, 0, 0, 0.75);
+
+        // .fold-text-wrap {
+        //   display: none;
+        // }
+        // .no-queue-notice-wrap {
+        //   display: block;
+        // }
+      }
+
+      .fold-text-wrap {
+        width: 100%;
+        letter-spacing: 16rpx;
+      }
+      .queue-notice {
+        overflow: hidden;
+        white-space: nowrap;
+        .project-name {
+          font-size: 18px;
+          font-weight: bold;
+        }
+        .queue-info {
+          font-size: 12px;
+          color: #B8B8B8;
+        }
+        .wait-num {
+          font-size: 18px;
+          font-weight: bold;
+          color: #fff;
+        }
+      }
+      .no-queue-notice-wrap {
+        overflow: hidden;
+        white-space: nowrap;
+      }
+    }
   }
 </style>
 <template>
@@ -97,7 +150,7 @@
           key="index" 
           index="index" 
           item="item">
-          <navigator url="/pages/index_project?target={{ item.target }}">
+          <navigator url="/pages/project?target={{ item.target }}">
             <view class="project-item flex-item--none">
               <view class="item-icon">
                 <image src="{{ item.image }}"></image>
@@ -124,6 +177,28 @@
             <text class="panel-text">新闻中心</text>
           </view>
         </navigator>
+      </view>
+    </view>
+    <view 
+      class="queue-notice-wrap flex--vcenter {{ queueNoticeSpread ? 'spread' : '' }}" 
+      @tap="handleTapQueueNotice">
+      <view 
+        wx:if="{{ !queueNoticeSpread }}" 
+        class="fold-text-wrap flex--center text-col">
+        <text class="fold-text">排号</text>
+      </view>
+      <view 
+        wx:elif="{{ queueNoticeSpread && queueNotice }}"
+        class="queue-notice">
+        <view class="project-name">
+          <text>{{ queueNotice.project }}：</text>
+        </view>
+        <view class="queue-info">
+          <text>您的排号为{{ queueNotice.NO }}号，前面还有<text class="wait-num">{{ queueNotice.waitNum }}</text>人</text>
+        </view>
+      </view>
+      <view wx:else class="no-queue-notice-wrap">
+        <text>暂无排号信息，请到前台排队就诊！</text>
       </view>
     </view>
   </view>
@@ -164,13 +239,25 @@
         text: '小儿推拿',
         image: '',
         target: '5'
-      }]
+      }],
+      queueNoticeSpread: false,
+      queueNotice: ''
     }
 
     computed = {
     }
 
     methods = {
+      handleTapQueueNotice () {
+        this.queueNoticeSpread = !this.queueNoticeSpread
+        if (Math.random() > 0.5) {
+          this.queueNotice = {
+            project: '手法项目排队',
+            NO: 36,
+            waitNum: 6
+          }
+        }
+      }
     }
 
     events = {

@@ -1,0 +1,144 @@
+<style lang="scss">
+@import '../assets/style/variables/theme.scss';
+.comp-order-info {
+  .info-item {
+    border-bottom: 2rpx solid #F2F2F2;
+    padding: 0 30rpx;
+    height: 126rpx;
+    font-size: 15px;
+
+    .item-label {
+      color: #818181;
+    }
+    .arrow-rt {
+      margin-left: 10rpx;
+    }
+  }
+
+  .submit-btn-wrap {
+    button {
+      margin-top: 100rpx;
+      width: 630rpx;
+      height: 90rpx;
+      background: $primaryColor;
+      color: #fff;
+    }
+  }
+}
+</style>
+
+<template>
+  <view class="comp-order-info">
+    <view class="info-items">
+      <repeat for="{{ ITEMS }}" key="index" item="item" index="index">
+        <view class="info-item flex--vcenter--sb">
+          <text class="item-label">{{ item.label }}</text>
+          <picker 
+            value="{{ pickedIndex[item.picker.valueBind] }}"
+            range="{{ lists[item.picker.rangeBind] }}" 
+            range-key="label"
+            bindchange="handlePickerChange({{ item.picker.valueBind }}, {{ item.picker.rangeBind }})">
+            <view class="item-value">
+              <text>{{ pickeds[item.picker.valueBind] }}</text>
+              <view class="arrow-rt"></view>
+            </view>
+          </picker>
+        </view>
+      </repeat>
+    </view>
+    <view class="submit-btn-wrap flex--hcenter">
+      <slot name="submitBtn">
+      </slot>
+    </view>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+
+  const ITEMS = [{
+    label: '院区名称',
+    picker: {
+      valueBind: 'hospital',
+      rangeBind: 'hospitalList'
+    }
+  }, {
+    label: '项目',
+    picker: {
+      valueBind: 'projectName',
+      rangeBind: 'projectList'
+    }
+  }, {
+    label: '预约日期',
+    picker: {
+      valueBind: 'orderDate',
+      rangeBind: 'orderDateList'
+    }
+  }, {
+    label: '预约时间',
+    picker: {
+      valueBind: 'orderTime',
+      rangeBind: 'orderTimeList'
+    }
+  }]
+  export default class CustomCard extends wepy.component {
+    components = {
+    }
+
+    props = {
+      lists: {
+        type: Object,
+        default: {
+          hospitalList: [],
+          projectList: [],
+          orderDateList: [],
+          orderTimeList: []
+        }
+      },
+      pickeds: {
+        type: Object,
+        twoWay: true,
+        default: {
+          hospital: '',
+          projectName: '',
+          orderDate: '',
+          orderTime: ''
+        }
+      }
+    }
+
+    mixins = []
+
+    data = {
+      ITEMS
+    }
+
+    computed = {
+      pickedIndex () {
+        const lists = this.lists
+        const pickeds = this.pickeds
+        return {
+          hospital: lists.hospitalList.findIndex(item => item.label === pickeds.hospital),
+          projectName: lists.projectList.findIndex(item => item.label === pickeds.projectName),
+          orderDate: lists.orderDateList.findIndex(item => item.label === pickeds.orderDate),
+          orderTime: lists.orderTimeList.findIndex(item => item.label === pickeds.orderTime)
+        }
+      }
+    }
+
+    methods = {
+      handlePickerChange (valueBind, rangeBind, { detail }) {
+        const index = detail.value
+        if (index) {
+          this.pickeds[valueBind] = this.lists[rangeBind][index].label
+        }
+      }
+    }
+
+    events = {
+    }
+
+    onLoad() {
+    }
+  }
+</script>

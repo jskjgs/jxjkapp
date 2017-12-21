@@ -43,8 +43,8 @@
             </block>
           </view>
           <view class="item-btn-wrap flex">
-            <button>申请作废</button>
-            <button bindtap="toAppraise" data-wpytoappraise-a="">评价</button>
+            <button bindtap="toCancel" data-wpytocancel-a="">申请作废</button>
+            <button bindtap="toComment" data-wpytocomment-a="">评价</button>
           </view>
         </view>
       </block>

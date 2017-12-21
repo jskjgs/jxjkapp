@@ -40,3 +40,9 @@
 .main-bg {
   background: $main-bg;
 }
+// 文字竖向排列
+.text-col {
+  writing-mode: tb-rl;
+  -webkit-writing-mode: vertical-rl;      
+  writing-mode: vertical-rl;
+}

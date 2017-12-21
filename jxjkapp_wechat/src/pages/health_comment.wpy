@@ -25,7 +25,12 @@
       bottom: 16rpx;
     }
 
+    .comment-text {
+      border-top: 2rpx solid #F2F4F7;
+      padding: 42rpx 0 0;
+    }
     .comment-date {
+      margin-top: 40rpx;
       justify-content: flex-end;
       font-size: 12px;
     }
@@ -44,7 +49,7 @@
             class="star-comment-wrap"
             total="3"
             :value.sync="commentStar"
-            :canPicked="canComment">
+            :canPicked.sync="canComment">
           </StarComment>
         </view>
         <view class="textarea-wrap">
@@ -67,7 +72,12 @@
           </block>
         </view>
       </view>
-      <button slot="button">立即评价</button>
+      <button 
+        wx:if="{{ canComment }}" 
+        slot="button"
+        @tap="submit">
+        立即评价
+      </button>
     </CustomCard>
   </view>
 </template>
@@ -76,6 +86,8 @@
   import wepy from 'wepy'
   import CustomCard from '@/components/customCard'
   import StarComment from '@/components/starComment'
+
+  import convertDate from '@/utils/convertDate'
 
   export default class Index extends wepy.page {
     config = {
@@ -91,9 +103,9 @@
     data = {
       textareaValue: '地方实弹射击',
       textareaMaxLen: 40,
-      canComment: false,
+      canComment: true,
       commentStar: 0,
-      commentDate: '2017/09/11 23:11:04'
+      commentDate: ''
     }
 
     computed = {
@@ -103,6 +115,17 @@
       handleInput ({detail}) {
         const value = detail.value
         this.textareaValue = value
+      },
+      submit () {
+        if (this.commentStar === 0) {
+          wx.showToast({
+            title: '请选择评分',
+            image: '../assets/images/demo.png'
+          })
+        } else {
+          this.canComment = false
+          this.commentDate = convertDate(new Date().getTime(), 'Y-M-D h:m:s')
+        }
       }
     }
 

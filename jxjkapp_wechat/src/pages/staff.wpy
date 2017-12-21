@@ -27,7 +27,7 @@ $search_h: 88rpx;
     }
   }
 
-  .filter-box {
+  .mask {
     position: absolute;
     z-index: 1;
     top: $search_h;
@@ -35,6 +35,14 @@ $search_h: 88rpx;
     left: 0;
     right: 0;
     background: rgba(0, 0, 0, 0.4);
+  }
+  .filter-box {
+    position: absolute;
+    z-index: 2;
+    top: $search_h;
+    bottom: 0;
+    left: 0;
+    right: 0;
 
     .filter-items {
       padding: 20rpx 30rpx 30rpx;
@@ -130,8 +138,12 @@ $search_h: 88rpx;
           value="{{ searchParams.searchWord }}" 
           placeholder-style="color: #B8B8B8;"
           placeholder="搜索" 
-          bindconfirm="handleSearch"/>
+          bindconfirm="handleSearch"
+          @focus="handleSearchFocus"
+          @blur="handleSearchBlur"/>
       </view>
+    </view>
+    <view class="mask" hidden="{{ !filterVisible && !onSearch }}">
     </view>
     <view class="filter-box" hidden="{{ !filterVisible }}">
       <view class="box-inner main-bg">
@@ -212,7 +224,8 @@ $search_h: 88rpx;
       searchParams: {
         searchWord: ''
       },
-      filterVisible: false,
+      onSearch: false, // 表示是否在搜索输入中
+      filterVisible: false, // 筛选组件显示
       listData: [{
         avatar: '../assets/images/demo.png',
         name: '邓雪梅',
@@ -237,6 +250,12 @@ $search_h: 88rpx;
     }
 
     methods = {
+      handleSearchFocus () {
+        this.onSearch = true
+      },
+      handleSearchBlur () {
+        this.onSearch = false
+      },
       openFilterBox () {
         this.filterVisible = true
       },

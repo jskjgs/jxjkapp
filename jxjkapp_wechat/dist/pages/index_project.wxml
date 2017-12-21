@@ -3,8 +3,8 @@
     <view class="list-wrap">
       <view class="list flex">
         <block wx:for="{{listData}}" wx:for-index="index" wx:for-item="item" wx:key="index">
-          <navigator url="/pages/health_pay">
-            <view class="list-item flex-item--none" style="background-image: url({{item.bg}})">
+          <navigator url="/pages/health_pay" class="list-item flex-item--none" style="background-image: url({{item.bg}});">
+            <view class="list-item__inner">
               <view class="item-title">
                 <text>硬化剂注射</text>
               </view>

@@ -46,9 +46,11 @@
       </view>
       </view>
     </view>
-    <div class="btn-wrap">
-      <button>立即评价</button>
-    </div>
+    <view class="btn-wrap">
+      <button wx:if="{{ canComment }}" bindtap="submit">
+        立即评价
+      </button>
+    </view>
   </view>
 
   </view>

@@ -1,0 +1,1 @@
+.comp-order-info .info-item{border-bottom:2rpx solid #F2F2F2;padding:0 30rpx;height:126rpx;font-size:15px}.comp-order-info .info-item .item-label{color:#818181}.comp-order-info .info-item .arrow-rt{margin-left:10rpx}.comp-order-info .submit-btn-wrap button{margin-top:100rpx;width:630rpx;height:90rpx;background:#9190FF;color:#fff}

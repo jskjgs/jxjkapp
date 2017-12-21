@@ -6,16 +6,24 @@
     margin-left: -42rpx;
   }
   .list-item {
+    box-sizing: border-box;
     overflow: hidden;
     margin-left: 42rpx;
     margin-bottom: 40rpx;
-    padding: 0 30rpx;
     border-radius: 20rpx;
     width: 324rpx;
     height: 324rpx;
     color: #fff;
+    text-shadow: 2rpx 2rpx rgba(32, 31, 88, 0.5);
     background: center no-repeat;
     background-size: cover;
+
+    &__inner {
+      overflow: hidden;
+      padding: 0 30rpx;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.3);
+    }
 
     .item-title {
       margin-top: 84rpx;
@@ -38,8 +46,11 @@
     <view class="list-wrap">
       <view class="list flex">
         <repeat for="{{listData}}" key="index" item="item" index="index">
-          <navigator url="/pages/health_pay">
-            <view class="list-item flex-item--none" style="background-image: url({{item.bg}})">
+          <navigator 
+            url="/pages/project_order" 
+            class="list-item flex-item--none"
+            style="background-image: url({{item.bg}});">
+            <view class="list-item__inner">
               <view class="item-title">
                 <text>硬化剂注射</text>
               </view>
@@ -68,7 +79,7 @@
 
     data = {
       listData: Array.from({length: 7}).map(item => ({
-        bg: '../assets/images/demo.png'
+        bg: '../assets/images/demo.png' && ''
       }))
     }
 

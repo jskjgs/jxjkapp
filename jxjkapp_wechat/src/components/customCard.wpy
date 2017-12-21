@@ -74,7 +74,7 @@
       font-size: 18px;
       background: #9190FF;
       color: #fff;
-      box-shadow: 0rpx 10rpx 20rpx 0rpx #8988D4;
+      // box-shadow: 0rpx 10rpx 20rpx 0rpx #8988D4;
     }
   }
 }
@@ -93,10 +93,10 @@
         <slot name="content"></slot>
       </view>
     </view>
-    <div class="btn-wrap">
+    <view class="btn-wrap">
       <slot name="button">
       </slot>
-    </div>
+    </view>
   </view>
 </template>
 

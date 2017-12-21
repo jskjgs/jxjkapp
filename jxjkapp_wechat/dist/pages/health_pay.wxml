@@ -32,9 +32,9 @@
       </view>
       </view>
     </view>
-    <div class="btn-wrap">
+    <view class="btn-wrap">
       <button>立即支付</button>
-    </div>
+    </view>
   </view>
 
   </view>

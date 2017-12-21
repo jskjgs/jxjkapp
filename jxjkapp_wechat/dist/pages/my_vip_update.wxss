@@ -1,1 +1,1 @@
-#page-my-vip-update .update-item{border-bottom:2rpx solid #F2F2F2;padding:0 30rpx;height:126rpx;font-size:15px}#page-my-vip-update .update-item .item-label{color:#818181}#page-my-vip-update .update-item .arrow-rt{margin-left:10rpx}
+@import "./../components/orderInfo.wxss";

@@ -6,8 +6,10 @@
       </view>
       <view class="search-input-wrap flex-item flex--vcenter">
         <icon type="search" size="16"/>
-        <input class="flex-item" value="{{ searchParams.searchWord }}" placeholder-style="color: #B8B8B8;" placeholder="搜索" bindconfirm="handleSearch"/>
+        <input class="flex-item" value="{{ searchParams.searchWord }}" placeholder-style="color: #B8B8B8;" placeholder="搜索" bindconfirm="handleSearch" bindfocus="handleSearchFocus" bindblur="handleSearchBlur"/>
       </view>
+    </view>
+    <view class="mask" hidden="{{ !filterVisible && !onSearch }}">
     </view>
     <view class="filter-box" hidden="{{ !filterVisible }}">
       <view class="box-inner main-bg">

@@ -184,8 +184,8 @@
             </repeat>
           </view>
           <view class="item-btn-wrap flex">
-            <button>申请作废</button>
-            <button @tap="toAppraise()">评价</button>
+            <button @tap="toCancel()">申请作废</button>
+            <button @tap="toComment()">评价</button>
           </view>
         </view>
       </repeat>
@@ -237,9 +237,14 @@
           this.processList[index].symptomSpread = !this.processList[index].symptomSpread
         }
       },
-      toAppraise () {
+      toComment () {
         wx.navigateTo({
           url: '/pages/health_comment'
+        })
+      },
+      toCancel () {
+        wx.navigateTo({
+          url: '/pages/health_cancel'
         })
       }
     }
