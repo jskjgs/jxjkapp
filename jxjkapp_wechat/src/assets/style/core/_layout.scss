@@ -16,6 +16,11 @@
       justify-content: space-between;
     }
   }
+  &--sb {
+    @extend .flex;
+    justify-content: space-between;
+  }
+
   &--center {
     @extend .flex;
     align-items: center;

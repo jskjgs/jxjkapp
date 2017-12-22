@@ -1,0 +1,33 @@
+
+  <view id="page-my-psd">
+    <view class="captcha-wrap"  wx:if="{{ activePanel === 'captcha' }}">
+      <view class="tip flex--center">
+        <text>设置密码需要验证你的手机号码183****7832</text>
+      </view>
+      <view class="input-group main-bg">
+        <text class="input-group__label">验证码</text>
+        <input class="input-group__inner" value="{{ captcha }}" bindinput="handleInput" data-wpyhandleinput-a="captcha"/>
+        <button class="captcha-btn input-group__btn flex--center">获取验证码</button>
+      </view>
+      <view class="flex--hcenter">
+        <button disabled="{{ !captcha }}" class="primary-btn operate-btn" bindtap="submitCaptcha">
+          下一步
+        </button>
+      </view>
+    </view>
+    <view class="update-psd-wrap"  wx:else>
+      <view class="tip flex--center">
+        <text>密码由6-16位英文字母，数字或字符组成</text>
+      </view>
+      <view class="input-group main-bg">
+        <text class="input-group__label">设置密码</text>
+        <input class="input-group__inner" value="{{ newPsd }}" bindinput="handleInput" data-wpyhandleinput-a="newPsd"/>
+        <button class="input-group__btn flex--center"/>
+      </view>
+      <view class="flex--hcenter">
+        <button class="primary-btn operate-btn" disabled="{{ !newPsd }}" bindtap="submitPsd">
+          确认修改
+        </button>
+      </view>
+    </view>
+  </view>

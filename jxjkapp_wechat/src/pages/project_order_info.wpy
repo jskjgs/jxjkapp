@@ -77,7 +77,7 @@
       :pickeds.sync="pickeds">
       <button 
         slot="submitBtn"
-        class="submit-btn flex--center"
+        class="submit-btn"
         @tap="submit">
         确认提交
       </button>

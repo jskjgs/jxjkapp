@@ -21,8 +21,11 @@ export default class extends wepy.app {
       'pages/my_vip',
       'pages/my_consent',
       'pages/my_qrcode',
+      'pages/my_relations',
+      'pages/my_relation_info',
       'pages/my_vip_update',
       'pages/my_setting',
+      'pages/my_psd',
       'pages/news',
       'pages/staff'
     ],
@@ -64,7 +67,7 @@ export default class extends wepy.app {
       enableDebug: true
     })
     // wx.reLaunch({
-    //   url: 'pages/project_order_info'
+    //   url: '/pages/my_relation_info'
     // })
   }
 

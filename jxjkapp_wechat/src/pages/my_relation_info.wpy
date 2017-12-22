@@ -1,0 +1,46 @@
+<style lang="scss">
+#page-my-relation-info {
+}
+</style>
+
+<template>
+  <view id="page-my-relation-info">
+    <PersonInfo>
+      <button 
+        class="primary-btn"
+        slot="submitBtn">
+        确认添加
+      </button>
+    </PersonInfo>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+
+  import PersonInfo from '@/components/personInfo'
+
+  export default class Index extends wepy.page {
+    config = {
+      navigationBarTitleText: '添加就诊人'
+    }
+    components = {
+      PersonInfo
+    }
+
+    mixins = []
+
+    data = {}
+
+    computed = {
+    }
+
+    methods = {}
+
+    events = {
+    }
+
+    onLoad() {
+    }
+  }
+</script>

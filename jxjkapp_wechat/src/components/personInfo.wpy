@@ -1,0 +1,189 @@
+<style lang="scss">
+.comp-person-info {
+  font-size: 15px;
+
+  .info-group {
+    margin-bottom: 20rpx;
+  }
+  .info-item, .comp-picker-list .menu--default__item {
+    padding: 30rpx 30rpx 30rpx 70rpx;
+
+    .item-label {
+      position: relative;
+      width: 130rpx;
+      color: #818181;
+      
+      &::after {
+        content: ':';
+        position: absolute;
+        right: 0;
+        top: 50%;
+        transform: translate3d(0, -50%, 0);
+      }
+    }
+  }
+
+  .info-item {
+
+    & + .info-item {
+      border-top: 2rpx solid #F2F2F2;
+    }
+
+    &.flex--sb {
+      align-items: flex-start;
+    }
+    
+    .item-input {
+      margin-left: 38rpx;
+
+      &__inner {
+        width: 100%;
+      }
+      textarea  {
+        height: 60rpx;
+      }
+
+      &__tip {
+        font-size: 12px;
+        icon {
+          margin-right: 10rpx;
+        }
+      }
+    }
+  }
+
+  .submit-btn {
+    button {
+      margin: 60rpx 0;
+    }
+  }
+}
+</style>
+
+<template>
+  <view class="comp-person-info">
+    <view class="info-group required-info main-bg">
+      <view class="info-item flex--vcenter--sb">
+        <view class="item-label flex-item--none">就诊卡号</view>
+        <view class="item-input flex-item">
+          <input class="item-input__inner" />
+        </view>
+      </view>
+      <view class="info-item flex--sb">
+        <view class="item-label flex-item--none">身份证号</view>
+        <view class="item-input flex-item">
+          <input class="item-input__inner" />
+          <view class="item-input__tip flex--vcenter"><icon type="warn" size="14" color="#B8B8B8"/>只能绑定18岁以下的未成年人</view>
+        </view>
+      </view>
+    </view>
+    <view class="info-group main-bg">
+      <view class="info-item flex--vcenter--sb">
+        <view class="item-label flex-item--none">过敏史</view>
+        <view class="item-input flex-item">
+          <input class="item-input__inner" />
+        </view>
+      </view>
+      <view class="info-item flex--vcenter--sb">
+        <view class="item-label flex-item--none">疾病史</view>
+        <view class="item-input flex-item">
+          <input class="item-input__inner" />
+        </view>
+      </view>
+    </view>
+    <view class="info-group main-bg">
+      <PickerList 
+        :ITEMS="PICKER_ITEMS"
+        :lists.sync="pickerLists"
+        :pickeds.sync="pickerPickeds">
+      </PickerList>
+    </view>
+    <view class="info-group main-bg">
+      <view class="info-item flex--sb">
+        <view class="item-label flex-item--none">联系地址</view>
+        <view class="item-input flex-item">
+          <textarea
+            class="item-input__inner"
+            value="{{ address }}"
+            @input="handleInput('address')"/>
+        </view>
+      </view>
+    </view>
+    <view class="submit-btn flex--hcenter">
+      <slot name="submitBtn"></slot>
+    </view>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+
+  import PickerList from '@/components/pickerList'
+
+  const PICKER_ITEMS = [{
+    label: '分娩日期',
+    picker: {
+      valueBind: 'laborDate',
+      rangeBind: 'laborDate'
+    }
+  }, {
+    label: '分娩情况',
+    picker: {
+      valueBind: 'laborCase',
+      rangeBind: 'laborCase'
+    }
+  }, {
+    label: '婴儿性别',
+    picker: {
+      valueBind: 'gender',
+      rangeBind: 'gender'
+    }
+  }, {
+    label: '客户来源',
+    picker: {
+      valueBind: 'from',
+      rangeBind: 'from'
+    }
+  }]
+  export default class CustomCard extends wepy.component {
+    components = {
+      PickerList
+    }
+
+    props = {
+    }
+
+    mixins = []
+
+    data = {
+      address: '', // 联系地址
+      PICKER_ITEMS,
+      pickerLists: {
+        laborDate: [{
+          value: 1,
+          label: '232'
+        }],
+        laborCase: [],
+        gender: [],
+        from: []
+      },
+      pickerPickeds: {
+      }
+    }
+
+    computed = {
+    }
+
+    methods = {
+      handleInput (valBind, { detail }) {
+        this[valBind] = detail.value
+      }
+    }
+
+    events = {
+    }
+
+    onLoad() {
+    }
+  }
+</script>

@@ -120,6 +120,14 @@ page {
     }
   }, {
     icon: '',
+    label: '绑定就诊人',
+    handlerTap () {
+      wx.navigateTo({
+        url: '/pages/my_relations'
+      })
+    }
+  }, {
+    icon: '',
     label: '知情通知书',
     handlerTap () {
       wx.navigateTo({

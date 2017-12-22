@@ -22,6 +22,9 @@
   const SETTINGS = [{
     label: '修改密码',
     handlerTap () {
+      wx.navigateTo({
+        url: '/pages/my_psd'
+      })
     }
   }, {
     label: '清除缓存',

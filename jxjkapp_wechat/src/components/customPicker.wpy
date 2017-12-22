@@ -1,0 +1,95 @@
+<style lang="scss">
+</style>
+
+<template>
+  <view class="comp-custom-picker">
+    <picker 
+      value="{{ valueIndex }}"
+      range="{{ rangeList }}"
+      range-key="label"
+      bindchange="handleChange">
+      <slot></slot>
+    </picker>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+
+  const valueWatcher = function (newVal) {
+    console.log('this.rangeList', this.rangeList)
+    this.valueIndex = this.rangeList.findIndex(item => {
+      if (typeof item === 'object') {
+        return newVal === item.value
+      } else {
+        return newVal === item
+      }
+    })
+  }
+  export default class CustomPicker extends wepy.component {
+    components = {
+    }
+
+    props = {
+      value: {
+        // type: String,
+        twoWay: true
+      },
+      range: {
+        /*
+          格式为['value1', 'value2'] 或 [{value: 'value1', label: ''}]
+         */
+        // type: Array
+      }
+    }
+
+    mixins = []
+
+    data = {
+      valueIndex: 0
+    }
+
+    computed = {
+      rangeList () {
+        return this.range
+      }
+    }
+
+    watch = {
+      rangeList (val) {
+        console.log('range', val)
+      },
+      value (newVal) {
+        console.log('value:Change')
+        valueWatcher.call(this, newVal)
+      },
+      valueIndex (newVal) {
+        console.log('valueIndex:Change')
+        console.log(this.rangeList, 1111)
+        let currItem = this.rangeList[newVal]
+        if (typeof currItem === 'object') {
+          this.value = currItem.value
+        } else {
+          this.value = currItem
+        }
+      }
+    }
+
+    methods = {
+      handleChange ({ detail }) {
+        console.log(this)
+        this.valueIndex = detail.value
+      }
+    }
+
+    events = {
+    }
+
+    onLoad() {
+      console.log(this.value, this.range, this)
+      if (this.value) {
+        valueWatcher.call(this, this.value)
+      }
+    }
+  }
+</script>

@@ -38,6 +38,7 @@
   }
 }
 
+// 内容区域背景
 .main-bg {
   background: $main-bg;
 }
@@ -75,5 +76,40 @@
       border-bottom: 2rpx solid #F2F2F2;
       @extend .flex--vcenter--sb;
     }
+  }
+}
+
+// 基本按钮
+.primary-btn {
+  border-radius: 4rpx;
+  width: 630rpx;
+  height: 90rpx;
+  line-height: 90rpx;
+  text-align: center;
+  font-size: 18px;
+  color: #fff;
+  background: $primaryColor;
+
+  &[disabled] {
+    background: #B8B8B8;
+  }
+}
+
+// input-group
+.input-group {
+  padding: 0 30rpx;
+  height: 90rpx;
+  font-size: 15px;
+  @extend .flex--vcenter;
+
+  &__label {
+    @extend .flex-item--none;
+  }
+  &__inner {
+    @extend .flex-item;
+    padding: 0 20rpx;
+  }
+  &__btn {
+    @extend .flex-item--none;
   }
 }

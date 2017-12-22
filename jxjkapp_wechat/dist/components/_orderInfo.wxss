@@ -1,2 +1,2 @@
-@import "./pickerList.wxss";
+@import "./customPicker.wxss";
 .comp-order-info .menu--default__item .item-label{color:#818181}.comp-order-info .menu--default__item .arrow-rt{margin-left:10rpx}.comp-order-info .submit-btn-wrap button{margin-top:100rpx;width:630rpx;height:90rpx;background:#9190FF;color:#fff}

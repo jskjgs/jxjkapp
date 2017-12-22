@@ -1,6 +1,6 @@
 <style lang="scss">
 @import '../assets/style/variables/theme.scss';
-.comp-order-info {
+.comp-picker-list {
   .menu--default {
     &__item {
       .item-label {
@@ -12,28 +12,27 @@
     }
   }
 
-  .submit-btn-wrap {
-    button {
-      margin-top: 100rpx;
-      width: 630rpx;
-      height: 90rpx;
-      background: $primaryColor;
-      color: #fff;
-    }
-  }
 }
 </style>
 
 <template>
-  <view class="comp-order-info">
-    <PickerList
-      :ITEMS="ITEMS"
-      :lists.sync="lists"
-      :pickeds.sync="pickeds">
-    </PickerList>
-    <view class="submit-btn-wrap flex--hcenter">
-      <slot name="submitBtn">
-      </slot>
+  <view class="comp-picker-list">
+    <view class="menu--default">
+      <repeat for="{{ ITEMS }}" key="index" item="item" index="index">
+        <view class="menu--default__item">
+          <text class="item-label">{{ item.label }}</text>
+          <picker 
+            value="{{ pickedIndex[item.picker.valueBind] }}"
+            range="{{ lists[item.picker.rangeBind] }}" 
+            range-key="label"
+            bindchange="handlePickerChange({{ item.picker.valueBind }}, {{ item.picker.rangeBind }})">
+            <view class="item-value">
+              <text>{{ pickeds[item.picker.valueBind] !== undefined ? lists[item.picker.rangeBind][pickedIndex[item.picker.valueBind]].label : '请选择' }}</text>
+              <view class="arrow-rt"></view>
+            </view>
+          </picker>
+        </view>
+      </repeat>
     </view>
   </view>
 </template>
@@ -41,39 +40,15 @@
 <script>
   import wepy from 'wepy'
 
-  import PickerList from '@/components/pickerList'
-  const ITEMS = [{
-    label: '院区名称',
-    picker: {
-      valueBind: 'hospital',
-      rangeBind: 'hospitalList'
-    }
-  }, {
-    label: '项目',
-    picker: {
-      valueBind: 'projectName',
-      rangeBind: 'projectList'
-    }
-  }, {
-    label: '预约日期',
-    picker: {
-      valueBind: 'orderDate',
-      rangeBind: 'orderDateList'
-    }
-  }, {
-    label: '预约时间',
-    picker: {
-      valueBind: 'orderTime',
-      rangeBind: 'orderTimeList'
-    }
-  }]
-  
   export default class CustomCard extends wepy.component {
     components = {
-      PickerList
     }
 
     props = {
+      ITEMS: {
+        type: Array,
+        default: []
+      },
       lists: {
         type: Object,
         default: {
@@ -98,7 +73,6 @@
     mixins = []
 
     data = {
-      ITEMS
     }
 
     computed = {
@@ -106,12 +80,13 @@
         const lists = this.lists
         const pickeds = this.pickeds
         let returnVal = {}
-        ITEMS.forEach(item => {
+        this.ITEMS.forEach(item => {
           const valueBind = item.picker.valueBind
           const rangeBind = item.picker.rangeBind
-          returnVal[valueBind] = lists[rangeBind].findIndex(item => {
+          const index = lists[rangeBind].findIndex(item => {
             return item.label === pickeds[valueBind]
           })
+          returnVal[valueBind] = index === -1 ? 0 : index
         })
         return returnVal
       }
@@ -120,8 +95,13 @@
     methods = {
       handlePickerChange (valueBind, rangeBind, { detail }) {
         const index = detail.value
-        if (index) {
-          this.pickeds[valueBind] = this.lists[rangeBind][index].label
+        if (index !== -1) {
+          const currItem = this.lists[rangeBind][index]
+          if (typeof currItem === 'object') {
+            this.pickeds[valueBind] = currItem.value
+          } else {
+            this.pickeds[valueBind] = currItem
+          }
         }
       }
     }

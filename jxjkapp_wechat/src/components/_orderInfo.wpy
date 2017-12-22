@@ -26,11 +26,30 @@
 
 <template>
   <view class="comp-order-info">
-    <PickerList
-      :ITEMS="ITEMS"
-      :lists.sync="lists"
-      :pickeds.sync="pickeds">
-    </PickerList>
+    <view class="info-items menu--default">
+      <repeat for="{{ ITEMS }}" key="index" item="item" index="index">
+        <view class="menu--default__item">
+          <text class="item-label">{{ item.label }}</text>
+          <!-- <picker 
+            value="{{ pickedIndex[item.picker.valueBind] }}"
+            range="{{ lists[item.picker.rangeBind] }}" 
+            range-key="label"
+            bindchange="handlePickerChange({{ item.picker.valueBind }}, {{ item.picker.rangeBind }})">
+            <view class="item-value">
+              <text>{{ pickeds[item.picker.valueBind] }}</text>
+              <view class="arrow-rt"></view>
+            </view>
+          </picker> -->
+          <CustomPicker 
+            key="{{ index }}"
+            :range.sync="$lists[{{item.picker.rangeBind}}]"
+            value.sync="{{ $pickeds[item.picker.valueBind] }}" >
+            <text>{{ $pickeds[item.picker.valueBind] }}</text>
+            <view class="arrow-rt"></view>
+          </CustomPicker>
+        </view>
+      </repeat>
+    </view>
     <view class="submit-btn-wrap flex--hcenter">
       <slot name="submitBtn">
       </slot>
@@ -41,7 +60,8 @@
 <script>
   import wepy from 'wepy'
 
-  import PickerList from '@/components/pickerList'
+  import CustomPicker from '@/components/customPicker'
+
   const ITEMS = [{
     label: '院区名称',
     picker: {
@@ -67,10 +87,9 @@
       rangeBind: 'orderTimeList'
     }
   }]
-  
   export default class CustomCard extends wepy.component {
     components = {
-      PickerList
+      CustomPicker
     }
 
     props = {
@@ -102,19 +121,25 @@
     }
 
     computed = {
+      '$lists' () {
+        return this.lists
+      },
+      '$pickeds' () {
+        return this.pickeds
+      },
       pickedIndex () {
         const lists = this.lists
         const pickeds = this.pickeds
-        let returnVal = {}
-        ITEMS.forEach(item => {
-          const valueBind = item.picker.valueBind
-          const rangeBind = item.picker.rangeBind
-          returnVal[valueBind] = lists[rangeBind].findIndex(item => {
-            return item.label === pickeds[valueBind]
-          })
-        })
-        return returnVal
+        return {
+          hospital: lists.hospitalList.findIndex(item => item.label === pickeds.hospital),
+          projectName: lists.projectList.findIndex(item => item.label === pickeds.projectName),
+          orderDate: lists.orderDateList.findIndex(item => item.label === pickeds.orderDate),
+          orderTime: lists.orderTimeList.findIndex(item => item.label === pickeds.orderTime)
+        }
       }
+    }
+
+    watch = {
     }
 
     methods = {

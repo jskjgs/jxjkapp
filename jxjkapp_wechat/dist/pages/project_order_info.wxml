@@ -2,21 +2,25 @@
   <view id="page-index-order-info">
     
   <view class="comp-order-info">
-    <view class="info-items menu--default">
-      <block wx:for="{{ $OrderInfo$ITEMS }}" wx:for-index="$OrderInfo$index" wx:for-item="$OrderInfo$item" wx:key="$OrderInfo$index">
+    
+  <view class="comp-picker-list">
+    <view class="menu--default">
+      <block wx:for="{{ $OrderInfo$PickerList$ITEMS }}" wx:for-index="$OrderInfo$PickerList$index" wx:for-item="$OrderInfo$PickerList$item" wx:key="$OrderInfo$PickerList$index">
         <view class="menu--default__item">
-          <text class="item-label">{{ $OrderInfo$item.label }}</text>
-          <picker value="{{ $OrderInfo$pickedIndex[$OrderInfo$item.picker.valueBind] }}" range="{{ $OrderInfo$lists[$OrderInfo$item.picker.rangeBind] }}" range-key="label" bindchange="$OrderInfo$handlePickerChange" data-wpyhandlepickerchange-a="{{ $OrderInfo$item.picker.valueBind }}" data-wpyhandlepickerchange-b="{{ $OrderInfo$item.picker.rangeBind }}">
+          <text class="item-label">{{ $OrderInfo$PickerList$item.label }}</text>
+          <picker value="{{ $OrderInfo$PickerList$pickedIndex[$OrderInfo$PickerList$item.picker.valueBind] }}" range="{{ $OrderInfo$PickerList$lists[$OrderInfo$PickerList$item.picker.rangeBind] }}" range-key="label" bindchange="$OrderInfo$PickerList$handlePickerChange" data-wpyhandlepickerchange-a="{{ $OrderInfo$PickerList$item.picker.valueBind }}" data-wpyhandlepickerchange-b="{{ $OrderInfo$PickerList$item.picker.rangeBind }}">
             <view class="item-value">
-              <text>{{ $OrderInfo$pickeds[$OrderInfo$item.picker.valueBind] }}</text>
+              <text>{{ $OrderInfo$PickerList$pickeds[$OrderInfo$PickerList$item.picker.valueBind] !== $OrderInfo$PickerList$undefined ? $OrderInfo$PickerList$lists[$OrderInfo$PickerList$item.picker.rangeBind][$OrderInfo$PickerList$pickedIndex[$OrderInfo$PickerList$item.picker.valueBind]].label : '请选择' }}</text>
               <view class="arrow-rt"/>
             </view>
           </picker>
         </view>
       </block>
     </view>
+  </view>
+
     <view class="submit-btn-wrap flex--hcenter">
-      <button class="submit-btn flex--center" bindtap="submit">
+      <button class="submit-btn" bindtap="submit">
         确认提交
       </button>
     </view>
