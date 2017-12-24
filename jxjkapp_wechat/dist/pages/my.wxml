@@ -1,6 +1,7 @@
 
   <view id="page-my">
     <view class="avatar-box flex--center">
+      <image class="avatar-box-bg" src="../assets/images/my-bg.png"/>
       <view class="avatar-wrap">
         <image src="../assets/images/demo.png" class="avatar"/>
         <text class="username">YK 陈御珂</text>
@@ -10,7 +11,7 @@
       <block wx:for="{{ myItems }}" wx:for-index="index" wx:for-item="item" wx:key="text">
         <view class="menu--icon__item flex--vcenter" bindtap="itemClick" data-wpyitemclick-a="{{ index }}">
           <view class="menu--icon__item__icon">
-            <image class="item-icon" src="{{ item.icon }}"/>
+            <image mode="aspectFit" class="item-icon" src="{{ item.icon }}"/>
           </view>
           <view class="menu--icon__item__main">
             <text class="item-label">{{ item.label }}</text>

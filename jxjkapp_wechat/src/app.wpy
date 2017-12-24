@@ -4,7 +4,26 @@
 <script>
 import wepy from 'wepy'
 import 'wepy-async-function'
-
+['page', 'component'].forEach(function (item) {
+  Object.defineProperties(wepy[item].prototype, {
+    '$_request': {
+      value (cfg) {
+        return wepy.request(cfg)
+      }
+    },
+    '$_getPage': {
+      value () {
+        return this.getCurrentPages().slice(-1)[0]
+      }
+    },
+    '$_getRoute': {
+      value () {
+        return this.getCurrentPages().slice(-1)[0].route
+      }
+    }
+  })
+})
+console.log('wepy', wepy)
 export default class extends wepy.app {
   config = {
     pages: [
@@ -42,14 +61,17 @@ export default class extends wepy.app {
       list: [{
         'pagePath': 'pages/index',
         'iconPath': './assets/images/tab-index.png',
+        'selectedIconPath': './assets/images/tab-index-active.png',
         'text': '首页'
       }, {
         'pagePath': 'pages/health',
         'iconPath': './assets/images/tab-health.png',
+        'selectedIconPath': './assets/images/tab-health-active.png',
         'text': '健康管理'
       }, {
         'pagePath': 'pages/my',
         'iconPath': './assets/images/tab-my.png',
+        'selectedIconPath': './assets/images/tab-my-active.png',
         'text': '我的'
       }]
     }
@@ -69,9 +91,9 @@ export default class extends wepy.app {
     wx.setEnableDebug({
       enableDebug: true
     })
-    // wx.reLaunch({
-    //   url: '/pages/signup'
-    // })
+    wx.reLaunch({
+      url: '/pages/my'
+    })
   }
 
   sleep (s) {

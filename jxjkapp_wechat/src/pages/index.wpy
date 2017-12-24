@@ -264,6 +264,11 @@
     }
 
     onLoad() {
+      this.$_request({
+        url: 'http://jishi3.bbdservice.com/'
+      }).then(res => {
+        console.log('res', res)
+      })
       console.log(this._chunk([1, 2, 3, 4, 5, 6], 3))
     }
 
