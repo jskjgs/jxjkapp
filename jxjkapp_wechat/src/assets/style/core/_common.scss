@@ -90,26 +90,37 @@
   color: #fff;
   background: $primaryColor;
 
-  &[disabled] {
+  &[disabled][type="default"], &[disabled]:not([type]) {
     background: #B8B8B8;
+    color: #fff;
   }
 }
 
 // input-group
 .input-group {
+  @extend .flex--vcenter;
   padding: 0 30rpx;
   height: 90rpx;
   font-size: 15px;
-  @extend .flex--vcenter;
+  background: $main_bg;
 
   &__label {
     @extend .flex-item--none;
+    margin-right: 20rpx;
   }
   &__inner {
     @extend .flex-item;
-    padding: 0 20rpx;
+  }
+  &__btn, &__icon-btn {
+    @extend .flex-item--none;
+    margin-left: 20rpx;
   }
   &__btn {
-    @extend .flex-item--none;
+    @extend .flex--vcenter;
+    border: 2rpx solid #B8B8B8;
+    padding: 0 16rpx;
+    line-height: 52rpx;
+    color: #B8B8B8;
+    background: transparent;
   }
 }

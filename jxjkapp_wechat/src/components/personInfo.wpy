@@ -32,6 +32,19 @@
     &.flex--sb {
       align-items: flex-start;
     }
+
+    &.required {
+      .item-label {
+        position: relative;
+        &:before {
+          content: '*';
+          position: absolute;
+          left: -20rpx;
+          top: 0;
+          color: #FF4444;
+        }
+      }
+    }
     
     .item-input {
       margin-left: 38rpx;
@@ -63,17 +76,17 @@
 <template>
   <view class="comp-person-info">
     <view class="info-group required-info main-bg">
-      <view class="info-item flex--vcenter--sb">
+      <view class="info-item required flex--vcenter--sb">
         <view class="item-label flex-item--none">就诊卡号</view>
         <view class="item-input flex-item">
           <input class="item-input__inner" />
         </view>
       </view>
-      <view class="info-item flex--sb">
+      <view class="info-item required flex--sb">
         <view class="item-label flex-item--none">身份证号</view>
         <view class="item-input flex-item">
           <input class="item-input__inner" />
-          <view class="item-input__tip flex--vcenter"><icon type="warn" size="14" color="#B8B8B8"/>只能绑定18岁以下的未成年人</view>
+          <view class="item-input__tip flex--vcenter"><icon type="warn" size="14" color="#B8B8B8"/>只能绑定18岁以{{ page === 'relation' ? '下' : '上' }}的未成年人</view>
         </view>
       </view>
     </view>
@@ -151,6 +164,10 @@
     }
 
     props = {
+      page: {
+        type: String,
+        default: 'signup' // signup / relation
+      }
     }
 
     mixins = []
@@ -163,9 +180,21 @@
           value: 1,
           label: '232'
         }],
-        laborCase: [],
-        gender: [],
-        from: []
+        laborCase: [{
+          value: 0,
+          label: 'labor0'
+        }],
+        gender: [{
+          value: 0,
+          label: '女'
+        }, {
+          value: 1,
+          label: '男'
+        }],
+        from: [{
+          value: 0,
+          label: 'from0'
+        }]
       },
       pickerPickeds: {
       }

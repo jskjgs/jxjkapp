@@ -1,5 +1,5 @@
 
-  <view id="page-my-relation-info">
+  <view id="page-signup-info">
     
   <view class="comp-person-info">
     <view class="info-group required-info main-bg">
@@ -59,8 +59,8 @@
       </view>
     </view>
     <view class="submit-btn flex--hcenter">
-      <button class="primary-btn">
-        确认添加
+      <button class="primary-btn" page="signup">
+        完成注册
       </button>
     </view>
   </view>

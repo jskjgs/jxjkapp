@@ -21,7 +21,7 @@
       </view>
       <view class="input-group main-bg">
         <text class="input-group__label">设置密码</text>
-        <input class="input-group__inner" value="{{ newPsd }}" bindinput="handleInput" data-wpyhandleinput-a="newPsd"/>
+        <input class="input-group__inner" password="true" value="{{ newPsd }}" bindinput="handleInput" data-wpyhandleinput-a="newPsd"/>
         <button class="input-group__btn flex--center"/>
       </view>
       <view class="flex--hcenter">

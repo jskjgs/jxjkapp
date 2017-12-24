@@ -15,10 +15,6 @@
   .submit-btn-wrap {
     button {
       margin-top: 100rpx;
-      width: 630rpx;
-      height: 90rpx;
-      background: $primaryColor;
-      color: #fff;
     }
   }
 }

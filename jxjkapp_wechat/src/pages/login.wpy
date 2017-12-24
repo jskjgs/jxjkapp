@@ -1,0 +1,118 @@
+<style lang="scss">
+#page-login {
+  .page-title-wrap {
+    margin: 78rpx 0;
+    font-size: 16px;
+    font-weight: bold;
+    text-align: center;
+  }
+
+  .input-group + .input-group {
+    border-top: 2rpx solid #F2F2F2;
+  }
+  .btn-wrap {
+    button {
+      margin-top: 100rpx;
+    }
+  }
+  .forget-btn {
+    margin-top: 38rpx;
+    text-align: center;
+    color: #B8B8B8;
+  }
+}
+</style>
+
+<template>
+  <view id="page-login">
+    <view class="page-title-wrap">登陆</view>
+    <view class="input-box">
+      <view class="input-group">
+        <input 
+          class="input-group__inner"
+          type="number"
+          value="{{ phone }}" 
+          placeholder="请输入手机号"
+          bindinput="handleInput('phone')"/>
+      </view>
+      <view 
+        wx:if="{{ inputPsd }}"
+        class="input-group">
+        <input 
+          class="input-group__inner"
+          password="{{ true }}"
+          value="{{ psd }}" 
+          placeholder="请输入密码"
+          bindinput="handleInput('psd')"/>
+      </view>
+    </view>
+    <view class="btn-wrap flex--hcenter">
+      <button 
+        wx:if="{{ !inputPsd }}"
+        class="primary-btn"
+        disabled="{{ !phoneIsValid }}"
+        @tap="handleToNext">下一步</button>
+      <view wx:else>
+        <button 
+          class="primary-btn"
+          disabled="{{ !phoneIsValid || !psd }}">确认登录</button>
+        <view class="forget-btn">
+          <text @tap="handleForget">忘记密码<text class="arrow-rt" style="width: 18rpx; height: 18rpx;"></text></text>
+        </view>
+      </view>
+    </view>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+
+  export default class Index extends wepy.page {
+    config = {
+      navigationBarTitleText: '锦欣健康'
+    }
+    components = {
+    }
+
+    mixins = []
+
+    data = {
+      phone: '', // 手机
+      psd: '',
+      phoneIsValid: false, // 判断手机号码有效性
+      inputPsd: false // 是否可输密码
+    }
+
+    computed = {
+    }
+
+    watch = {
+      phone (newVal) {
+        if (newVal) {
+          this.phoneIsValid = true
+        }
+      }
+    }
+
+    methods = {
+      // 下一步
+      handleToNext () {
+        this.inputPsd = true
+      },
+      handleInput (valBind, { detail }) {
+        this[valBind] = detail.value
+      },
+      handleForget () {
+        wx.navigateTo({
+          url: '/pages/my_psd'
+        })
+      }
+    }
+
+    events = {
+    }
+
+    onLoad() {
+    }
+  }
+</script>

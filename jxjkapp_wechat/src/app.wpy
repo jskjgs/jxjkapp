@@ -9,6 +9,9 @@ export default class extends wepy.app {
   config = {
     pages: [
       'pages/index',
+      'pages/login',
+      'pages/signup',
+      'pages/signup_info',
       'pages/project',
       'pages/project_order',
       'pages/project_order_info',
@@ -67,7 +70,7 @@ export default class extends wepy.app {
       enableDebug: true
     })
     // wx.reLaunch({
-    //   url: '/pages/my_relation_info'
+    //   url: '/pages/signup'
     // })
   }
 
