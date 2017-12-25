@@ -41,7 +41,7 @@ public class Swagger2 {
                 .globalOperationParameters(globalParameters())
                 .apiInfo(apiInfo())
                 .select()
-                .apis(RequestHandlerSelectors.basePackage("com.jishi.hospHealth"))
+                .apis(RequestHandlerSelectors.basePackage("com.jinxin.hospHealth"))
                 .paths(PathSelectors.any())
                 .build();
     }

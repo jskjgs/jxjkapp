@@ -6,30 +6,46 @@ server:
 management:
     address: 127.0.0.1
 
-constant:
-    dynamic_code_key:
-        login_or_register: login_or_register
-        change_phone_origin: change_phone_origin
-        change_phone_new: change_phone_new
+#动态码
+dynamic:
+    #redis中的key标识
+    codeKey:
+        login: login
+        register: register
+        token: token
+    #有效时间
+    effectiveTime:
+        login: 300
+        register: 300
+        token: 31536000
+
+#默认的
+default:
+    #用户头像
+    userHeadPortrait: http://www.baidu.com
+    #医生头像
+    doctorHeadPortrait: http://www.163.com
+    #默认的商品类别图片
+    productTypeImage: http://yst.winshang.com/member/PinPai/2015/7/2/2015721650321136868_1.jpg
+    #默认的商品图片
+    productImage: http://yst.winshang.com/member/PinPai/2015/7/2/2015721650321136868_1.jpg
+    #默认的商品sku图片
+    skuImage: http://yst.winshang.com/member/PinPai/2015/7/2/2015721650321136868_1.jpg
 
 #开发环境
 spring:
     profiles:
         active: dev
     datasource:
-        beanPath: com.jishi.hospHealth.dao.models
+        beanPath: com.jinxin.hospHealth.dao.models
         mapperXmlPath: classpath:mapper/*.xml
-        mapperPath: com.jishi.hospHealth.dao.mapper
+        mapperPath: com.jinxin.hospHealth.dao.mapper
         master:
             name: ReadAndWrite
             url: jdbc:mysql://182.92.78.118:3306/misscheng?useUnicode=true&characterEncoding=utf-8&useSSL=false
             username: root
             password: root
-#        slave1:
-#            name: ReadAndWrite
-#            url: jdbc:mysql://182.92.78.118:3306/his?useUnicode=true&characterEncoding=utf-8&useSSL=false
-#            username: root
-#            password: root
+
 redis:
     host: 119.29.108.150
     port: 6379

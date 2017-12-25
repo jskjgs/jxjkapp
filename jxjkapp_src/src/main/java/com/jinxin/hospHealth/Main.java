@@ -18,14 +18,13 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @ComponentScan(basePackages={"com.jinxin.hospHealth","com.doraemon.base"})
 public class Main implements CommandLineRunner {
 
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
         SpringApplication app = new SpringApplication(Main.class);
         app.run();
     }
 
     @Override
-    public void run(String... strings) throws Exception {
+    public void run(String... strings){
         System.out.println("服务启动完毕.");
-
     }
 }
