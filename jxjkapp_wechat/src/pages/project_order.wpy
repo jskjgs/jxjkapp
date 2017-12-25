@@ -16,6 +16,7 @@
     right: 0;
     bottom: 0;
     height: 90rpx;
+    box-shadow: 0 -2rpx 4rpx 0 rgba(18, 18, 54, 0.09);
 
     .disabled-tip {
       padding-left: 44rpx;
@@ -26,7 +27,6 @@
       border-radius: 0;
       background: $primaryColor;
       color: #fff;
-      box-shadow: 0 -4rpx 8rpx 0 rgba(18, 18, 54, 0.09);
     }
   }
 }
@@ -34,7 +34,7 @@
 
 <template>
   <view id="page-index-project-order">
-    <!-- <web-view class="web-view" src="https://mp.weixin.qq.com/"></web-view> -->
+    <web-view class="web-view" src="https://www.baidu.com/"></web-view>
     <view class="order-btn-wrap flex">
       <view class="disabled-tip flex-item flex--vcenter">
         <text>充值VIP后可享受预约功能</text>

@@ -164,9 +164,9 @@
             <text class="item-date">治疗时间：{{ item.date }}</text>
           </view>
           <view class="item-main" @tap="spreadSymptom({{ item.symptomSpread !== undefined }}, {{ index }})">
-            <view class="row flex--vcenter--sb">
+            <view class="row flex--vcenter">
               <text>服务人员：赵雪晴</text>
-              <text class="item-status">已完成</text>
+              <!-- <text class="item-status">已完成</text> -->
             </view>
             <repeat for="{{[0, 1]}}" key="index" index="_index" item="_item">
               <view class="row flex {{ _index === 1 ? 'item-symptom--clone' : 'item-symptom' }}">

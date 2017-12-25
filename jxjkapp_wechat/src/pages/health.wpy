@@ -36,10 +36,6 @@
         color: #B8B8B8;
       }
     }
-    .no-more-tip {
-      font-size: 10px;
-      color: #BDBDBD;
-    }
   }
 </style>
 
@@ -66,7 +62,7 @@
           </view>
         </navigator>
       </repeat>
-      <view class="no-more-tip flex--hcenter">
+      <view class="no-more-tip">
         <text>已无更多内容了</text>
       </view>
     </view>
@@ -129,6 +125,7 @@
     }
 
     onLoad() {
+      console.log('this.$parent.globalData', this.$parent.globalData)
     }
   }
 </script>

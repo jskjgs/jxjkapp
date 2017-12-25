@@ -31,68 +31,79 @@
 </style>
 
 <template>
-  <view id="page-news">
-    <view class="news-list">
-      <repeat for="{{ listData }}" key="index" item="item" index="index">
-        <view class="news-item flex main-bg">
-          <image class="news-photo flex-item--none" src="{{ item.photo }}"/>
-          <view class="news-main flex-item">
-            <view class="news-title">
-              <text>{{ item.title }}</text>
-            </view>
-            <view class="news-des text-ellipsis--two">
-              <text>{{ item.des }}</text>
-            </view>
-            <view class="news-date">
-              <text>{{ item.date }}</text>
+  <CustomPage>
+    <view id="page-news">
+      <view class="news-list">
+        <repeat for="{{ listData }}" key="index" item="item" index="index">
+          <view class="news-item flex main-bg" @tap="handleNewsTap({{ item.id }})">
+            <image class="news-photo flex-item--none" src="{{ item.photo }}"/>
+            <view class="news-main flex-item">
+              <view class="news-title">
+                <text>{{ item.title }}</text>
+              </view>
+              <view class="news-des text-ellipsis--two">
+                <text>{{ item.des }}</text>
+              </view>
+              <view class="news-date">
+                <text>{{ item.date }}</text>
+              </view>
             </view>
           </view>
+        </repeat>
+        <view wx:if="{{ isLastPage }}" class="no-more-tip">
+          <text>已无更多内容了</text>
         </view>
-      </repeat>
+      </view>
     </view>
-  </view>
+  </CustomPage>
 </template>
 
 <script>
   import wepy from 'wepy'
+  import CustomPage from '@/components/customPage'
+
+  import pageMixin from '@/mixins/page'
 
   export default class Index extends wepy.page {
     config = {
       navigationBarTitleText: '新闻中心'
     }
     components = {
+      CustomPage
     }
 
-    mixins = []
+    mixins = [pageMixin]
 
     data = {
-      listData: [{
-        photo: '../assets/images/demo.png',
-        title: '为何产后关节痛？如何预防？',
-        des: '提供医疗卫生行业资讯,提供医疗卫生行业资讯,报道最新医疗科研动态,追踪提供医疗卫生行业资讯,报道最新医疗科研动态,追踪,追踪',
-        data: '2017-09-02'
-      }, {
-        photo: '../assets/images/demo.png',
-        title: '为何产后关节痛？如何预防？',
-        des: '提供医疗卫生行业资讯,提供医疗卫生行业资讯,报道最新医疗科研动态,追踪提供医疗卫生行业资讯,报道最新医疗科研动态,追踪,追踪',
-        data: '2017-09-02'
-      }, {
-        photo: '../assets/images/demo.png',
-        title: '为何产后关节痛？如何预防？',
-        des: '提供医疗卫生行业资讯,提供医疗卫生行业资讯,报道最新医疗科研动态,追踪提供医疗卫生行业资讯,报道最新医疗科研动态,追踪,追踪',
-        data: '2017-09-02'
-      }]
     }
 
     computed = {
     }
 
-    methods = {}
-
-    events = {
+    methods = {
+      handleNewsTap (id) {
+        wx.navigateTo({
+          url: `/pages/news_detail?id=${id}`
+        })
+      }
     }
 
-    onLoad() {
+    onLoad () {
+      this.initData({
+        url: '/news/all',
+        method: 'POST',
+        data: {
+          pageSize: 5
+        }
+      }, (listItem, res) => {
+        return {
+          id: listItem.id,
+          photo: (listItem.images || '').split(',')[0],
+          title: listItem.title,
+          des: listItem.content,
+          date: this.$_convertDate(listItem.createDate)
+        }
+      })
     }
   }
 </script>

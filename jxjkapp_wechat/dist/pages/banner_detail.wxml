@@ -1,0 +1,4 @@
+
+  <view id="page-banner-detail">
+    <web-view class="iframe" src="{{ jumpUrl }}"/>
+  </view>

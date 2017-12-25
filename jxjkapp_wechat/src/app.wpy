@@ -4,11 +4,40 @@
 <script>
 import wepy from 'wepy'
 import 'wepy-async-function'
-['page', 'component'].forEach(function (item) {
+import convertDate from '@/utils/convertDate'
+
+Promise.prototype.finally = function (callback) {
+  let P = this.constructor
+  return this.then(
+    value => P.resolve(callback()).then(() => value),
+    reason => P.resolve(callback()).then(() => { throw reason })
+  )
+}
+
+;(['page', 'component']).forEach(function (item) {
   Object.defineProperties(wepy[item].prototype, {
     '$_request': {
-      value (cfg) {
-        return wepy.request(cfg)
+      value (cfg, noLoading) {
+        cfg = Object.assign({}, cfg)
+        if (!noLoading) {
+          wx.showLoading({
+            title: '加载中..',
+            mask: true
+          })
+        }
+        // cfg.url = 'http://192.168.6.84:9001/hospHealth' + cfg.url
+        cfg.url = 'http://182.92.78.118:9001/hospHealth' + cfg.url
+        return new Promise(function (resolve, reject) {
+          wepy.request(cfg).then(res => {
+            return res.data || {}
+          }).then(data => {
+            resolve(data)
+          }).catch((e) => {
+            reject(e)
+          })
+        }).finally(() => {
+          wx.hideLoading()
+        })
       }
     },
     '$_getPage': {
@@ -20,6 +49,11 @@ import 'wepy-async-function'
       value () {
         return this.getCurrentPages().slice(-1)[0].route
       }
+    },
+    '$_convertDate': {
+      value (timeStamp) {
+        return convertDate(timeStamp)
+      }
     }
   })
 })
@@ -28,6 +62,7 @@ export default class extends wepy.app {
   config = {
     pages: [
       'pages/index',
+      'pages/banner_detail',
       'pages/login',
       'pages/signup',
       'pages/signup_info',
@@ -49,13 +84,15 @@ export default class extends wepy.app {
       'pages/my_setting',
       'pages/my_psd',
       'pages/news',
+      'pages/news_detail',
       'pages/staff'
     ],
     window: {
       backgroundTextStyle: 'light',
       navigationBarBackgroundColor: '#9190FF',
       navigationBarTitleText: 'WeChat',
-      navigationBarTextStyle: 'white'
+      navigationBarTextStyle: 'white',
+      enablePullDownRefresh: true
     },
     tabBar: {
       list: [{
@@ -91,9 +128,9 @@ export default class extends wepy.app {
     wx.setEnableDebug({
       enableDebug: true
     })
-    wx.reLaunch({
-      url: '/pages/my'
-    })
+    // wx.reLaunch({
+    //   url: '/pages/my'
+    // })
   }
 
   sleep (s) {
@@ -110,6 +147,7 @@ export default class extends wepy.app {
   }
 
   getUserInfo(cb) {
+    console.log('globalData', this.globalData)
     const that = this
     if (this.globalData.userInfo) {
       return this.globalData.userInfo

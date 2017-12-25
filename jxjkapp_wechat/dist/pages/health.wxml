@@ -21,7 +21,7 @@
           </view>
         </navigator>
       </block>
-      <view class="no-more-tip flex--hcenter">
+      <view class="no-more-tip">
         <text>已无更多内容了</text>
       </view>
     </view>

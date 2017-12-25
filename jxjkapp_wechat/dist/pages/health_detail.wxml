@@ -26,9 +26,9 @@
             <text class="item-date">治疗时间：{{ item.date }}</text>
           </view>
           <view class="item-main" bindtap="spreadSymptom" data-wpyspreadsymptom-a="{{ item.symptomSpread !== undefined }}" data-wpyspreadsymptom-b="{{ index }}">
-            <view class="row flex--vcenter--sb">
+            <view class="row flex--vcenter">
               <text>服务人员：赵雪晴</text>
-              <text class="item-status">已完成</text>
+              <!-- <text class="item-status">已完成</text> -->
             </view>
             <block wx:for="{{[0, 1]}}" wx:for-index="_index" wx:for-item="_item" wx:key="index">
               <view class="row flex {{ _index === 1 ? 'item-symptom--clone' : 'item-symptom' }}">

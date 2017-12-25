@@ -2,8 +2,17 @@
   #index-page {
     // 顶部banner
     .top-banner {
-      height: 400rpx; // 480rpx
+      height: 445rpx; // 480rpx
       background: #fff;
+
+      swiper {
+        height: 445rpx;
+
+        .slide-image {
+          width: 750rpx;
+          height: 445rpx;
+        }
+      }
     }
 
     .panel {
@@ -140,6 +149,15 @@
   <view id="index-page">
     <!-- 顶部banner -->
     <view class="top-banner">
+      <swiper 
+        indicator-dots="{{ true }}"
+        autoplay="{{ true }}">
+        <repeat for="{{ bannerList }}" key="index" item="item" index="index">
+          <swiper-item @tap="handleBannerTap({{ item.jumpUrl }})">
+            <image src="{{ item.bannerUrl }}" class="slide-image"/>
+          </swiper-item>
+        </repeat>
+      </swiper>
     </view>
     <!-- 项目选项 -->
     <view class="panel project-items">
@@ -218,6 +236,7 @@
     mixins = []
 
     data = {
+      bannerList: [],
       // 项目分类
       projects: [{
         text: '皮肤美容',
@@ -257,6 +276,11 @@
             waitNum: 6
           }
         }
+      },
+      handleBannerTap (jumpUrl) {
+        wx.navigateTo({
+          url: '/pages/banner_detail?jumpUrl=' + jumpUrl
+        })
       }
     }
 
@@ -265,11 +289,20 @@
 
     onLoad() {
       this.$_request({
-        url: 'http://jishi3.bbdservice.com/'
+        url: '/banner/all',
+        method: 'POST',
+        data: {
+          pageNum: 1
+        }
       }).then(res => {
-        console.log('res', res)
+        const content = res.content || {}
+        this.bannerList = content.list.map(item => ({
+          bannerUrl: item.bannerUrl,
+          id: item.id,
+          jumpUrl: item.jumpUrl
+        }))
+        this.$apply()
       })
-      console.log(this._chunk([1, 2, 3, 4, 5, 6], 3))
     }
 
     _chunk (...args) {

@@ -90,7 +90,14 @@ page {
         <image 
           src="../assets/images/demo.png" 
           class="avatar" />
-        <text class="username">YK 陈御珂</text>
+        <view class="flex--hcenter">
+          <text 
+            wx:if="{{ !!userInfo }}" 
+            class="username">YK 陈御珂</text>
+          <text
+            wx:else
+            @tap="toLogin">请登录账号</text>
+        </view>
       </view>
     </view>
     <view class="menu--icon">
@@ -219,9 +226,17 @@ page {
     }
 
     computed = {
+      userInfo () {
+        return this.$parent.globalData.userInfo
+      }
     }
 
     methods = {
+      toLogin () {
+        wx.navigateTo({
+          url: '/pages/login'
+        })
+      },
       itemClick (index) {
         const handlerTap = MY_ITEMS[index].handlerTap
         handlerTap.call(this)

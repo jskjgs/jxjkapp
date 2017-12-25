@@ -1,0 +1,93 @@
+<style lang="scss">
+#page-news-detail {
+  min-height: 100vh;
+  padding: 40rpx;
+
+  .news-title {
+    font-size: 15px;
+    font-weight: bold;
+  }
+  .news-date {
+    margin-top: 20rpx;
+    color: #818181;
+  }
+  .news-content {
+    margin-top: 36rpx;
+  }
+}
+</style>
+
+<template>
+  <CustomPage>
+    <view id="page-news-detail" class="main-bg">
+      <view class="news-title">
+        <text>{{ title }}</text>
+      </view>
+      <view class="news-date">
+        <text>{{ date }}</text>
+      </view>
+      <view class="news-content">
+        <text>{{ content }}</text>
+      </view>
+    </view>
+  </CustomPage>
+</template>
+
+<script>
+  import wepy from 'wepy'
+
+  import CustomPage from '@/components/customPage'
+
+  export default class Index extends wepy.page {
+    config = {
+      navigationBarTitleText: '文章详情'
+    }
+    components = {
+      CustomPage
+    }
+
+    mixins = []
+
+    data = {
+      title: '',
+      date: '',
+      content: ''
+    }
+
+    computed = {
+    }
+
+    methods = {}
+
+    events = {
+    }
+
+    onLoad({ id }) {
+      this.$_request({
+        url: `/news/`,
+        data: {
+          id
+        }
+      }).then(res => {
+        const content = res.content || {}
+        if (content) {
+          this.title = content.title
+          this.date = this.$_convertDate(content.createDate)
+          this.content = content.content
+          this.$apply()
+          this.$invoke('CustomPage', 'initPage', {
+            dataInited: true
+          })
+        } else {
+          this.$invoke('CustomPage', 'initPage', {
+            noData: true
+          })
+        }
+      }).catch(() => {
+        this.$invoke('CustomPage', 'initPage', {
+          noServer: true
+        })
+      })
+    }
+  }
+</script>

@@ -9,7 +9,6 @@
 
   .input-group {
     .captcha-btn {
-      width: 160rpx;
       height: 52rpx;
       border-radius: 4rpx;
       border-color: #B8B8B8;

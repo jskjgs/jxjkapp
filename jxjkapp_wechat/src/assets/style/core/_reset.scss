@@ -13,6 +13,9 @@ image {
   display: block;
   width: auto;
   height: auto;
+  &:not([src]) {
+    background: #e6e6e6;
+  }
 }
 button {
   margin: 0;

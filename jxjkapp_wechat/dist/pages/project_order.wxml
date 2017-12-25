@@ -1,6 +1,6 @@
 
   <view id="page-index-project-order">
-    <!-- <web-view class="web-view" src="https://mp.weixin.qq.com/"></web-view> -->
+    <web-view class="web-view" src="https://www.baidu.com/"/>
     <view class="order-btn-wrap flex">
       <view class="disabled-tip flex-item flex--vcenter">
         <text>充值VIP后可享受预约功能</text>

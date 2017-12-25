@@ -20,6 +20,11 @@
     text-align: center;
     color: #B8B8B8;
   }
+  .signup-btn {
+    margin-top: 20rpx;
+    font-size: 13px;
+    color: #B8B8B8;
+  }
 }
 </style>
 
@@ -33,7 +38,7 @@
           type="number"
           value="{{ phone }}" 
           placeholder="请输入手机号"
-          bindinput="handleInput('phone')"/>
+          bindinput="handleInput('phone')" />
       </view>
       <view 
         wx:if="{{ inputPsd }}"
@@ -95,6 +100,11 @@
     }
 
     methods = {
+      toSignup () {
+        wx.navigateTo({
+          url: '/pages/signup'
+        })
+      },
       // 下一步
       handleToNext () {
         this.inputPsd = true

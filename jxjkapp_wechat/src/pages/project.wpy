@@ -91,11 +91,10 @@
     events = {
     }
 
-    onLoad() {
-      // 当前的页面路由对象
-      const route = this.getCurrentPages().slice(-1)[0]
+    onLoad({ target }) {
+      console.log(arguments, 1111)
       wx.setNavigationBarTitle({
-        title: route.options.target
+        title: target
       })
     }
   }

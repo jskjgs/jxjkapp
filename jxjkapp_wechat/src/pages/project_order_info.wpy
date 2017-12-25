@@ -95,7 +95,7 @@
             style="width: 347rpx; height: 30rpx; margin: auto;" />
         </view>
         <view class="btn-wrap flex--center">
-          <button class="to-vip-btn flex--center">前往VIP服务查看</button>
+          <button class="to-vip-btn flex--center">前往VIP用户管理</button>
         </view>
       </view>
       <view 

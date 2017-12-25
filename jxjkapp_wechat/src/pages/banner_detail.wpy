@@ -1,0 +1,48 @@
+<style lang="scss">
+#page-banner-detail {
+  .iframe {
+    display: block;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+  }
+}
+</style>
+
+<template>
+  <view id="page-banner-detail">
+    <web-view class="iframe" src="{{ jumpUrl }}"></web-view>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  
+  export default class Index extends wepy.page {
+    config = {
+      navigationBarTitleText: ''
+    }
+    components = {
+    }
+
+    mixins = []
+
+    data = {}
+
+    computed = {
+      jumpUrl () {
+        return this.$_getPage().options.jumpUrl
+      }
+    }
+
+    methods = {}
+
+    events = {
+    }
+
+    onLoad() {
+      console.log('$_getRoute', this.$_getPage().options.jumpUrl)
+    }
+  }
+</script>
