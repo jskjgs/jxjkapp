@@ -3,6 +3,8 @@ package com.jinxin.hospHealth.controller;
 import com.alibaba.fastjson.JSONObject;
 import com.doraemon.base.controller.BaseController;
 import com.doraemon.base.controller.CodeEnum;
+import com.jinxin.hospHealth.service.OtherService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
 /**
@@ -11,8 +13,12 @@ import org.springframework.beans.factory.annotation.Configurable;
 @Configurable
 public class MyBaseController extends BaseController {
 
+    @Autowired
+    OtherService otherService;
+
     @Override
     public Long getCurrentUserId() {
+
         return null;
     }
 

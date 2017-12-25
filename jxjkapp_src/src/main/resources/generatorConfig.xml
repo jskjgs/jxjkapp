@@ -126,5 +126,13 @@
                <!--enableCountByExample="fasle" enableUpdateByExample="fasle"-->
                <!--enableDeleteByExample="fasle" enableSelectByExample="fasle"-->
                <!--selectByExampleQueryId="fasle"></table>-->
+        <!--<table schema="mybatis" tableName="hosp_banner" domainObjectName="HospBanner"-->
+        <!--enableCountByExample="fasle" enableUpdateByExample="fasle"-->
+        <!--enableDeleteByExample="fasle" enableSelectByExample="fasle"-->
+        <!--selectByExampleQueryId="fasle"></table>-->
+        <table schema="mybatis" tableName="hosp_patient_info" domainObjectName="HospPatientInfo"
+               enableCountByExample="fasle" enableUpdateByExample="fasle"
+               enableDeleteByExample="fasle" enableSelectByExample="fasle"
+               selectByExampleQueryId="fasle"></table>
     </context>
 </generatorConfiguration>
