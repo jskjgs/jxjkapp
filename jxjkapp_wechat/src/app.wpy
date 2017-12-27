@@ -25,7 +25,6 @@ Promise.prototype.finally = function (callback) {
             mask: true
           })
         }
-        // cfg.url = 'http://192.168.6.84:9001/hospHealth' + cfg.url
         cfg.url = 'http://182.92.78.118:9001/hospHealth' + cfg.url
         return new Promise(function (resolve, reject) {
           wepy.request(cfg).then(res => {
@@ -57,7 +56,6 @@ Promise.prototype.finally = function (callback) {
     }
   })
 })
-console.log('wepy', wepy)
 export default class extends wepy.app {
   config = {
     pages: [
@@ -129,9 +127,9 @@ export default class extends wepy.app {
     wx.setEnableDebug({
       enableDebug: true
     })
-    // wx.reLaunch({
-    //   url: '/pages/doctor_detail'
-    // })
+    wx.reLaunch({
+      url: '/pages/signup_info'
+    })
   }
 
   sleep (s) {

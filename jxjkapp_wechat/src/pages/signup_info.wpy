@@ -5,10 +5,11 @@
 
 <template>
   <view id="page-signup-info">
-    <PersonInfo>
+    <PersonInfo @pickedsChange.user="handlePickedsChange">
       <button 
         class="primary-btn"
         page="signup"
+        disabled="{{ !canSubmit }}"
         slot="submitBtn">
         完成注册
       </button>
@@ -20,6 +21,10 @@
   import wepy from 'wepy'
 
   import PersonInfo from '@/components/personInfo'
+  import {
+    validCardId
+  } from '@/utils/validator'
+
   export default class Index extends wepy.page {
     config = {
       navigationBarTitleText: '注册信息'
@@ -30,12 +35,31 @@
 
     mixins = []
 
-    data = {}
+    data = {
+      formData: '',
+      canSubmit: false
+    }
 
     computed = {
     }
 
-    methods = {}
+    watch = {
+      formData (newVal) {
+        const id = newVal.id.trim()
+        const cardId = newVal.cardId.trim()
+        if (id && validCardId(cardId)) {
+          this.canSubmit = true
+        } else {
+          this.canSubmit = false
+        }
+      }
+    }
+
+    methods = {
+      handlePickedsChange (formData) {
+        this.formData = formData
+      }
+    }
 
     events = {
     }

@@ -6,13 +6,23 @@
       <view class="info-item required flex--vcenter--sb">
         <view class="item-label flex-item--none">就诊卡号</view>
         <view class="item-input flex-item">
-          <input class="item-input__inner"/>
+          
+  <view class="comp-custom-input item-input__inner">
+    <textarea  wx:if="{{ $PersonInfo$IdInput$type === 'textarea' }}" value="{{ $PersonInfo$IdInput$value }}" disabled="{{ $PersonInfo$IdInput$disabled }}" maxlength="{{ $PersonInfo$IdInput$maxlength }}" placeholder="{{ $PersonInfo$IdInput$placeholder }}" placeholder-style="{{ 'color: #B8B8B8;' + $PersonInfo$IdInput$placeholderStyle }}" bindinput="$PersonInfo$IdInput$handleInput"/>
+    <input  wx:else type="{{ $PersonInfo$IdInput$type }}" value="{{ $PersonInfo$IdInput$value }}" password="{{ $PersonInfo$IdInput$password }}" disabled="{{ $PersonInfo$IdInput$disabled }}" maxlength="{{ $PersonInfo$IdInput$maxlength }}" placeholder="{{ $PersonInfo$IdInput$placeholder }}" placeholder-style="{{ 'color: #B8B8B8;' + $PersonInfo$IdInput$placeholderStyle }}" bindinput="$PersonInfo$IdInput$handleInput"/>
+  </view>
+
         </view>
       </view>
       <view class="info-item required flex--sb">
         <view class="item-label flex-item--none">身份证号</view>
         <view class="item-input flex-item">
-          <input class="item-input__inner"/>
+          
+  <view class="comp-custom-input item-input__inner">
+    <textarea  wx:if="{{ $PersonInfo$CardIdInput$type === 'textarea' }}" value="{{ $PersonInfo$CardIdInput$value }}" disabled="{{ $PersonInfo$CardIdInput$disabled }}" maxlength="{{ $PersonInfo$CardIdInput$maxlength }}" placeholder="{{ $PersonInfo$CardIdInput$placeholder }}" placeholder-style="{{ 'color: #B8B8B8;' + $PersonInfo$CardIdInput$placeholderStyle }}" bindinput="$PersonInfo$CardIdInput$handleInput"/>
+    <input  wx:else type="{{ $PersonInfo$CardIdInput$type }}" value="{{ $PersonInfo$CardIdInput$value }}" password="{{ $PersonInfo$CardIdInput$password }}" disabled="{{ $PersonInfo$CardIdInput$disabled }}" maxlength="{{ $PersonInfo$CardIdInput$maxlength }}" placeholder="{{ $PersonInfo$CardIdInput$placeholder }}" placeholder-style="{{ 'color: #B8B8B8;' + $PersonInfo$CardIdInput$placeholderStyle }}" bindinput="$PersonInfo$CardIdInput$handleInput"/>
+  </view>
+
           <view class="item-input__tip flex--vcenter"><icon type="warn" size="14" color="#B8B8B8"/>只能绑定18岁以{{ $PersonInfo$page === 'relation' ? '下' : '上' }}的未成年人</view>
         </view>
       </view>
@@ -21,13 +31,23 @@
       <view class="info-item flex--vcenter--sb">
         <view class="item-label flex-item--none">过敏史</view>
         <view class="item-input flex-item">
-          <input class="item-input__inner"/>
+          
+  <view class="comp-custom-input item-input__inner">
+    <textarea  wx:if="{{ $PersonInfo$AllergiesInput$type === 'textarea' }}" value="{{ $PersonInfo$AllergiesInput$value }}" disabled="{{ $PersonInfo$AllergiesInput$disabled }}" maxlength="{{ $PersonInfo$AllergiesInput$maxlength }}" placeholder="{{ $PersonInfo$AllergiesInput$placeholder }}" placeholder-style="{{ 'color: #B8B8B8;' + $PersonInfo$AllergiesInput$placeholderStyle }}" bindinput="$PersonInfo$AllergiesInput$handleInput"/>
+    <input  wx:else type="{{ $PersonInfo$AllergiesInput$type }}" value="{{ $PersonInfo$AllergiesInput$value }}" password="{{ $PersonInfo$AllergiesInput$password }}" disabled="{{ $PersonInfo$AllergiesInput$disabled }}" maxlength="{{ $PersonInfo$AllergiesInput$maxlength }}" placeholder="{{ $PersonInfo$AllergiesInput$placeholder }}" placeholder-style="{{ 'color: #B8B8B8;' + $PersonInfo$AllergiesInput$placeholderStyle }}" bindinput="$PersonInfo$AllergiesInput$handleInput"/>
+  </view>
+
         </view>
       </view>
       <view class="info-item flex--vcenter--sb">
         <view class="item-label flex-item--none">疾病史</view>
         <view class="item-input flex-item">
-          <input class="item-input__inner"/>
+          
+  <view class="comp-custom-input item-input__inner">
+    <textarea  wx:if="{{ $PersonInfo$DiseaseInput$type === 'textarea' }}" value="{{ $PersonInfo$DiseaseInput$value }}" disabled="{{ $PersonInfo$DiseaseInput$disabled }}" maxlength="{{ $PersonInfo$DiseaseInput$maxlength }}" placeholder="{{ $PersonInfo$DiseaseInput$placeholder }}" placeholder-style="{{ 'color: #B8B8B8;' + $PersonInfo$DiseaseInput$placeholderStyle }}" bindinput="$PersonInfo$DiseaseInput$handleInput"/>
+    <input  wx:else type="{{ $PersonInfo$DiseaseInput$type }}" value="{{ $PersonInfo$DiseaseInput$value }}" password="{{ $PersonInfo$DiseaseInput$password }}" disabled="{{ $PersonInfo$DiseaseInput$disabled }}" maxlength="{{ $PersonInfo$DiseaseInput$maxlength }}" placeholder="{{ $PersonInfo$DiseaseInput$placeholder }}" placeholder-style="{{ 'color: #B8B8B8;' + $PersonInfo$DiseaseInput$placeholderStyle }}" bindinput="$PersonInfo$DiseaseInput$handleInput"/>
+  </view>
+
         </view>
       </view>
     </view>
@@ -54,12 +74,17 @@
       <view class="info-item flex--sb">
         <view class="item-label flex-item--none">联系地址</view>
         <view class="item-input flex-item">
-          <textarea class="item-input__inner" value="{{ $PersonInfo$address }}" bindinput="$PersonInfo$handleInput" data-wpyhandleinput-a="address"/>
+          
+  <view class="comp-custom-input item-input__inner">
+    <textarea  wx:if="{{ $PersonInfo$AddressInput$type === 'textarea' }}" value="{{ $PersonInfo$AddressInput$value }}" disabled="{{ $PersonInfo$AddressInput$disabled }}" maxlength="{{ $PersonInfo$AddressInput$maxlength }}" placeholder="{{ $PersonInfo$AddressInput$placeholder }}" placeholder-style="{{ 'color: #B8B8B8;' + $PersonInfo$AddressInput$placeholderStyle }}" bindinput="$PersonInfo$AddressInput$handleInput"/>
+    <input  wx:else type="{{ $PersonInfo$AddressInput$type }}" value="{{ $PersonInfo$AddressInput$value }}" password="{{ $PersonInfo$AddressInput$password }}" disabled="{{ $PersonInfo$AddressInput$disabled }}" maxlength="{{ $PersonInfo$AddressInput$maxlength }}" placeholder="{{ $PersonInfo$AddressInput$placeholder }}" placeholder-style="{{ 'color: #B8B8B8;' + $PersonInfo$AddressInput$placeholderStyle }}" bindinput="$PersonInfo$AddressInput$handleInput"/>
+  </view>
+
         </view>
       </view>
     </view>
     <view class="submit-btn flex--hcenter">
-      <button class="primary-btn" page="signup">
+      <button class="primary-btn" page="signup" disabled="{{ !canSubmit }}">
         完成注册
       </button>
     </view>

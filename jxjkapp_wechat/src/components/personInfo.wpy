@@ -10,7 +10,7 @@
 
     .item-label {
       position: relative;
-      width: 130rpx;
+      width: 134rpx;
       color: #818181;
       
       &::after {
@@ -53,11 +53,12 @@
         width: 100%;
       }
       textarea  {
-        height: 60rpx;
+        height: 80rpx;
       }
 
       &__tip {
         font-size: 12px;
+        color: #B8B8B8;
         icon {
           margin-right: 10rpx;
         }
@@ -79,13 +80,18 @@
       <view class="info-item required flex--vcenter--sb">
         <view class="item-label flex-item--none">就诊卡号</view>
         <view class="item-input flex-item">
-          <input class="item-input__inner" />
+          <IdInput
+            class="item-input__inner" 
+            :value.sync="id" />
         </view>
       </view>
       <view class="info-item required flex--sb">
         <view class="item-label flex-item--none">身份证号</view>
         <view class="item-input flex-item">
-          <input class="item-input__inner" />
+          <CardIdInput
+            type="idcard"
+            class="item-input__inner" 
+            :value.sync="cardId" />
           <view class="item-input__tip flex--vcenter"><icon type="warn" size="14" color="#B8B8B8"/>只能绑定18岁以{{ page === 'relation' ? '下' : '上' }}的未成年人</view>
         </view>
       </view>
@@ -94,13 +100,17 @@
       <view class="info-item flex--vcenter--sb">
         <view class="item-label flex-item--none">过敏史</view>
         <view class="item-input flex-item">
-          <input class="item-input__inner" />
+          <AllergiesInput 
+            class="item-input__inner"
+            :value.sync="allergies" />
         </view>
       </view>
       <view class="info-item flex--vcenter--sb">
         <view class="item-label flex-item--none">疾病史</view>
         <view class="item-input flex-item">
-          <input class="item-input__inner" />
+          <DiseaseInput 
+            class="item-input__inner"
+            :value.sync="disease" />
         </view>
       </view>
     </view>
@@ -115,10 +125,10 @@
       <view class="info-item flex--sb">
         <view class="item-label flex-item--none">联系地址</view>
         <view class="item-input flex-item">
-          <textarea
+          <AddressInput
             class="item-input__inner"
-            value="{{ address }}"
-            @input="handleInput('address')"/>
+            type="textarea"
+            :value.sync="address"></AddressInput>
         </view>
       </view>
     </view>
@@ -131,36 +141,42 @@
 <script>
   import wepy from 'wepy'
 
+  import CustomInput from '@/components/customInput'
   import PickerList from '@/components/pickerList'
 
   const PICKER_ITEMS = [{
     label: '分娩日期',
     picker: {
-      valueBind: 'laborDate',
-      rangeBind: 'laborDate'
+      valueBind: 'deliveryDate',
+      rangeBind: 'deliveryDate'
     }
   }, {
     label: '分娩情况',
     picker: {
-      valueBind: 'laborCase',
-      rangeBind: 'laborCase'
+      valueBind: 'deliveryInfo',
+      rangeBind: 'deliveryInfo'
     }
   }, {
     label: '婴儿性别',
     picker: {
-      valueBind: 'gender',
-      rangeBind: 'gender'
+      valueBind: 'babySex',
+      rangeBind: 'babySex'
     }
   }, {
     label: '客户来源',
     picker: {
-      valueBind: 'from',
-      rangeBind: 'from'
+      valueBind: 'userSource',
+      rangeBind: 'userSource'
     }
   }]
   export default class CustomCard extends wepy.component {
     components = {
-      PickerList
+      PickerList,
+      IdInput: CustomInput,
+      CardIdInput: CustomInput,
+      AllergiesInput: CustomInput,
+      DiseaseInput: CustomInput,
+      AddressInput: CustomInput
     }
 
     props = {
@@ -173,27 +189,31 @@
     mixins = []
 
     data = {
+      id: '222', // 卡号
+      cardId: '', // 身份证号
+      allergies: '', // 过敏史
+      disease: '', // 疾病史
       address: '', // 联系地址
       PICKER_ITEMS,
       pickerLists: {
-        laborDate: [{
+        deliveryDate: [{
           value: 1,
           label: '232'
         }],
-        laborCase: [{
+        deliveryInfo: [{
           value: 0,
           label: 'labor0'
         }],
-        gender: [{
+        babySex: [{
           value: 0,
           label: '女'
         }, {
           value: 1,
           label: '男'
         }],
-        from: [{
+        userSource: [{
           value: 0,
-          label: 'from0'
+          label: 'userSource0'
         }]
       },
       pickerPickeds: {
@@ -201,6 +221,23 @@
     }
 
     computed = {
+      formData () {
+        return {
+          id: this.id,
+          cardId: this.cardId,
+          allergies: this.allergies,
+          disease: this.disease,
+          address: this.address,
+          ...this.pickerPickeds
+        }
+      }
+    }
+
+    watch = {
+      formData (newVal) {
+        console.log(newVal, 111)
+        this.$emit('pickedsChange', newVal)
+      }
     }
 
     methods = {

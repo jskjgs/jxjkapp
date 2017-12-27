@@ -117,11 +117,17 @@
   }
   &__btn {
     @extend .flex--vcenter;
-    border: 2rpx solid #B8B8B8;
+    border: 2rpx solid $primaryColor;
     padding: 0 16rpx;
     line-height: 52rpx;
-    color: #B8B8B8;
     background: transparent;
+    border-color: $primaryColor;
+    color: $primaryColor;
+
+    &[disabled] {
+      border-color: #B8B8B8;
+      color: #B8B8B8;
+    }
   }
 }
 

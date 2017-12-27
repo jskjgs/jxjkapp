@@ -6,8 +6,8 @@
         <input class="input-group__inner" type="number" value="{{ phone }}" placeholder="请输入手机号" bindinput="handleInput" data-wpyhandleinput-a="phone"/>
       </view>
       <view class="input-group">
-        <input class="input-group__inner" password="{{ true }}" value="{{ psd }}" placeholder="请输入验证码" bindinput="handleInput" data-wpyhandleinput-a="psd"/>
-        <button class="captcha-btn input-group__btn flex--center">获取验证码</button>
+        <input class="input-group__inner" value="{{ captcha }}" placeholder="请输入验证码" bindinput="handleInput" data-wpyhandleinput-a="captcha"/>
+        <button disabled="{{ !phoneIsValid || countdown }}" class="captcha-btn input-group__btn flex--center" bindtap="getCaptcha">{{ countdown || '获取验证码' }}</button>
       </view>
     </view>
     <view class="btn-wrap flex--hcenter">
@@ -16,7 +16,7 @@
         class="primary-btn"
         disabled="{{ !phoneIsValid }}" bindtap="handleToNext">下一步</button> -->
       <view>
-        <button class="primary-btn" disabled="{{ !phoneIsValid || !psd }}">确认登录</button>
+        <button class="primary-btn" disabled="{{ !phoneIsValid || !captcha }}" bindtap="submit">确认登录</button>
         <!-- <view class="forget-btn">
           <text bindtap="handleForget">忘记密码<text class="arrow-rt" style="width: 18rpx; height: 18rpx;"></text></text>
         </view> -->

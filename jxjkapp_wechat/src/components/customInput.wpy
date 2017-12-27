@@ -1,9 +1,26 @@
 <style lang="scss">
+.comp-custom-input {
+  textarea {
+    width: 100%;
+  }
+  input {
+    width: 100%;
+  }
+}
 </style>
 
 <template>
   <view class="comp-custom-input">
-    <input 
+    <textarea
+      wx:if="{{ type === 'textarea' }}" 
+      value="{{ value }}"
+      disabled="{{ disabled }}"
+      maxlength="{{ maxlength }}"
+      placeholder="{{ placeholder }}"
+      placeholder-style="{{ 'color: #B8B8B8;' + placeholderStyle }}"
+      bindinput="handleInput"/>
+    <input
+      wx:else
       type="{{ type }}"
       value="{{ value }}"
       password="{{ password }}"
