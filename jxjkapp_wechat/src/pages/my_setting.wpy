@@ -23,7 +23,7 @@
     label: '换绑手机',
     handlerTap () {
       wx.navigateTo({
-        url: '/pages/my_psd'
+        url: '/pages/my_tel_change'
       })
     }
   }, {

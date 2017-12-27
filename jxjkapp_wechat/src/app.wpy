@@ -80,7 +80,7 @@ export default class extends wepy.app {
       'pages/my_relation_info',
       'pages/my_vip_update',
       'pages/my_setting',
-      'pages/my_psd',
+      'pages/my_tel_change',
       'pages/news',
       'pages/news_detail',
       'pages/doctor',
@@ -127,9 +127,9 @@ export default class extends wepy.app {
     wx.setEnableDebug({
       enableDebug: true
     })
-    wx.reLaunch({
-      url: '/pages/signup_info'
-    })
+    // wx.reLaunch({
+    //   url: '/pages/signup_info'
+    // })
   }
 
   sleep (s) {

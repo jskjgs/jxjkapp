@@ -85,6 +85,7 @@ page {
     <view class="avatar-box flex--center">
       <image
         class="avatar-box-bg" 
+        mode="aspectFill"
         src="../assets/images/my-bg.png" />
       <view class="avatar-wrap">
         <image 

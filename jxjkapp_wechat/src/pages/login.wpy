@@ -1,162 +1,61 @@
 <style lang="scss">
 @import '../assets/style/variables/theme.scss';
 #page-login {
+  padding-top: 78rpx;
   .page-title-wrap {
-    margin: 78rpx 0;
+    margin: 0 0 78rpx 0;
     font-size: 16px;
     font-weight: bold;
     text-align: center;
   }
-
-  .input-group + .input-group {
-    border-top: 2rpx solid #F2F2F2;
-  }
-  .btn-wrap {
-    button {
-      margin-top: 100rpx;
-    }
-  }
-  .captcha-btn {
-    width: 86px;
-  }
-  // .forget-btn {
-  //   margin-top: 38rpx;
-  //   text-align: center;
-  //   color: #B8B8B8;
-  // }
-  // .signup-btn {
-  //   margin-top: 20rpx;
-  //   font-size: 13px;
-  //   color: #B8B8B8;
-  // }
 }
 </style>
 
 <template>
   <view id="page-login">
     <view class="page-title-wrap">登陆</view>
-    <view class="input-box">
-      <view class="input-group">
-        <input 
-          class="input-group__inner"
-          type="number"
-          value="{{ phone }}" 
-          placeholder="请输入手机号"
-          bindinput="handleInput('phone')" />
-      </view>
-      <view 
-        class="input-group">
-        <input 
-          class="input-group__inner"
-          value="{{ captcha }}" 
-          placeholder="请输入验证码"
-          bindinput="handleInput('captcha')"/>
-        <button 
-          disabled="{{ !phoneIsValid || countdown }}"
-          class="captcha-btn input-group__btn flex--center"
-          @tap="getCaptcha">{{ countdown || '获取验证码' }}</button>
-      </view>
-    </view>
-    <view class="btn-wrap flex--hcenter">
-      <!-- <button 
-        wx:if="{{ !inputPsd }}"
-        class="primary-btn"
-        disabled="{{ !phoneIsValid }}"
-        @tap="handleToNext">下一步</button> -->
-      <view>
-        <button 
-          class="primary-btn"
-          disabled="{{ !phoneIsValid || !captcha }}"
-          @tap="submit">确认登录</button>
-        <!-- <view class="forget-btn">
-          <text @tap="handleForget">忘记密码<text class="arrow-rt" style="width: 18rpx; height: 18rpx;"></text></text>
-        </view> -->
-      </view>
-    </view>
+    <TelInput 
+      submitBtnText="确认登录" 
+      :value.sync="formData"
+      @submit.user="handleSumbit"/>
   </view>
 </template>
 
 <script>
   import wepy from 'wepy'
 
-  import {
-    validTel
-  } from '@/utils/validator'
+  import CustomInput from '@/components/customInput'
+  import TelInput from '@/components/telInput'
 
   export default class Index extends wepy.page {
     config = {
       navigationBarTitleText: '锦欣健康'
     }
     components = {
+      TelInput,
+      PhoneInput: CustomInput,
+      CaptchaInput: CustomInput
     }
 
     mixins = []
 
     data = {
-      phone: '', // 手机
-      captcha: '', // 验证码
-      countdown: 0, // 倒计时
-      phoneIsValid: false, // 判断手机号码有效性
-      inputPsd: false // 是否可输密码
+      formData: {
+        phone: '111',
+        code: ''
+      }
     }
 
     computed = {
     }
 
     watch = {
-      phone (newVal) {
-        console.log('phone', newVal)
-        validTel(newVal).then(() => {
-          console.log('手机验证ok')
-          this.phoneIsValid = true
-          this.$apply()
-        }).catch(() => {
-          console.log('手机验证fail')
-          this.phoneIsValid = false
-          this.$apply()
-        })
-      }
     }
 
     methods = {
-      toSignup () {
-        wx.navigateTo({
-          url: '/pages/signup'
-        })
-      },
-      // 下一步
-      handleToNext () {
-        this.inputPsd = true
-      },
-      handleInput (valBind, { detail }) {
-        this[valBind] = detail.value
-      },
-      handleForget () {
-        wx.navigateTo({
-          url: '/pages/my_psd'
-        })
-      },
-      getCaptcha () {
-        console.log('getCaptcha')
+      handleSumbit () {
         this.$_request({
-          url: `/other/sendCode?phone=${this.phone}&type=0`,
-          method: 'POST'
-        }, true).then(() => {
-          wx.showToast({
-            title: '验证码发送成功'
-          })
-          this.countdown = 60
-          this.timer = setInterval(() => {
-            if (--this.countdown === 0) {
-              clearInterval(this.timer)
-            }
-            this.$apply()
-          }, 1000)
-        })
-      },
-      submit () {
-        this.$_request({
-          url: `/other/loginByCode?phone=${this.phone}&code=${this.captcha}`,
+          url: `/other/loginByCode?phone=${this.phone}&code=${this.code}`,
           method: 'POST'
         }, true).then(res => {
           const content = res.content || {}
@@ -179,7 +78,7 @@
     onLoad () {
     }
     onUnload () {
-      clearInterval(this.timer)
+      this.$invoke('TelInput', 'clearTimer')
     }
   }
 </script>

@@ -1,25 +1,6 @@
-// 验证密码
-export const validPsd = function (psd) {
-  return new Promise(function (resolve, reject) {
-    psd = psd.trim()
-    if (/^[a-zA-Z0-9!@#$%^&*()_]{6, 16}$/.test(psd)) {
-      resolve()
-    } else {
-      reject(new Error('密码格式错误'))
-    }
-  })
-}
-
 // 验证手机号
 export const validTel = function (tel) {
-  return new Promise(function (resolve, reject) {
-    tel = tel.trim()
-    if (/^\d{11}$/.test(tel)) {
-      resolve()
-    } else {
-      reject(new Error('手机格式错误'))
-    }
-  })
+  return /^\d{11}$/.test(tel)
 }
 
 // 验证身份证

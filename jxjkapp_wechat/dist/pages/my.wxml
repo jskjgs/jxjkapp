@@ -1,7 +1,7 @@
 
   <view id="page-my">
     <view class="avatar-box flex--center">
-      <image class="avatar-box-bg" src="../assets/images/my-bg.png"/>
+      <image class="avatar-box-bg" mode="aspectFill" src="../assets/images/my-bg.png"/>
       <view class="avatar-wrap">
         <image src="../assets/images/demo.png" class="avatar"/>
         <view class="flex--hcenter">
