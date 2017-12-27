@@ -85,7 +85,8 @@ export default class extends wepy.app {
       'pages/my_psd',
       'pages/news',
       'pages/news_detail',
-      'pages/staff'
+      'pages/doctor',
+      'pages/doctor_detail'
     ],
     window: {
       backgroundTextStyle: 'light',
@@ -129,7 +130,7 @@ export default class extends wepy.app {
       enableDebug: true
     })
     // wx.reLaunch({
-    //   url: '/pages/my'
+    //   url: '/pages/doctor_detail'
     // })
   }
 

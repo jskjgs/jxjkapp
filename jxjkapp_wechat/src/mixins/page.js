@@ -36,11 +36,12 @@ export default class PageMixin extends wepy.mixin {
         resCb
       }
     } else {
-      reqParams = this.initFnAgrs.reqParams
-      resCb = this.initFnAgrs.resCb
+      reqParams = reqParams || this.initFnAgrs.reqParams
+      resCb = resCb || this.initFnAgrs.resCb
     }
     const pageNum = this.pageNum || 1
     reqParams.data.pageNum = pageNum
+    console.log('reqParams', reqParams)
     return this.$_request(reqParams).then(res => {
       const content = res.content || {}
       this.isLastPage = !!content.isLastPage

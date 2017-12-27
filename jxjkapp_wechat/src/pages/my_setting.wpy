@@ -20,7 +20,7 @@
   import wepy from 'wepy'
 
   const SETTINGS = [{
-    label: '修改密码',
+    label: '换绑手机',
     handlerTap () {
       wx.navigateTo({
         url: '/pages/my_psd'

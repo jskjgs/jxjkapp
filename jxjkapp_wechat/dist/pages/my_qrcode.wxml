@@ -1,13 +1,18 @@
 
-  <view id="page-my-qrcode" class="flex--center">
-    <view class="qrcode-box flex--col">
-      <view class="row flex--vcenter">
-        <image class="thumbnail-avatar" src="../assets/images/demo.png"/>
-        <text class="username">YK 陈御珂</text>
-      </view>
-      <view class="flex-item flex--center">
-        <view class="qrcode-wrap">
+  <view id="page-my-qrcode">
+    <view class="qrcode-box-wrap">
+      <view class="qrcode-box flex--col">
+        <view class="row flex--vcenter">
+          <image class="thumbnail-avatar" src="../assets/images/demo.png"/>
+          <text class="username">YK 陈御珂</text>
         </view>
+        <view class="flex-item flex--center">
+          <view class="qrcode-wrap">
+          </view>
+        </view>
+      </view>
+      <view class="qrcode-tip">
+        <text>二维码用于每次服务核销，完成服务后请出示二维码，方便服务人员核销，谢谢配合～</text>
       </view>
     </view>
   </view>
