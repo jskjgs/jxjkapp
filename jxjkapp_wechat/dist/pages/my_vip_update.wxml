@@ -8,12 +8,15 @@
       <block wx:for="{{ $OrderInfo$PickerList$ITEMS }}" wx:for-index="$OrderInfo$PickerList$index" wx:for-item="$OrderInfo$PickerList$item" wx:key="$OrderInfo$PickerList$index">
         <view class="menu--default__item">
           <text class="item-label">{{ $OrderInfo$PickerList$item.label }}</text>
-          <picker value="{{ $OrderInfo$PickerList$pickedIndex[$OrderInfo$PickerList$item.picker.valueBind] === -1 ? 0 : $OrderInfo$PickerList$pickedIndex[$OrderInfo$PickerList$item.picker.valueBind] }}" range="{{ $OrderInfo$PickerList$lists[$OrderInfo$PickerList$item.picker.rangeBind] }}" range-key="label" bindchange="$OrderInfo$PickerList$handlePickerChange" data-wpyhandlepickerchange-a="{{ $OrderInfo$PickerList$item.picker.valueBind }}" data-wpyhandlepickerchange-b="{{ $OrderInfo$PickerList$item.picker.rangeBind }}">
+          <picker  wx:if="{{ !$OrderInfo$PickerList$readonly }}" value="{{ $OrderInfo$PickerList$pickedIndex[$OrderInfo$PickerList$item.picker.valueBind] === -1 ? 0 : $OrderInfo$PickerList$pickedIndex[$OrderInfo$PickerList$item.picker.valueBind] }}" range="{{ $OrderInfo$PickerList$lists[$OrderInfo$PickerList$item.picker.rangeBind] }}" range-key="label" bindchange="$OrderInfo$PickerList$handlePickerChange" data-wpyhandlepickerchange-a="{{ $OrderInfo$PickerList$item.picker.valueBind }}" data-wpyhandlepickerchange-b="{{ $OrderInfo$PickerList$item.picker.rangeBind }}">
             <view class="item-value">
               <text>{{ $OrderInfo$PickerList$pickeds[$OrderInfo$PickerList$item.picker.valueBind] !== $OrderInfo$PickerList$undefined ? $OrderInfo$PickerList$lists[$OrderInfo$PickerList$item.picker.rangeBind][$OrderInfo$PickerList$pickedIndex[$OrderInfo$PickerList$item.picker.valueBind]].label || $OrderInfo$PickerList$lists[$OrderInfo$PickerList$item.picker.rangeBind][$OrderInfo$PickerList$pickedIndex[$OrderInfo$PickerList$item.picker.valueBind]] : '请选择' }}</text>
               <view class="arrow-rt"/>
             </view>
           </picker>
+          <view  wx:else class="item-value">
+            <text>{{ $OrderInfo$PickerList$pickeds[$OrderInfo$PickerList$item.picker.valueBind] !== $OrderInfo$PickerList$undefined ? $OrderInfo$PickerList$lists[$OrderInfo$PickerList$item.picker.rangeBind][$OrderInfo$PickerList$pickedIndex[$OrderInfo$PickerList$item.picker.valueBind]].label || $OrderInfo$PickerList$lists[$OrderInfo$PickerList$item.picker.rangeBind][$OrderInfo$PickerList$pickedIndex[$OrderInfo$PickerList$item.picker.valueBind]] : '未选择' }}</text>
+          </view>
         </view>
       </block>
     </view>

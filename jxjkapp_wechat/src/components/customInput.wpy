@@ -89,6 +89,7 @@
     }
 
     onLoad() {
+      console.log('disabled', this.disabled)
     }
   }
 </script>

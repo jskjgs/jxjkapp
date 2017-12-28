@@ -18,7 +18,9 @@
   <view id="page-my-relations">
     <view class="menu--default">
       <repeat for="{{ list }}" key="index" item="item" index="index">
-        <view class="menu--default__item">
+        <view 
+          class="menu--default__item"
+          @tap="toRelationInfo({{ item.id }})">
           <text class="item-label">{{ item.self ? '本人' : '就诊人' + index }}
           </text>
           <view class="item-value">
@@ -29,7 +31,7 @@
       </repeat>
     </view>
     <view class="flex--hcenter">
-      <button class="primary-btn add-btn" @tap="toRelationInfo">添加就诊人</button>
+      <button class="primary-btn add-btn" @tap="toRelationInfo('')">添加就诊人</button>
     </view>
   </view>
 </template>
@@ -48,9 +50,12 @@
 
     data = {
       list: [{
-        name: 'zj'
+        name: 'zj',
+        self: true,
+        id: '0'
       }, {
-        name: 'paul'
+        name: 'paul',
+        id: '1'
       }]
     }
 
@@ -58,9 +63,9 @@
     }
 
     methods = {
-      toRelationInfo () {
+      toRelationInfo (id) {
         wx.navigateTo({
-          url: '/pages/my_relation_info'
+          url: '/pages/my_relation_info' + (id === '' ? '' : `?id=${id}`)
         })
       }
     }

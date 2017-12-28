@@ -2,6 +2,9 @@
   <view id="page-signup-info">
     
   <view class="comp-person-info">
+    <view  wx:if="{{ $PersonInfo$canEdit }}" class="flex--vcenter edit-btn-wrap">
+      <button class="edit-btn" disabled="{{ !$PersonInfo$readonly && !$PersonInfo$canSubmit }}" bindtap="$PersonInfo$handleEditTap">{{ $PersonInfo$readonly ? '编辑' : '保存' }}</button>
+    </view>
     <view class="info-group required-info main-bg">
       <view class="info-item required flex--vcenter--sb">
         <view class="item-label flex-item--none">就诊卡号</view>
@@ -23,7 +26,7 @@
     <input  wx:else type="{{ $PersonInfo$CardIdInput$type }}" value="{{ $PersonInfo$CardIdInput$value }}" password="{{ $PersonInfo$CardIdInput$password }}" disabled="{{ $PersonInfo$CardIdInput$disabled }}" maxlength="{{ $PersonInfo$CardIdInput$maxlength }}" placeholder="{{ $PersonInfo$CardIdInput$placeholder }}" placeholder-style="{{ 'color: #B8B8B8;' + $PersonInfo$CardIdInput$placeholderStyle }}" bindinput="$PersonInfo$CardIdInput$handleInput"/>
   </view>
 
-          <view class="item-input__tip flex--vcenter"><icon type="warn" size="14" color="#B8B8B8"/>只能绑定18岁以{{ $PersonInfo$page === 'relation' ? '下' : '上' }}的未成年人</view>
+          <view wx:if="{{ !$PersonInfo$readonly }}" class="item-input__tip flex--vcenter"><icon type="warn" size="14" color="#B8B8B8"/>只能绑定18岁以{{ $PersonInfo$isMaster ? '上' : '下' }}的未成年人</view>
         </view>
       </view>
     </view>
@@ -58,12 +61,15 @@
       <block wx:for="{{ $PersonInfo$PickerList$ITEMS }}" wx:for-index="$PersonInfo$PickerList$index" wx:for-item="$PersonInfo$PickerList$item" wx:key="$PersonInfo$PickerList$index">
         <view class="menu--default__item">
           <text class="item-label">{{ $PersonInfo$PickerList$item.label }}</text>
-          <picker value="{{ $PersonInfo$PickerList$pickedIndex[$PersonInfo$PickerList$item.picker.valueBind] === -1 ? 0 : $PersonInfo$PickerList$pickedIndex[$PersonInfo$PickerList$item.picker.valueBind] }}" range="{{ $PersonInfo$PickerList$lists[$PersonInfo$PickerList$item.picker.rangeBind] }}" range-key="label" bindchange="$PersonInfo$PickerList$handlePickerChange" data-wpyhandlepickerchange-a="{{ $PersonInfo$PickerList$item.picker.valueBind }}" data-wpyhandlepickerchange-b="{{ $PersonInfo$PickerList$item.picker.rangeBind }}">
+          <picker  wx:if="{{ !$PersonInfo$PickerList$readonly }}" value="{{ $PersonInfo$PickerList$pickedIndex[$PersonInfo$PickerList$item.picker.valueBind] === -1 ? 0 : $PersonInfo$PickerList$pickedIndex[$PersonInfo$PickerList$item.picker.valueBind] }}" range="{{ $PersonInfo$PickerList$lists[$PersonInfo$PickerList$item.picker.rangeBind] }}" range-key="label" bindchange="$PersonInfo$PickerList$handlePickerChange" data-wpyhandlepickerchange-a="{{ $PersonInfo$PickerList$item.picker.valueBind }}" data-wpyhandlepickerchange-b="{{ $PersonInfo$PickerList$item.picker.rangeBind }}">
             <view class="item-value">
               <text>{{ $PersonInfo$PickerList$pickeds[$PersonInfo$PickerList$item.picker.valueBind] !== $PersonInfo$PickerList$undefined ? $PersonInfo$PickerList$lists[$PersonInfo$PickerList$item.picker.rangeBind][$PersonInfo$PickerList$pickedIndex[$PersonInfo$PickerList$item.picker.valueBind]].label || $PersonInfo$PickerList$lists[$PersonInfo$PickerList$item.picker.rangeBind][$PersonInfo$PickerList$pickedIndex[$PersonInfo$PickerList$item.picker.valueBind]] : '请选择' }}</text>
               <view class="arrow-rt"/>
             </view>
           </picker>
+          <view  wx:else class="item-value">
+            <text>{{ $PersonInfo$PickerList$pickeds[$PersonInfo$PickerList$item.picker.valueBind] !== $PersonInfo$PickerList$undefined ? $PersonInfo$PickerList$lists[$PersonInfo$PickerList$item.picker.rangeBind][$PersonInfo$PickerList$pickedIndex[$PersonInfo$PickerList$item.picker.valueBind]].label || $PersonInfo$PickerList$lists[$PersonInfo$PickerList$item.picker.rangeBind][$PersonInfo$PickerList$pickedIndex[$PersonInfo$PickerList$item.picker.valueBind]] : '未选择' }}</text>
+          </view>
         </view>
       </block>
     </view>
@@ -83,9 +89,9 @@
         </view>
       </view>
     </view>
-    <view class="submit-btn flex--hcenter">
-      <button class="primary-btn" page="signup" disabled="{{ !canSubmit }}">
-        完成注册
+    <view class="submit-btn flex--hcenter" wx:if="{{ !$PersonInfo$readonly && !$PersonInfo$canEdit }}">
+      <button class="primary-btn" disabled="{{ !$PersonInfo$canSubmit }}" bindtap="$PersonInfo$submit">
+        {{ $PersonInfo$submitBtnText }}
       </button>
     </view>
   </view>

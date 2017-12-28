@@ -1,12 +1,32 @@
 <style lang="scss">
+@import '../assets/style/variables/theme';
 .comp-person-info {
   font-size: 15px;
 
+  .edit-btn-wrap {
+    justify-content: flex-end;
+    padding: 0 30rpx;
+    height: 90rpx;
+
+    .edit-btn {
+      color: $primaryColor;
+      background: transparent;
+
+      &::after {
+        border: 0;
+      }
+
+      &[disabled] {
+        color: #B8B8B8;
+      }
+    }
+  }
   .info-group {
     margin-bottom: 20rpx;
   }
   .info-item, .comp-picker-list .menu--default__item {
-    padding: 30rpx 30rpx 30rpx 70rpx;
+    padding: 20rpx 30rpx 20rpx 70rpx;
+    height: auto;
 
     .item-label {
       position: relative;
@@ -76,12 +96,19 @@
 
 <template>
   <view class="comp-person-info">
+    <view wx:if="{{ canEdit }}" class="flex--vcenter edit-btn-wrap">
+      <button 
+        class="edit-btn"
+        disabled="{{ !readonly && !canSubmit }}"
+        @tap="handleEditTap">{{ readonly ? '编辑' : '保存' }}</button>
+    </view>
     <view class="info-group required-info main-bg">
       <view class="info-item required flex--vcenter--sb">
         <view class="item-label flex-item--none">就诊卡号</view>
         <view class="item-input flex-item">
           <IdInput
-            class="item-input__inner" 
+            class="item-input__inner"
+            :disabled.sync="readonly"
             :value.sync="id" />
         </view>
       </view>
@@ -90,9 +117,12 @@
         <view class="item-input flex-item">
           <CardIdInput
             type="idcard"
-            class="item-input__inner" 
+            class="item-input__inner"
+            :disabled.sync="readonly" 
             :value.sync="cardId" />
-          <view class="item-input__tip flex--vcenter"><icon type="warn" size="14" color="#B8B8B8"/>只能绑定18岁以{{ page === 'relation' ? '下' : '上' }}的未成年人</view>
+          <view 
+            wx:if="{{ !readonly }}"
+            class="item-input__tip flex--vcenter"><icon type="warn" size="14" color="#B8B8B8"/>只能绑定18岁以{{ isMaster ? '上' : '下' }}的未成年人</view>
         </view>
       </view>
     </view>
@@ -102,6 +132,7 @@
         <view class="item-input flex-item">
           <AllergiesInput 
             class="item-input__inner"
+            :disabled.sync="readonly"
             :value.sync="allergies" />
         </view>
       </view>
@@ -110,16 +141,17 @@
         <view class="item-input flex-item">
           <DiseaseInput 
             class="item-input__inner"
+            :disabled.sync="readonly"
             :value.sync="disease" />
         </view>
       </view>
     </view>
     <view class="info-group main-bg">
       <PickerList 
+        :readonly.sync="readonly"
         :ITEMS="PICKER_ITEMS"
         :lists.sync="pickerLists"
-        :pickeds.sync="pickerPickeds">
-      </PickerList>
+        :pickeds.sync="pickerPickeds"/>
     </view>
     <view class="info-group main-bg">
       <view class="info-item flex--sb">
@@ -128,12 +160,18 @@
           <AddressInput
             class="item-input__inner"
             type="textarea"
+            :disabled.sync="readonly"
             :value.sync="address"></AddressInput>
         </view>
       </view>
     </view>
-    <view class="submit-btn flex--hcenter">
-      <slot name="submitBtn"></slot>
+    <view class="submit-btn flex--hcenter" wx:if="{{ !readonly && !canEdit }}">
+      <button 
+        class="primary-btn"
+        disabled="{{ !canSubmit }}"
+        @tap="submit">
+        {{ submitBtnText }}
+      </button>
     </view>
   </view>
 </template>
@@ -143,6 +181,10 @@
 
   import CustomInput from '@/components/customInput'
   import PickerList from '@/components/pickerList'
+
+  import {
+    validCardId
+  } from '@/utils/validator'
 
   const PICKER_ITEMS = [{
     label: '分娩日期',
@@ -180,16 +222,29 @@
     }
 
     props = {
-      page: {
-        type: String,
-        default: 'signup' // signup / relation
+      readonly: {
+        type: Boolean,
+        default: false,
+        twoWay: true
+      },
+      canEdit: { // 依托于readonly参数
+        type: Boolean,
+        default: false
+      },
+      isMaster: { // 是否是主绑定人
+        type: Boolean,
+        default: true
+      },
+      submitBtnText: {
+        type: String
       }
     }
 
     mixins = []
 
     data = {
-      id: '222', // 卡号
+      canSubmit: false,
+      id: '', // 卡号
       cardId: '', // 身份证号
       allergies: '', // 过敏史
       disease: '', // 疾病史
@@ -235,14 +290,28 @@
 
     watch = {
       formData (newVal) {
-        console.log(newVal, 111)
+        const id = newVal.id && newVal.id.trim()
+        const cardId = newVal.cardId && newVal.cardId.trim()
+        if (id && validCardId(cardId)) {
+          this.canSubmit = true
+        } else {
+          this.canSubmit = false
+        }
+        this.$apply()
         this.$emit('pickedsChange', newVal)
       }
     }
 
     methods = {
-      handleInput (valBind, { detail }) {
-        this[valBind] = detail.value
+      handleEditTap () {
+        if (this.readonly) {
+          this.readonly = false
+        } else {
+          this.$emit('editSubmit')
+        }
+      },
+      submit () {
+        this.$emit('submit', this.formData)
       }
     }
 
@@ -250,6 +319,17 @@
     }
 
     onLoad() {
+    }
+
+    syncFormData (formData) {
+      const {id, cardId, allergies, disease, address, ...pickerPickeds} = formData
+      this.id = id
+      this.cardId = cardId
+      this.allergies = allergies
+      this.disease = disease
+      this.address = address
+      this.pickerPickeds = pickerPickeds
+      this.$apply()
     }
   }
 </script>

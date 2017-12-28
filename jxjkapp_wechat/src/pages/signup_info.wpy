@@ -5,14 +5,10 @@
 
 <template>
   <view id="page-signup-info">
-    <PersonInfo @pickedsChange.user="handlePickedsChange">
-      <button 
-        class="primary-btn"
-        page="signup"
-        disabled="{{ !canSubmit }}"
-        slot="submitBtn">
-        完成注册
-      </button>
+    <PersonInfo 
+      submitBtnText="完成注册"
+      @pickedsChange.user="handlePickedsChange"
+      @submit.user="handleSubmit">
     </PersonInfo>
   </view>
 </template>
@@ -21,9 +17,6 @@
   import wepy from 'wepy'
 
   import PersonInfo from '@/components/personInfo'
-  import {
-    validCardId
-  } from '@/utils/validator'
 
   export default class Index extends wepy.page {
     config = {
@@ -36,28 +29,21 @@
     mixins = []
 
     data = {
-      formData: '',
-      canSubmit: false
+      formData: ''
     }
 
     computed = {
     }
 
     watch = {
-      formData (newVal) {
-        const id = newVal.id.trim()
-        const cardId = newVal.cardId.trim()
-        if (id && validCardId(cardId)) {
-          this.canSubmit = true
-        } else {
-          this.canSubmit = false
-        }
-      }
     }
 
     methods = {
       handlePickedsChange (formData) {
         this.formData = formData
+      },
+      handleSubmit (formData) {
+        console.log('handleSubmit', formData)
       }
     }
 

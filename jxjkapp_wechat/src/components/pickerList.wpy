@@ -22,6 +22,7 @@
         <view class="menu--default__item">
           <text class="item-label">{{ item.label }}</text>
           <picker 
+            wx:if="{{ !readonly }}"
             value="{{ pickedIndex[item.picker.valueBind] === -1 ? 0 : pickedIndex[item.picker.valueBind] }}"
             range="{{ lists[item.picker.rangeBind] }}" 
             range-key="label"
@@ -31,6 +32,9 @@
               <view class="arrow-rt"></view>
             </view>
           </picker>
+          <view wx:else class="item-value">
+            <text>{{ pickeds[item.picker.valueBind] !== undefined ? lists[item.picker.rangeBind][pickedIndex[item.picker.valueBind]].label || lists[item.picker.rangeBind][pickedIndex[item.picker.valueBind]] : '未选择' }}</text>
+          </view>
         </view>
       </repeat>
     </view>
@@ -45,6 +49,10 @@
     }
 
     props = {
+      readonly: {
+        type: Boolean,
+        default: false
+      },
       ITEMS: {
         type: Array,
         default: []

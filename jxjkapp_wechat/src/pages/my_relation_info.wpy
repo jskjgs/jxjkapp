@@ -5,12 +5,12 @@
 
 <template>
   <view id="page-my-relation-info">
-    <PersonInfo>
-      <button 
-        class="primary-btn"
-        slot="submitBtn">
-        确认添加
-      </button>
+    <PersonInfo
+      :readonly.sync="readonly" 
+      :canEdit.sync="canEdit"
+      :isMaster.sync="isMaster"
+      submitBtnText="确认添加"
+      @pickedsChange.user="handlePickedsChange">
     </PersonInfo>
   </view>
 </template>
@@ -22,7 +22,6 @@
 
   export default class Index extends wepy.page {
     config = {
-      navigationBarTitleText: '添加就诊人'
     }
     components = {
       PersonInfo
@@ -30,17 +29,50 @@
 
     mixins = []
 
-    data = {}
+    data = {
+      readonly: true,
+      canEdit: false,
+      isMaster: false,
+      formData: {}
+    }
 
     computed = {
     }
 
-    methods = {}
+    methods = {
+      handlePickedsChange (formData) {
+        this.formData = formData
+      }
+    }
 
     events = {
     }
 
-    onLoad() {
+    onLoad({ id }) {
+      if (id !== undefined) { // query中有id说明是查看绑定的就诊人信息（可编辑）
+        wx.setNavigationBarTitle({
+          title: '就诊人信息'
+        })
+        this.readonly = true
+        this.canEdit = true
+
+        this.isMaster = id === '0' // 假设登陆人账号id为0
+        setTimeout(() => {
+          this.$invoke('PersonInfo', 'syncFormData', {
+            id: '111', // 卡号
+            cardId: '1211', // 身份证号
+            allergies: '32321', // 过敏史
+            disease: 'fdsaaf', // 疾病史
+            address: 'fafas55' // 联系地址
+          })
+        }, 1000)
+      } else {
+        wx.setNavigationBarTitle({
+          title: '添加就诊人'
+        })
+        this.readonly = false
+        this.canEdit = false
+      }
     }
   }
 </script>

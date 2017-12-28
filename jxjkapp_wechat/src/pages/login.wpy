@@ -55,17 +55,17 @@
     methods = {
       handleSumbit () {
         this.$_request({
-          url: `/other/loginByCode?phone=${this.phone}&code=${this.code}`,
+          url: `/other/loginByCode?phone=${this.formData.phone}&code=${this.formData.code}`,
           method: 'POST'
         }, true).then(res => {
           const content = res.content || {}
           if (content.empty) {
-            wx.redirectTo({
-              url: '/pages/signup_info'
-            })
-          } else {
             wx.navigateTo({
               url: '/pages/index'
+            })
+          } else {
+            wx.redirectTo({
+              url: '/pages/signup_info'
             })
           }
         })
