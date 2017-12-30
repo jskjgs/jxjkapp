@@ -2,8 +2,6 @@ package com.jinxin.hospHealth.controller;
 
 import com.alibaba.fastjson.JSONObject;
 import com.doraemon.base.controller.bean.PageBean;
-import com.github.pagehelper.PageInfo;
-import com.jinxin.hospHealth.dao.mapper.HospPatientInfoMapper;
 import com.jinxin.hospHealth.dao.models.HospNews;
 import com.jinxin.hospHealth.dao.models.HospPatientInfo;
 import com.jinxin.hospHealth.service.PatientInfoService;

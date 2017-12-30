@@ -17,6 +17,8 @@ public class LoginInfoVO {
     UserInfoVO userInfo;
     @ApiModelProperty("token")
     String token;
-    @ApiModelProperty("验证码")
+    @ApiModelProperty("验证码---本手机")
     String code;
+    @ApiModelProperty("验证码---新手机")
+    String newCode;
 }

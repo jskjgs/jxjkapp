@@ -1,6 +1,8 @@
 package com.jinxin.hospHealth.service;
 
 import com.doraemon.base.exceptions.ShowExceptions;
+import com.doraemon.base.guava.DPreconditions;
+import com.doraemon.base.language.Language;
 import com.doraemon.base.redis.RedisOperation;
 import com.github.pagehelper.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,16 +27,29 @@ public class OtherService {
     String registerCode;
     @Value("${dynamic.codeKey.token}")
     String tokenKey;
+    @Value("${dynamic.codeKey.updatePhone}")
+    String updatePhoneKey;
+
     @Value("${dynamic.effectiveTime.login}")
     String loginEffectiveTime;
     @Value("${dynamic.effectiveTime.register}")
     String registerEffectiveTime;
     @Value("${dynamic.effectiveTime.token}")
     String tokenEffectiveTime;
+    @Value("${dynamic.effectiveTime.updatePhone}")
+    String updatePhoneEffectiveTime;
+
+    @Value("${dynamic.nextSendTime.login}")
+    String loginNextSendTime;
+    @Value("${dynamic.nextSendTime.register}")
+    String registerNextSendTime;
+    @Value("${dynamic.nextSendTime.updatePhone}")
+    String updatePhoneNextSendTime;
 
 
     public final static String loginType="0";
     public final static String registerType="1";
+    public final static String updatePhoneType="2";
 
 
     /**
@@ -92,21 +107,43 @@ public class OtherService {
     /**
      * 保存动态码
      * @param phone
-     * @param type (0-登陆 1-注册)
+     * @param type (0-登陆 1-注册 2-换绑手机号)
      */
-    public void saveDynamicCode(String phone,String type,String dynamicCode) throws Exception {
+    public void saveDynamicCode(String phone,String type,String dynamicCode,String newPhone,String newDynamicCode) throws Exception {
         switch (type){
             case loginType:
+                repeatSend(type,phone);
                 redisOperation.usePool().set(getLoginRedisKey(phone), dynamicCode);
                 redisOperation.expire(getLoginRedisKey(phone),Integer.valueOf(loginEffectiveTime));
                 break;
             case registerType:
+                repeatSend(type,phone);
                 redisOperation.usePool().set(getRegisterRedisKey(phone),dynamicCode);
                 redisOperation.expire(getRegisterRedisKey(phone),Integer.valueOf(registerEffectiveTime));
                 break;
+            case updatePhoneType:
+                repeatSend(type,phone+"_"+newPhone);
+                //给新手机发验证码
+                redisOperation.usePool().set(getUpdatePhoneKey(newPhone),newDynamicCode);
+                redisOperation.expire(getUpdatePhoneKey(newPhone),Integer.valueOf(updatePhoneEffectiveTime));
+                break;
             default:
-                throw new ShowExceptions("传入的验证码类型错误");
+                throw new ShowExceptions(Language.get("dynamic.type-invalid"));
         }
+    }
+
+    /**
+     * 验证是否可以重复发送的时间,如果可以,加入时间限制
+     * @param type
+     * @param phone
+     * @throws Exception
+     */
+    private void repeatSend(String type,String phone) throws Exception {
+        DPreconditions.checkNotNullAndEmpty(type,"动态码类型不能为空,为空不能通过校验");
+        DPreconditions.checkNotNullAndEmpty(phone,Language.get("dynamic.phone-null"),true);
+        DPreconditions.checkState(redisOperation.usePool().get(type+"_"+phone)== null, Language.get("dynamic.next-send-error"),true);
+        redisOperation.usePool().set(type+"_"+phone, phone);
+        redisOperation.expire(type+"_"+phone,Integer.valueOf(loginNextSendTime));
     }
 
     /**
@@ -125,6 +162,8 @@ public class OtherService {
             case registerType:
                 code = redisOperation.usePool().get(getRegisterRedisKey(phone));
                 break;
+            case updatePhoneType:
+                code = redisOperation.usePool().get(getUpdatePhoneKey(phone));
             default:
                 throw new ShowExceptions("传入的验证码类型错误");
         }
@@ -139,6 +178,9 @@ public class OtherService {
     }
     public String getTokeRedisKey(String phone){
         return phone+"_"+tokenKey;
+    }
+    public String getUpdatePhoneKey(String newPhone) {
+        return newPhone+"_"+updatePhoneKey;
     }
 
 }

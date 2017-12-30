@@ -1,0 +1,28 @@
+login:
+    passwd-error: 账号密码错误,请查看是否正确.|||4444
+    user-not-exist: 该账号不存在.|||4444
+    dynamic-code-error: 动态码不正确.||||33333
+user:
+    select-not-exist: 该用户不存在.
+    phone-null: 电话信息不能为空.
+    id-null: 用户唯一标识不能为空.
+    id-repeat: 该用户信息已经存在,不能重复增加.
+user-balance:
+    id-repeat: 该用户的余额信息已经存在,不能重复增加.
+    select-not-exist: 该用户没有余额信息,或者用户信息已经被锁定.
+    balance-null: 余额金额不能为空.
+    capacity: 余额金额不能小于零.
+    lock: 用户余额已经被锁定.
+    lack-balance: 用户余额不足以扣减.
+    lack-lock-balance: 解锁的用户余额大于了用户被锁定的余额.
+dynamic:
+    next-send-error: 未到再次发送时间,请稍后再试.
+    phone-null: 电话号码不能为空.
+    type-invalid: 发送的动态验证码类型是无效类型.
+banner:
+    name-null: banner的名称不能为空.
+    imageURL-null: banner图片路径url不能为空.
+    jumpURL-null: banner跳转路径url不能为空.
+    id-null: banner的id不能为空.
+    id-not-exist: 该id的banner未查询到.
+

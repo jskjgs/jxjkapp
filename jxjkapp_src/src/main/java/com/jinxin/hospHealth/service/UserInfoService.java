@@ -1,11 +1,9 @@
 package com.jinxin.hospHealth.service;
 
 import com.doraemon.base.controller.bean.PageBean;
-import com.doraemon.base.exceptions.ShowExceptions;
 import com.doraemon.base.guava.DPreconditions;
-import com.doraemon.base.redis.RedisOperation;
+import com.doraemon.base.language.Language;
 import com.doraemon.base.util.MD5Encryption;
-import com.doraemon.base.util.RandomUtil;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.github.pagehelper.StringUtil;
@@ -17,14 +15,12 @@ import org.springframework.stereotype.Service;
 
 import java.security.NoSuchAlgorithmException;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Created by zbs on 2017/12/25.
  */
 @Service
-public class UserInfoService {
+public class UserInfoService implements BaseService<HospUserInfo>{
 
     @Autowired
     HospUserInfoMapper hospUserInfoMapper;
@@ -39,7 +35,7 @@ public class UserInfoService {
      */
     public void add(HospUserInfo hospUserInfo) throws NoSuchAlgorithmException {
         DPreconditions.checkState(hospUserInfo.getId() == null, "用户的id不能填写.", true);
-        DPreconditions.checkNotNullAndEmpty(hospUserInfo.getPhone(), "用户的电话不能为空.", true);
+        DPreconditions.checkNotNullAndEmpty(hospUserInfo.getPhone(), Language.get("user.phone-null"), true);
         Date date = new Date();
         if (hospUserInfo.getHeadPortrait() == null)
             hospUserInfo.setHeadPortrait(defaultUserHeadPortrait);
@@ -65,9 +61,9 @@ public class UserInfoService {
      * @param hospUserInfo
      */
     public void update(HospUserInfo hospUserInfo) {
-        DPreconditions.checkNotNull(hospUserInfo.getId(), "用户的id不能为空.", true);
+        DPreconditions.checkNotNull(hospUserInfo.getId(), Language.get("user.id-null"), true);
         HospUserInfo selectNews = selectOne(hospUserInfo.getId());
-        DPreconditions.checkNotNull(selectNews, "该ID的用户未查询到.", true);
+        DPreconditions.checkNotNull(selectNews, Language.get("user.select-not-exist"), true);
         DPreconditions.checkState(hospUserInfoMapper.updateByPrimaryKeySelective(hospUserInfo) == 1, "更新用户信息失败.", true);
     }
 
@@ -78,7 +74,7 @@ public class UserInfoService {
      */
     public void deleteOne(Long id) {
         HospUserInfo hospUserInfo = selectOne(id);
-        DPreconditions.checkNotNull(hospUserInfo, "该ID的用户未查询到.", true);
+        DPreconditions.checkNotNull(hospUserInfo, Language.get("user.select-not-exist"), true);
         DPreconditions.checkState(hospUserInfoMapper.deleteByPrimaryKey(id) == 1, "删除该用户信息失败.");
     }
 
@@ -88,7 +84,7 @@ public class UserInfoService {
      * @return
      */
     public HospUserInfo selectOne(Long id) {
-        DPreconditions.checkNotNull(id, "用户的id不能为空");
+        DPreconditions.checkNotNull(id, Language.get("user.id-null"),true);
         return hospUserInfoMapper.selectByPrimaryKey(id);
     }
 
@@ -129,6 +125,21 @@ public class UserInfoService {
         if (StringUtil.isNotEmpty(pageBean.getField()))
             PageHelper.orderBy(pageBean.getField());
         return new PageInfo(hospUserInfoMapper.selectAll());
+    }
+
+    @Override
+    public HospUserInfo selectOneAdmin(Long id) throws Exception {
+        return null;
+    }
+
+    @Override
+    public PageInfo<HospUserInfo> selectAdmin(HospUserInfo hospUserInfo) throws Exception {
+        return null;
+    }
+
+    @Override
+    public PageInfo<HospUserInfo> selectAllAdmin(PageBean pageBean) throws Exception {
+        return null;
     }
 
 }

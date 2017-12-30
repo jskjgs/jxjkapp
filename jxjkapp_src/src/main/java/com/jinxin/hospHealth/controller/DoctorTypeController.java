@@ -2,7 +2,6 @@ package com.jinxin.hospHealth.controller;
 
 import com.alibaba.fastjson.JSONObject;
 import com.doraemon.base.controller.bean.PageBean;
-import com.jinxin.hospHealth.dao.models.HospBanner;
 import com.jinxin.hospHealth.dao.models.HospDoctorType;
 import com.jinxin.hospHealth.service.DoctorTypeService;
 import io.swagger.annotations.Api;

@@ -13,11 +13,21 @@ dynamic:
         login: login
         register: register
         token: token
+        updatePhone: updatePhone
     #有效时间
     effectiveTime:
         login: 300
         register: 300
         token: 31536000
+        updatePhone: 300
+    nextSendTime:
+        login: 60
+        register: 60
+        updatePhone: 60
+
+#语言配置文件
+language:
+    fileName: languageCN.yml
 
 #默认的
 default:
@@ -31,6 +41,8 @@ default:
     productImage: http://yst.winshang.com/member/PinPai/2015/7/2/2015721650321136868_1.jpg
     #默认的商品sku图片
     skuImage: http://yst.winshang.com/member/PinPai/2015/7/2/2015721650321136868_1.jpg
+    #用于生成金额校验key的秘钥
+    checkSumKey: HUIBK33289H432BHVHJN432432
 
 #开发环境
 spring:

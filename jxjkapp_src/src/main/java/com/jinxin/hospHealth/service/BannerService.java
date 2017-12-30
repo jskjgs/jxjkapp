@@ -2,11 +2,13 @@ package com.jinxin.hospHealth.service;
 
 import com.doraemon.base.controller.bean.PageBean;
 import com.doraemon.base.guava.DPreconditions;
+import com.doraemon.base.language.Language;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.github.pagehelper.StringUtil;
 import com.jinxin.hospHealth.dao.mapper.HospBannerMapper;
 import com.jinxin.hospHealth.dao.models.HospBanner;
+import com.jinxin.hospHealth.dao.modelsEnum.BannerEnum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,7 +17,7 @@ import org.springframework.stereotype.Service;
  * Created by zbs on 2017/12/24.
  */
 @Service
-public class BannerService {
+public class BannerService implements BaseService<HospBanner>{
 
     @Autowired
     HospBannerMapper hospBannerMapper;
@@ -25,11 +27,12 @@ public class BannerService {
      *
      * @param hospBanner
      */
+    @Override
     public void add(HospBanner hospBanner) {
         DPreconditions.checkState(hospBanner.getId() == null, "banner的id不能填写.", true);
-        DPreconditions.checkNotNullAndEmpty(hospBanner.getName(), "banner的名称不能为空.", true);
-        DPreconditions.checkNotNullAndEmpty(hospBanner.getBannerUrl(), "banner图片路径url不能为空.", true);
-        DPreconditions.checkNotNullAndEmpty(hospBanner.getJumpUrl(), "banner跳转路径url不能为空.", true);
+        DPreconditions.checkNotNullAndEmpty(hospBanner.getName(), Language.get("banner.name-null"), true);
+        DPreconditions.checkNotNullAndEmpty(hospBanner.getBannerUrl(), Language.get("banner.imageURL-null"), true);
+        DPreconditions.checkNotNullAndEmpty(hospBanner.getJumpUrl(), Language.get("banner.jumpURL-null"), true);
         if (hospBanner.getOrderNumber() == null)
             hospBanner.setOrderNumber(1);
         if (hospBanner.getDisplay() == null)
@@ -42,10 +45,11 @@ public class BannerService {
      *
      * @param hospBanner
      */
+    @Override
     public void update(HospBanner hospBanner) {
-        DPreconditions.checkNotNull(hospBanner.getId(), "banner的id不能为空.", true);
+        DPreconditions.checkNotNull(hospBanner.getId(), Language.get("banner.id-null"), true);
         HospBanner banner = selectOne(hospBanner.getId());
-        DPreconditions.checkNotNull(banner, "该ID的banner未查询到.", true);
+        DPreconditions.checkNotNull(banner, Language.get("banner.id-not-exist"), true);
         DPreconditions.checkState(hospBannerMapper.updateByPrimaryKeySelective(hospBanner) == 1, "更新banner信息失败.", true);
     }
 
@@ -54,29 +58,81 @@ public class BannerService {
      *
      * @param id
      */
+    @Override
     public void deleteOne(Long id) {
         HospBanner banner = selectOne(id);
-        DPreconditions.checkNotNull(banner, "该ID的banner未查询到.", true);
+        DPreconditions.checkNotNull(banner, Language.get("banner.id-not-exist"), true);
         DPreconditions.checkState(hospBannerMapper.deleteByPrimaryKey(id) == 1, "删除banner信息失败.");
     }
 
     /**
-     * 查询单个banner信息
+     * 查询单个banner信息 -- 提供给客户端
      *
      * @return
      */
+    @Override
     public HospBanner selectOne(Long id) {
-        DPreconditions.checkNotNull(id, "banner的id不能为空");
-        return hospBannerMapper.selectByPrimaryKey(id);
+        DPreconditions.checkNotNull(id, Language.get("banner.id-null"),true);
+        HospBanner select = new HospBanner();
+        select.setId(id);
+        select.setDisplay(BannerEnum.DISPLAY.getCode());
+        return hospBannerMapper.selectOne(select);
     }
 
     /**
-     * 根据条件查询banner信息
+     * 根据条件查询banner信息-- 提供给客户端
      *
      * @param hospBanner
      * @return
      */
+    @Override
     public PageInfo<HospBanner> select(HospBanner hospBanner) {
+        PageHelper.startPage(hospBanner.getPageNum(), hospBanner.getPageSize());
+        if (StringUtil.isNotEmpty(hospBanner.getField()))
+            PageHelper.orderBy(hospBanner.getField());
+        HospBanner select = new HospBanner();
+        select.setName(hospBanner.getName());
+        select.setDisplay(BannerEnum.DISPLAY.getCode());
+        return new PageInfo(hospBannerMapper.select(select));
+    }
+
+    /**
+     * 查询全部banner信息-- 提供给客户端
+     *
+     * @param pageBean
+     * @return
+     */
+    @Override
+    public PageInfo<HospBanner> selectAll(PageBean pageBean) {
+        PageHelper.startPage(pageBean.getPageNum(), pageBean.getPageSize());
+        if (StringUtil.isNotEmpty(pageBean.getField()))
+            PageHelper.orderBy(pageBean.getField());
+        HospBanner select = new HospBanner();
+        select.setDisplay(BannerEnum.DISPLAY.getCode());
+        return new PageInfo(hospBannerMapper.select(select));
+    }
+
+
+
+    /**
+     * 查询单个banner信息 -- 提供给客户端
+     *
+     * @return
+     */
+    @Override
+    public HospBanner selectOneAdmin(Long id) throws Exception {
+        DPreconditions.checkNotNull(id, Language.get("banner.id-null"),true);
+        return hospBannerMapper.selectByPrimaryKey(id);
+    }
+
+    /**
+     * 根据条件查询banner信息-- 提供给客户端
+     *
+     * @param hospBanner
+     * @return
+     */
+    @Override
+    public PageInfo<HospBanner> selectAdmin(HospBanner hospBanner) throws Exception {
         PageHelper.startPage(hospBanner.getPageNum(), hospBanner.getPageSize());
         if (StringUtil.isNotEmpty(hospBanner.getField()))
             PageHelper.orderBy(hospBanner.getField());
@@ -87,12 +143,13 @@ public class BannerService {
     }
 
     /**
-     * 查询全部banner信息
+     * 查询全部banner信息-- 提供给客户端
      *
      * @param pageBean
      * @return
      */
-    public PageInfo<HospBanner> selectAll(PageBean pageBean) {
+    @Override
+    public PageInfo<HospBanner> selectAllAdmin(PageBean pageBean) throws Exception {
         PageHelper.startPage(pageBean.getPageNum(), pageBean.getPageSize());
         if (StringUtil.isNotEmpty(pageBean.getField()))
             PageHelper.orderBy(pageBean.getField());

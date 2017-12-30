@@ -7,7 +7,6 @@ import com.github.pagehelper.PageInfo;
 import com.github.pagehelper.StringUtil;
 import com.jinxin.hospHealth.dao.mapper.HospProductMapper;
 import com.jinxin.hospHealth.dao.models.HospProduct;
-import com.jinxin.hospHealth.dao.models.HospProductSku;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
