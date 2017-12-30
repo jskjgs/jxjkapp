@@ -1,0 +1,83 @@
+<style lang="scss">
+#page-my-qrcode {
+  width: 100vw;
+  height: 100vh;
+
+  .qrcode-box-wrap {
+    padding: 60rpx;
+  }
+  .qrcode-box {
+    border-radius: 20rpx;
+    box-shadow: 0rpx 4rpx 20rpx 0rpx #E3E3E3;
+    padding: 40rpx;
+    height: 660rpx;
+
+    .thumbnail-avatar {
+      overflow: hidden;
+      margin-right: 40rpx;
+      border-radius: 50%;
+      width: 100rpx;
+      height: 100rpx;
+    }
+    .qrcode-wrap {
+      width: 374rpx;
+      height: 374rpx;
+      background: red;
+    }
+  }
+  .qrcode-tip {
+    padding: 40rpx 76rpx;
+    color: #B8B8B8;
+    font-size: 11px;
+  }
+}
+</style>
+
+<template>
+  <view id="page-my-qrcode">
+    <view class="qrcode-box-wrap">
+      <view class="qrcode-box flex--col">
+        <view class="row flex--vcenter">
+          <image class="thumbnail-avatar" src="../assets/images/demo.png"></image>
+          <text class="username">YK 陈御珂</text>
+        </view>
+        <view class="flex-item flex--center">
+          <view class="qrcode-wrap">
+          </view>
+        </view>
+      </view>
+      <view class="qrcode-tip">
+        <text>二维码用于每次服务核销，完成服务后请出示二维码，方便服务人员核销，谢谢配合～</text>
+      </view>
+    </view>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+
+  export default class Index extends wepy.page {
+    config = {
+      navigationBarTitleText: '我的二维码'
+    }
+    components = {
+    }
+
+    mixins = []
+
+    data = {
+      qrcodeVisible: false
+    }
+
+    computed = {
+    }
+
+    methods = {}
+
+    events = {
+    }
+
+    onLoad() {
+    }
+  }
+</script>

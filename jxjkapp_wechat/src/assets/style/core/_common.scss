@@ -1,0 +1,140 @@
+@import '../helpers/functions';
+@import '../variables/theme.scss';
+@import './layout.scss';
+.text-ellipsis--two {
+  @include text-ellipsis(2);
+}
+.text-ellipsis--three {
+  @include text-ellipsis(3);
+}
+
+%arrow {
+  position: relative;
+  display: inline-block;
+  width: 22rpx;
+  height: 22rpx;
+  &::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: -6rpx;
+    transform-origin: center;
+    width: 100%;
+    height: 100%;
+    border: 2rpx solid #B8B8B8;
+    border-color: #B8B8B8 #B8B8B8 transparent transparent;
+  }
+}
+.arrow-rt {
+  @extend %arrow;
+  &::after {
+    transform: translate3d(0, -50%, 0) rotate(45deg);
+  }
+}
+.arrow-top {
+  @extend %arrow;
+  &::after {
+    transform: translate3d(0, -50%, 0) rotate(-45deg);
+  }
+}
+
+// 内容区域背景
+.main-bg {
+  background: $main-bg;
+}
+// 文字竖向排列
+.text-col {
+  writing-mode: tb-rl;
+  -webkit-writing-mode: vertical-rl;      
+  writing-mode: vertical-rl;
+}
+
+// 菜单列表
+.menu {
+  &--icon {
+    font-size: 15px;
+    &__item {
+      @extend .flex--vcenter;
+      height: 120rpx;
+
+      &__icon {
+        @extend .flex-item--none;
+      }
+      &__main {
+        @extend .flex-item;
+        @extend .flex--vcenter--sb;
+        border-bottom: 1px solid #F2F2F2;
+        height: 100%;
+      }
+    }
+  }
+  &--default {
+    font-size: 15px;
+    &__item {
+      padding: 0 30rpx;
+      height: 120rpx;
+      border-bottom: 2rpx solid #F2F2F2;
+      @extend .flex--vcenter--sb;
+    }
+  }
+}
+
+// 基本按钮
+.primary-btn {
+  border-radius: 4rpx;
+  width: 630rpx;
+  height: 90rpx;
+  line-height: 90rpx;
+  text-align: center;
+  font-size: 18px;
+  color: #fff;
+  background: $primaryColor;
+
+  &[disabled][type="default"], &[disabled]:not([type]) {
+    background: #B8B8B8;
+    color: #fff;
+  }
+}
+
+// input-group
+.input-group {
+  @extend .flex--vcenter;
+  padding: 0 30rpx;
+  height: 90rpx;
+  font-size: 15px;
+  background: $main_bg;
+
+  &__label {
+    @extend .flex-item--none;
+    margin-right: 20rpx;
+  }
+  &__inner {
+    @extend .flex-item;
+  }
+  &__btn, &__icon-btn {
+    @extend .flex-item--none;
+    margin-left: 20rpx;
+  }
+  &__btn {
+    @extend .flex--vcenter;
+    border: 2rpx solid $primaryColor;
+    padding: 0 16rpx;
+    line-height: 52rpx;
+    background: transparent;
+    border-color: $primaryColor;
+    color: $primaryColor;
+
+    &[disabled] {
+      border-color: #B8B8B8;
+      color: #B8B8B8;
+    }
+  }
+}
+
+// 列表无更多数据提示
+.no-more-tip {
+  margin-bottom: 20rpx;
+  font-size: 10px;
+  color:#BDBDBD;
+  text-align: center;
+}

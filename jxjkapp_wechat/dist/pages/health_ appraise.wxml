@@ -1,0 +1,22 @@
+
+  <view id="page-health-appraise">
+    
+  <view class="comp-custom-card">
+    <view class="card-inner">
+      <view class="card-top">
+        <image src="{{ $CustomCard$imageUrl }}" class="card-image"/>
+        <view class="card-title">
+          <text>{{ $CustomCard$title }}</text>
+        </view>
+      </view>
+      <view class="card-content">
+        
+      </view>
+    </view>
+    <div class="btn-wrap">
+      
+      
+    </div>
+  </view>
+
+  </view>

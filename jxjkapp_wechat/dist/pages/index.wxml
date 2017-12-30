@@ -1,0 +1,63 @@
+
+  <view id="index-page">
+    <!-- 顶部banner -->
+    <view class="top-banner">
+      <swiper indicator-dots="{{ true }}" autoplay="{{ true }}">
+        <block wx:for="{{ bannerList }}" wx:for-index="index" wx:for-item="item" wx:key="index">
+          <swiper-item bindtap="handleBannerTap" data-wpyhandlebannertap-a="{{ item.jumpUrl }}">
+            <image src="{{ item.bannerUrl }}" class="slide-image"/>
+          </swiper-item>
+        </block>
+      </swiper>
+    </view>
+    <!-- 项目选项 -->
+    <view class="panel project-items">
+      <view class="panel__title">项目分类</view>
+      <view class="panel__body flex">
+        <block wx:for="{{projects}}" wx:for-index="index" wx:for-item="item" wx:key="index">
+          <navigator url="/pages/project?target={{ item.target }}">
+            <view class="project-item flex-item--none">
+              <view class="item-icon">
+                <image src="{{ item.image }}"/>
+              </view>
+              <text class="item-text">{{ item.text }}</text>
+            </view>
+          </navigator>
+        </block>
+      </view>
+    </view>
+    <!-- 医院中心 -->
+    <view class="panel hospital-center">
+      <view class="panel__title">医院中心</view>
+      <view class="panel__body flex">
+        <navigator url="/pages/doctor" open-type="navigate">
+          <view class="item-pane">
+            <image class="pane-image"/>
+            <text class="panel-text">医护人员</text>
+          </view>
+        </navigator>
+        <navigator url="/pages/news" open-type="navigate">
+          <view class="item-pane">
+            <image class="pane-image"/>
+            <text class="panel-text">新闻中心</text>
+          </view>
+        </navigator>
+      </view>
+    </view>
+    <view class="queue-notice-wrap flex--vcenter {{ queueNoticeSpread ? 'spread' : '' }}" bindtap="handleTapQueueNotice">
+      <view  wx:if="{{ !queueNoticeSpread }}" class="fold-text-wrap flex--center text-col">
+        <text class="fold-text">排号</text>
+      </view>
+      <view  wx:elif="{{ queueNoticeSpread && queueNotice }}" class="queue-notice">
+        <view class="project-name">
+          <text>{{ queueNotice.project }}：</text>
+        </view>
+        <view class="queue-info">
+          <text>您的排号为{{ queueNotice.NO }}号，前面还有<text class="wait-num">{{ queueNotice.waitNum }}</text>人</text>
+        </view>
+      </view>
+      <view wx:else class="no-queue-notice-wrap">
+        <text>暂无排号信息，请到前台排队就诊！</text>
+      </view>
+    </view>
+  </view>

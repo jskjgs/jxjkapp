@@ -1,0 +1,53 @@
+<style lang="scss">
+@import '../assets/style/variables/theme.scss';
+#page-my-psd {
+  padding-top: 100rpx;
+}
+</style>
+
+<template>
+  <view id="page-my-psd">
+    <TelInput 
+      submitBtnText="确认换绑" 
+      :value.sync="formData"
+      @submit.user="handleSumbit"/>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import TelInput from '@/components/telInput'
+
+  export default class Index extends wepy.page {
+    config = {
+      navigationBarTitleText: '换绑手机'
+    }
+    components = {
+      TelInput
+    }
+
+    mixins = []
+
+    data = {
+      formData: {
+        phone: '',
+        code: ''
+      }
+    }
+
+    computed = {
+    }
+
+    methods = {
+      handleSumbit () {
+        console.log(this.formData)
+      }
+    }
+
+    events = {
+    }
+
+    onLoad() {
+    }
+  }
+</script>

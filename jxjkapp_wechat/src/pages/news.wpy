@@ -1,0 +1,109 @@
+<style lang="scss">
+#page-news {
+  .news-item {
+    margin-bottom: 20rpx;
+    padding: 30rpx;
+
+    .news-photo {
+      border-radius: 10rpx;
+      width: 200rpx;
+      height: 200rpx;
+    }
+    .news-main {
+      margin-left: 28rpx;
+    }
+    .news-title {
+      margin-top: 18rpx;
+      font-size: 14px;
+      font-weight: bold;
+    }
+    .news-des {
+      margin-top: 20rpx;
+      color: #B8B8B8;
+    }
+    .news-date {
+      margin-top: 34rpx;
+      text-align: right;
+      color: #B8B8B8;
+    }
+  }
+}
+</style>
+
+<template>
+  <CustomPage>
+    <view id="page-news">
+      <view class="news-list">
+        <repeat for="{{ listData }}" key="index" item="item" index="index">
+          <view class="news-item flex main-bg" @tap="handleNewsTap({{ item.id }})">
+            <image class="news-photo flex-item--none" src="{{ item.photo }}"/>
+            <view class="news-main flex-item">
+              <view class="news-title">
+                <text>{{ item.title }}</text>
+              </view>
+              <view class="news-des text-ellipsis--two">
+                <text>{{ item.des }}</text>
+              </view>
+              <view class="news-date">
+                <text>{{ item.date }}</text>
+              </view>
+            </view>
+          </view>
+        </repeat>
+        <view wx:if="{{ isLastPage }}" class="no-more-tip">
+          <text>已无更多内容了</text>
+        </view>
+      </view>
+    </view>
+  </CustomPage>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import CustomPage from '@/components/customPage'
+
+  import pageMixin from '@/mixins/page'
+
+  export default class Index extends wepy.page {
+    config = {
+      navigationBarTitleText: '新闻中心'
+    }
+    components = {
+      CustomPage
+    }
+
+    mixins = [pageMixin]
+
+    data = {
+    }
+
+    computed = {
+    }
+
+    methods = {
+      handleNewsTap (id) {
+        wx.navigateTo({
+          url: `/pages/news_detail?id=${id}`
+        })
+      }
+    }
+
+    onLoad () {
+      this.initData({
+        url: '/news/all',
+        method: 'POST',
+        data: {
+          pageSize: 5
+        }
+      }, (listItem, res) => {
+        return {
+          id: listItem.id,
+          photo: (listItem.images || '').split(',')[0],
+          title: listItem.title,
+          des: listItem.content,
+          date: this.$_convertDate(listItem.createDate)
+        }
+      })
+    }
+  }
+</script>

@@ -1,0 +1,107 @@
+<style lang="scss">
+#page-signup {
+  .page-title-wrap {
+    margin: 78rpx 0;
+    font-size: 16px;
+    font-weight: bold;
+    text-align: center;
+  }
+
+  .input-group + .input-group {
+    border-top: 2rpx solid #F2F2F2;
+  }
+  .btn-wrap {
+    button {
+      margin-top: 100rpx;
+    }
+  }
+  .forget-btn {
+    margin-top: 38rpx;
+    text-align: center;
+    color: #B8B8B8;
+  }
+}
+</style>
+
+<template>
+  <view id="page-signup">
+    <view class="page-title-wrap">注册</view>
+    <view class="input-box">
+      <view class="input-group">
+        <PhoneInput
+          class="input-group__inner"
+          type="number"
+          :value.sync="phone"
+          placeholder="请输入手机号" />
+      </view>
+      <view class="input-group">
+        <CaptchaInput
+          class="input-group__inner"
+          :value.sync="captcha" 
+          placeholder="请输入验证码" />
+        <button class="input-group__btn">获取验证码</button>
+      </view>
+    </view>
+    <view class="btn-wrap flex--hcenter">
+      <button 
+        class="primary-btn"
+        disabled="{{ !phoneIsValid || !captcha }}"
+        @tap="handleToNext">下一步</button>
+    </view>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+
+  import CustomInput from '@/components/customInput'
+
+  export default class Index extends wepy.page {
+    config = {
+      navigationBarTitleText: '锦欣健康'
+    }
+    components = {
+      PhoneInput: CustomInput,
+      CaptchaInput: CustomInput
+    }
+
+    mixins = []
+
+    data = {
+      phone: '',
+      phoneIsValid: false,
+      captcha: 'fdsdfs'
+    }
+
+    computed = {
+    }
+
+    watch = {
+      phone (newVal) {
+        if (newVal) {
+          this.phoneIsValid = true
+        }
+      },
+      captcha (newVal) {
+        console.log('aptcha', newVal)
+      }
+    }
+
+    methods = {
+      handleInput (valBind, { detail }) {
+        this[valBind] = detail.value
+      },
+      handleToNext () {
+        wx.navigateTo({
+          url: '/pages/signup_info'
+        })
+      }
+    }
+
+    events = {
+    }
+
+    onLoad() {
+    }
+  }
+</script>

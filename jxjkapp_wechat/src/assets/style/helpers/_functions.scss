@@ -1,0 +1,9 @@
+/* 多行文本溢出显示... */
+@mixin text-ellipsis($num) {
+  display: -webkit-box !important;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  word-break: break-all;
+  -webkit-line-clamp: $num; /* 控制显示行数 */
+  -webkit-box-orient: vertical;
+}

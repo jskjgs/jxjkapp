@@ -1,0 +1,28 @@
+
+  <view id="health-page">
+    <view class="order-list">
+      <block wx:for="{{ orderList }}" wx:for-index="index" wx:for-item="item" wx:key="index">
+        <navigator url="/pages/health_detail">
+          <view class="order-item">
+            <view class="row flex--vcenter--sb">
+              <text class="order-date">订单生成时间: {{ item.date }}</text>
+              <text class="order-from">{{ item.hospital }}</text>
+            </view>
+            <view class="order-summary flex">
+              <image class="order-thumbnail flex-item--none" src="{{ item.image }}" alt=""/>
+              <view class="order-text-wrap flex-item flex--vcenter--sb">
+                <view class="flex--col">
+                  <text class="order-project">{{ item.project }}</text>
+                  <text class="order-price">数量：{{ item.num }} 总价：¥{{ item.total }}</text>
+                </view>
+                <text style="color: {{orderStatusDict[item.status].color}}">{{orderStatusDict[item.status].text}}</text>
+              </view>
+            </view>
+          </view>
+        </navigator>
+      </block>
+      <view class="no-more-tip">
+        <text>已无更多内容了</text>
+      </view>
+    </view>
+  </view>

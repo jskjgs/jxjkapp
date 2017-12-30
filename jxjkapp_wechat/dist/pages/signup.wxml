@@ -1,0 +1,26 @@
+
+  <view id="page-signup">
+    <view class="page-title-wrap">注册</view>
+    <view class="input-box">
+      <view class="input-group">
+        
+  <view class="comp-custom-input input-group__inner">
+    <textarea  wx:if="{{ $PhoneInput$type === 'textarea' }}" value="{{ $PhoneInput$value }}" disabled="{{ $PhoneInput$disabled }}" maxlength="{{ $PhoneInput$maxlength }}" placeholder="{{ $PhoneInput$placeholder }}" placeholder-style="{{ 'color: #B8B8B8;' + $PhoneInput$placeholderStyle }}" bindinput="$PhoneInput$handleInput"/>
+    <input  wx:else type="{{ $PhoneInput$type }}" value="{{ $PhoneInput$value }}" password="{{ $PhoneInput$password }}" disabled="{{ $PhoneInput$disabled }}" maxlength="{{ $PhoneInput$maxlength }}" placeholder="{{ $PhoneInput$placeholder }}" placeholder-style="{{ 'color: #B8B8B8;' + $PhoneInput$placeholderStyle }}" bindinput="$PhoneInput$handleInput"/>
+  </view>
+
+      </view>
+      <view class="input-group">
+        
+  <view class="comp-custom-input input-group__inner">
+    <textarea  wx:if="{{ $CaptchaInput$type === 'textarea' }}" value="{{ $CaptchaInput$value }}" disabled="{{ $CaptchaInput$disabled }}" maxlength="{{ $CaptchaInput$maxlength }}" placeholder="{{ $CaptchaInput$placeholder }}" placeholder-style="{{ 'color: #B8B8B8;' + $CaptchaInput$placeholderStyle }}" bindinput="$CaptchaInput$handleInput"/>
+    <input  wx:else type="{{ $CaptchaInput$type }}" value="{{ $CaptchaInput$value }}" password="{{ $CaptchaInput$password }}" disabled="{{ $CaptchaInput$disabled }}" maxlength="{{ $CaptchaInput$maxlength }}" placeholder="{{ $CaptchaInput$placeholder }}" placeholder-style="{{ 'color: #B8B8B8;' + $CaptchaInput$placeholderStyle }}" bindinput="$CaptchaInput$handleInput"/>
+  </view>
+
+        <button class="input-group__btn">获取验证码</button>
+      </view>
+    </view>
+    <view class="btn-wrap flex--hcenter">
+      <button class="primary-btn" disabled="{{ !phoneIsValid || !captcha }}" bindtap="handleToNext">下一步</button>
+    </view>
+  </view>

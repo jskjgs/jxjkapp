@@ -1,0 +1,40 @@
+
+  <view id="health-pay">
+    
+  <view class="comp-custom-card">
+    <view class="card-inner">
+      <view class="card-top">
+        <image src="{{ $CustomCard$imageUrl }}" class="card-image"/>
+        <view class="card-title">
+          <text>{{ $CustomCard$title }}</text>
+        </view>
+      </view>
+      <view class="card-content">
+        <view class="order-price-wrap">
+        <view class="price-total-wrap flex--vcenter--sb">
+          <text>总金额</text>
+          <text class="price-total">¥ 1000.00</text>
+        </view>
+        <view class="price-detail">
+          <view class="row flex--vcenter--sb">
+            <text class="label">单价</text>
+            <text class="value">¥ 10.00</text>
+          </view>
+          <view class="row flex--vcenter--sb" style="margin-top: 20rpx;">
+            <text class="label">数量</text>
+            <text class="value">10</text>
+          </view>
+        </view>
+        <view class="order-date flex--vcenter--sb">
+          <text class="label">开单事件</text>
+          <text class="value">2017-11-09 14:36:20</text>
+        </view>
+      </view>
+      </view>
+    </view>
+    <view class="btn-wrap">
+      <button>立即支付</button>
+    </view>
+  </view>
+
+  </view>

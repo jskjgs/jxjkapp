@@ -1,0 +1,212 @@
+<style lang="scss">
+@import '../assets/style/variables/theme.scss';
+#page-index-order-info {
+  
+  .success-dialog {
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+
+    &.hidden {
+      opacity: 0;
+      z-index: -1;
+
+      .success-dialog__inner {
+        // transition: all 600ms;
+        // opacity: 0;
+        // transform: translate3d(-50%, -60%, 0);
+      }
+
+      .success-dialog__quit {
+        // transition: all 600ms ease 400ms;
+        // opacity: 0;
+        // transform: translate3d(-50%, 20px, 0);
+      }
+    }
+
+    &__mask {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.4);
+    }
+    &__inner {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      margin-top: -60rpx;
+      // transition: all 600ms;
+      transform: translate3d(-50%, -50%, 0);
+      border-radius: 20rpx;
+      width: 570rpx;
+      height: 600rpx; 
+      background: #fff;
+      opacity: 1;
+      z-index: 1;
+      
+      .btn-wrap {
+        margin-top: 94rpx;
+      }
+      .to-vip-btn {
+        width: 270rpx;
+        height: 52rpx;
+        color: #fff;
+        background: $primaryColor;
+      }
+    }
+    &__quit {
+      position: absolute;
+      left: 50%;
+      bottom: 240rpx;
+      // transition: all 600ms ease 400ms;
+      transform: translate3d(-50%, 0, 0);
+      z-index: 1;
+    }
+  }
+}
+</style>
+
+<template>
+  <view id="page-index-order-info">
+    <OrderInfo
+      :lists.sync="lists"
+      :pickeds.sync="pickeds">
+      <button 
+        slot="submitBtn"
+        class="submit-btn primary-btn"
+        @tap="submit">
+        确认提交
+      </button>
+    </OrderInfo>
+    <view class="success-dialog {{ successDialogVisible ? '' : 'hidden' }}">
+      <view class="success-dialog__mask">
+      </view>
+      <view class="success-dialog__inner">
+        <image 
+          src="../assets/images/success-order.png" 
+          style="width: 100%; height: 260rpx;" />
+        <view style="margin-top: 98rpx;">
+          <image 
+            src="../assets/images/success-order-tip.png"
+            style="width: 347rpx; height: 30rpx; margin: auto;" />
+        </view>
+        <view class="btn-wrap flex--center">
+          <button class="to-vip-btn flex--center">前往VIP用户管理</button>
+        </view>
+      </view>
+      <view 
+        class="success-dialog__quit"
+        @tap="closeDialog">
+        <icon 
+          type="clear" 
+          size="37" 
+          color="rgb(225, 225, 225)"
+          style="background: #2E2E2E; border-radius: 50%;"/>
+      </view>
+    </view>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+
+  import OrderInfo from '../components/orderInfo'
+
+  export default class Index extends wepy.page {
+    config = {
+      navigationBarTitleText: '预约信息'
+    }
+    components = {
+      OrderInfo
+    }
+
+    mixins = []
+
+    data = {
+      lists: {
+        hospitalList: [],
+        projectList: [],
+        orderDateList: [],
+        orderTimeList: []
+      },
+      pickeds: {
+        hospital: '',
+        projectName: '',
+        orderDate: '',
+        orderTime: ''
+      },
+      successDialogVisible: false
+    }
+
+    computed = {
+    }
+
+    methods = {
+      submit () {
+        if (Math.random() > 0.5) {
+          this.successDialogVisible = true
+        } else {
+          wx.showToast({
+            image: '../assets/images/demo.png',
+            title: '提交失败'
+          })
+        }
+      },
+      closeDialog () {
+        this.successDialogVisible = false
+      }
+    }
+
+    events = {
+    }
+
+    onLoad() {
+      setTimeout(() => {
+        this.lists = {
+          hospitalList: [{
+            value: 'value0',
+            label: '医院一'
+          }, {
+            value: 'value1',
+            label: '医院二'
+          }],
+          projectList: [{
+            value: 'value0',
+            label: '项目一'
+          }, {
+            value: 'value1',
+            label: '项目二'
+          }],
+          orderDateList: [{
+            value: 'value0',
+            label: '2017-12-1'
+          }, {
+            value: 'value1',
+            label: '2017-12-2'
+          }, {
+            value: 'value2',
+            label: '2017-12-3'
+          }],
+          orderTimeList: [{
+            value: 'value0',
+            label: '1:00~2:00'
+          }, {
+            value: 'value1',
+            label: '2:00~3:00'
+          }]
+        }
+        this.pickeds = {
+          hospital: '医院二',
+          projectName: '项目二',
+          orderDate: '2017-12-1',
+          orderTime: '1:00~2:00'
+        }
+        this.$apply()
+      }, 1000)
+    }
+  }
+</script>

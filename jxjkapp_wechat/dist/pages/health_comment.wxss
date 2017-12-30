@@ -1,0 +1,3 @@
+@import "./../components/starComment.wxss";
+@import "./../components/customCard.wxss";
+#page-health-comment .comment-content-wrap .star-comment-wrap{width:210rpx}#page-health-comment .comment-content-wrap .textarea-wrap{position:relative;margin-top:10rpx}#page-health-comment .comment-content-wrap textarea{box-sizing:border-box;border:2rpx solid #ccc;border-radius:10rpx;padding:20rpx;width:auto;height:230rpx;background:#FAFAFA;font-size:13px}#page-health-comment .comment-content-wrap .textarea-count{position:absolute;right:16rpx;bottom:16rpx}#page-health-comment .comment-content-wrap .comment-text{border-top:2rpx solid #F2F4F7;padding:42rpx 0 0}#page-health-comment .comment-content-wrap .comment-date{margin-top:40rpx;justify-content:flex-end;font-size:12px}

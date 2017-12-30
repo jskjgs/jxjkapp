@@ -1,0 +1,62 @@
+
+  <view id="page-my">
+    <view class="avatar-box flex--center">
+      <image class="avatar-box-bg" mode="aspectFill" src="../assets/images/my-bg.png"/>
+      <view class="avatar-wrap">
+        <image src="../assets/images/demo.png" class="avatar"/>
+        <view class="flex--hcenter">
+          <text  wx:if="{{ !!userInfo }}" class="username">YK 陈御珂</text>
+          <text  wx:else bindtap="toLogin">请登录账号</text>
+        </view>
+      </view>
+    </view>
+    <view class="menu--icon">
+      <block wx:for="{{ myItems }}" wx:for-index="index" wx:for-item="item" wx:key="text">
+        <view class="menu--icon__item flex--vcenter" bindtap="itemClick" data-wpyitemclick-a="{{ index }}">
+          <view class="menu--icon__item__icon">
+            <image mode="aspectFit" class="item-icon" src="{{ item.icon }}"/>
+          </view>
+          <view class="menu--icon__item__main">
+            <text class="item-label">{{ item.label }}</text>
+            <view class="arrow-rt"/>
+          </view>
+        </view>
+      </block>
+    </view>
+    
+  <view class="comp-dialog" style="display: {{ $QrcodeDialog$visible ? 'block' : 'none' }};">
+    <view class="dialog__modal" bindtap="$QrcodeDialog$modalClick"/>
+    <view class="dialog__inner" style="{{ $QrcodeDialog$innerStyle }}">
+      
+      <view class="qrcode-dialog flex--col">
+        <view class="row flex--vcenter">
+          <image class="thumbnail-avatar" src="../assets/images/demo.png"/>
+          <text class="username">YK 陈御珂</text>
+        </view>
+        <view class="flex-item flex--center">
+          <view class="qrcode-wrap">
+          </view>
+        </view>
+      </view>
+    
+    </view>
+  </view>
+
+    
+  <view class="comp-dialog" style="display: {{ $TelDialog$visible ? 'block' : 'none' }};">
+    <view class="dialog__modal" bindtap="$TelDialog$modalClick"/>
+    <view class="dialog__inner" style="{{ $TelDialog$innerStyle }}">
+      
+      <view class="tel-dialog">
+        <view class="flex--center title">
+          <text>客服电话</text>
+        </view>
+        <view class="flex--center tel" bindtap="callPhone">
+          <text>021-XXXXXXXX</text>
+        </view>
+      </view>
+    
+    </view>
+  </view>
+
+  </view>

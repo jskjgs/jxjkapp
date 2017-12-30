@@ -1,0 +1,131 @@
+<style lang="scss">
+@import '../assets/style/variables/theme.scss';
+.comp-order-info {
+  .menu--default {
+    &__item {
+      .item-label {
+        color: #818181;
+      }
+      .arrow-rt {
+        margin-left: 10rpx;
+      }
+    }
+  }
+
+  .submit-btn-wrap {
+    button {
+      margin-top: 100rpx;
+    }
+  }
+}
+</style>
+
+<template>
+  <view class="comp-order-info">
+    <PickerList
+      :ITEMS="ITEMS"
+      :lists.sync="lists"
+      :pickeds.sync="pickeds">
+    </PickerList>
+    <view class="submit-btn-wrap flex--hcenter">
+      <slot name="submitBtn">
+      </slot>
+    </view>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+
+  import PickerList from '@/components/pickerList'
+  const ITEMS = [{
+    label: '院区名称',
+    picker: {
+      valueBind: 'hospital',
+      rangeBind: 'hospitalList'
+    }
+  }, {
+    label: '项目',
+    picker: {
+      valueBind: 'projectName',
+      rangeBind: 'projectList'
+    }
+  }, {
+    label: '预约日期',
+    picker: {
+      valueBind: 'orderDate',
+      rangeBind: 'orderDateList'
+    }
+  }, {
+    label: '预约时间',
+    picker: {
+      valueBind: 'orderTime',
+      rangeBind: 'orderTimeList'
+    }
+  }]
+  
+  export default class CustomCard extends wepy.component {
+    components = {
+      PickerList
+    }
+
+    props = {
+      lists: {
+        type: Object,
+        default: {
+          hospitalList: [],
+          projectList: [],
+          orderDateList: [],
+          orderTimeList: []
+        }
+      },
+      pickeds: {
+        type: Object,
+        twoWay: true,
+        default: {
+          hospital: '',
+          projectName: '',
+          orderDate: '',
+          orderTime: ''
+        }
+      }
+    }
+
+    mixins = []
+
+    data = {
+      ITEMS
+    }
+
+    computed = {
+      pickedIndex () {
+        const lists = this.lists
+        const pickeds = this.pickeds
+        let returnVal = {}
+        ITEMS.forEach(item => {
+          const valueBind = item.picker.valueBind
+          const rangeBind = item.picker.rangeBind
+          returnVal[valueBind] = lists[rangeBind].findIndex(item => {
+            return item.label === pickeds[valueBind]
+          })
+        })
+        return returnVal
+      }
+    }
+
+    methods = {
+      handlePickerChange (valueBind, rangeBind, { detail }) {
+        const index = detail.value
+        if (index) {
+          this.pickeds[valueBind] = this.lists[rangeBind][index].label
+        }
+      }
+    }
+
+    events = {
+    }
+
+    onLoad() {
+    }
+  }
+</script>

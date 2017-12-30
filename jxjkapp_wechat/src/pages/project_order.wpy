@@ -1,0 +1,82 @@
+<style lang="scss">
+@import "../assets/style/variables/theme.scss";
+#page-index-project-order {
+  .web-view {
+    position: absolute;
+    top: 0;
+    bottom: 90rpx;
+    left: 0;
+    right: 0;
+    overflow: auto;
+  }
+
+  .order-btn-wrap {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 90rpx;
+    box-shadow: 0 -2rpx 4rpx 0 rgba(18, 18, 54, 0.09);
+
+    .disabled-tip {
+      padding-left: 44rpx;
+      color: $primaryColor;
+    }
+    button {
+      width: 284rpx;
+      border-radius: 0;
+      background: $primaryColor;
+      color: #fff;
+    }
+  }
+}
+</style>
+
+<template>
+  <view id="page-index-project-order">
+    <web-view class="web-view" src="https://www.baidu.com/"></web-view>
+    <view class="order-btn-wrap flex">
+      <view class="disabled-tip flex-item flex--vcenter">
+        <text>充值VIP后可享受预约功能</text>
+      </view>
+      <button 
+        class="flex-item--none flex--center"
+        @tap="handleOrderBtnTap">
+        预约项目
+      </button>
+    </view>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+
+  export default class Index extends wepy.page {
+    config = {
+      navigationBarTitleText: '项目预约'
+    }
+    components = {
+    }
+
+    mixins = []
+
+    data = {}
+
+    computed = {
+    }
+
+    methods = {
+      handleOrderBtnTap () {
+        wx.navigateTo({
+          url: '/pages/project_order_info'
+        })
+      }
+    }
+
+    events = {
+    }
+
+    onLoad() {
+    }
+  }
+</script>

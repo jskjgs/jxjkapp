@@ -1,0 +1,65 @@
+
+  <view id="page-staff">
+    <view class="search-bar flex--vcenter--sb">
+      <view class="filter-btn flex-item--none" bindtap="openFilterBox">
+        筛选
+      </view>
+      <view class="search-input-wrap flex-item flex--vcenter">
+        <icon type="search" size="16"/>
+        <input class="flex-item" value="{{ searchParams.searchWord }}" placeholder-style="color: #B8B8B8;" placeholder="搜索" bindconfirm="handleSearch" bindfocus="handleSearchFocus" bindblur="handleSearchBlur"/>
+      </view>
+    </view>
+    <view class="mask" hidden="{{ !filterVisible && !onSearch }}">
+    </view>
+    <view class="filter-box" hidden="{{ !filterVisible }}">
+      <view class="box-inner main-bg">
+        <view class="filter-items">
+          <view class="filter-sort flex">
+            <view class="sort-label flex-item--none">院区选择：</view>
+            <view class="sort-items flex-item flex">
+              <view class="filter-item flex-item--none">全部</view>
+              <view class="filter-item flex-item--none">锦江院区</view>
+              <view class="filter-item flex-item--none">青白江院区</view>
+            </view>
+          </view>
+          <view class="filter-sort flex">
+            <view class="sort-label flex-item--none">医生类别：</view>
+            <view class="sort-items flex-item flex">
+              <view class="filter-item flex-item--none picked">全部</view>
+              <view class="filter-item flex-item--none picked">主治医生</view>
+              <view class="filter-item flex-item--none">中级按摩师</view>
+              <view class="filter-item flex-item--none">高级按摩师</view>
+              <view class="filter-item flex-item--none">中级按摩师</view>
+            </view>
+          </view>
+        </view>
+        <view class="btn-wrap flex">
+          <view class="reset-btn flex--center" bindtap="resetFilters">
+            重置
+          </view>
+          <view class="confirm-btn flex--center" bindtap="submitFilters">
+            确认
+          </view>
+        </view>
+      </view>
+    </view>
+    <scroll-view scroll-y="true">
+      <view class="staff-list-wrap">
+        <view class="staff-list flex">
+          <block wx:for="{{ listData }}" wx:for-index="index" wx:for-item="item" wx:key="index">
+            <view class="staff-item main-bg">
+              <view class="avatar-wrap flex--center">
+                <image src="{{ item.avatar }}"/>
+              </view>
+              <view class="name-wrap">
+                <text>{{ item.name }}</text>
+              </view>
+              <view class="intro-wrap text-ellipsis--two">
+                <text>{{ item.intro }}</text>
+              </view>
+            </view>
+          </block>
+        </view>
+      </view>
+    </scroll-view>
+  </view>

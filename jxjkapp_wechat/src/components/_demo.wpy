@@ -1,0 +1,38 @@
+<style lang="scss">
+</style>
+
+<template>
+  <view class="comp-custom-card">
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+
+  export default class CustomCard extends wepy.component {
+    components = {
+    }
+
+    props = {
+      imageUrl: String,
+      title: String
+    }
+
+    mixins = []
+
+    data = {
+    }
+
+    computed = {
+    }
+
+    methods = {
+    }
+
+    events = {
+    }
+
+    onLoad() {
+    }
+  }
+</script>

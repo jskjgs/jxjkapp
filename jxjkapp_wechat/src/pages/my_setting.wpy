@@ -1,0 +1,72 @@
+<style lang="scss">
+#page-my-setting {
+}
+</style>
+
+<template>
+  <view id="page-my-setting">
+    <view class="menu--default">
+      <repeat for="{{ settings }}" key="index" item="item" index="index">
+        <view class="menu--default__item" @tap="itemClick({{ index }})">
+          <text class="item-label">{{ item.label }}</text>
+          <view class="arrow-rt"></view>
+        </view>
+      </repeat>
+    </view>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+
+  const SETTINGS = [{
+    label: '换绑手机',
+    handlerTap () {
+      wx.navigateTo({
+        url: '/pages/my_tel_change'
+      })
+    }
+  }, {
+    label: '清除缓存',
+    handlerTap () {
+      wx.clearStorage()
+      wx.showToast({
+        icon: 'success',
+        title: '缓存清除成功'
+      })
+    }
+  }, {
+    label: '退出登陆',
+    handlerTap () {
+    }
+  }]
+  export default class Index extends wepy.page {
+    config = {
+      navigationBarTitleText: '系统设置'
+    }
+    components = {
+    }
+
+    mixins = []
+
+    data = {
+      settings: SETTINGS
+    }
+
+    computed = {
+    }
+
+    methods = {
+      itemClick (index) {
+        const handlerTap = SETTINGS[index].handlerTap
+        handlerTap.call(this)
+      }
+    }
+
+    events = {
+    }
+
+    onLoad() {
+    }
+  }
+</script>

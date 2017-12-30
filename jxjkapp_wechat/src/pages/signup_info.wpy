@@ -1,0 +1,56 @@
+<style lang="scss">
+#page-signup-info {
+}
+</style>
+
+<template>
+  <view id="page-signup-info">
+    <PersonInfo 
+      submitBtnText="完成注册"
+      @pickedsChange.user="handlePickedsChange"
+      @submit.user="handleSubmit">
+    </PersonInfo>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+
+  import PersonInfo from '@/components/personInfo'
+
+  export default class Index extends wepy.page {
+    config = {
+      navigationBarTitleText: '注册信息'
+    }
+    components = {
+      PersonInfo
+    }
+
+    mixins = []
+
+    data = {
+      formData: ''
+    }
+
+    computed = {
+    }
+
+    watch = {
+    }
+
+    methods = {
+      handlePickedsChange (formData) {
+        this.formData = formData
+      },
+      handleSubmit (formData) {
+        console.log('handleSubmit', formData)
+      }
+    }
+
+    events = {
+    }
+
+    onLoad() {
+    }
+  }
+</script>

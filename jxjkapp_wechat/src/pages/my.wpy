@@ -1,0 +1,259 @@
+<style lang="scss">
+@import '../assets/style/variables/theme.scss';
+page {
+  height: 100%;
+}
+#page-my {
+  font-size: 15px;
+  .avatar-box {
+    position: relative;
+    height: 300rpx;
+    background: $primaryColor;
+    color: #fff;
+  }
+  .avatar-box-bg {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    top: 0;
+    height: 100%;
+    z-index: 0;
+  }
+  .avatar-wrap {
+    position: relative;
+    z-index: 1;
+  }
+  .avatar {
+    overflow: hidden;
+    margin-bottom: 30rpx;
+    border-radius: 50%;
+    width: 140rpx;
+    height: 140rpx;
+  }
+
+  .menu--icon {
+    padding: 24rpx 30rpx 24rpx 54rpx; 
+
+    &__item {
+      &__icon {
+        width: 120rpx;
+
+        image {
+          width: 40rpx;
+          height: 40rpx;
+        }
+      }
+      &__main {
+        position: relative;
+      }
+    }
+  }
+
+  .qrcode-dialog {
+    height: 100%;
+    .thumbnail-avatar {
+      overflow: hidden;
+      margin-right: 40rpx;
+      border-radius: 50%;
+      width: 100rpx;
+      height: 100rpx;
+    }
+    .qrcode-wrap {
+      width: 374rpx;
+      height: 374rpx;
+      background: red;
+    }
+  }
+
+  .tel-dialog {
+    .title {
+      border-bottom: 2rpx solid #F2F2F2;
+      height: 94rpx;
+      font-size: 18px;
+      font-weight: bold;
+    }
+    .tel {
+      height: 122rpx;
+      color: #9190FF;
+    }
+  }
+}
+</style>
+
+<template>
+  <view id="page-my">
+    <view class="avatar-box flex--center">
+      <image
+        class="avatar-box-bg" 
+        mode="aspectFill"
+        src="../assets/images/my-bg.png" />
+      <view class="avatar-wrap">
+        <image 
+          src="../assets/images/demo.png" 
+          class="avatar" />
+        <view class="flex--hcenter">
+          <text 
+            wx:if="{{ !!userInfo }}" 
+            class="username">YK 陈御珂</text>
+          <text
+            wx:else
+            @tap="toLogin">请登录账号</text>
+        </view>
+      </view>
+    </view>
+    <view class="menu--icon">
+      <repeat for="{{ myItems }}" key="text" item="item" index="index">
+        <view class="menu--icon__item flex--vcenter" @tap="itemClick({{ index }})">
+          <view class="menu--icon__item__icon">
+            <image 
+              mode="aspectFit"
+              class="item-icon" 
+              src="{{ item.icon }}"></image>
+          </view>
+          <view class="menu--icon__item__main">
+            <text class="item-label">{{ item.label }}</text>
+            <view class="arrow-rt"></view>
+          </view>
+        </view>
+      </repeat>
+    </view>
+    <QrcodeDialog :visible.sync="qrcodeVisible" innerStyle="padding: 40rpx;">
+      <view class="qrcode-dialog flex--col">
+        <view class="row flex--vcenter">
+          <image class="thumbnail-avatar" src="../assets/images/demo.png"></image>
+          <text class="username">YK 陈御珂</text>
+        </view>
+        <view class="flex-item flex--center">
+          <view class="qrcode-wrap">
+          </view>
+        </view>
+      </view>
+    </QrcodeDialog>
+    <TelDialog :visible.sync="telDialogVisible" innerStyle="width: 560rpx;height: 220rpx;">
+      <view class="tel-dialog">
+        <view class="flex--center title">
+          <text>客服电话</text>
+        </view>
+        <view class="flex--center tel" @tap="callPhone">
+          <text>021-XXXXXXXX</text>
+        </view>
+      </view>
+    </TelDialog>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import Dialog from '@/components/dialog'
+
+  const MY_ITEMS = [{
+    icon: '../assets/images/icon-qrcode.png',
+    label: '我的二维码',
+    handlerTap () {
+      wx.navigateTo({
+        url: '/pages/my_qrcode'
+      })
+    }
+  }, {
+    icon: '../assets/images/icon-relation.png',
+    label: '绑定就诊人',
+    handlerTap () {
+      wx.navigateTo({
+        url: '/pages/my_relations'
+      })
+    }
+  }, {
+    icon: '../assets/images/icon-consent.png',
+    label: '知情通知书',
+    handlerTap () {
+      wx.navigateTo({
+        url: '/pages/my_consent'
+      })
+    }
+  }, {
+    icon: '../assets/images/icon-vip.png',
+    label: 'VIP预约列表',
+    handlerTap () {
+      wx.navigateTo({
+        url: '/pages/my_vip'
+      })
+    }
+  }, {
+    icon: '../assets/images/icon-concat.png',
+    label: '联系我们',
+    handlerTap () {
+      wx.showModal({
+        title: '客服电话',
+        confirmlabel: '拨打',
+        content: '8400561',
+        success (data) {
+          if (data.confirm) {
+            wx.makePhoneCall({
+              phoneNumber: '44323423432'
+            })
+          }
+          console.log('success', arguments)
+        },
+        fail () {
+          console.log('fail', arguments)
+        }
+      })
+    }
+  }, {
+    icon: '../assets/images/icon-setting.png',
+    label: '系统设置',
+    handlerTap () {
+      wx.navigateTo({
+        url: '/pages/my_setting'
+      })
+    }
+  }]
+
+  export default class Index extends wepy.page {
+    config = {
+      navigationBarTitleText: '我的'
+    }
+    components = {
+      QrcodeDialog: Dialog,
+      TelDialog: Dialog
+    }
+
+    mixins = []
+
+    data = {
+      qrcodeVisible: false, // 二维码弹框
+      telDialogVisible: false,
+      myItems: MY_ITEMS
+    }
+
+    computed = {
+      userInfo () {
+        return this.$parent.globalData.userInfo
+      }
+    }
+
+    methods = {
+      toLogin () {
+        wx.navigateTo({
+          url: '/pages/login'
+        })
+      },
+      itemClick (index) {
+        const handlerTap = MY_ITEMS[index].handlerTap
+        handlerTap.call(this)
+      },
+      callPhone () {
+        wx.makePhoneCall({
+          phoneNumber: '44323423432'
+        })
+      }
+    }
+
+    events = {
+    }
+
+    onLoad() {
+      console.log('route', this.$_getRoute())
+    }
+  }
+</script>

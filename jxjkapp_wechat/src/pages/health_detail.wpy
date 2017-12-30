@@ -1,0 +1,290 @@
+<style lang="scss">
+@import '../assets/style/variables/theme.scss';
+#page-health-detail {
+  .top-box {
+    position: relative;
+    z-index: 1;
+    padding: 0 30rpx;
+    height: 300rpx;
+    color: #fff;
+    background: #ccc;
+
+    .title {
+      font-size: 18px;
+    }
+    .process-wrap {
+      margin-top: 40rpx;
+    }
+    .process-text {
+      font-size: 10px;
+
+      .num {
+        font-size: 12px;
+      }
+    }
+    .process-bar {
+      overflow: hidden;
+      margin-top: 20rpx;
+      border-radius: 20rpx;
+    }
+
+    .dropdown-btn {
+      position: absolute;
+      width: 30rpx;
+      height: 30rpx;
+      background: red;
+      right: 30rpx;
+      bottom: 20rpx;
+    }
+  }
+
+  .project-describe {
+    overflow: hidden;
+    box-sizing: content-box;
+    position: relative;
+    max-height: 0;
+    transition: all 0.6s ease-out;
+    background: #fff;
+
+    &.spread {
+      max-height: 500rpx;
+      // transition-timing-function: ease-in;
+    }
+
+    &__inner {
+      padding: 60rpx 30rpx 30rpx;
+    }
+
+    .dropup-btn {
+      position: absolute;
+      right: 30rpx;
+      top: 14rpx;
+      color: $primaryColor;
+
+      .arrow-top {
+        margin-left: 12rpx;
+        width: 16rpx;
+        height: 16rpx;
+        &::after {
+          border-color: $primaryColor $primaryColor transparent transparent;
+        }
+      }
+    }
+  }
+
+  .process-list {
+    margin-top: 20rpx;
+    background: #fff;
+  }
+  .process-item {
+    position: relative;
+    overflow: hidden;
+    padding: 30rpx;
+    border-bottom: 2rpx solid #E6E6E6;
+  }
+  .item-top {
+    padding: 0 0 18rpx;
+    border-bottom: 2rpx solid #F2F2F2;
+  }
+  .item-main {
+    position: relative;
+    .row {
+      margin-top: 20rpx;
+    }
+  }
+  .item-symptom-wrap {
+    position: relative;
+    %arrow-common {
+      position: absolute;
+      right: 0;
+      border: 20rpx solid transparent;
+      border-width: 14rpx 18rpx;
+    }
+    .arrow-bt {
+      @extend %arrow-common;
+      border-top-color: #B8B8B8;
+    }
+    .arrow-top {
+      @extend %arrow-common;
+      transform: translate3d(0, -50%, 0);
+      border-bottom-color: #B8B8B8;
+    }
+  }
+  .item-symptom--clone {
+    position: absolute;
+    z-index: -10;
+  }
+  .item-btn-wrap {
+    margin-top: 40rpx;
+    justify-content: flex-end;
+    button {
+      margin: 0 0 0 30rpx;
+      width: 120rpx;
+      height: 50rpx;
+      line-height: 50rpx;
+    }
+  }
+}
+</style>
+
+<template>
+  <view id="page-health-detail">
+    <view class="top-box flex--hcenter flex--col">
+      <view class="title">Thermage 热玛吉</view>
+      <view class="process-wrap">
+        <text class="process-text">第 <text class="num">0/10</text> 次</text>
+        <progress 
+          class="process-bar"
+          stroke-width="10"
+          backgroundColor="rgba(249, 249, 255, 0.4)"
+          activeColor="#56F2F2">
+        </progress>
+      </view>
+      <view 
+        class="dropdown-btn"
+        hidden="{{projectDesVisible}}"
+        @tap="dropdown">
+      </view>
+    </view>
+    <view class="project-describe {{ projectDesVisible ? 'spread' : '' }}">
+      <view class="project-describe__inner">
+        <view 
+          class="dropup-btn"
+          @tap="dropup">
+          收起 <view class="arrow-top"></view>
+        </view>
+        <text>备注 ：本症为整个毛囊细菌感染发生化脓性炎症。初起为红色丘疹，逐渐演变成
+        </text>
+      </view>
+    </view>
+    <view class="process-list">
+      <repeat for="{{ processList }}" key="index" index="index" item="item">
+        <view class="process-item">
+          <view class="row item-top">
+            <text class="item-date">治疗时间：{{ item.date }}</text>
+          </view>
+          <view class="item-main" @tap="spreadSymptom({{ item.symptomSpread !== undefined }}, {{ index }})">
+            <view class="row flex--vcenter">
+              <text>服务人员：赵雪晴</text>
+              <!-- <text class="item-status">已完成</text> -->
+            </view>
+            <repeat for="{{[0, 1]}}" key="index" index="_index" item="_item">
+              <view class="row flex {{ _index === 1 ? 'item-symptom--clone' : 'item-symptom' }}">
+                <text class="flex-item--none">当日症状：</text>
+                <view class="item-symptom-wrap flex-item ">
+                  <text 
+                    class="{{ item.symptomSpread || _index === 1 ? '' : 'text-ellipsis--two' }} item-symptom__text">{{ item.symptom }}
+                  </text>
+                  <view 
+                    wx:if="{{ item.symptomSpread !== undefined }}"
+                    class="{{ item.symptomSpread ? 'arrow-top' : 'arrow-bt' }}">
+                  </view>
+                </view>
+              </view>
+            </repeat>
+          </view>
+          <view class="item-btn-wrap flex">
+            <button @tap="toCancel()">申请作废</button>
+            <button @tap="toComment()">评价</button>
+          </view>
+        </view>
+      </repeat>
+    </view>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+
+  import convertDate from '@/utils/convertDate'
+
+  export default class Index extends wepy.page {
+    config = {
+      navigationBarTitleText: '健康记录'
+    }
+    components = {
+    }
+
+    mixins = []
+
+    data = {
+      projectDesVisible: false,
+      processList: [{
+        symptomSpread: undefined,
+        date: convertDate(new Date().getTime(), 'Y-M-D h:m:s'),
+        server: '赵雪晴',
+        symptom: Array.from({length: 120}).map(item => '字').join('')
+      }, {
+        symptomSpread: undefined,
+        date: convertDate(new Date().getTime(), 'Y-M-D h:m:s'),
+        server: '赵雪晴',
+        symptom: Array.from({length: 40}).map(item => '字').join('')
+      }]
+    }
+
+    computed = {
+    }
+
+    methods = {
+      dropdown () {
+        this.projectDesVisible = true
+      },
+      dropup () {
+        this.projectDesVisible = false
+      },
+      spreadSymptom (canSpread, index) {
+        if (canSpread) {
+          this.processList[index].symptomSpread = !this.processList[index].symptomSpread
+        }
+      },
+      toComment () {
+        wx.navigateTo({
+          url: '/pages/health_comment'
+        })
+      },
+      toCancel () {
+        wx.navigateTo({
+          url: '/pages/health_cancel'
+        })
+      }
+    }
+
+    events = {
+    }
+
+    onLoad() {
+    }
+
+    onReady () {
+      this.initData()
+    }
+
+    initData () {
+      let vm = this
+      setTimeout(() => {
+        vm.initSymptom()
+      }, 1000)
+    }
+    // 初始化症状文字
+    initSymptom () {
+      let vm = this
+      const query = wx.createSelectorQuery()
+      query
+        .selectAll('.item-symptom .item-symptom__text')
+        .boundingClientRect()
+      query
+        .selectAll('.item-symptom--clone .item-symptom__text')
+        .boundingClientRect()
+        .exec(function () {
+          const reality = arguments[0][0]
+          const clone = arguments[0][1]
+          reality.forEach(function (item, index) {
+            if (item.height !== clone[index].height) {
+              vm.processList[index].symptomSpread = false
+              vm.$apply()
+            }
+          })
+        })
+    }
+  }
+</script>

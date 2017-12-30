@@ -1,0 +1,398 @@
+<style lang="scss">
+@import '../assets/style/variables/theme.scss';
+
+$search_h: 88rpx;
+#page-doctor {
+  .search-bar {
+    padding: 0 30rpx;
+    height: $search_h;
+    font-size: 12px;
+    box-shadow: 0 2rpx 10rpx 0 #E3E3E3;
+
+    .filter-btn {
+      margin-right: 40rpx;
+      color: $primaryColor;
+    }
+    .search-input-wrap {
+      icon {
+        margin-right: -40rpx;
+      }
+      input {
+        padding-left: 48rpx; 
+        border: 2rpx solid #E6E6EA;
+        border-radius: 28rpx;
+        height: 56rpx;
+      }
+    }
+    .cancel-btn {
+      margin-left: 40rpx;
+      color: $primaryColor;
+    }
+  }
+
+  .mask {
+    position: absolute;
+    z-index: 1;
+    top: $search_h;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(0, 0, 0, 0.4);
+
+    &.search-mask {
+      background: #fff;
+    }
+  }
+  .filter-box {
+    position: absolute;
+    z-index: 2;
+    top: $search_h;
+    left: 0;
+    right: 0;
+
+    .filter-items {
+      padding: 20rpx 30rpx 30rpx;
+    }
+
+    %common {
+      border: 2rpx solid transparent;
+      border-radius: 50rpx;
+      padding: 0 18rpx;
+      height: 52rpx;
+      line-height: 50rpx;
+    }
+    .filter-sort {
+      margin-top: 20rpx;
+    }
+    .sort-label {
+      @extend %common;
+    }
+    .filter-item {
+      @extend %common;
+      margin-right: 10rpx;
+      margin-bottom: 10rpx;
+      text-align: center;
+      color: #818181;
+
+      &.picked {
+        border-color: $primaryColor;
+        color: $primaryColor;
+      }
+    }
+
+    .btn-wrap {
+      border-top: 2rpx solid #F2F2F2;
+      height: 60rpx;
+      justify-content: flex-end;
+
+      .reset-btn, .confirm-btn {
+        height: 100%;
+        width: 140rpx;
+      }
+      .reset-btn {
+        color: $primaryColor;
+      }
+      .confirm-btn {
+        color: #fff;
+        background: $primaryColor;
+      }
+    }
+  }
+
+  .doctor-list-wrap {
+    padding: 0 40rpx;
+  }
+  .doctor-list {
+    margin-left: -30rpx;
+  }
+  .doctor-item {
+    margin-top: 30rpx;
+    margin-left: 30rpx;
+    padding: 30rpx;
+    border-radius: 10rpx;
+    width: 320rpx;
+  }
+  .avatar-wrap {
+    image {
+      overflow: hidden;
+      border-radius: 50%;
+      width: 100rpx;
+      height: 100rpx;
+    }
+  }
+  .name-wrap {
+    margin-top: 30rpx;
+    font-size: 16px;
+    color: $primaryColor;
+    text-align: center;
+  }
+  .intro-wrap {
+    margin-top: 30rpx;
+  }
+  .no-more-tip {
+    margin-top: 20rpx;
+  }
+}
+</style>
+
+<template>
+  <CustomPage>
+    <view id="page-doctor">
+      <view class="search-bar flex--vcenter--sb">
+        <view 
+          wx:if="{{ !onSearch }}" 
+          class="filter-btn flex-item--none"
+          @tap="openFilterBox">筛选</view>
+        <view class="search-input-wrap flex-item flex--vcenter">
+          <icon type="search" size="16"></icon>
+          <input
+            class="flex-item"
+            value="{{ searchParams.searchWord }}" 
+            placeholder-style="color: #B8B8B8;"
+            placeholder="搜索" 
+            bindconfirm="handleSearch"
+            @focus="handleSearchFocus"/>
+        </view>
+        <view
+          wx:if="{{ onSearch }}" 
+          class="cancel-btn"
+          @tap="handleCancelSearch">取消</view>
+      </view>
+      <view 
+        class="mask {{ onSearch ? 'search-mask': '' }}" 
+        hidden="{{ !filterVisible && !onSearch }}"
+        @tap="handleMaskTap">
+      </view>
+      <view class="filter-box" hidden="{{ !filterVisible || onSearch }}">
+        <view class="box-inner main-bg">
+          <view class="filter-items">
+            <view class="filter-sort flex">
+              <view class="sort-label flex-item--none">院区选择：</view>
+              <view class="sort-items flex-item flex">
+                <repeat for="{{ hospAreaList }}" key="{{ index }}" item="item" index="index">
+                  <view 
+                    class="filter-item flex-item--none {{ item.picked ? 'picked' : '' }}" 
+                    @tap="pickedItem('hospAreaList', {{ item.id || '' }})">{{ item.name }}</view>
+                </repeat>
+              </view>
+            </view>
+            <view class="filter-sort flex">
+              <view class="sort-label flex-item--none">医生类别：</view>
+              <view class="sort-items flex-item flex">
+                <repeat for="{{ doctorTypeList }}" key="index" item="item" index="index">
+                  <view 
+                    class="filter-item flex-item--none {{ item.picked ? 'picked' : '' }}"
+                    @tap="pickedItem('doctorTypeList', {{ item.id || '' }})">{{ item.name }}</view>
+                </repeat>
+              </view>
+            </view>
+          </view>
+          <view class="btn-wrap flex">
+            <view 
+              class="reset-btn flex--center"
+              @tap="resetFilters">重置</view>
+            <view 
+              class="confirm-btn flex--center"
+              @tap="submitFilters">确认</view>
+          </view>
+        </view>
+      </view>
+      <scroll-view
+        scroll-y="true">
+        <view class="doctor-list-wrap">
+          <view class="doctor-list flex">
+            <repeat 
+              for="{{ listData }}"
+              key="index"
+              item="item"
+              index="index">
+              <view class="doctor-item main-bg" @tap="handleItemTap({{ item.id }})">
+                <view class="avatar-wrap flex--center">
+                  <image src="{{ item.avatar }}"></image>
+                </view>
+                <view class="name-wrap">
+                  <text>{{ item.name }}</text>
+                </view>
+                <view class="intro-wrap text-ellipsis--two">
+                  <text>{{ item.intro }}</text>
+                </view>
+              </view>
+            </repeat>
+          </view>
+        </view>
+        <view wx:if="{{ isLastPage }}" class="no-more-tip">
+          <text>已无更多内容了</text>
+        </view>
+      </scroll-view>
+    </view>
+  </CustomPage>
+</template>
+
+<script>
+  import wepy from 'wepy'
+
+  import CustomPage from '@/components/customPage'
+  import pageMixin from '@/mixins/page'
+  export default class Index extends wepy.page {
+    config = {
+      navigationBarTitleText: '医护人员'
+    }
+    components = {
+      CustomPage
+    }
+
+    mixins = [pageMixin]
+
+    data = {
+      searchParams: {
+        searchWord: undefined,
+        hospArea: undefined,
+        doctorType: undefined
+      },
+      onSearch: false, // 表示是否在搜索输入中
+      filterVisible: false, // 筛选组件显示
+      hospAreaList: [], // 院区列表
+      doctorTypeList: [], // 医生类别列表
+      listData: [] // 医生列表
+    }
+
+    computed = {
+    }
+
+    watch = {
+      searchParams (newVal, oldVal) {
+        console.log('searchParams', newVal)
+        this.getList({
+          doctorType: newVal.doctorType,
+          hospArea: newVal.doctorType,
+          searchWord: newVal.searchWord
+        })
+      }
+    }
+
+    methods = {
+      handleSearchFocus () {
+        if (this.filterVisible) {
+          this.filterVisible = false
+          const searchParams = this.searchParams
+          this.hospAreaList.forEach((item) => {
+            item.picked = searchParams.hospArea === item.id
+          })
+          this.doctorTypeList.forEach((item) => {
+            item.picked = searchParams.doctorType === item.id
+          })
+        }
+        this.onSearch = true
+      },
+      handleSearchBlur () {
+        this.onSearch = false
+      },
+      openFilterBox () {
+        this.filterVisible = true
+      },
+      pickedItem (listType, id) {
+        let list = this[listType]
+        id = id === '' ? undefined : id
+        list.forEach(item => {
+          item.picked = item.id === id
+        })
+      },
+      resetFilters () {
+        this.hospAreaList.forEach((item) => {
+          item.picked = undefined === item.id
+        })
+        this.doctorTypeList.forEach((item) => {
+          item.picked = undefined === item.id
+        })
+      },
+      submitFilters () {
+        this.filterVisible = false
+        this.searchParams.hospArea = this.hospAreaList.find(item => item.picked).id
+        this.searchParams.doctorType = this.doctorTypeList.find(item => item.picked).id
+      },
+      handleSearch ({ detail }) {
+        const value = detail.value
+        this.searchParams.searchWord = value
+      },
+      handleMaskTap () {
+        if (this.onSearch) {
+        } else if (this.filterVisible) {
+          const searchParams = this.searchParams
+          this.hospAreaList.forEach((item) => {
+            item.picked = searchParams.hospArea === item.id
+          })
+          this.doctorTypeList.forEach((item) => {
+            item.picked = searchParams.doctorType === item.id
+          })
+          this.filterVisible = false
+        }
+      },
+      handleCancelSearch () {
+        this.onSearch = false
+      },
+      handleItemTap (id) {
+        wx.navigateTo({
+          url: '/pages/doctor_detail?id=' + id
+        })
+      }
+    }
+
+    onLoad () {
+      this.getList()
+      this.$_request({
+        url: '/hospArea/all',
+        method: 'POST',
+        data: {}
+      }).then(res => {
+        const content = res.content || {}
+        const list = content.list
+        this.hospAreaList = list.map(item => {
+          return {
+            name: item.name,
+            id: item.id
+          }
+        })
+        this.hospAreaList = [{
+          name: '全部',
+          picked: true
+        }].concat(this.hospAreaList)
+      })
+      this.$_request({
+        url: '/doctorType/all',
+        method: 'POST',
+        data: {}
+      }).then(res => {
+        console.log('res', res)
+        const content = res.content || {}
+        const list = content.list
+        this.doctorTypeList = list.map(item => {
+          return {
+            name: item.name,
+            id: item.id
+          }
+        })
+        this.doctorTypeList = [{
+          name: '全部',
+          picked: true
+        }].concat(this.doctorTypeList)
+      })
+    }
+
+    getList (params) {
+      this.initData({
+        url: '/doctorInfo/all',
+        method: 'POST',
+        data: Object.assign({}, params, {
+          pageSize: 10
+        })
+      }, (listItem, res) => {
+        return {
+          avatar: listItem.headPortrait,
+          name: listItem.name,
+          intro: listItem.description,
+          id: listItem.id
+        }
+      })
+    }
+  }
+</script>

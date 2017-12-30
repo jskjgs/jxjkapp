@@ -1,0 +1,84 @@
+<style lang="scss">
+@import '../assets/style/variables/theme.scss';
+#page-login {
+  padding-top: 78rpx;
+  .page-title-wrap {
+    margin: 0 0 78rpx 0;
+    font-size: 16px;
+    font-weight: bold;
+    text-align: center;
+  }
+}
+</style>
+
+<template>
+  <view id="page-login">
+    <view class="page-title-wrap">登陆</view>
+    <TelInput 
+      submitBtnText="确认登录" 
+      :value.sync="formData"
+      @submit.user="handleSumbit"/>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+
+  import CustomInput from '@/components/customInput'
+  import TelInput from '@/components/telInput'
+
+  export default class Index extends wepy.page {
+    config = {
+      navigationBarTitleText: '锦欣健康'
+    }
+    components = {
+      TelInput,
+      PhoneInput: CustomInput,
+      CaptchaInput: CustomInput
+    }
+
+    mixins = []
+
+    data = {
+      formData: {
+        phone: '111',
+        code: ''
+      }
+    }
+
+    computed = {
+    }
+
+    watch = {
+    }
+
+    methods = {
+      handleSumbit () {
+        this.$_request({
+          url: `/other/loginByCode?phone=${this.formData.phone}&code=${this.formData.code}`,
+          method: 'POST'
+        }, true).then(res => {
+          const content = res.content || {}
+          if (content.empty) {
+            wx.navigateTo({
+              url: '/pages/index'
+            })
+          } else {
+            wx.redirectTo({
+              url: '/pages/signup_info'
+            })
+          }
+        })
+      }
+    }
+
+    events = {
+    }
+
+    onLoad () {
+    }
+    onUnload () {
+      this.$invoke('TelInput', 'clearTimer')
+    }
+  }
+</script>

@@ -1,0 +1,124 @@
+<style lang="scss">
+#page-health-cancel {
+  .textarea-wrap {
+    position: relative;
+    margin-top: 10rpx;
+  }
+  textarea {
+    box-sizing: border-box;
+    border: 2rpx solid #ccc;
+    border-radius: 10rpx;
+    padding: 20rpx;
+    width: auto;
+    height: 230rpx;
+    background: #FAFAFA;
+    font-size: 13px;
+  }
+  .textarea-count {
+    position: absolute;
+    right: 16rpx;
+    bottom: 16rpx;
+  }
+
+  .cancel-tip {
+    margin-bottom: 34rpx;
+    padding: 0 0 50rpx;
+    border-bottom: 2rpx solid #F2F4F7;
+    text {
+      border-radius: 26rpx;
+      width: 120rpx;
+      height: 52rpx;
+      line-height: 52rpx;
+      text-align: center;
+      background: #FFB400;
+      color: #fff;
+    }
+  }
+  .cancel-date {
+    margin-top: 40rpx;
+    justify-content: flex-end;
+    font-size: 12px;
+  }
+}
+</style>
+
+<template>
+  <view id="page-health-cancel">
+    <CustomCard title="Thermage 热玛吉">
+      <view 
+        class="cancel-content-wrap"
+        slot="content">
+        <view class="textarea-wrap">
+          <block wx:if="{{ canCancel }}">
+            <textarea 
+              placeholder="请输入您的作废理由"
+              value="{{ textareaValue }}"
+              maxlength="{{ textareaMaxLen }}"
+              @input="handleInput">
+            </textarea>
+            <text class="textarea-count">{{ textareaValue.length }}/{{ textareaMaxLen }}</text>
+          </block>
+          <block wx:else>
+            <view class="cancel-tip flex--center">
+              <text>处理中</text>
+            </view>
+            <view class="cancel-text">
+              <text>{{ textareaValue }}</text>
+            </view>
+            <view class="cancel-date flex">
+              <text>{{ cancelDate }}</text>
+            </view>
+          </block>
+        </view>
+      </view>
+      <button 
+        wx:if="{{ canCancel }}" slot="button"
+        @tap="submit">
+        立即提交
+      </button>
+    </CustomCard>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import CustomCard from '@/components/customCard'
+
+  import convertDate from '@/utils/convertDate'
+
+  export default class Index extends wepy.page {
+    config = {
+      navigationBarTitleText: 'test'
+    }
+    components = {
+      CustomCard
+    }
+
+    data = {
+      textareaValue: '放声大哭见风使舵剋借口借口借口借口',
+      textareaMaxLen: 40,
+      canCancel: true,
+      cancelDate: ''
+    }
+
+    computed = {
+    }
+
+    methods = {
+      handleInput ({detail}) {
+        const value = detail.value
+        this.textareaValue = value
+      },
+      submit () {
+        this.canCancel = false
+        this.cancelDate = convertDate(new Date().getTime(), 'Y-M-D h:m:s')
+      }
+    }
+
+    events = {
+    }
+
+    onLoad() {
+    }
+  }
+</script>

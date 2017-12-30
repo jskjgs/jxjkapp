@@ -1,0 +1,129 @@
+<style lang="scss">
+@import '../assets/style/variables/theme.scss';
+.comp-picker-list {
+  .menu--default {
+    &__item {
+      .item-label {
+        color: #818181;
+      }
+      .arrow-rt {
+        margin-left: 10rpx;
+      }
+    }
+  }
+
+}
+</style>
+
+<template>
+  <view class="comp-picker-list">
+    <view class="menu--default">
+      <repeat for="{{ ITEMS }}" key="index" item="item" index="index">
+        <view class="menu--default__item">
+          <text class="item-label">{{ item.label }}</text>
+          <picker 
+            wx:if="{{ !readonly }}"
+            value="{{ pickedIndex[item.picker.valueBind] === -1 ? 0 : pickedIndex[item.picker.valueBind] }}"
+            range="{{ lists[item.picker.rangeBind] }}" 
+            range-key="label"
+            bindchange="handlePickerChange({{ item.picker.valueBind }}, {{ item.picker.rangeBind }})">
+            <view class="item-value">
+              <text>{{ pickeds[item.picker.valueBind] !== undefined ? lists[item.picker.rangeBind][pickedIndex[item.picker.valueBind]].label || lists[item.picker.rangeBind][pickedIndex[item.picker.valueBind]] : '请选择' }}</text>
+              <view class="arrow-rt"></view>
+            </view>
+          </picker>
+          <view wx:else class="item-value">
+            <text>{{ pickeds[item.picker.valueBind] !== undefined ? lists[item.picker.rangeBind][pickedIndex[item.picker.valueBind]].label || lists[item.picker.rangeBind][pickedIndex[item.picker.valueBind]] : '未选择' }}</text>
+          </view>
+        </view>
+      </repeat>
+    </view>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+
+  export default class CustomCard extends wepy.component {
+    components = {
+    }
+
+    props = {
+      readonly: {
+        type: Boolean,
+        default: false
+      },
+      ITEMS: {
+        type: Array,
+        default: []
+      },
+      lists: {
+        type: Object,
+        default: {
+          hospitalList: [],
+          projectList: [],
+          orderDateList: [],
+          orderTimeList: []
+        }
+      },
+      pickeds: {
+        type: Object,
+        twoWay: true,
+        default: {
+          hospital: '',
+          projectName: '',
+          orderDate: '',
+          orderTime: ''
+        }
+      }
+    }
+
+    mixins = []
+
+    data = {
+    }
+
+    computed = {
+      pickedIndex () {
+        const lists = this.lists
+        const pickeds = this.pickeds
+        let returnVal = {}
+        this.ITEMS.forEach(item => {
+          const valueBind = item.picker.valueBind
+          const rangeBind = item.picker.rangeBind
+          const index = lists[rangeBind].findIndex(item => {
+            if (typeof item === 'object') {
+              return item.value === pickeds[valueBind]
+            } else {
+              return item === pickeds[valueBind]
+            }
+          })
+          returnVal[valueBind] = index
+        })
+        console.log('returnVal', returnVal)
+        return returnVal
+      }
+    }
+
+    methods = {
+      handlePickerChange (valueBind, rangeBind, { detail }) {
+        const index = detail.value
+        console.log('index', index, this.pickedIndex)
+        if (index !== -1) {
+          const currItem = this.lists[rangeBind][index]
+          if (typeof currItem === 'object') {
+            this.pickeds[valueBind] = currItem.value
+          } else {
+            this.pickeds[valueBind] = currItem
+          }
+        }
+      }
+    }
+
+    events = {
+    }
+
+    onLoad() {
+    }
+  }
+</script>
