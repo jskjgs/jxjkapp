@@ -1,6 +1,7 @@
 package com.jinxin.hospHealth.dao.models;
 
 import com.doraemon.base.controller.bean.PageBean;
+import com.jinxin.hospHealth.dao.modelsEnum.EnableEnum;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -36,6 +37,6 @@ public class HospProduct extends PageBean{
     @ApiModelProperty("更新时间")
     private Date updateDate;
     @ApiModelProperty("删除标识 0:正常 1:禁用  99:删除")
-    private Integer enable;
+    private Integer enable = EnableEnum.ENABLE_DELETE.getCode();
 
 }

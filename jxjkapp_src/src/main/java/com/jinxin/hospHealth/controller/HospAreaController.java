@@ -70,6 +70,24 @@ public class HospAreaController extends MyBaseController{
         return ResponseWrapperSuccess(hospAreaService.select(hospArea));
     }
 
+
+
+    @ApiOperation(value = "查询全部院区 --- admin ",response = HospArea.class)
+    @RequestMapping(value="/admin/all", method = RequestMethod.POST)
+    @ResponseBody
+    public JSONObject selectAllAdmin(
+            @ApiParam(value = "分页信息", required = false)  @RequestBody(required = false) PageBean pageBean) throws Exception {
+        return ResponseWrapperSuccess(hospAreaService.selectAllAdmin(pageBean));
+    }
+
+    @ApiOperation(value = "根据条件查询院区 --- admin ",response = HospArea.class)
+    @RequestMapping(value="/admin/query", method = RequestMethod.POST)
+    @ResponseBody
+    public JSONObject selectAdmin(
+            @ApiParam(value = "院区信息", required = true)  @RequestBody(required = true) HospArea hospArea) throws Exception {
+        return ResponseWrapperSuccess(hospAreaService.selectAdmin(hospArea));
+    }
+
     @ApiOperation(value = "删除单个院区")
     @RequestMapping(value="/", method = RequestMethod.DELETE)
     @ResponseBody

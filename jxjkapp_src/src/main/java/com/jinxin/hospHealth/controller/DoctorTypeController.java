@@ -83,5 +83,21 @@ public class DoctorTypeController extends MyBaseController {
         return ResponseWrapperSuccess(null);
     }
 
+    @ApiOperation(value = "查询全部医生类别---admin ",response = HospDoctorType.class)
+    @RequestMapping(value="/admin/all", method = RequestMethod.POST)
+    @ResponseBody
+    public JSONObject selectAllAdmin(
+            @ApiParam(value = "分页信息", required = false)  @RequestBody(required = false) PageBean pageBean) throws Exception {
+        return ResponseWrapperSuccess(doctorTypeService.selectAllAdmin(pageBean));
+    }
+
+    @ApiOperation(value = "根据条件查询医生类别---admin",response = HospDoctorType.class)
+    @RequestMapping(value="/admin/query", method = RequestMethod.POST)
+    @ResponseBody
+    public JSONObject selectAdmin(
+            @ApiParam(value = "医生类别 信息", required = true)  @RequestBody(required = true) HospDoctorType doctorType) throws Exception {
+        return ResponseWrapperSuccess(doctorTypeService.selectAdmin(doctorType));
+    }
+
 
 }

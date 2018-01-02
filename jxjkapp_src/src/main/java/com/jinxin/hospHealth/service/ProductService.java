@@ -1,12 +1,15 @@
 package com.jinxin.hospHealth.service;
 
 import com.doraemon.base.controller.bean.PageBean;
+import com.doraemon.base.exceptions.ShowExceptions;
 import com.doraemon.base.guava.DPreconditions;
+import com.doraemon.base.language.Language;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.github.pagehelper.StringUtil;
 import com.jinxin.hospHealth.dao.mapper.HospProductMapper;
 import com.jinxin.hospHealth.dao.models.HospProduct;
+import com.jinxin.hospHealth.dao.modelsEnum.EnableEnum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -18,7 +21,7 @@ import java.util.Date;
  * Created by zbs on 2017/12/25.
  */
 @Service
-public class ProductService {
+public class ProductService implements BaseService<HospProduct>{
 
     @Autowired
     HospProductMapper hospProductMapper;
@@ -56,6 +59,8 @@ public class ProductService {
             hospProduct.setSortNumber(1);
         if(hospProduct.getUpdateDate() == null)
             hospProduct.setUpdateDate(date);
+        if(hospProduct.getEnable() == null)
+            hospProduct.setEnable(EnableEnum.ENABLE_NORMAL.getCode());
         DPreconditions.checkState(hospProductMapper.insertSelectiveReturnId(hospProduct) == 1, "增加商品失败", true);
     }
 
@@ -90,6 +95,16 @@ public class ProductService {
         DPreconditions.checkState(hospProductMapper.deleteByPrimaryKey(id) == 1, "删除商品信息失败.");
     }
 
+    @Override
+    public void setStateAsInvalid(Long id) throws Exception {
+        DPreconditions.checkNotNull(id, "商品的id不能为空.", true);
+        DPreconditions.checkNotNull(selectOne(id), "该ID的商品未查询到.", true);
+        HospProduct invalid = new HospProduct();
+        invalid.setId(id);
+        invalid.setEnable(EnableEnum.ENABLE_DISABLED.getCode());
+        DPreconditions.checkState(hospProductMapper.updateByPrimaryKey(invalid) == 1, "删除商品信息失败.");
+    }
+
     /**
      * 查询单个商品信息
      *
@@ -111,7 +126,6 @@ public class ProductService {
         if (StringUtil.isNotEmpty(hospProduct.getField()))
             PageHelper.orderBy(hospProduct.getField());
         HospProduct select = new HospProduct();
-        select.setEnable(hospProduct.getEnable());
         select.setName(hospProduct.getName());
         select.setProductTypeId(hospProduct.getProductTypeId());
         return new PageInfo(hospProductMapper.select(select));
@@ -128,5 +142,54 @@ public class ProductService {
         if (StringUtil.isNotEmpty(pageBean.getField()))
             PageHelper.orderBy(pageBean.getField());
         return new PageInfo(hospProductMapper.selectAll());
+    }
+
+    /**
+     * 查询一个商品---admin
+     * @param id
+     * @return
+     * @throws Exception
+     */
+    @Override
+    public HospProduct selectOneAdmin(Long id) throws Exception {
+        DPreconditions.checkNotNull(id, "商品的id不能为空");
+        HospProduct select = new HospProduct();
+        select.setId(id);
+        select.setEnable(null);
+        return hospProductMapper.selectOne(select);
+    }
+
+    /**
+     * 查询商品
+     * @param hospProduct
+     * @return
+     * @throws Exception
+     */
+    @Override
+    public PageInfo<HospProduct> selectAdmin(HospProduct hospProduct) throws Exception {
+        PageHelper.startPage(hospProduct.getPageNum(), hospProduct.getPageSize());
+        if (StringUtil.isNotEmpty(hospProduct.getField()))
+            PageHelper.orderBy(hospProduct.getField());
+        HospProduct select = new HospProduct();
+        select.setEnable(hospProduct.getEnable());
+        select.setName(hospProduct.getName());
+        select.setProductTypeId(hospProduct.getProductTypeId());
+        return new PageInfo(hospProductMapper.select(select));
+    }
+
+    /**
+     * 查询全部商品
+     * @param pageBean
+     * @return
+     * @throws Exception
+     */
+    @Override
+    public PageInfo<HospProduct> selectAllAdmin(PageBean pageBean) throws Exception {
+        PageHelper.startPage(pageBean.getPageNum(), pageBean.getPageSize());
+        if (StringUtil.isNotEmpty(pageBean.getField()))
+            PageHelper.orderBy(pageBean.getField());
+        HospProduct select = new HospProduct();
+        select.setEnable(null);
+        return new PageInfo(hospProductMapper.selectByExample(select));
     }
 }

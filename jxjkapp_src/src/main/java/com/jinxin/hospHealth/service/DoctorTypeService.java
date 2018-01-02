@@ -1,7 +1,9 @@
 package com.jinxin.hospHealth.service;
 
 import com.doraemon.base.controller.bean.PageBean;
+import com.doraemon.base.exceptions.ShowExceptions;
 import com.doraemon.base.guava.DPreconditions;
+import com.doraemon.base.language.Language;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.github.pagehelper.StringUtil;
@@ -14,7 +16,7 @@ import org.springframework.stereotype.Service;
  * Created by zbs on 2017/12/25.
  */
 @Service
-public class DoctorTypeService {
+public class DoctorTypeService implements BaseService<HospDoctorType> {
 
     @Autowired
     HospDoctorTypeMapper hospDoctorTypeMapper;
@@ -54,6 +56,11 @@ public class DoctorTypeService {
         DPreconditions.checkState(hospDoctorTypeMapper.deleteByPrimaryKey(id) == 1, "删除医生类别信息失败.");
     }
 
+    @Override
+    public void setStateAsInvalid(Long id) throws Exception {
+        throw new ShowExceptions(Language.get("service.invalid-method"));
+    }
+
     /**
      * 查询单个医生类别信息
      *
@@ -90,5 +97,20 @@ public class DoctorTypeService {
         if (StringUtil.isNotEmpty(pageBean.getField()))
             PageHelper.orderBy(pageBean.getField());
         return new PageInfo(hospDoctorTypeMapper.selectAll());
+    }
+
+    @Override
+    public HospDoctorType selectOneAdmin(Long id) throws Exception {
+        return selectOneAdmin(id);
+    }
+
+    @Override
+    public PageInfo<HospDoctorType> selectAdmin(HospDoctorType hospDoctorType) throws Exception {
+        return select(hospDoctorType);
+    }
+
+    @Override
+    public PageInfo<HospDoctorType> selectAllAdmin(PageBean pageBean) throws Exception {
+        return selectAll(pageBean);
     }
 }

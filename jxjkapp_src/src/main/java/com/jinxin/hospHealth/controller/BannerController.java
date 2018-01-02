@@ -70,6 +70,22 @@ public class BannerController extends MyBaseController {
         return ResponseWrapperSuccess(bannerService.select(hospBanner));
     }
 
+    @ApiOperation(value = "查询全部banner信息--admin",response = HospBanner.class)
+    @RequestMapping(value="/admin/all", method = RequestMethod.POST)
+    @ResponseBody
+    public JSONObject selectAllAdmin(
+            @ApiParam(value = "分页信息", required = false)  @RequestBody(required = false) PageBean pageBean) throws Exception {
+        return ResponseWrapperSuccess(bannerService.selectAllAdmin(pageBean));
+    }
+
+    @ApiOperation(value = "根据条件查询banner信息--admin",response = HospBanner.class)
+    @RequestMapping(value="/admin/query", method = RequestMethod.POST)
+    @ResponseBody
+    public JSONObject selectAdmin(
+            @ApiParam(value = "banner 信息", required = true)  @RequestBody(required = true) HospBanner hospBanner) throws Exception {
+        return ResponseWrapperSuccess(bannerService.selectAdmin(hospBanner));
+    }
+
     @ApiOperation(value = "删除单个banner信息")
     @RequestMapping(value="/", method = RequestMethod.DELETE)
     @ResponseBody

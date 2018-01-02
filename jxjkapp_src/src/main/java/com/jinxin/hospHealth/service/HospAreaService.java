@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
  * Created by zbs on 2017/12/25.
  */
 @Service
-public class HospAreaService {
+public class HospAreaService implements BaseService<HospArea>{
 
     @Autowired
     HospAreaMapper hospAreaMapper;
@@ -54,6 +54,11 @@ public class HospAreaService {
         DPreconditions.checkState(hospAreaMapper.deleteByPrimaryKey(id) == 1, "删除院区信息失败.");
     }
 
+    @Override
+    public void setStateAsInvalid(Long id) throws Exception {
+
+    }
+
     /**
      * 查询单个院区信息
      *
@@ -90,5 +95,20 @@ public class HospAreaService {
         if (StringUtil.isNotEmpty(pageBean.getField()))
             PageHelper.orderBy(pageBean.getField());
         return new PageInfo(hospAreaMapper.selectAll());
+    }
+
+    @Override
+    public HospArea selectOneAdmin(Long id) throws Exception {
+        return selectOne(id);
+    }
+
+    @Override
+    public PageInfo<HospArea> selectAdmin(HospArea hospArea) throws Exception {
+        return select(hospArea);
+    }
+
+    @Override
+    public PageInfo<HospArea> selectAllAdmin(PageBean pageBean) throws Exception {
+        return selectAll(pageBean);
     }
 }

@@ -1,5 +1,6 @@
 package com.jinxin.hospHealth.dao.models;
 
+import com.jinxin.hospHealth.dao.modelsEnum.EnableEnum;
 import lombok.Data;
 
 import javax.persistence.Id;
@@ -18,7 +19,7 @@ public class HospOrderGrade {
 
     private Date updateDate;
 
-    private Integer enable;
+    private Integer enable = EnableEnum.ENABLE_DELETE.getCode();;
 
     private String comment;
 

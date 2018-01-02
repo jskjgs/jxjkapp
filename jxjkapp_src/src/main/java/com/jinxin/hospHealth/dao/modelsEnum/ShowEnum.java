@@ -1,21 +1,22 @@
 package com.jinxin.hospHealth.dao.modelsEnum;
 
-/**
- * Created by zbs on 2017/12/29.
- */
-public enum  UserBalanceEnum {
 
-    ENABLE_NORMAL(0,"正常"),
-    ENABLE_DISABLED(1,"禁用"),
-    ENABLE_DELETE(99,"删除");
+/**
+ * Created by zbs on 2017/12/28.
+ */
+public enum ShowEnum {
+
+    DISPLAY(0,"显示"),
+    NOT_DISPLAY(1,"隐藏");
 
     private int code;
     private String desc;
 
-    UserBalanceEnum(int code, String desc) {
+    ShowEnum(int code, String desc) {
         this.code = code;
         this.desc = desc;
     }
+
 
     public int getCode() {
         return code;

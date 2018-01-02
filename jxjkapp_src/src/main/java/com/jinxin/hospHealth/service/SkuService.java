@@ -1,7 +1,9 @@
 package com.jinxin.hospHealth.service;
 
 import com.doraemon.base.controller.bean.PageBean;
+import com.doraemon.base.exceptions.ShowExceptions;
 import com.doraemon.base.guava.DPreconditions;
+import com.doraemon.base.language.Language;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.github.pagehelper.StringUtil;
@@ -19,7 +21,7 @@ import java.util.Date;
  * Created by zbs on 2017/12/25.
  */
 @Service
-public class SkuService {
+public class SkuService implements BaseService<HospProductSku> {
 
     @Autowired
     HospProductSkuMapper hospProductSkuMapper;
@@ -51,8 +53,6 @@ public class SkuService {
             hospProductSku.setCreateDate(date);
         if (hospProductSku.getUpdateDate() == null)
             hospProductSku.setUpdateDate(date);
-        if (hospProductSku.getEnable() == null)
-            hospProductSku.setEnable(0);
         if (hospProductSku.getImages() == null)
             hospProductSku.setImages(skuImage);
         DPreconditions.checkState(hospProductSkuMapper.insertSelectiveReturnId(hospProductSku) == 1, "增加商品SKU失败", true);
@@ -81,6 +81,11 @@ public class SkuService {
         DPreconditions.checkState(hospProductSkuMapper.deleteByPrimaryKey(id) == 1, "删除该商品SKU信息失败.");
     }
 
+    @Override
+    public void setStateAsInvalid(Long id) throws Exception {
+        throw new ShowExceptions(Language.get("service.invalid-method"));
+    }
+
     /**
      * 查询单个商品SKU信息
      *
@@ -97,12 +102,11 @@ public class SkuService {
      * @param hospProductSku
      * @return
      */
-    public PageInfo<HospNews> select(HospProductSku hospProductSku) {
+    public PageInfo<HospProductSku> select(HospProductSku hospProductSku) {
         PageHelper.startPage(hospProductSku.getPageNum(), hospProductSku.getPageSize());
         if (StringUtil.isNotEmpty(hospProductSku.getField()))
             PageHelper.orderBy(hospProductSku.getField());
         HospProductSku select = new HospProductSku();
-        select.setEnable(hospProductSku.getEnable());
         select.setProductId(hospProductSku.getProductId());
         select.setName(hospProductSku.getName());
         return new PageInfo(hospProductSkuMapper.select(select));
@@ -114,10 +118,25 @@ public class SkuService {
      * @param pageBean
      * @return
      */
-    public PageInfo<HospNews> selectAll(PageBean pageBean) {
+    public PageInfo<HospProductSku> selectAll(PageBean pageBean) {
         PageHelper.startPage(pageBean.getPageNum(), pageBean.getPageSize());
         if (StringUtil.isNotEmpty(pageBean.getField()))
             PageHelper.orderBy(pageBean.getField());
         return new PageInfo(hospProductSkuMapper.selectAll());
+    }
+
+    @Override
+    public HospProductSku selectOneAdmin(Long id) throws Exception {
+        return selectOne(id);
+    }
+
+    @Override
+    public PageInfo<HospProductSku> selectAdmin(HospProductSku hospProductSku) throws Exception {
+        return selectAdmin(hospProductSku);
+    }
+
+    @Override
+    public PageInfo<HospProductSku> selectAllAdmin(PageBean pageBean) throws Exception {
+        return selectAllAdmin(pageBean);
     }
 }

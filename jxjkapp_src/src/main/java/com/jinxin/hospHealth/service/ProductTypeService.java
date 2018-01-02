@@ -1,7 +1,9 @@
 package com.jinxin.hospHealth.service;
 
 import com.doraemon.base.controller.bean.PageBean;
+import com.doraemon.base.exceptions.ShowExceptions;
 import com.doraemon.base.guava.DPreconditions;
+import com.doraemon.base.language.Language;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.github.pagehelper.StringUtil;
@@ -15,7 +17,7 @@ import org.springframework.stereotype.Service;
  * Created by zbs on 2017/12/25.
  */
 @Service
-public class ProductTypeService {
+public class ProductTypeService implements BaseService<HospProductType> {
 
     @Autowired
     HospProductTypeMapper hospProductTypeMapper;
@@ -60,6 +62,11 @@ public class ProductTypeService {
         DPreconditions.checkState(hospProductTypeMapper.deleteByPrimaryKey(id) == 1, "删除商品类别信息失败.");
     }
 
+    @Override
+    public void setStateAsInvalid(Long id) throws Exception {
+        throw new ShowExceptions(Language.get("service.invalid-method"));
+    }
+
     /**
      * 查询单个商品类别信息
      *
@@ -98,5 +105,20 @@ public class ProductTypeService {
         if (StringUtil.isNotEmpty(pageBean.getField()))
             PageHelper.orderBy(pageBean.getField());
         return new PageInfo(hospProductTypeMapper.selectAll());
+    }
+
+    @Override
+    public HospProductType selectOneAdmin(Long id) throws Exception {
+        return selectOne(id);
+    }
+
+    @Override
+    public PageInfo<HospProductType> selectAdmin(HospProductType hospProductType) throws Exception {
+        return selectAllAdmin(hospProductType);
+    }
+
+    @Override
+    public PageInfo<HospProductType> selectAllAdmin(PageBean pageBean) throws Exception {
+        return selectAllAdmin(pageBean);
     }
 }

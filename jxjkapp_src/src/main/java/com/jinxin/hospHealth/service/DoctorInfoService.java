@@ -1,7 +1,9 @@
 package com.jinxin.hospHealth.service;
 
 import com.doraemon.base.controller.bean.PageBean;
+import com.doraemon.base.exceptions.ShowExceptions;
 import com.doraemon.base.guava.DPreconditions;
+import com.doraemon.base.language.Language;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.github.pagehelper.StringUtil;
@@ -15,7 +17,7 @@ import org.springframework.stereotype.Service;
  * Created by zbs on 2017/12/25.
  */
 @Service
-public class DoctorInfoService {
+public class DoctorInfoService implements BaseService<HospDoctorInfo> {
 
     @Autowired
     HospDoctorInfoMapper hospDoctorInfoMapper;
@@ -63,6 +65,11 @@ public class DoctorInfoService {
         DPreconditions.checkState(hospDoctorInfoMapper.deleteByPrimaryKey(id) == 1, "删除医生信息失败.");
     }
 
+    @Override
+    public void setStateAsInvalid(Long id) throws Exception {
+        throw new ShowExceptions(Language.get("service.invalid-method"));
+    }
+
     /**
      * 查询单个医生信息
      *
@@ -88,7 +95,7 @@ public class DoctorInfoService {
         select.setHospAreaId(hospDoctorInfo.getHospAreaId());
         select.setDoctorTypeId(hospDoctorInfo.getDoctorTypeId());
         select.setSex(hospDoctorInfo.getSex());
-        return new PageInfo(hospDoctorInfoMapper.select(select));
+        return new PageInfo(hospDoctorInfoMapper.selectByExample1(select));
     }
 
     /**
@@ -102,5 +109,20 @@ public class DoctorInfoService {
         if (StringUtil.isNotEmpty(pageBean.getField()))
             PageHelper.orderBy(pageBean.getField());
         return new PageInfo(hospDoctorInfoMapper.selectAll());
+    }
+
+    @Override
+    public HospDoctorInfo selectOneAdmin(Long id) throws Exception {
+        return selectOne(id);
+    }
+
+    @Override
+    public PageInfo<HospDoctorInfo> selectAdmin(HospDoctorInfo hospDoctorInfo) throws Exception {
+        return select(hospDoctorInfo);
+    }
+
+    @Override
+    public PageInfo<HospDoctorInfo> selectAllAdmin(PageBean pageBean) throws Exception {
+        return selectAll(pageBean);
     }
 }

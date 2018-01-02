@@ -1,6 +1,7 @@
 package com.jinxin.hospHealth.service;
 
 import com.doraemon.base.controller.bean.PageBean;
+import com.doraemon.base.exceptions.ShowExceptions;
 import com.doraemon.base.guava.DPreconditions;
 import com.doraemon.base.language.Language;
 import com.doraemon.base.util.MD5Encryption;
@@ -67,15 +68,22 @@ public class UserInfoService implements BaseService<HospUserInfo>{
         DPreconditions.checkState(hospUserInfoMapper.updateByPrimaryKeySelective(hospUserInfo) == 1, "更新用户信息失败.", true);
     }
 
+
     /**
      * 删除单个用户信息
      *
      * @param id
      */
+    @Override
     public void deleteOne(Long id) {
         HospUserInfo hospUserInfo = selectOne(id);
         DPreconditions.checkNotNull(hospUserInfo, Language.get("user.select-not-exist"), true);
         DPreconditions.checkState(hospUserInfoMapper.deleteByPrimaryKey(id) == 1, "删除该用户信息失败.");
+    }
+
+    @Override
+    public void setStateAsInvalid(Long id) throws Exception {
+        throw new ShowExceptions(Language.get("service.invalid-method"));
     }
 
     /**

@@ -1,7 +1,9 @@
 package com.jinxin.hospHealth.service;
 
 import com.doraemon.base.controller.bean.PageBean;
+import com.doraemon.base.exceptions.ShowExceptions;
 import com.doraemon.base.guava.DPreconditions;
+import com.doraemon.base.language.Language;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.github.pagehelper.StringUtil;
@@ -15,7 +17,7 @@ import org.springframework.stereotype.Service;
  * Created by zbs on 2017/12/25.
  */
 @Service
-public class PatientInfoService {
+public class PatientInfoService implements BaseService<HospPatientInfo>{
 
     @Autowired
     HospDoctorTypeMapper hospDoctorTypeMapper;
@@ -33,8 +35,6 @@ public class PatientInfoService {
         DPreconditions.checkNotNull(hospDoctorType.getUserId(), "就诊人用户ID不能为空.", true);
         DPreconditions.checkNotNullAndEmpty(hospDoctorType.getCardId(), "就诊人身份证号码不能为空.", true);
         DPreconditions.checkNotNull(hospDoctorType.getType(),"就诊人类型不能为空",true);
-        if(hospDoctorType.getEnable() == null)
-            hospDoctorType.setEnable(0);
         if(hospDoctorType.getBabySex() == null)
             hospDoctorType.setBabySex(0);
         DPreconditions.checkState(hospPatientInfoMapper.insertSelectiveReturnId(hospDoctorType) == 1, "增加就诊人信息失败", true);
@@ -63,6 +63,11 @@ public class PatientInfoService {
         DPreconditions.checkState(hospPatientInfoMapper.deleteByPrimaryKey(id) == 1, "删除就诊人信息失败.");
     }
 
+    @Override
+    public void setStateAsInvalid(Long id) throws Exception {
+        throw new ShowExceptions(Language.get("service.invalid-method"));
+    }
+
     /**
      * 查询单个就诊人信息信息
      *
@@ -88,7 +93,6 @@ public class PatientInfoService {
         select.setType(hospPatientInfo.getType());
         select.setUserId(hospPatientInfo.getUserId());
         select.setBabySex(hospPatientInfo.getBabySex());
-        select.setEnable(hospPatientInfo.getEnable());
         select.setId(hospPatientInfo.getId());
         return new PageInfo(hospPatientInfoMapper.select(select));
     }
@@ -104,5 +108,20 @@ public class PatientInfoService {
         if (StringUtil.isNotEmpty(pageBean.getField()))
             PageHelper.orderBy(pageBean.getField());
         return new PageInfo(hospPatientInfoMapper.selectAll());
+    }
+
+    @Override
+    public HospPatientInfo selectOneAdmin(Long id) throws Exception {
+        return selectOne(id);
+    }
+
+    @Override
+    public PageInfo<HospPatientInfo> selectAdmin(HospPatientInfo patientInfo) throws Exception {
+        return select(patientInfo);
+    }
+
+    @Override
+    public PageInfo<HospPatientInfo> selectAllAdmin(PageBean pageBean) throws Exception {
+        return selectAll(pageBean);
     }
 }

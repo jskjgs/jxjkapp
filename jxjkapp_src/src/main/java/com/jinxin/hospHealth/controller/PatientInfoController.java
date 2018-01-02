@@ -73,6 +73,33 @@ public class PatientInfoController extends MyBaseController{
         return ResponseWrapperSuccess(patientInfoService.select(patientInfo));
     }
 
+
+
+    @ApiOperation(value = "查询单个就诊人信息---admin",response = HospPatientInfo.class)
+    @RequestMapping(value="/admin/", method = RequestMethod.GET)
+    @ResponseBody
+    public JSONObject selectOneAdmin(
+            @ApiParam(value = "就诊人ID", required = true) @RequestParam(value = "id", required = true) Long id) throws Exception {
+
+        return ResponseWrapperSuccess(patientInfoService.selectOneAdmin(id));
+    }
+
+    @ApiOperation(value = "查询全部就诊人信息---admin",response = HospNews.class)
+    @RequestMapping(value="/admin/all", method = RequestMethod.POST)
+    @ResponseBody
+    public JSONObject selectAllAdmin(
+            @ApiParam(value = "分页信息", required = false)  @RequestBody(required = false) PageBean pageBean) throws Exception {
+        return ResponseWrapperSuccess(patientInfoService.selectAllAdmin(pageBean));
+    }
+
+    @ApiOperation(value = "根据条件查询就诊人信息---admin",response = HospPatientInfo.class)
+    @RequestMapping(value="/admin/query", method = RequestMethod.POST)
+    @ResponseBody
+    public JSONObject selectAdmin(
+            @ApiParam(value = "就诊人信息", required = true)  @RequestBody HospPatientInfo patientInfo) throws Exception {
+        return ResponseWrapperSuccess(patientInfoService.selectAdmin(patientInfo));
+    }
+
     @ApiOperation(value = "删除单个就诊人信息")
     @RequestMapping(value="/", method = RequestMethod.DELETE)
     @ResponseBody

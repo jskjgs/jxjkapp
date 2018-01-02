@@ -1,22 +1,21 @@
 package com.jinxin.hospHealth.dao.modelsEnum;
 
-
 /**
- * Created by zbs on 2017/12/28.
+ * Created by zbs on 2017/12/29.
  */
-public enum  BannerEnum {
+public enum EnableEnum {
 
-    DISPLAY(0,"显示"),
-    NOT_DISPLAY(1,"隐藏");
+    ENABLE_NORMAL(0,"正常"),
+    ENABLE_DISABLED(1,"禁用"),
+    ENABLE_DELETE(99,"删除");
 
     private int code;
     private String desc;
 
-    BannerEnum(int code, String desc) {
+    EnableEnum(int code, String desc) {
         this.code = code;
         this.desc = desc;
     }
-
 
     public int getCode() {
         return code;

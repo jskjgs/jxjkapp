@@ -1,6 +1,7 @@
 package com.jinxin.hospHealth.dao.models;
 
 import com.doraemon.base.controller.bean.PageBean;
+import com.jinxin.hospHealth.dao.modelsEnum.EnableEnum;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -36,6 +37,4 @@ public class HospProductSku extends PageBean{
     private Date createDate;
     @ApiModelProperty("更新时间")
     private Date updateDate;
-    @ApiModelProperty("0:正常 1:禁用  99:删除")
-    private Integer enable;
 }

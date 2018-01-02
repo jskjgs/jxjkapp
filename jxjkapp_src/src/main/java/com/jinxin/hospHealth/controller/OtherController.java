@@ -130,8 +130,6 @@ public class OtherController extends MyBaseController{
     }
 
 
-
-
     @ApiOperation(value = "登出")
     @RequestMapping(value="/logout", method = RequestMethod.POST)
     @ResponseBody

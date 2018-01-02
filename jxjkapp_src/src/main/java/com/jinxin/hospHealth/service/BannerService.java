@@ -1,6 +1,7 @@
 package com.jinxin.hospHealth.service;
 
 import com.doraemon.base.controller.bean.PageBean;
+import com.doraemon.base.exceptions.ShowExceptions;
 import com.doraemon.base.guava.DPreconditions;
 import com.doraemon.base.language.Language;
 import com.github.pagehelper.PageHelper;
@@ -8,7 +9,7 @@ import com.github.pagehelper.PageInfo;
 import com.github.pagehelper.StringUtil;
 import com.jinxin.hospHealth.dao.mapper.HospBannerMapper;
 import com.jinxin.hospHealth.dao.models.HospBanner;
-import com.jinxin.hospHealth.dao.modelsEnum.BannerEnum;
+import com.jinxin.hospHealth.dao.modelsEnum.ShowEnum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -65,6 +66,11 @@ public class BannerService implements BaseService<HospBanner>{
         DPreconditions.checkState(hospBannerMapper.deleteByPrimaryKey(id) == 1, "删除banner信息失败.");
     }
 
+    @Override
+    public void setStateAsInvalid(Long id) throws Exception {
+        throw new ShowExceptions(Language.get("service.invalid-method"));
+    }
+
     /**
      * 查询单个banner信息 -- 提供给客户端
      *
@@ -75,24 +81,27 @@ public class BannerService implements BaseService<HospBanner>{
         DPreconditions.checkNotNull(id, Language.get("banner.id-null"),true);
         HospBanner select = new HospBanner();
         select.setId(id);
-        select.setDisplay(BannerEnum.DISPLAY.getCode());
+        select.setDisplay(ShowEnum.DISPLAY.getCode());
         return hospBannerMapper.selectOne(select);
     }
 
     /**
      * 根据条件查询banner信息-- 提供给客户端
-     *
      * @param hospBanner
-     * @return
+     * @return     *
+
      */
     @Override
     public PageInfo<HospBanner> select(HospBanner hospBanner) {
         PageHelper.startPage(hospBanner.getPageNum(), hospBanner.getPageSize());
         if (StringUtil.isNotEmpty(hospBanner.getField()))
             PageHelper.orderBy(hospBanner.getField());
+        else
+            PageHelper.orderBy(HospBanner.getDefaultSort());
         HospBanner select = new HospBanner();
         select.setName(hospBanner.getName());
-        select.setDisplay(BannerEnum.DISPLAY.getCode());
+        select.setId(hospBanner.getId());
+        select.setDisplay(ShowEnum.DISPLAY.getCode());
         return new PageInfo(hospBannerMapper.select(select));
     }
 
@@ -107,8 +116,10 @@ public class BannerService implements BaseService<HospBanner>{
         PageHelper.startPage(pageBean.getPageNum(), pageBean.getPageSize());
         if (StringUtil.isNotEmpty(pageBean.getField()))
             PageHelper.orderBy(pageBean.getField());
+        else
+            PageHelper.orderBy(HospBanner.getDefaultSort());
         HospBanner select = new HospBanner();
-        select.setDisplay(BannerEnum.DISPLAY.getCode());
+        select.setDisplay(ShowEnum.DISPLAY.getCode());
         return new PageInfo(hospBannerMapper.select(select));
     }
 
@@ -136,6 +147,8 @@ public class BannerService implements BaseService<HospBanner>{
         PageHelper.startPage(hospBanner.getPageNum(), hospBanner.getPageSize());
         if (StringUtil.isNotEmpty(hospBanner.getField()))
             PageHelper.orderBy(hospBanner.getField());
+        else
+            PageHelper.orderBy(HospBanner.getDefaultSort());
         HospBanner select = new HospBanner();
         select.setName(hospBanner.getName());
         select.setDisplay(hospBanner.getDisplay());
@@ -153,6 +166,8 @@ public class BannerService implements BaseService<HospBanner>{
         PageHelper.startPage(pageBean.getPageNum(), pageBean.getPageSize());
         if (StringUtil.isNotEmpty(pageBean.getField()))
             PageHelper.orderBy(pageBean.getField());
+        else
+            PageHelper.orderBy(HospBanner.getDefaultSort());
         return new PageInfo(hospBannerMapper.selectAll());
     }
 

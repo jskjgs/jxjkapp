@@ -71,6 +71,39 @@ public class NewsController extends MyBaseController {
         return ResponseWrapperSuccess(newsService.select(news));
     }
 
+    @ApiOperation(value = "查询单个新闻信息--admin",response = HospNews.class)
+    @RequestMapping(value="/admin/", method = RequestMethod.GET)
+    @ResponseBody
+    public JSONObject selectOneAdmin(
+            @ApiParam(value = "新闻ID", required = true) @RequestParam(value = "id", required = true) Long id) throws Exception {
+        return ResponseWrapperSuccess(newsService.selectOneAdmin(id));
+    }
+
+    @ApiOperation(value = "查询全部新闻信息---admin",response = HospNews.class)
+    @RequestMapping(value="/admin/all", method = RequestMethod.POST)
+    @ResponseBody
+    public JSONObject selectAllAdmin(
+            @ApiParam(value = "分页信息", required = false)  @RequestBody(required = false) PageBean pageBean) throws Exception {
+        return ResponseWrapperSuccess(newsService.selectAllAdmin(pageBean));
+    }
+
+    @ApiOperation(value = "根据条件查询新闻信息---admin",response = HospNews.class)
+    @RequestMapping(value="/admin/query", method = RequestMethod.POST)
+    @ResponseBody
+    public JSONObject selectAdmin(
+            @ApiParam(value = "新闻信息", required = true)  @RequestBody HospNews news) throws Exception {
+        return ResponseWrapperSuccess(newsService.selectAdmin(news));
+    }
+
+    @ApiOperation(value = "新闻信息置为无效")
+    @RequestMapping(value="/invalid", method = RequestMethod.DELETE)
+    @ResponseBody
+    public JSONObject setStateAsInvalid(
+            @ApiParam(value = "新闻ID", required = true) @RequestParam(value = "id", required = true) Long id) throws Exception {
+        newsService.setStateAsInvalid(id);
+        return ResponseWrapperSuccess(null);
+    }
+
     @ApiOperation(value = "删除单个新闻信息")
     @RequestMapping(value="/", method = RequestMethod.DELETE)
     @ResponseBody

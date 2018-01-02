@@ -70,6 +70,30 @@ public class SkuContoller extends MyBaseController{
         return ResponseWrapperSuccess(skuService.select(productSku));
     }
 
+    @ApiOperation(value = "查询单个商品SKU信息---admin",response = HospProductSku.class)
+    @RequestMapping(value="/admin/", method = RequestMethod.GET)
+    @ResponseBody
+    public JSONObject selectOneAdmin(
+            @ApiParam(value = "商品ID", required = true) @RequestParam(value = "id", required = true) Long id) throws Exception {
+        return ResponseWrapperSuccess(skuService.selectOne(id));
+    }
+
+    @ApiOperation(value = "查询全部商品SKU信息---admin",response = HospProductSku.class)
+    @RequestMapping(value="/admin/all", method = RequestMethod.POST)
+    @ResponseBody
+    public JSONObject selectAllAdmin(
+            @ApiParam(value = "分页信息", required = false)  @RequestBody(required = false) PageBean pageBean) throws Exception {
+        return ResponseWrapperSuccess(skuService.selectAllAdmin(pageBean));
+    }
+
+    @ApiOperation(value = "根据条件查询商品SKU信息---admin",response = HospProductSku.class)
+    @RequestMapping(value="/admin/query", method = RequestMethod.POST)
+    @ResponseBody
+    public JSONObject selectAdmin(
+            @ApiParam(value = "商品信息", required = true)  @RequestBody HospProductSku productSku) throws Exception {
+        return ResponseWrapperSuccess(skuService.selectAdmin(productSku));
+    }
+
     @ApiOperation(value = "删除单个商品SKU信息")
     @RequestMapping(value="/", method = RequestMethod.DELETE)
     @ResponseBody

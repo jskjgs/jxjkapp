@@ -1,6 +1,7 @@
 package com.jinxin.hospHealth.dao.models;
 
 import com.doraemon.base.controller.bean.PageBean;
+import com.jinxin.hospHealth.dao.modelsEnum.EnableEnum;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -37,7 +38,5 @@ public class HospPatientInfo extends PageBean{
     private String deliveryInfo;
     @ApiModelProperty("联系地址")
     private String address;
-    @ApiModelProperty("0:正常 1:禁用  99:删除")
-    private Integer enable;
 
 }

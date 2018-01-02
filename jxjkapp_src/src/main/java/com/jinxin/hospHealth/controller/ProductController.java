@@ -94,12 +94,59 @@ public class ProductController extends MyBaseController{
         return ResponseWrapperSuccess(pageInfo);
     }
 
+
+    @ApiOperation(value = "查询单个商品信息---admin",response = ProductVO.class)
+    @RequestMapping(value="/admin/", method = RequestMethod.GET)
+    @ResponseBody
+    public JSONObject selectOneAdmin(
+            @ApiParam(value = "商品ID", required = true) @RequestParam(value = "id", required = true) Long id) throws Exception {
+        HospProduct hospProduct = productService.selectOneAdmin(id);
+        return ResponseWrapperSuccess(conversion(hospProduct));
+    }
+
+    @ApiOperation(value = "查询全部商品信息---admin",response = ProductVO.class)
+    @RequestMapping(value="/admin/all", method = RequestMethod.POST)
+    @ResponseBody
+    public JSONObject selectAllAdmin(
+            @ApiParam(value = "分页信息", required = false)  @RequestBody(required = false) PageBean pageBean) throws Exception {
+        PageInfo pageInfo =  productService.selectAllAdmin(pageBean);
+        List<ProductVO> respList = new ArrayList<>();
+        for(Object info : pageInfo.getList()) {
+            respList.add(conversion((HospProduct) info));
+        }
+        pageInfo.setList(respList);
+        return ResponseWrapperSuccess(pageInfo);
+    }
+
+    @ApiOperation(value = "根据条件查询商品信息---admin")
+    @RequestMapping(value="/admin/query", method = RequestMethod.POST)
+    @ResponseBody
+    public JSONObject selectAdmin(
+            @ApiParam(value = "商品信息", required = true)  @RequestBody(required = true) HospProduct product) throws Exception {
+        PageInfo pageInfo =  productService.selectAdmin(product);
+        List<ProductVO> respList = new ArrayList<>();
+        for(Object info : pageInfo.getList()) {
+            respList.add(conversion((HospProduct) info));
+        }
+        pageInfo.setList(respList);
+        return ResponseWrapperSuccess(pageInfo);
+    }
+
     @ApiOperation(value = "删除单个商品信息")
     @RequestMapping(value="/", method = RequestMethod.DELETE)
     @ResponseBody
     public JSONObject deleteOne(
             @ApiParam(value = "商品ID", required = true) @RequestParam(value = "id", required = true) Long id) throws Exception {
         productService.deleteOne(id);
+        return ResponseWrapperSuccess(null);
+    }
+
+    @ApiOperation(value = "商品置为无效")
+    @RequestMapping(value="/invalid", method = RequestMethod.DELETE)
+    @ResponseBody
+    public JSONObject setStateAsInvalid(
+            @ApiParam(value = "商品ID", required = true) @RequestParam(value = "id", required = true) Long id) throws Exception {
+        productService.setStateAsInvalid(id);
         return ResponseWrapperSuccess(null);
     }
 

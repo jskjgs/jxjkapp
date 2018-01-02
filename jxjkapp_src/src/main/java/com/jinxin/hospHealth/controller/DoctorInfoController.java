@@ -103,6 +103,36 @@ public class DoctorInfoController extends MyBaseController{
         return ResponseWrapperSuccess(null);
     }
 
+
+    @ApiOperation(value = "查询全部医生信息---admin",response = DoctorInfoVO.class)
+    @RequestMapping(value="/admin/all", method = RequestMethod.POST)
+    @ResponseBody
+    public JSONObject selectAllAdmin(
+            @ApiParam(value = "分页信息", required = false)  @RequestBody(required = false) PageBean pageBean) throws Exception {
+        PageInfo pageInfo = doctorInfoService.selectAllAdmin(pageBean);
+        List<DoctorInfoVO> respList = new ArrayList<>();
+        for(Object info : pageInfo.getList()) {
+            respList.add(conversion((HospDoctorInfo)info));
+        }
+        pageInfo.setList(respList);
+        return ResponseWrapperSuccess(pageInfo);
+    }
+
+    @ApiOperation(value = "根据条件查询医生信息---admin",response = DoctorInfoVO.class)
+    @RequestMapping(value="/admin/query", method = RequestMethod.POST)
+    @ResponseBody
+    public JSONObject selectAdmin(
+            @ApiParam(value = "医生 信息", required = true)  @RequestBody(required = true) HospDoctorInfo hospBanner) throws Exception {
+        PageInfo pageInfo = doctorInfoService.selectAdmin(hospBanner);
+        List<DoctorInfoVO> respList = new ArrayList<>();
+        for(Object info : pageInfo.getList()) {
+            respList.add(conversion((HospDoctorInfo)info));
+        }
+        pageInfo.setList(respList);
+        return ResponseWrapperSuccess(pageInfo);
+    }
+
+
     public DoctorInfoVO conversion(HospDoctorInfo hospDoctorInfo){
         DoctorInfoVO doctorInfoVO = new DoctorInfoVO(hospDoctorInfo);
         if(hospDoctorInfo.getHospAreaId() != null)

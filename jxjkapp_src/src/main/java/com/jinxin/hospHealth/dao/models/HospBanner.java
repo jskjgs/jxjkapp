@@ -1,6 +1,7 @@
 package com.jinxin.hospHealth.dao.models;
 
 import com.doraemon.base.controller.bean.PageBean;
+import com.jinxin.hospHealth.dao.modelsEnum.ShowEnum;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -26,5 +27,9 @@ public class HospBanner extends PageBean{
     @ApiModelProperty("排序")
     private Integer orderNumber;
     @ApiModelProperty("显示和隐藏的标志  0显示，1隐藏")
-    private Integer display;
+    private Integer display = ShowEnum.DISPLAY.getCode();
+
+    public static String getDefaultSort(){
+        return "order_number asc";
+    }
 }
