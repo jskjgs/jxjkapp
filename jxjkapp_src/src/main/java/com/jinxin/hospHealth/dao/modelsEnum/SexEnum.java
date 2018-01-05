@@ -1,19 +1,19 @@
 package com.jinxin.hospHealth.dao.modelsEnum;
 
-
 /**
- * 显示标识
- * Created by zbs on 2017/12/28.
+ * 性别
+ * Created by zbs on 2018/1/4.
  */
-public enum ShowEnum {
+public enum SexEnum {
 
-    DISPLAY(0,"显示"),
-    NOT_DISPLAY(1,"隐藏");
+    WOMAN(0,"女"),
+    MAN(1,"男");
+
 
     private int code;
     private String desc;
 
-    ShowEnum(int code, String desc) {
+    SexEnum(int code, String desc) {
         this.code = code;
         this.desc = desc;
     }
@@ -26,5 +26,4 @@ public enum ShowEnum {
     public String getDesc() {
         return desc;
     }
-
 }

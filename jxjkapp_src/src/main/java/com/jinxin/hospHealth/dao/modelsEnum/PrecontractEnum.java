@@ -1,23 +1,23 @@
 package com.jinxin.hospHealth.dao.modelsEnum;
 
-
 /**
- * 显示标识
- * Created by zbs on 2017/12/28.
+ * 预约标识
+ * Created by zbs on 2018/1/2.
  */
-public enum ShowEnum {
+public enum PrecontractEnum {
 
-    DISPLAY(0,"显示"),
-    NOT_DISPLAY(1,"隐藏");
+    NORMAL(0,"正常"),
+    CANCEL(1,"取消"),
+    USED(2,"已使用"),
+    OVERDUE(3,"已过期");
 
     private int code;
     private String desc;
 
-    ShowEnum(int code, String desc) {
+    PrecontractEnum(int code, String desc) {
         this.code = code;
         this.desc = desc;
     }
-
 
     public int getCode() {
         return code;
@@ -26,5 +26,4 @@ public enum ShowEnum {
     public String getDesc() {
         return desc;
     }
-
 }

@@ -38,17 +38,31 @@ public class ProductService implements BaseService<HospProduct>{
      *
      * @param hospProduct
      */
-    public void add(HospProduct hospProduct) {
-        DPreconditions.checkState(hospProduct.getId() == null, "商品的id不能填写.", true);
-        DPreconditions.checkNotNullAndEmpty(hospProduct.getName(), "商品的名称不能为空.", true);
-        DPreconditions.checkNotNull(hospProduct.getProductTypeId(), "商品的类型不能为空.", true);
-        DPreconditions.checkNotNullAndEmpty(hospProduct.getDescription(), "商品的描述不能为空.", true);
-        DPreconditions.checkNotNullAndEmpty(hospProduct.getInformation(), "商品的简介不能为空.", true);
+    public HospProduct add(HospProduct hospProduct) {
+        DPreconditions.checkState(hospProduct.getId() == null,
+                "商品的id不能填写.",
+                true);
+        DPreconditions.checkNotNullAndEmpty(hospProduct.getName(),
+                "商品的名称不能为空.",
+                true);
+        DPreconditions.checkNotNull(hospProduct.getProductTypeId(),
+                "商品的类型不能为空.",
+                true);
+        DPreconditions.checkNotNullAndEmpty(hospProduct.getDescription(),
+                "商品的描述不能为空.",
+                true);
+        DPreconditions.checkNotNullAndEmpty(hospProduct.getInformation(),
+                "商品的简介不能为空.",
+                true);
         //检查SKU是否存在
         if(hospProduct.getDefaultSkuId() != null)
-            DPreconditions.checkNotNull(skuService.selectOne(hospProduct.getDefaultSkuId()),"商品的默认SKU不存在",true);
+            DPreconditions.checkNotNull(skuService.selectOne(hospProduct.getDefaultSkuId()),
+                    "商品的默认SKU不存在",
+                    true);
         //检查商品类型是否存在
-        DPreconditions.checkNotNull(productTypeService.selectOne(hospProduct.getProductTypeId()),"商品所属的商品类型不存在.",true);
+        DPreconditions.checkNotNull(productTypeService.selectOne(hospProduct.getProductTypeId()),
+                "商品所属的商品类型不存在.",
+                true);
         //创建和更新时间和set默认信息
         Date date = new Date();
         if (hospProduct.getImages() == null)
@@ -61,7 +75,10 @@ public class ProductService implements BaseService<HospProduct>{
             hospProduct.setUpdateDate(date);
         if(hospProduct.getEnable() == null)
             hospProduct.setEnable(EnableEnum.ENABLE_NORMAL.getCode());
-        DPreconditions.checkState(hospProductMapper.insertSelectiveReturnId(hospProduct) == 1, "增加商品失败", true);
+        DPreconditions.checkState(hospProductMapper.insertSelectiveReturnId(hospProduct) == 1,
+                Language.get("service.save-failure"),
+                true);
+        return hospProduct;
     }
 
     /**
@@ -70,18 +87,28 @@ public class ProductService implements BaseService<HospProduct>{
      * @param hospProduct
      */
     public void update(HospProduct hospProduct) {
-        DPreconditions.checkNotNull(hospProduct.getId(), "商品的id不能为空.", true);
+        DPreconditions.checkNotNull(hospProduct.getId(),
+                "商品的id不能为空.",
+                true);
         HospProduct product = selectOne(hospProduct.getId());
-        DPreconditions.checkNotNull(product, "该ID的商品未查询到.", true);
+        DPreconditions.checkNotNull(product,
+                "该ID的商品未查询到.",
+                true);
         if(hospProduct.getUpdateDate() == null)
             hospProduct.setUpdateDate(new Date());
         //如果需要修改默认sku,需要判断默认的sku是否存在
         if(hospProduct.getDefaultSkuId() != null)
-             DPreconditions.checkNotNull(skuService.selectOne(hospProduct.getDefaultSkuId()),"商品的默认SKU不存在",true);
+             DPreconditions.checkNotNull(skuService.selectOne(hospProduct.getDefaultSkuId()),
+                     "商品的默认SKU不存在",
+                     true);
         //如果需要修改商品类型,需要判断商品类型是否存在
         if(hospProduct.getProductTypeId() != null)
-            DPreconditions.checkNotNull(productTypeService.selectOne(hospProduct.getProductTypeId()),"商品所属的商品类型不存在.",true);
-        DPreconditions.checkState(hospProductMapper.updateByPrimaryKeySelective(hospProduct) == 1, "更新banner信息失败.", true);
+            DPreconditions.checkNotNull(productTypeService.selectOne(hospProduct.getProductTypeId()),
+                    "商品所属的商品类型不存在.",
+                    true);
+        DPreconditions.checkState(hospProductMapper.updateByPrimaryKeySelective(hospProduct) == 1,
+                "更新banner信息失败.",
+                true);
     }
 
     /**
@@ -91,18 +118,28 @@ public class ProductService implements BaseService<HospProduct>{
      */
     public void deleteOne(Long id) {
         HospProduct banner = selectOne(id);
-        DPreconditions.checkNotNull(banner, "该ID的商品未查询到.", true);
-        DPreconditions.checkState(hospProductMapper.deleteByPrimaryKey(id) == 1, "删除商品信息失败.");
+        DPreconditions.checkNotNull(banner,
+                "该ID的商品未查询到.",
+                true);
+        DPreconditions.checkState(hospProductMapper.deleteByPrimaryKey(id) == 1,
+                "删除商品信息失败.",
+                true);
     }
 
     @Override
     public void setStateAsInvalid(Long id) throws Exception {
-        DPreconditions.checkNotNull(id, "商品的id不能为空.", true);
-        DPreconditions.checkNotNull(selectOne(id), "该ID的商品未查询到.", true);
+        DPreconditions.checkNotNull(id,
+                "商品的id不能为空.",
+                true);
+        DPreconditions.checkNotNull(selectOne(id),
+                "该ID的商品未查询到.",
+                true);
         HospProduct invalid = new HospProduct();
         invalid.setId(id);
         invalid.setEnable(EnableEnum.ENABLE_DISABLED.getCode());
-        DPreconditions.checkState(hospProductMapper.updateByPrimaryKey(invalid) == 1, "删除商品信息失败.");
+        DPreconditions.checkState(hospProductMapper.updateByPrimaryKey(invalid) == 1,
+                "删除商品信息失败.",
+                true);
     }
 
     /**

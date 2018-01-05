@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<!--<?xml version="1.0" encoding="UTF-8"?>-->
 <!-- myBatis自动代码生成配置 -->
 <!DOCTYPE generatorConfiguration
         PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
@@ -134,9 +134,18 @@
                <!--enableCountByExample="fasle" enableUpdateByExample="fasle"-->
                <!--enableDeleteByExample="fasle" enableSelectByExample="fasle"-->
                <!--selectByExampleQueryId="fasle"></table>-->
-        <table schema="mybatis" tableName="hosp_user_balance" domainObjectName="HospUserBalance"
-               enableCountByExample="fasle" enableUpdateByExample="fasle"
-               enableDeleteByExample="fasle" enableSelectByExample="fasle"
-               selectByExampleQueryId="fasle"></table>
+        <!--<table schema="mybatis" tableName="hosp_user_balance" domainObjectName="HospUserBalance"-->
+               <!--enableCountByExample="fasle" enableUpdateByExample="fasle"-->
+               <!--enableDeleteByExample="fasle" enableSelectByExample="fasle"-->
+               <!--selectByExampleQueryId="fasle"></table>-->
+        <!--<table schema="mybatis" tableName="hosp_precontract" domainObjectName="HospPrecontract"-->
+               <!--enableCountByExample="fasle" enableUpdateByExample="fasle"-->
+               <!--enableDeleteByExample="fasle" enableSelectByExample="fasle"-->
+               <!--selectByExampleQueryId="fasle"></table>-->
+        <table schema="mybatis" tableName="hosp_call_number" domainObjectName="HospCallNumber"
+        enableCountByExample="fasle" enableUpdateByExample="fasle"
+        enableDeleteByExample="fasle" enableSelectByExample="fasle"
+        selectByExampleQueryId="fasle"></table>
+
     </context>
 </generatorConfiguration>

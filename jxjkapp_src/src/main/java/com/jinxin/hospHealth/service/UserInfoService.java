@@ -13,8 +13,10 @@ import com.jinxin.hospHealth.dao.models.HospUserInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.security.NoSuchAlgorithmException;
+import java.security.UnresolvedPermission;
 import java.util.Date;
 
 /**
@@ -34,9 +36,17 @@ public class UserInfoService implements BaseService<HospUserInfo>{
      *
      * @param hospUserInfo
      */
-    public void add(HospUserInfo hospUserInfo) throws NoSuchAlgorithmException {
-        DPreconditions.checkState(hospUserInfo.getId() == null, "用户的id不能填写.", true);
-        DPreconditions.checkNotNullAndEmpty(hospUserInfo.getPhone(), Language.get("user.phone-null"), true);
+    @Override
+    @Transactional
+    public HospUserInfo add(HospUserInfo hospUserInfo) throws NoSuchAlgorithmException {
+        DPreconditions.checkState(hospUserInfo.getId() == null,
+                "用户的id不能填写.", true);
+        DPreconditions.checkNotNullAndEmpty(hospUserInfo.getPhone(),
+                Language.get("user.phone-null"),
+                true);
+        DPreconditions.checkState(selectOneByPhone(hospUserInfo.getPhone())==null,
+                Language.get("user.phone-repeat"),
+                true);
         Date date = new Date();
         if (hospUserInfo.getHeadPortrait() == null)
             hospUserInfo.setHeadPortrait(defaultUserHeadPortrait);
@@ -53,7 +63,10 @@ public class UserInfoService implements BaseService<HospUserInfo>{
             hospUserInfo.setCreateDate(date);
         if (hospUserInfo.getUpdateDate() == null)
             hospUserInfo.setUpdateDate(date);
-        DPreconditions.checkState(hospUserInfoMapper.insertSelectiveReturnId(hospUserInfo) == 1, "增加用户失败", true);
+        DPreconditions.checkState(hospUserInfoMapper.insertSelectiveReturnId(hospUserInfo) == 1,
+                Language.get("service.save-failure"),
+                true);
+        return hospUserInfo;
     }
 
     /**
@@ -61,11 +74,26 @@ public class UserInfoService implements BaseService<HospUserInfo>{
      *
      * @param hospUserInfo
      */
+    @Override
     public void update(HospUserInfo hospUserInfo) {
-        DPreconditions.checkNotNull(hospUserInfo.getId(), Language.get("user.id-null"), true);
+        DPreconditions.checkNotNull(hospUserInfo.getId(),
+                Language.get("user.id-null"),
+                true);
         HospUserInfo selectNews = selectOne(hospUserInfo.getId());
-        DPreconditions.checkNotNull(selectNews, Language.get("user.select-not-exist"), true);
-        DPreconditions.checkState(hospUserInfoMapper.updateByPrimaryKeySelective(hospUserInfo) == 1, "更新用户信息失败.", true);
+        DPreconditions.checkNotNull(selectNews,
+                Language.get("user.select-not-exist"),
+                true);
+        HospUserInfo update = new HospUserInfo();
+        update.setName(hospUserInfo.getName());
+        update.setUpdateDate(new Date());
+        update.setAge(hospUserInfo.getAge());
+        update.setBirthday(hospUserInfo.getBirthday());
+        update.setEmail(hospUserInfo.getEmail());
+        update.setHeadPortrait(hospUserInfo.getHeadPortrait());
+        update.setSex(hospUserInfo.getSex());
+        DPreconditions.checkState(hospUserInfoMapper.updateByPrimaryKeySelective(hospUserInfo) == 1,
+                "更新用户信息失败.",
+                true);
     }
 
 
@@ -77,8 +105,12 @@ public class UserInfoService implements BaseService<HospUserInfo>{
     @Override
     public void deleteOne(Long id) {
         HospUserInfo hospUserInfo = selectOne(id);
-        DPreconditions.checkNotNull(hospUserInfo, Language.get("user.select-not-exist"), true);
-        DPreconditions.checkState(hospUserInfoMapper.deleteByPrimaryKey(id) == 1, "删除该用户信息失败.");
+        DPreconditions.checkNotNull(hospUserInfo,
+                Language.get("user.select-not-exist"),
+                true);
+        DPreconditions.checkState(hospUserInfoMapper.deleteByPrimaryKey(id) == 1,
+                "删除该用户信息失败.",
+                true);
     }
 
     @Override
@@ -91,8 +123,11 @@ public class UserInfoService implements BaseService<HospUserInfo>{
      *
      * @return
      */
+    @Override
     public HospUserInfo selectOne(Long id) {
-        DPreconditions.checkNotNull(id, Language.get("user.id-null"),true);
+        DPreconditions.checkNotNull(id,
+                Language.get("user.id-null"),
+                true);
         return hospUserInfoMapper.selectByPrimaryKey(id);
     }
 
@@ -102,8 +137,24 @@ public class UserInfoService implements BaseService<HospUserInfo>{
      * @return
      */
     public HospUserInfo selectOne(HospUserInfo hospUserInfo) {
-        DPreconditions.checkNotNull(hospUserInfo, "传入不能为空");
+        DPreconditions.checkNotNull(hospUserInfo,
+                Language.get("user.select-object-null"),
+                true);
         return hospUserInfoMapper.selectOne(hospUserInfo);
+    }
+
+    /**
+     * 查询单个用户信息---根据手机号
+     *
+     * @return
+     */
+    public HospUserInfo selectOneByPhone(String phone) {
+        DPreconditions.checkNotNullAndEmpty(phone,
+                Language.get("user.phone-null"),
+                true);
+        HospUserInfo select = new HospUserInfo();
+        select.setPhone(phone);
+        return selectOne(select);
     }
 
     /**
@@ -112,6 +163,7 @@ public class UserInfoService implements BaseService<HospUserInfo>{
      * @param hospUserInfo
      * @return
      */
+    @Override
     public PageInfo<HospUserInfo> select(HospUserInfo hospUserInfo) {
         PageHelper.startPage(hospUserInfo.getPageNum(), hospUserInfo.getPageSize());
         if (StringUtil.isNotEmpty(hospUserInfo.getField()))
@@ -128,6 +180,7 @@ public class UserInfoService implements BaseService<HospUserInfo>{
      * @param pageBean
      * @return
      */
+    @Override
     public PageInfo<HospUserInfo> selectAll(PageBean pageBean) {
         PageHelper.startPage(pageBean.getPageNum(), pageBean.getPageSize());
         if (StringUtil.isNotEmpty(pageBean.getField()))
@@ -137,17 +190,17 @@ public class UserInfoService implements BaseService<HospUserInfo>{
 
     @Override
     public HospUserInfo selectOneAdmin(Long id) throws Exception {
-        return null;
+        return selectOne(id);
     }
 
     @Override
     public PageInfo<HospUserInfo> selectAdmin(HospUserInfo hospUserInfo) throws Exception {
-        return null;
+        return selectAdmin(hospUserInfo);
     }
 
     @Override
     public PageInfo<HospUserInfo> selectAllAdmin(PageBean pageBean) throws Exception {
-        return null;
+        return selectAll(pageBean);
     }
 
 }

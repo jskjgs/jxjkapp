@@ -23,5 +23,5 @@ public interface HospDoctorInfoMapper extends MyMapper<HospDoctorInfo> {
              " <if test = \"email != null \"> and email = #{email}</if>  " +
              " <if test = \"age != null \"> and age = #{age}</if>  " +
              " </script>"})
-    List<HospDoctorInfo> selectByExample1(HospDoctorInfo hospDoctorInfo);
+    List<HospDoctorInfo> selectByExampleByFuzzy(HospDoctorInfo hospDoctorInfo);
 }

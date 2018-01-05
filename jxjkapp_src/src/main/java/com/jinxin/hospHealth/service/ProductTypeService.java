@@ -30,13 +30,22 @@ public class ProductTypeService implements BaseService<HospProductType> {
      *
      * @param hospProductType
      */
-    public void add(HospProductType hospProductType) {
-        DPreconditions.checkState(hospProductType.getId() == null, "商品类别的id不能填写.", true);
-        DPreconditions.checkNotNullAndEmpty(hospProductType.getName(), "商品类别的名称不能为空.", true);
-        DPreconditions.checkNotNullAndEmpty(hospProductType.getDescription(), "商品类别的说明不能为空.", true);
+    public HospProductType add(HospProductType hospProductType) {
+        DPreconditions.checkState(hospProductType.getId() == null,
+                "商品类别的id不能填写.",
+                true);
+        DPreconditions.checkNotNullAndEmpty(hospProductType.getName(),
+                "商品类别的名称不能为空.",
+                true);
+        DPreconditions.checkNotNullAndEmpty(hospProductType.getDescription(),
+                "商品类别的说明不能为空.",
+                true);
         if (hospProductType.getImages() == null)
             hospProductType.setImages(productTypeImage);
-        DPreconditions.checkState(hospProductTypeMapper.insertSelectiveReturnId(hospProductType) == 1, "增加商品类别失败", true);
+        DPreconditions.checkState(hospProductTypeMapper.insertSelectiveReturnId(hospProductType) == 1,
+                Language.get("service.save-failure"),
+                true);
+        return hospProductType;
     }
 
     /**
@@ -45,10 +54,16 @@ public class ProductTypeService implements BaseService<HospProductType> {
      * @param hospProductType
      */
     public void update(HospProductType hospProductType) {
-        DPreconditions.checkNotNull(hospProductType.getId(), "商品类别的id不能为空.", true);
+        DPreconditions.checkNotNull(hospProductType.getId(),
+                "商品类别的id不能为空.",
+                true);
         HospProductType banner = selectOne(hospProductType.getId());
-        DPreconditions.checkNotNull(banner, "该ID的商品类别未查询到.", true);
-        DPreconditions.checkState(hospProductTypeMapper.updateByPrimaryKeySelective(hospProductType) == 1, "更新商品类别信息失败.", true);
+        DPreconditions.checkNotNull(banner,
+                "该ID的商品类别未查询到.",
+                true);
+        DPreconditions.checkState(hospProductTypeMapper.updateByPrimaryKeySelective(hospProductType) == 1,
+                "更新商品类别信息失败.",
+                true);
     }
 
     /**
@@ -58,8 +73,12 @@ public class ProductTypeService implements BaseService<HospProductType> {
      */
     public void deleteOne(Long id) {
         HospProductType banner = selectOne(id);
-        DPreconditions.checkNotNull(banner, "该ID的商品类别未查询到.", true);
-        DPreconditions.checkState(hospProductTypeMapper.deleteByPrimaryKey(id) == 1, "删除商品类别信息失败.");
+        DPreconditions.checkNotNull(banner,
+                "该ID的商品类别未查询到.",
+                true);
+        DPreconditions.checkState(hospProductTypeMapper.deleteByPrimaryKey(id) == 1,
+                "删除商品类别信息失败.",
+                true);
     }
 
     @Override

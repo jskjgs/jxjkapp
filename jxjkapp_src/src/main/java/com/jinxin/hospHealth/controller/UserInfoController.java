@@ -4,8 +4,10 @@ import com.alibaba.fastjson.JSONObject;
 import com.doraemon.base.controller.bean.PageBean;
 import com.jinxin.hospHealth.dao.models.HospUserInfo;
 import com.jinxin.hospHealth.service.UserInfoService;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,6 +17,10 @@ import java.util.Map;
 /**
  * Created by zbs on 2017/12/25.
  */
+@RestController
+@RequestMapping("/userInfo")
+@Slf4j
+@Api(description = "用户信息相关接口")
 public class UserInfoController extends MyBaseController{
 
     @Autowired

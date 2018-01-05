@@ -2,6 +2,7 @@ package com.jinxin.hospHealth.service;
 
 import com.doraemon.base.controller.bean.PageBean;
 import com.doraemon.base.guava.DPreconditions;
+import com.doraemon.base.language.Language;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.github.pagehelper.StringUtil;
@@ -24,11 +25,20 @@ public class HospAreaService implements BaseService<HospArea>{
      *
      * @param hospArea
      */
-    public void add(HospArea hospArea) {
-        DPreconditions.checkState(hospArea.getId() == null, "院区的id不能填写.", true);
-        DPreconditions.checkNotNullAndEmpty(hospArea.getName(), "院区的名称不能为空.", true);
-        DPreconditions.checkNotNullAndEmpty(hospArea.getDescription(), "院区的说明不能为空.", true);
-        DPreconditions.checkState(hospAreaMapper.insertSelectiveReturnId(hospArea) == 1, "增加院区失败", true);
+    public HospArea add(HospArea hospArea) {
+        DPreconditions.checkState(hospArea.getId() == null,
+                "院区的id不能填写.",
+                true);
+        DPreconditions.checkNotNullAndEmpty(hospArea.getName(),
+                "院区的名称不能为空.",
+                true);
+        DPreconditions.checkNotNullAndEmpty(hospArea.getDescription(),
+                "院区的说明不能为空.",
+                true);
+        DPreconditions.checkState(hospAreaMapper.insertSelectiveReturnId(hospArea) == 1,
+                Language.get("service.save-failure"),
+                true);
+        return hospArea;
     }
 
     /**
@@ -37,10 +47,16 @@ public class HospAreaService implements BaseService<HospArea>{
      * @param hospArea
      */
     public void update(HospArea hospArea) {
-        DPreconditions.checkNotNull(hospArea.getId(), "院区的id不能为空.", true);
+        DPreconditions.checkNotNull(hospArea.getId(),
+                "院区的id不能为空.",
+                true);
         HospArea select = selectOne(hospArea.getId());
-        DPreconditions.checkNotNull(select, "该ID的院区未查询到.", true);
-        DPreconditions.checkState(hospAreaMapper.updateByPrimaryKeySelective(hospArea) == 1, "更新院区信息失败.", true);
+        DPreconditions.checkNotNull(select,
+                "该ID的院区未查询到.",
+                true);
+        DPreconditions.checkState(hospAreaMapper.updateByPrimaryKeySelective(hospArea) == 1,
+                "更新院区信息失败.",
+                true);
     }
 
     /**
@@ -50,8 +66,12 @@ public class HospAreaService implements BaseService<HospArea>{
      */
     public void deleteOne(Long id) {
         HospArea select = selectOne(id);
-        DPreconditions.checkNotNull(select, "该ID的院区未查询到.", true);
-        DPreconditions.checkState(hospAreaMapper.deleteByPrimaryKey(id) == 1, "删除院区信息失败.");
+        DPreconditions.checkNotNull(select,
+                "该ID的院区未查询到.",
+                true);
+        DPreconditions.checkState(hospAreaMapper.deleteByPrimaryKey(id) == 1,
+                "删除院区信息失败.",
+                true);
     }
 
     @Override

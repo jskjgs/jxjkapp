@@ -29,7 +29,7 @@ public class BannerService implements BaseService<HospBanner>{
      * @param hospBanner
      */
     @Override
-    public void add(HospBanner hospBanner) {
+    public HospBanner add(HospBanner hospBanner) {
         DPreconditions.checkState(hospBanner.getId() == null, "banner的id不能填写.", true);
         DPreconditions.checkNotNullAndEmpty(hospBanner.getName(), Language.get("banner.name-null"), true);
         DPreconditions.checkNotNullAndEmpty(hospBanner.getBannerUrl(), Language.get("banner.imageURL-null"), true);
@@ -38,7 +38,8 @@ public class BannerService implements BaseService<HospBanner>{
             hospBanner.setOrderNumber(1);
         if (hospBanner.getDisplay() == null)
             hospBanner.setDisplay(0);
-        DPreconditions.checkState(hospBannerMapper.insertSelectiveReturnId(hospBanner) == 1, "增加banner失败", true);
+        DPreconditions.checkState(hospBannerMapper.insertSelectiveReturnId(hospBanner) == 1, Language.get("service.save-failure"),true);
+        return hospBanner;
     }
 
     /**

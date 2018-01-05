@@ -28,28 +28,45 @@ public class PatientInfoService implements BaseService<HospPatientInfo>{
     /**
      * 增加就诊人信息信息
      *
-     * @param hospDoctorType
+     * @param hospPatientInfo
      */
-    public void add(HospPatientInfo hospDoctorType) {
-        DPreconditions.checkState(hospDoctorType.getId() == null, "就诊人信息的id不能填写.", true);
-        DPreconditions.checkNotNull(hospDoctorType.getUserId(), "就诊人用户ID不能为空.", true);
-        DPreconditions.checkNotNullAndEmpty(hospDoctorType.getCardId(), "就诊人身份证号码不能为空.", true);
-        DPreconditions.checkNotNull(hospDoctorType.getType(),"就诊人类型不能为空",true);
-        if(hospDoctorType.getBabySex() == null)
-            hospDoctorType.setBabySex(0);
-        DPreconditions.checkState(hospPatientInfoMapper.insertSelectiveReturnId(hospDoctorType) == 1, "增加就诊人信息失败", true);
+    public HospPatientInfo add(HospPatientInfo hospPatientInfo) {
+        DPreconditions.checkState(hospPatientInfo.getId() == null,
+                "就诊人信息的id不能填写.",
+                true);
+        DPreconditions.checkNotNull(hospPatientInfo.getUserId(),
+                "就诊人用户ID不能为空.",
+                true);
+        DPreconditions.checkNotNullAndEmpty(hospPatientInfo.getCardId(),
+                "就诊人身份证号码不能为空.",
+                true);
+        DPreconditions.checkNotNull(hospPatientInfo.getType(),
+                "就诊人类型不能为空",
+                true);
+        if(hospPatientInfo.getBabySex() == null)
+            hospPatientInfo.setBabySex(0);
+        DPreconditions.checkState(hospPatientInfoMapper.insertSelectiveReturnId(hospPatientInfo) == 1,
+                Language.get("service.save-failure"),
+                true);
+        return hospPatientInfo;
     }
 
     /**
      * 更新就诊人信息信息
      *
-     * @param hospBanner
+     * @param hospPatientInfo
      */
-    public void update(HospPatientInfo hospBanner) {
-        DPreconditions.checkNotNull(hospBanner.getId(), "就诊人信息的id不能为空.", true);
-        HospPatientInfo banner = selectOne(hospBanner.getId());
-        DPreconditions.checkNotNull(banner, "该ID的就诊人信息未查询到.", true);
-        DPreconditions.checkState(hospPatientInfoMapper.updateByPrimaryKeySelective(hospBanner) == 1, "更新就诊人信息失败.", true);
+    public void update(HospPatientInfo hospPatientInfo) {
+        DPreconditions.checkNotNull(hospPatientInfo.getId(),
+                "就诊人信息的id不能为空.",
+                true);
+        HospPatientInfo banner = selectOne(hospPatientInfo.getId());
+        DPreconditions.checkNotNull(banner,
+                "该ID的就诊人信息未查询到.",
+                true);
+        DPreconditions.checkState(hospPatientInfoMapper.updateByPrimaryKeySelective(hospPatientInfo) == 1,
+                "更新就诊人信息失败.",
+                true);
     }
 
     /**
@@ -59,8 +76,12 @@ public class PatientInfoService implements BaseService<HospPatientInfo>{
      */
     public void deleteOne(Long id) {
         HospPatientInfo banner = selectOne(id);
-        DPreconditions.checkNotNull(banner, "该ID的就诊人信息未查询到.", true);
-        DPreconditions.checkState(hospPatientInfoMapper.deleteByPrimaryKey(id) == 1, "删除就诊人信息失败.");
+        DPreconditions.checkNotNull(banner,
+                "该ID的就诊人信息未查询到.",
+                true);
+        DPreconditions.checkState(hospPatientInfoMapper.deleteByPrimaryKey(id) == 1,
+                "删除就诊人信息失败.",
+                true);
     }
 
     @Override

@@ -29,7 +29,7 @@ public class DoctorInfoService implements BaseService<HospDoctorInfo> {
      *
      * @param hospBanner
      */
-    public void add(HospDoctorInfo hospBanner) {
+    public HospDoctorInfo add(HospDoctorInfo hospBanner) {
         DPreconditions.checkState(hospBanner.getId() == null, "医生的id不能填写.", true);
         DPreconditions.checkNotNullAndEmpty(hospBanner.getName(), "医生的名称不能为空.", true);
         DPreconditions.checkNotNull(hospBanner.getHospAreaId(), "医生的院区不能为空.", true);
@@ -39,7 +39,8 @@ public class DoctorInfoService implements BaseService<HospDoctorInfo> {
             hospBanner.setHeadPortrait(doctorHeadPortrait);
         if (hospBanner.getSex() == null)
             hospBanner.setSex(0);
-        DPreconditions.checkState(hospDoctorInfoMapper.insertSelectiveReturnId(hospBanner) == 1, "增加医生失败", true);
+        DPreconditions.checkState(hospDoctorInfoMapper.insertSelectiveReturnId(hospBanner) == 1,Language.get("service.save-failure"),true);
+        return hospBanner;
     }
 
     /**
@@ -49,8 +50,8 @@ public class DoctorInfoService implements BaseService<HospDoctorInfo> {
      */
     public void update(HospDoctorInfo hospBanner) {
         DPreconditions.checkNotNull(hospBanner.getId(), "医生的id不能为空.", true);
-        HospDoctorInfo 医生 = selectOne(hospBanner.getId());
-        DPreconditions.checkNotNull(医生, "该ID的医生未查询到.", true);
+        HospDoctorInfo doctor = selectOne(hospBanner.getId());
+        DPreconditions.checkNotNull(doctor, "该ID的医生未查询到.", true);
         DPreconditions.checkState(hospDoctorInfoMapper.updateByPrimaryKeySelective(hospBanner) == 1, "更新医生信息失败.", true);
     }
 
@@ -60,8 +61,8 @@ public class DoctorInfoService implements BaseService<HospDoctorInfo> {
      * @param id
      */
     public void deleteOne(Long id) {
-        HospDoctorInfo 医生 = selectOne(id);
-        DPreconditions.checkNotNull(医生, "该ID的医生未查询到.", true);
+        HospDoctorInfo doctor = selectOne(id);
+        DPreconditions.checkNotNull(doctor, "该ID的医生未查询到.", true);
         DPreconditions.checkState(hospDoctorInfoMapper.deleteByPrimaryKey(id) == 1, "删除医生信息失败.");
     }
 
@@ -95,7 +96,7 @@ public class DoctorInfoService implements BaseService<HospDoctorInfo> {
         select.setHospAreaId(hospDoctorInfo.getHospAreaId());
         select.setDoctorTypeId(hospDoctorInfo.getDoctorTypeId());
         select.setSex(hospDoctorInfo.getSex());
-        return new PageInfo(hospDoctorInfoMapper.selectByExample1(select));
+        return new PageInfo(hospDoctorInfoMapper.selectByExampleByFuzzy(select));
     }
 
     /**

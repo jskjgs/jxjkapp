@@ -14,7 +14,7 @@ public interface  BaseService<T> {
      * @param t
      * @throws Exception
      */
-     void add(T t) throws Exception;
+     T add(T t) throws Exception;
 
     /**
      * 修改基本接口

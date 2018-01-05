@@ -26,11 +26,20 @@ public class DoctorTypeService implements BaseService<HospDoctorType> {
      *
      * @param hospDoctorType
      */
-    public void add(HospDoctorType hospDoctorType) {
-        DPreconditions.checkState(hospDoctorType.getId() == null, "医生类别的id不能填写.", true);
-        DPreconditions.checkNotNullAndEmpty(hospDoctorType.getName(), "医生类别的名称不能为空.", true);
-        DPreconditions.checkNotNullAndEmpty(hospDoctorType.getDescription(), "医生类别的说明不能为空.", true);
-        DPreconditions.checkState(hospDoctorTypeMapper.insertSelectiveReturnId(hospDoctorType) == 1, "增加医生类别失败", true);
+    public HospDoctorType add(HospDoctorType hospDoctorType) {
+        DPreconditions.checkState(hospDoctorType.getId() == null,
+                "医生类别的id不能填写.",
+                true);
+        DPreconditions.checkNotNullAndEmpty(hospDoctorType.getName(),
+                "医生类别的名称不能为空.",
+                true);
+        DPreconditions.checkNotNullAndEmpty(hospDoctorType.getDescription(),
+                "医生类别的说明不能为空.",
+                true);
+        DPreconditions.checkState(hospDoctorTypeMapper.insertSelectiveReturnId(hospDoctorType) == 1,
+                Language.get("service.save-failure"),
+                true);
+        return hospDoctorType;
     }
 
     /**
@@ -39,10 +48,16 @@ public class DoctorTypeService implements BaseService<HospDoctorType> {
      * @param hospDoctorType
      */
     public void update(HospDoctorType hospDoctorType) {
-        DPreconditions.checkNotNull(hospDoctorType.getId(), "医生类别的id不能为空.", true);
+        DPreconditions.checkNotNull(hospDoctorType.getId(),
+                "医生类别的id不能为空.",
+                true);
         HospDoctorType banner = selectOne(hospDoctorType.getId());
-        DPreconditions.checkNotNull(banner, "该ID的医生类别未查询到.", true);
-        DPreconditions.checkState(hospDoctorTypeMapper.updateByPrimaryKeySelective(hospDoctorType) == 1, "更新医生类别信息失败.", true);
+        DPreconditions.checkNotNull(banner,
+                "该ID的医生类别未查询到.",
+                true);
+        DPreconditions.checkState(hospDoctorTypeMapper.updateByPrimaryKeySelective(hospDoctorType) == 1,
+                "更新医生类别信息失败.",
+                true);
     }
 
     /**
@@ -52,8 +67,12 @@ public class DoctorTypeService implements BaseService<HospDoctorType> {
      */
     public void deleteOne(Long id) {
         HospDoctorType banner = selectOne(id);
-        DPreconditions.checkNotNull(banner, "该ID的医生类别未查询到.", true);
-        DPreconditions.checkState(hospDoctorTypeMapper.deleteByPrimaryKey(id) == 1, "删除医生类别信息失败.");
+        DPreconditions.checkNotNull(banner,
+                "该ID的医生类别未查询到.",
+                true);
+        DPreconditions.checkState(hospDoctorTypeMapper.deleteByPrimaryKey(id) == 1,
+                "删除医生类别信息失败.",
+                true);
     }
 
     @Override

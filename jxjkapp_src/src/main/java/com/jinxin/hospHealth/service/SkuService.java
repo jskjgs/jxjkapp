@@ -37,15 +37,29 @@ public class SkuService implements BaseService<HospProductSku> {
      *
      * @param hospProductSku
      */
-    public void add(HospProductSku hospProductSku) {
-        DPreconditions.checkState(hospProductSku.getId() == null, "商品SKU的id不能填写.", true);
-        DPreconditions.checkNotNull(hospProductSku.getProductId(), "商品的ID不能为空.", true);
-        DPreconditions.checkNotNullAndEmpty(hospProductSku.getName(), "商品SKU的名称不能为空.", true);
-        DPreconditions.checkNotNullAndEmpty(hospProductSku.getDescription(), "商品SKU的描述不能为空.", true);
-        DPreconditions.checkNotNull(hospProductSku.getSalesPrice(), "商品SKU的销售价格不能为空.", true);
-        DPreconditions.checkNotNull(hospProductSku.getShowPrice(), "商品SKU的显示价格不能为空.", true);
+    public HospProductSku add(HospProductSku hospProductSku) {
+        DPreconditions.checkState(hospProductSku.getId() == null,
+                "商品SKU的id不能填写.",
+                true);
+        DPreconditions.checkNotNull(hospProductSku.getProductId(),
+                "商品的ID不能为空.",
+                true);
+        DPreconditions.checkNotNullAndEmpty(hospProductSku.getName(),
+                "商品SKU的名称不能为空.",
+                true);
+        DPreconditions.checkNotNullAndEmpty(hospProductSku.getDescription(),
+                "商品SKU的描述不能为空.",
+                true);
+        DPreconditions.checkNotNull(hospProductSku.getSalesPrice(),
+                "商品SKU的销售价格不能为空.",
+                true);
+        DPreconditions.checkNotNull(hospProductSku.getShowPrice(),
+                "商品SKU的显示价格不能为空.",
+                true);
         //判断商品存在
-        DPreconditions.checkNotNull(productService.selectOne(hospProductSku.getProductId()),"商品SKU挂载的商品不存在.",true);
+        DPreconditions.checkNotNull(productService.selectOne(hospProductSku.getProductId()),
+                "商品SKU挂载的商品不存在.",
+                true);
         Date date = new Date();
         if (hospProductSku.getServiceQuantity() == null)
             hospProductSku.setServiceQuantity(1);
@@ -55,7 +69,10 @@ public class SkuService implements BaseService<HospProductSku> {
             hospProductSku.setUpdateDate(date);
         if (hospProductSku.getImages() == null)
             hospProductSku.setImages(skuImage);
-        DPreconditions.checkState(hospProductSkuMapper.insertSelectiveReturnId(hospProductSku) == 1, "增加商品SKU失败", true);
+        DPreconditions.checkState(hospProductSkuMapper.insertSelectiveReturnId(hospProductSku) == 1,
+                Language.get("service.save-failure"),
+                true);
+        return  hospProductSku;
     }
 
     /**
@@ -64,10 +81,16 @@ public class SkuService implements BaseService<HospProductSku> {
      * @param hospProductSku
      */
     public void update(HospProductSku hospProductSku) {
-        DPreconditions.checkNotNull(hospProductSku.getId(), "商品SKU的id不能为空.", true);
+        DPreconditions.checkNotNull(hospProductSku.getId(),
+                "商品SKU的id不能为空.",
+                true);
         HospProductSku selectProductSku = selectOne(hospProductSku.getId());
-        DPreconditions.checkNotNull(selectProductSku, "该ID的商品SKU未查询到.", true);
-        DPreconditions.checkState(hospProductSkuMapper.updateByPrimaryKeySelective(hospProductSku) == 1, "更新商品SKU信息失败.", true);
+        DPreconditions.checkNotNull(selectProductSku,
+                "该ID的商品SKU未查询到.",
+                true);
+        DPreconditions.checkState(hospProductSkuMapper.updateByPrimaryKeySelective(hospProductSku) == 1,
+                "更新商品SKU信息失败.",
+                true);
     }
 
     /**
@@ -77,8 +100,12 @@ public class SkuService implements BaseService<HospProductSku> {
      */
     public void deleteOne(Long id) {
         HospProductSku hospProductSku = selectOne(id);
-        DPreconditions.checkNotNull(hospProductSku, "该ID的商品SKU未查询到.", true);
-        DPreconditions.checkState(hospProductSkuMapper.deleteByPrimaryKey(id) == 1, "删除该商品SKU信息失败.");
+        DPreconditions.checkNotNull(hospProductSku,
+                "该ID的商品SKU未查询到.",
+                true);
+        DPreconditions.checkState(hospProductSkuMapper.deleteByPrimaryKey(id) == 1,
+                "删除该商品SKU信息失败.",
+                true);
     }
 
     @Override

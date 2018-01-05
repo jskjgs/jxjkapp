@@ -7,6 +7,8 @@ user:
     phone-null: 电话信息不能为空.
     id-null: 用户唯一标识不能为空.
     id-repeat: 该用户信息已经存在,不能重复增加.
+    select-object-null: 用户查询信息不能为空.
+    phone-repeat: 手机号码已经被注册.
 user-balance:
     id-repeat: 该用户的余额信息已经存在,不能重复增加.
     select-not-exist: 该用户没有余额信息,或者用户信息已经被锁定.
@@ -16,6 +18,9 @@ user-balance:
     lack-balance: 用户余额不足以扣减.
     lack-lock-balance: 解锁的用户余额大于了用户被锁定的余额.
     cannot-same-time-lockAndTopup: 锁定余额和更新余额不能同时进行.
+    user-id-phone-null: 用户ID和手机号码,请选择一个传入,不能同时为空.
+    amount-null: 金额不能为空.
+    top-up-failure: 充值失败.
 dynamic:
     next-send-error: 未到再次发送时间,请稍后再试.
     phone-null: 电话号码不能为空.
@@ -29,7 +34,27 @@ banner:
 new:
     id-null: 新闻id不能为空.
     select-not-exist: 该新闻不存在.
+productSku:
+    id-null: 商品SKU的唯一标识不能为空.
+    id-not-exist: 商品SKU不存在.
+precontract:
+    precontract-time-null: 预约时间不能为空.
+    id-null: 预约ID不能为空
+parameter-valid:
+    disable-enable-scope: 传入的禁用参数不属于默认值范围内.
+    all-enable-scope: 传入的禁用/删除参数不属于默认值范围内.
+    display-scope: 传入的显示参数不属于默认值范围内.
+    sex-scope: 传入的性别参数不属于默认值范围内.
+    call-number-state-scope: 传入的排队叫号状态参数不属于默认值范围内.
+call-number:
+    user-id-null: 用户ID不能为空.
+    id-null: 排队叫号ID不能为空.
+    select-not-exist: 该用户查询的排队叫号信息不存在.
+
 
 service:
     invalid-method: 无效的方法.
-
+    save-failure: 保存信息失败.
+    update-failure: 更新信息失败.
+    delete-failure: 删除信息失败.
+    select-failure: 查询信息失败.
