@@ -19,44 +19,46 @@ import javax.servlet.http.HttpServletRequest;
 /**
  * Created by zbs on 2017/12/12.
  */
-@Order(1)
-@WebFilter(filterName = "VerifyLoginFilter", urlPatterns = {"/userInfo/*"})
-@Log4j
-public class VerifyLoginFilter implements Filter {
+//@Order(1)
+//@WebFilter(filterName = "VerifyLoginFilter", urlPatterns = {"/userInfo/*"})
+//@Log4j
+//public class VerifyLoginFilter {
 
-    @Autowired
-    private RedisOperation redisOperation;
+// implements Filter {
 
-    @Autowired
-    private MyBaseController myBaseController;
-
-
-    @Override
-    public void init(FilterConfig filterConfig) throws ServletException {
-
-    }
-
-    @Override
-    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
-        String token = ((HttpServletRequest) servletRequest).getHeader("Authorization");
-        System.out.print("fdffdsfsdfds");
-        filterChain.doFilter(servletRequest, servletResponse);
-        try {
-            if (token != null) {
-                String userId = redisOperation.get(token);
-                log.info("*******登录用户*****:" + userId);
-                servletRequest.setAttribute("userId", userId);
-                servletRequest.setAttribute("token", token);
-                filterChain.doFilter(servletRequest, servletResponse);
-            }
-        } catch (Exception e) {
-            servletResponse.getWriter().print(myBaseController.ResponseWrapperError(e,null));
-        }
-        servletResponse.getWriter().print(myBaseController.ResponseWrapperNotPermissions("用户没有登录."));
-    }
-
-    @Override
-    public void destroy() {
-
-    }
-}
+//    @Autowired
+//    private RedisOperation redisOperation;
+//
+//    @Autowired
+//    private MyBaseController myBaseController;
+//
+//
+//    @Override
+//    public void init(FilterConfig filterConfig) throws ServletException {
+//
+//    }
+//
+//    @Override
+//    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
+//        String token = ((HttpServletRequest) servletRequest).getHeader("Authorization");
+//        System.out.print("fdffdsfsdfds");
+//        filterChain.doFilter(servletRequest, servletResponse);
+//        try {
+//            if (token != null) {
+//                String userId = redisOperation.get(token);
+//                log.info("*******登录用户*****:" + userId);
+//                servletRequest.setAttribute("userId", userId);
+//                servletRequest.setAttribute("token", token);
+//                filterChain.doFilter(servletRequest, servletResponse);
+//            }
+//        } catch (Exception e) {
+//            servletResponse.getWriter().print(myBaseController.ResponseWrapperError(e,null));
+//        }
+//        servletResponse.getWriter().print(myBaseController.ResponseWrapperNotPermissions("用户没有登录."));
+//    }
+//
+//    @Override
+//    public void destroy() {
+//
+//    }
+//}

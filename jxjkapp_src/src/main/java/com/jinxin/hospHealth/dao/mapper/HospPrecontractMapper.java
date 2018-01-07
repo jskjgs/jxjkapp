@@ -14,7 +14,7 @@ public interface HospPrecontractMapper extends MyMapper<HospPrecontract> {
             " <if test = \"userIds != null \"> and user_id in (#{userIds})</if>  " +
             " <if test = \"productSkuIds != null \"> and product_sku_id in (#{productSkuIds})</if>  " +
             " <if test = \"status != null \"> and status = #{status}</if>  " +
-            " <if test = \"startTime != null && stopTime != null \"> and  precontract_date BETWEEN #{startTime} AND #{stopTime}</if>  " +
+            " <if test = \"startTime != null and stopTime != null \"> and  precontract_date BETWEEN #{startTime} AND #{stopTime}</if>  " +
             " </script>"})
     List<HospPrecontract> selectByExampleByCustom(HospPrecontract hospPrecontract);
 

@@ -40,7 +40,7 @@ public class CallNumberService implements BaseService<HospCallNumber> {
         DPreconditions.checkNotNull(hospCallNumber.getUserId(),
                 Language.get("call-number.user-id-null"),
                 true);
-        DPreconditions.checkNotNull(userInfoService.selectOne(hospCallNumber.getId()),
+        DPreconditions.checkNotNull(userInfoService.selectOne(hospCallNumber.getUserId()),
                 Language.get("user.select-not-exist"),
                 true);
         HospCallNumber callNumber = new HospCallNumber();
