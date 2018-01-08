@@ -43,8 +43,6 @@ default:
 
 #开发环境
 spring:
-    profiles:
-        active: dev
     datasource:
         beanPath: com.jinxin.hospHealth.dao.models
         mapperXmlPath: classpath:mapper/*.xml

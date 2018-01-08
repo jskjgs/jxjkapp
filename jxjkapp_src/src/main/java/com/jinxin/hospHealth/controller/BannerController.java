@@ -55,7 +55,7 @@ public class BannerController extends MyBaseController {
     }
 
     @ApiOperation(value = "查询全部banner信息",response = HospBanner.class)
-    @RequestMapping(value="/all", method = RequestMethod.POST)
+    @RequestMapping(value="/all", method = RequestMethod.GET)
     @ResponseBody
     public JSONObject selectAll(
             @ApiParam(value = "分页信息", required = false)  @RequestBody(required = false) PageBean pageBean) throws Exception {
@@ -71,7 +71,7 @@ public class BannerController extends MyBaseController {
     }
 
     @ApiOperation(value = "查询全部banner信息--admin",response = HospBanner.class)
-    @RequestMapping(value="/admin/all", method = RequestMethod.POST)
+    @RequestMapping(value="/admin/all", method = RequestMethod.GET)
     @ResponseBody
     public JSONObject selectAllAdmin(
             @ApiParam(value = "分页信息", required = false)  @RequestBody(required = false) PageBean pageBean) throws Exception {
