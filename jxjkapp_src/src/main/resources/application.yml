@@ -3,9 +3,6 @@ server:
     # 统一接口访问前缀
     servlet-path: /hospHealth
 
-management:
-    address: 127.0.0.1
-
 #动态码
 dynamic:
     #redis中的key标识
