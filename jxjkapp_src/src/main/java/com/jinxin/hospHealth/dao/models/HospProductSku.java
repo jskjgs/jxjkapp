@@ -11,6 +11,7 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
 @Data
 @ApiModel("商品SKU信息")
@@ -37,4 +38,5 @@ public class HospProductSku extends PageBean{
     private Date createDate;
     @ApiModelProperty("更新时间")
     private Date updateDate;
+
 }

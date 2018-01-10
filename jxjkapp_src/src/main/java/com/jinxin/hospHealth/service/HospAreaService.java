@@ -1,6 +1,7 @@
 package com.jinxin.hospHealth.service;
 
 import com.doraemon.base.controller.bean.PageBean;
+import com.doraemon.base.exceptions.ShowExceptions;
 import com.doraemon.base.guava.DPreconditions;
 import com.doraemon.base.language.Language;
 import com.github.pagehelper.PageHelper;
@@ -15,7 +16,7 @@ import org.springframework.stereotype.Service;
  * Created by zbs on 2017/12/25.
  */
 @Service
-public class HospAreaService implements BaseService<HospArea>{
+public class HospAreaService implements BaseService<HospArea,HospArea>{
 
     @Autowired
     HospAreaMapper hospAreaMapper;
@@ -76,7 +77,7 @@ public class HospAreaService implements BaseService<HospArea>{
 
     @Override
     public void setStateAsInvalid(Long id) throws Exception {
-
+        throw new ShowExceptions(Language.get("service.invalid-method"));
     }
 
     /**

@@ -1,4 +1,4 @@
-package com.jinxin.hospHealth.controller.protocol;
+package com.jinxin.hospHealth.controller.protocol.VO;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;

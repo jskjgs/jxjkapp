@@ -23,7 +23,7 @@ import java.util.Date;
  * Created by zbs on 2017/12/25.
  */
 @Service
-public class UserInfoService implements BaseService<HospUserInfo>{
+public class UserInfoService implements BaseService<HospUserInfo,HospUserInfo>{
 
     @Autowired
     HospUserInfoMapper hospUserInfoMapper;

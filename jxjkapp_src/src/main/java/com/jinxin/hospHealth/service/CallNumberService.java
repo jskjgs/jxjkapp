@@ -21,7 +21,7 @@ import java.util.Date;
  * Created by zbs on 2018/1/5.
  */
 @Service
-public class CallNumberService implements BaseService<HospCallNumber> {
+public class CallNumberService implements BaseService<HospCallNumber,HospCallNumber> {
 
     @Autowired
     UserInfoService userInfoService;
@@ -37,14 +37,14 @@ public class CallNumberService implements BaseService<HospCallNumber> {
     @Override
     @Transactional
     public HospCallNumber add(HospCallNumber hospCallNumber) throws Exception {
-        DPreconditions.checkNotNull(hospCallNumber.getUserId(),
-                Language.get("call-number.user-id-null"),
+        DPreconditions.checkNotNull(hospCallNumber.getPatientInfoId(),
+                Language.get("call-number.patient-id-null"),
                 true);
-        DPreconditions.checkNotNull(userInfoService.selectOne(hospCallNumber.getUserId()),
-                Language.get("user.select-not-exist"),
+        DPreconditions.checkNotNull(userInfoService.selectOne(hospCallNumber.getPatientInfoId()),
+                Language.get("patient.select-not-exist"),
                 true);
         HospCallNumber callNumber = new HospCallNumber();
-        callNumber.setUserId(hospCallNumber.getUserId());
+        callNumber.setPatientInfoId(hospCallNumber.getPatientInfoId());
         callNumber.setState(CallNumberEnum.NORMAL.getCode());
         callNumber.setCreateDate(new Date());
         callNumber.setUpdateDate(new Date());
@@ -136,7 +136,7 @@ public class CallNumberService implements BaseService<HospCallNumber> {
             PageHelper.orderBy(hospCallNumber.getField());
         HospCallNumber select = new HospCallNumber();
         select.setId(hospCallNumber.getId());
-        select.setUserId(hospCallNumber.getUserId());
+        select.setPatientInfoId(hospCallNumber.getPatientInfoId());
         select.setState(hospCallNumber.getState());
         select.setUserIds(hospCallNumber.getUserIds());
         select.setStartTime(hospCallNumber.getStartTime());

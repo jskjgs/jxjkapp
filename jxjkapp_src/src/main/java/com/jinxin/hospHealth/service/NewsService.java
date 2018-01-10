@@ -19,7 +19,7 @@ import java.util.Date;
  * Created by zbs on 2017/12/24.
  */
 @Service
-public class NewsService implements BaseService<HospNews>{
+public class NewsService implements BaseService<HospNews,HospNews>{
 
     @Autowired
     HospNewsMapper hospNewsMapper;

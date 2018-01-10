@@ -22,6 +22,12 @@ dynamic:
         register: 60
         updatePhone: 60
 
+order:
+    #申请退款的订单队列
+    refund-que: order-refund-que
+    #异常支付订单队列
+    exception-pay-que: exception-pay-que
+
 #语言配置文件
 language:
     fileName: languageCN.yml

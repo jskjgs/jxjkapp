@@ -29,6 +29,6 @@ public class HospUserBalance extends PageBean{
     @ApiModelProperty("更新时间")
     private Date updateDate;
     @ApiModelProperty("0:正常 1:禁用  99:删除")
-    private Integer enable = EnableEnum.ENABLE_DELETE.getCode();
+    private Integer enable = EnableEnum.ENABLE_NORMAL.getCode();
 
 }

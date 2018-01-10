@@ -3,7 +3,7 @@ package com.jinxin.hospHealth.controller;
 import com.alibaba.fastjson.JSONObject;
 import com.doraemon.base.guava.DPreconditions;
 import com.doraemon.base.language.Language;
-import com.jinxin.hospHealth.controller.protocol.UserBalanceVO;
+import com.jinxin.hospHealth.controller.protocol.VO.UserBalanceVO;
 import com.jinxin.hospHealth.dao.models.HospUserBalance;
 import com.jinxin.hospHealth.dao.models.HospUserInfo;
 import com.jinxin.hospHealth.service.UserBalanceService;
@@ -30,20 +30,30 @@ public class UserBalanceController extends MyBaseController{
     @Autowired
     UserInfoService userInfoService;
 
+    @ApiOperation(value = "查询用户余额信息")
+    @RequestMapping(value="/", method = RequestMethod.GET)
+    @ResponseBody
+    public JSONObject select(
+            @ApiParam(value = "用户ID", required = false) @RequestParam(required = false) Long userId) throws Exception {
+        HospUserBalance hospUserBalance = new HospUserBalance();
+        hospUserBalance.setUserId(userId);
+        return ResponseWrapperSuccess(userBalanceService.select(hospUserBalance));
+    }
+
     @ApiOperation(value = "充值余额")
     @RequestMapping(value="/pay", method = RequestMethod.POST)
     @ResponseBody
     public JSONObject pay(
-            @ApiParam(value = "手机号码", required = true) @RequestBody(required = false) String phone,
-            @ApiParam(value = "用户ID", required = true) @RequestBody(required = false) Long userId,
-            @ApiParam(value = "金额 (充值为正,消费为负)", required = true) @RequestBody(required = true) BigDecimal amount) throws Exception {
+            @ApiParam(value = "手机号码", required = false) @RequestParam(required = false) String phone,
+            @ApiParam(value = "用户ID", required = false) @RequestParam(required = false) Long userId,
+            @ApiParam(value = "金额 ", required = true) @RequestParam(required = true) double amount) throws Exception {
         DPreconditions.checkState(phone != null || userId !=null,
                 Language.get("user-balance.user-id-phone-null"),
                 true);
         DPreconditions.checkNotNull(amount,
                 Language.get("user-balance.amount-null"),
                 true);
-        DPreconditions.checkState(amount.compareTo(BigDecimal.ZERO) > 0,
+        DPreconditions.checkState(BigDecimal.valueOf(amount).compareTo(BigDecimal.ZERO) > 0,
                 Language.get("user-balance.capacity"),
                 true);
         HospUserInfo hospUserInfo = DPreconditions.checkNotNull(
@@ -61,7 +71,7 @@ public class UserBalanceController extends MyBaseController{
         //更新用户余额
         HospUserBalance updateUserBalance = new HospUserBalance();
         updateUserBalance.setUserId(hospUserInfo.getId());
-        updateUserBalance.setBalance(amount);
+        updateUserBalance.setBalance(BigDecimal.valueOf(amount));
         userBalanceService.update(updateUserBalance);
         return ResponseWrapperSuccess(new UserBalanceVO(
                 updateUserBalance.getUserId(),

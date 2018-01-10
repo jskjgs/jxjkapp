@@ -34,10 +34,10 @@ public class HospPrecontract extends PageBean{
     @ApiModelProperty("多个商品SKU-ID,使用,分割")
     private String productSkuIds;
     @Transient
-    @ApiModelProperty("时间区间-开始时间")
-    private Date startTime;
+    @ApiModelProperty("时间区间-开始时间  YYYY-MM-DD  HH:mm:ss")
+    private String startTime;
     @Transient
-    @ApiModelProperty("时间区间-结束时间")
-    private Date stopTime;
+    @ApiModelProperty("时间区间-结束时间  YYYY-MM-DD  HH:mm:ss")
+    private String stopTime;
 
 }

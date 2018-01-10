@@ -6,7 +6,7 @@ import com.github.pagehelper.PageInfo;
 /**
  * Created by zbs on 2017/12/28.
  */
-public interface  BaseService<T> {
+public interface  BaseService<T,E> {
 
     /**
      * 增加基本接口
@@ -14,7 +14,7 @@ public interface  BaseService<T> {
      * @param t
      * @throws Exception
      */
-     T add(T t) throws Exception;
+     T add(E t) throws Exception;
 
     /**
      * 修改基本接口
@@ -22,7 +22,7 @@ public interface  BaseService<T> {
      * @param t
      * @throws Exception
      */
-     void update(T t) throws Exception;
+     void update(E t) throws Exception;
 
     /**
      * 删除基本接口
@@ -54,7 +54,7 @@ public interface  BaseService<T> {
      * @param t
      * @throws Exception
      */
-     PageInfo<T> select(T t) throws Exception;
+     PageInfo<T> select(E t) throws Exception;
 
     /**
      * 查询全部(过滤掉一切用户不关系的无效等) -- 提供给客户端
@@ -78,7 +78,7 @@ public interface  BaseService<T> {
      * @param t
      * @throws Exception
      */
-     PageInfo<T> selectAdmin(T t) throws Exception;
+     PageInfo<T> selectAdmin(E t) throws Exception;
 
 
     /**

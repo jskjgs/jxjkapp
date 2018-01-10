@@ -17,8 +17,8 @@ public class HospCallNumber extends PageBean{
     @Id
     @ApiModelProperty("id")
     private Long id;
-    @ApiModelProperty("用户ID")
-    private Long userId;
+    @ApiModelProperty("就诊人ID")
+    private Long patientInfoId;
     @ApiModelProperty("状态(0 : 等待  1 : 使用  2 : 过号)")
     private Integer state;
     @ApiModelProperty("创建时间")
@@ -27,11 +27,11 @@ public class HospCallNumber extends PageBean{
     private Date updateDate;
 
     @Transient
-    @ApiModelProperty("时间区间-开始时间")
-    private Date startTime;
+    @ApiModelProperty("时间区间-开始时间  YYYY-MM-DD  HH:mm:ss")
+    private String startTime;
     @Transient
-    @ApiModelProperty("时间区间-结束时间")
-    private Date stopTime;
+    @ApiModelProperty("时间区间-结束时间  YYYY-MM-DD  HH:mm:ss")
+    private String stopTime;
     @Transient
     @ApiModelProperty("多个用户ID,使用,分割")
     private String userIds;

@@ -18,7 +18,7 @@ import org.springframework.stereotype.Service;
  * Created by zbs on 2018/1/2.
  */
 @Service
-public class PrecontractService implements BaseService<HospPrecontract>{
+public class PrecontractService implements BaseService<HospPrecontract,HospPrecontract>{
 
     @Autowired
     HospPrecontractMapper hospPrecontractMapper;

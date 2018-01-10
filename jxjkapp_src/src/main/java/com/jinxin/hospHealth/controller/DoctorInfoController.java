@@ -3,7 +3,8 @@ package com.jinxin.hospHealth.controller;
 import com.alibaba.fastjson.JSONObject;
 import com.doraemon.base.controller.bean.PageBean;
 import com.github.pagehelper.PageInfo;
-import com.jinxin.hospHealth.controller.protocol.DoctorInfoVO;
+import com.jinxin.hospHealth.controller.protocol.PO.DoctorInfoPO;
+import com.jinxin.hospHealth.controller.protocol.VO.DoctorInfoVO;
 import com.jinxin.hospHealth.dao.models.HospDoctorInfo;
 import com.jinxin.hospHealth.service.DoctorInfoService;
 import com.jinxin.hospHealth.service.DoctorTypeService;
@@ -42,9 +43,9 @@ public class DoctorInfoController extends MyBaseController{
     @RequestMapping(value="/", method = RequestMethod.POST)
     @ResponseBody
     public JSONObject add(
-            @ApiParam(value = "医生信息", required = true) @RequestBody HospDoctorInfo hospDoctorInfo) throws Exception {
+            @ApiParam(value = "医生信息", required = true) @RequestBody DoctorInfoPO doctorInfoPO) throws Exception {
         Map<String,Long> map = new HashMap<>();
-        doctorInfoService.add(hospDoctorInfo);
+        HospDoctorInfo hospDoctorInfo = doctorInfoService.add(doctorInfoPO);
         map.put("id",hospDoctorInfo.getId());
         return ResponseWrapperSuccess(map);
     }
@@ -53,8 +54,8 @@ public class DoctorInfoController extends MyBaseController{
     @RequestMapping(value="/", method = RequestMethod.PUT)
     @ResponseBody
     public JSONObject update(
-            @ApiParam(value = "医生 信息", required = true)  @RequestBody HospDoctorInfo hospBanner) throws Exception {
-        doctorInfoService.update(hospBanner);
+            @ApiParam(value = "医生 信息", required = true)  @RequestBody DoctorInfoPO doctorInfoPO) throws Exception {
+        doctorInfoService.update(doctorInfoPO);
         return ResponseWrapperSuccess(null);
     }
 
@@ -84,8 +85,22 @@ public class DoctorInfoController extends MyBaseController{
     @RequestMapping(value="/query", method = RequestMethod.POST)
     @ResponseBody
     public JSONObject select(
-            @ApiParam(value = "医生 信息", required = true)  @RequestBody(required = true) HospDoctorInfo hospBanner) throws Exception {
-        PageInfo pageInfo = doctorInfoService.select(hospBanner);
+            @ApiParam(value = "医生 信息", required = true)  @RequestBody(required = true) DoctorInfoPO doctorInfoPO) throws Exception {
+        PageInfo pageInfo = doctorInfoService.select(doctorInfoPO);
+        List<DoctorInfoVO> respList = new ArrayList<>();
+        for(Object info : pageInfo.getList()) {
+            respList.add(conversion((HospDoctorInfo)info));
+        }
+        pageInfo.setList(respList);
+        return ResponseWrapperSuccess(pageInfo);
+    }
+
+    @ApiOperation(value = "根据条件查询医生信息 ---模糊查询",response = DoctorInfoVO.class)
+    @RequestMapping(value="/query/fuzzy", method = RequestMethod.POST)
+    @ResponseBody
+    public JSONObject selectByFuzzy(
+            @ApiParam(value = "医生 信息", required = true)  @RequestBody(required = true) DoctorInfoPO doctorInfoPO) throws Exception {
+        PageInfo pageInfo = doctorInfoService.selectByFuzzy(doctorInfoPO);
         List<DoctorInfoVO> respList = new ArrayList<>();
         for(Object info : pageInfo.getList()) {
             respList.add(conversion((HospDoctorInfo)info));
@@ -122,8 +137,8 @@ public class DoctorInfoController extends MyBaseController{
     @RequestMapping(value="/admin/query", method = RequestMethod.POST)
     @ResponseBody
     public JSONObject selectAdmin(
-            @ApiParam(value = "医生 信息", required = true)  @RequestBody(required = true) HospDoctorInfo hospBanner) throws Exception {
-        PageInfo pageInfo = doctorInfoService.selectAdmin(hospBanner);
+            @ApiParam(value = "医生 信息", required = true)  @RequestBody(required = true) DoctorInfoPO doctorInfoPO) throws Exception {
+        PageInfo pageInfo = doctorInfoService.selectAdmin(doctorInfoPO);
         List<DoctorInfoVO> respList = new ArrayList<>();
         for(Object info : pageInfo.getList()) {
             respList.add(conversion((HospDoctorInfo)info));
@@ -131,7 +146,6 @@ public class DoctorInfoController extends MyBaseController{
         pageInfo.setList(respList);
         return ResponseWrapperSuccess(pageInfo);
     }
-
 
     public DoctorInfoVO conversion(HospDoctorInfo hospDoctorInfo){
         DoctorInfoVO doctorInfoVO = new DoctorInfoVO(hospDoctorInfo);
@@ -141,4 +155,5 @@ public class DoctorInfoController extends MyBaseController{
             doctorInfoVO.setDoctorType(doctorTypeService.selectOne(hospDoctorInfo.getDoctorTypeId()));
         return doctorInfoVO;
     }
+
 }

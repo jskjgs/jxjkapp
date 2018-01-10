@@ -21,7 +21,7 @@ import java.util.Date;
  * Created by zbs on 2017/12/25.
  */
 @Service
-public class ProductService implements BaseService<HospProduct>{
+public class ProductService implements BaseService<HospProduct,HospProduct>{
 
     @Autowired
     HospProductMapper hospProductMapper;

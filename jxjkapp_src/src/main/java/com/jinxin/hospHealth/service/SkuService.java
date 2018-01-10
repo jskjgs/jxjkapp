@@ -21,7 +21,7 @@ import java.util.Date;
  * Created by zbs on 2017/12/25.
  */
 @Service
-public class SkuService implements BaseService<HospProductSku> {
+public class SkuService implements BaseService<HospProductSku,HospProductSku> {
 
     @Autowired
     HospProductSkuMapper hospProductSkuMapper;

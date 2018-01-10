@@ -1,4 +1,4 @@
-package com.jinxin.hospHealth.controller.protocol;
+package com.jinxin.hospHealth.controller.protocol.VO;
 
 import com.jinxin.hospHealth.dao.models.HospArea;
 import com.jinxin.hospHealth.dao.models.HospDoctorInfo;

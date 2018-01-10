@@ -7,52 +7,89 @@ import com.doraemon.base.language.Language;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.github.pagehelper.StringUtil;
+import com.jinxin.hospHealth.controller.protocol.PO.DoctorInfoPO;
 import com.jinxin.hospHealth.dao.mapper.HospDoctorInfoMapper;
 import com.jinxin.hospHealth.dao.models.HospDoctorInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Created by zbs on 2017/12/25.
  */
 @Service
-public class DoctorInfoService implements BaseService<HospDoctorInfo> {
+public class DoctorInfoService implements BaseService<HospDoctorInfo,DoctorInfoPO> {
 
     @Autowired
     HospDoctorInfoMapper hospDoctorInfoMapper;
+    @Autowired
+    HospAreaService hospAreaService;
+    @Autowired
+    DoctorTypeService doctorTypeService;
+
     @Value("${default.doctorHeadPortrait}")
     String doctorHeadPortrait;
 
     /**
      * 增加医生信息
      *
-     * @param hospBanner
+     * @param po
      */
-    public HospDoctorInfo add(HospDoctorInfo hospBanner) {
-        DPreconditions.checkState(hospBanner.getId() == null, "医生的id不能填写.", true);
-        DPreconditions.checkNotNullAndEmpty(hospBanner.getName(), "医生的名称不能为空.", true);
-        DPreconditions.checkNotNull(hospBanner.getHospAreaId(), "医生的院区不能为空.", true);
-        DPreconditions.checkNotNull(hospBanner.getDoctorTypeId(), "医生的类别不能为空.", true);
-        DPreconditions.checkNotNullAndEmpty(hospBanner.getDescription(), "医生的描述不能为空.", true);
-        if (hospBanner.getHeadPortrait() == null)
-            hospBanner.setHeadPortrait(doctorHeadPortrait);
-        if (hospBanner.getSex() == null)
-            hospBanner.setSex(0);
-        DPreconditions.checkState(hospDoctorInfoMapper.insertSelectiveReturnId(hospBanner) == 1,Language.get("service.save-failure"),true);
-        return hospBanner;
+    @Override
+    @Transactional
+    public HospDoctorInfo add(DoctorInfoPO po) {
+        //PO 转换为 daoBean
+        HospDoctorInfo hospDoctorInfo =  po.conversion();
+        DPreconditions.checkState(hospDoctorInfo.getId() == null,
+                Language.get("docker.id-exist"),
+                true);
+        DPreconditions.checkNotNullAndEmpty(hospDoctorInfo.getName(),
+                Language.get("docker.name-null"),
+                true);
+        DPreconditions.checkNotNull(hospDoctorInfo.getHospAreaId(),
+                Language.get("docker-area.id-null"),
+                true);
+        DPreconditions.checkNotNull(hospAreaService.selectOne(hospDoctorInfo.getHospAreaId()),
+                Language.get("docker-area.select-not-exist"),
+                true);
+        DPreconditions.checkNotNull(hospDoctorInfo.getDoctorTypeId(),
+                Language.get("docker-type.id-null"),
+                true);
+        DPreconditions.checkNotNull(doctorTypeService.selectOne(hospDoctorInfo.getDoctorTypeId()),
+                Language.get("docker-type.select-not-exist"),
+                true);
+        DPreconditions.checkNotNullAndEmpty(hospDoctorInfo.getDescription(),
+                Language.get("docker.description-null"),
+                true);
+        if (hospDoctorInfo.getHeadPortrait() == null)
+            hospDoctorInfo.setHeadPortrait(doctorHeadPortrait);
+        if (hospDoctorInfo.getSex() == null)
+            hospDoctorInfo.setSex(0);
+        DPreconditions.checkState(hospDoctorInfoMapper.insertSelectiveReturnId(hospDoctorInfo) == 1,
+                Language.get("service.save-failure"),
+                true);
+        return hospDoctorInfo;
     }
 
     /**
      * 更新医生信息
      *
-     * @param hospBanner
+     * @param doctorInfoPO
      */
-    public void update(HospDoctorInfo hospBanner) {
-        DPreconditions.checkNotNull(hospBanner.getId(), "医生的id不能为空.", true);
-        HospDoctorInfo doctor = selectOne(hospBanner.getId());
-        DPreconditions.checkNotNull(doctor, "该ID的医生未查询到.", true);
-        DPreconditions.checkState(hospDoctorInfoMapper.updateByPrimaryKeySelective(hospBanner) == 1, "更新医生信息失败.", true);
+    @Override
+    @Transactional
+    public void update(DoctorInfoPO doctorInfoPO) {
+        HospDoctorInfo hospDoctorInfo = doctorInfoPO.conversion();
+        DPreconditions.checkNotNull(hospDoctorInfo.getId(),
+                Language.get("docker.id-null"),
+                true);
+        DPreconditions.checkNotNull(selectOne(hospDoctorInfo.getId()),
+                Language.get("docker.select-not-exist"),
+                true);
+        DPreconditions.checkState(hospDoctorInfoMapper.updateByPrimaryKeySelective(hospDoctorInfo) == 1,
+                Language.get("service.update-failure"),
+                true);
     }
 
     /**
@@ -60,10 +97,16 @@ public class DoctorInfoService implements BaseService<HospDoctorInfo> {
      *
      * @param id
      */
+    @Override
+    @Transactional
     public void deleteOne(Long id) {
         HospDoctorInfo doctor = selectOne(id);
-        DPreconditions.checkNotNull(doctor, "该ID的医生未查询到.", true);
-        DPreconditions.checkState(hospDoctorInfoMapper.deleteByPrimaryKey(id) == 1, "删除医生信息失败.");
+        DPreconditions.checkNotNull(doctor,
+                Language.get("docker.select-not-exist"),
+                true);
+        DPreconditions.checkState(hospDoctorInfoMapper.deleteByPrimaryKey(id) == 1,
+                Language.get("service.delete-failure"),
+                true);
     }
 
     @Override
@@ -76,26 +119,40 @@ public class DoctorInfoService implements BaseService<HospDoctorInfo> {
      *
      * @return
      */
+    @Override
     public HospDoctorInfo selectOne(Long id) {
-        DPreconditions.checkNotNull(id, "医生的id不能为空");
+        DPreconditions.checkNotNull(id,
+                Language.get("docker.id-null"),
+                true);
         return hospDoctorInfoMapper.selectByPrimaryKey(id);
     }
 
     /**
      * 根据条件查询医生信息
      *
-     * @param hospDoctorInfo
+     * @param doctorInfoPO
      * @return
      */
-    public PageInfo<HospDoctorInfo> select(HospDoctorInfo hospDoctorInfo) {
-        PageHelper.startPage(hospDoctorInfo.getPageNum(), hospDoctorInfo.getPageSize());
-        if (StringUtil.isNotEmpty(hospDoctorInfo.getField()))
-            PageHelper.orderBy(hospDoctorInfo.getField());
-        HospDoctorInfo select = new HospDoctorInfo();
-        select.setName(hospDoctorInfo.getName());
-        select.setHospAreaId(hospDoctorInfo.getHospAreaId());
-        select.setDoctorTypeId(hospDoctorInfo.getDoctorTypeId());
-        select.setSex(hospDoctorInfo.getSex());
+    @Override
+    public PageInfo<HospDoctorInfo> select(DoctorInfoPO doctorInfoPO) {
+        PageHelper.startPage(doctorInfoPO.getPageNum(), doctorInfoPO.getPageSize());
+        if (StringUtil.isNotEmpty(doctorInfoPO.getField()))
+            PageHelper.orderBy(doctorInfoPO.getField());
+        HospDoctorInfo select = doctorInfoPO.conversion();
+        return new PageInfo(hospDoctorInfoMapper.select(select));
+    }
+
+    /**
+     * 根据条件模糊查询医生信息
+     *
+     * @param doctorInfoPO
+     * @return
+     */
+    public PageInfo<HospDoctorInfo> selectByFuzzy(DoctorInfoPO doctorInfoPO) {
+        PageHelper.startPage(doctorInfoPO.getPageNum(), doctorInfoPO.getPageSize());
+        if (StringUtil.isNotEmpty(doctorInfoPO.getField()))
+            PageHelper.orderBy(doctorInfoPO.getField());
+        HospDoctorInfo select = doctorInfoPO.conversion();
         return new PageInfo(hospDoctorInfoMapper.selectByExampleByFuzzy(select));
     }
 
@@ -105,6 +162,7 @@ public class DoctorInfoService implements BaseService<HospDoctorInfo> {
      * @param pageBean
      * @return
      */
+    @Override
     public PageInfo<HospDoctorInfo> selectAll(PageBean pageBean) {
         PageHelper.startPage(pageBean.getPageNum(), pageBean.getPageSize());
         if (StringUtil.isNotEmpty(pageBean.getField()))
@@ -118,8 +176,8 @@ public class DoctorInfoService implements BaseService<HospDoctorInfo> {
     }
 
     @Override
-    public PageInfo<HospDoctorInfo> selectAdmin(HospDoctorInfo hospDoctorInfo) throws Exception {
-        return select(hospDoctorInfo);
+    public PageInfo<HospDoctorInfo> selectAdmin(DoctorInfoPO doctorInfoPO) throws Exception {
+        return select(doctorInfoPO);
     }
 
     @Override

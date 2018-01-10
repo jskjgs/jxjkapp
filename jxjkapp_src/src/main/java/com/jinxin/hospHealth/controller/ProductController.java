@@ -3,7 +3,7 @@ package com.jinxin.hospHealth.controller;
 import com.alibaba.fastjson.JSONObject;
 import com.doraemon.base.controller.bean.PageBean;
 import com.github.pagehelper.PageInfo;
-import com.jinxin.hospHealth.controller.protocol.ProductVO;
+import com.jinxin.hospHealth.controller.protocol.VO.ProductVO;
 import com.jinxin.hospHealth.dao.models.HospProduct;
 import com.jinxin.hospHealth.service.ProductService;
 import com.jinxin.hospHealth.service.ProductTypeService;
@@ -80,7 +80,7 @@ public class ProductController extends MyBaseController{
         return ResponseWrapperSuccess(pageInfo);
     }
 
-    @ApiOperation(value = "根据条件查询商品信息")
+    @ApiOperation(value = "根据条件查询商品信息",response = ProductVO.class)
     @RequestMapping(value="/query", method = RequestMethod.POST)
     @ResponseBody
     public JSONObject select(
@@ -118,7 +118,7 @@ public class ProductController extends MyBaseController{
         return ResponseWrapperSuccess(pageInfo);
     }
 
-    @ApiOperation(value = "根据条件查询商品信息---admin")
+    @ApiOperation(value = "根据条件查询商品信息---admin",response = ProductVO.class)
     @RequestMapping(value="/admin/query", method = RequestMethod.POST)
     @ResponseBody
     public JSONObject selectAdmin(

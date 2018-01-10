@@ -1,5 +1,6 @@
 package com.jinxin.hospHealth.service;
 
+import com.alibaba.fastjson.JSON;
 import com.doraemon.base.controller.bean.PageBean;
 import com.doraemon.base.guava.DPreconditions;
 import com.doraemon.base.language.Language;
@@ -24,7 +25,7 @@ import java.util.Date;
  * Created by zbs on 2017/12/29.
  */
 @Service
-public class UserBalanceService implements BaseService<HospUserBalance> {
+public class UserBalanceService implements BaseService<HospUserBalance,HospUserBalance> {
 
     @Autowired
     HospUserBalanceMapper hospUserBalanceMapper;
@@ -164,8 +165,8 @@ public class UserBalanceService implements BaseService<HospUserBalance> {
                 Language.get("user.id-null"),
                 true);
         DPreconditions.checkState(
-                updateUserBalance.getBalance() != null && updateUserBalance.getLockBalance() != null,
-                "user-balance.cannot-same-time-lockAndTopup",
+                updateUserBalance.getBalance() == null || updateUserBalance.getLockBalance() == null,
+                Language.get("user-balance.cannot-same-time-lockAndTopup"),
                 true
         );
         HospUserBalance oldUserBalance = DPreconditions.checkNotNull(
@@ -174,7 +175,6 @@ public class UserBalanceService implements BaseService<HospUserBalance> {
                 true
         );
         HospUserBalance update = new HospUserBalance();
-        update.setUserId(updateUserBalance.getUserId());
         //更新--锁定余额 或 更新余额 不能同时更新
         if (updateUserBalance.getLockBalance() != null) {
             DPreconditions.checkNotNull(oldUserBalance.getBalance() != null,
@@ -187,10 +187,8 @@ public class UserBalanceService implements BaseService<HospUserBalance> {
             update.setBalance(updateBalance);
             update.setChecksum(getChecksum(updateBalance, updateUserBalance.getUserId()));
         }
-        //校验enable是否符合规则
-        DaoEnumValid.checkDisableEnable(updateUserBalance.getEnable());
-        update.setEnable(updateUserBalance.getEnable());
         update.setUpdateDate(new Date());
+        update.setUserId(updateUserBalance.getUserId());
         DPreconditions.checkState(hospUserBalanceMapper.updateByPrimaryKeySelective(update) == 1,
                 "用户余额信息更新失败.",
                 true);

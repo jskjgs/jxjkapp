@@ -18,7 +18,7 @@ import org.springframework.stereotype.Service;
  * Created by zbs on 2017/12/24.
  */
 @Service
-public class BannerService implements BaseService<HospBanner>{
+public class BannerService implements BaseService<HospBanner,HospBanner>{
 
     @Autowired
     HospBannerMapper hospBannerMapper;

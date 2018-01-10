@@ -1,4 +1,4 @@
-package com.jinxin.hospHealth.controller.protocol;
+package com.jinxin.hospHealth.controller.protocol.VO;
 
 import com.jinxin.hospHealth.dao.models.HospUserInfo;
 import io.swagger.annotations.ApiModel;

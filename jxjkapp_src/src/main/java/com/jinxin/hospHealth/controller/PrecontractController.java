@@ -3,9 +3,9 @@ package com.jinxin.hospHealth.controller;
 import com.alibaba.fastjson.JSONObject;
 import com.doraemon.base.controller.bean.PageBean;
 import com.github.pagehelper.PageInfo;
-import com.jinxin.hospHealth.controller.protocol.PrecontractVO;
-import com.jinxin.hospHealth.controller.protocol.ProductVO;
-import com.jinxin.hospHealth.controller.protocol.UserInfoVO;
+import com.jinxin.hospHealth.controller.protocol.VO.PrecontractVO;
+import com.jinxin.hospHealth.controller.protocol.VO.ProductVO;
+import com.jinxin.hospHealth.controller.protocol.VO.UserInfoVO;
 import com.jinxin.hospHealth.dao.models.HospPrecontract;
 import com.jinxin.hospHealth.dao.models.HospProductSku;
 import com.jinxin.hospHealth.service.PrecontractService;
@@ -62,7 +62,7 @@ public class PrecontractController extends MyBaseController{
         return ResponseWrapperSuccess(null);
     }
 
-    @ApiOperation(value = "查询单个预约信息",response = ProductVO.class)
+    @ApiOperation(value = "查询单个预约信息",response = PrecontractVO.class)
     @RequestMapping(value="/", method = RequestMethod.GET)
     @ResponseBody
     public JSONObject selectOne(
@@ -71,7 +71,7 @@ public class PrecontractController extends MyBaseController{
         return ResponseWrapperSuccess(conversion(hospProduct));
     }
 
-    @ApiOperation(value = "查询全部预约信息",response = ProductVO.class)
+    @ApiOperation(value = "查询全部预约信息",response = PrecontractVO.class)
     @RequestMapping(value="/all", method = RequestMethod.POST)
     @ResponseBody
     public JSONObject selectAll(
@@ -85,7 +85,7 @@ public class PrecontractController extends MyBaseController{
         return ResponseWrapperSuccess(pageInfo);
     }
 
-    @ApiOperation(value = "根据条件查询预约信息")
+    @ApiOperation(value = "根据条件查询预约信息",response = PrecontractVO.class)
     @RequestMapping(value="/query", method = RequestMethod.POST)
     @ResponseBody
     public JSONObject select(
@@ -100,7 +100,7 @@ public class PrecontractController extends MyBaseController{
     }
 
 
-    @ApiOperation(value = "查询单个预约信息---admin",response = ProductVO.class)
+    @ApiOperation(value = "查询单个预约信息---admin",response = PrecontractVO.class)
     @RequestMapping(value="/admin/", method = RequestMethod.GET)
     @ResponseBody
     public JSONObject selectOneAdmin(
@@ -109,7 +109,7 @@ public class PrecontractController extends MyBaseController{
         return ResponseWrapperSuccess(conversion(hospProduct));
     }
 
-    @ApiOperation(value = "查询全部预约信息---admin",response = ProductVO.class)
+    @ApiOperation(value = "查询全部预约信息---admin",response = PrecontractVO.class)
     @RequestMapping(value="/admin/all", method = RequestMethod.POST)
     @ResponseBody
     public JSONObject selectAllAdmin(
@@ -123,7 +123,7 @@ public class PrecontractController extends MyBaseController{
         return ResponseWrapperSuccess(pageInfo);
     }
 
-    @ApiOperation(value = "根据条件查询预约信息---admin")
+    @ApiOperation(value = "根据条件查询预约信息---admin",response = PrecontractVO.class)
     @RequestMapping(value="/admin/query", method = RequestMethod.POST)
     @ResponseBody
     public JSONObject selectAdmin(

@@ -16,7 +16,7 @@ import org.springframework.stereotype.Service;
  * Created by zbs on 2017/12/25.
  */
 @Service
-public class DoctorTypeService implements BaseService<HospDoctorType> {
+public class DoctorTypeService implements BaseService<HospDoctorType,HospDoctorType> {
 
     @Autowired
     HospDoctorTypeMapper hospDoctorTypeMapper;
