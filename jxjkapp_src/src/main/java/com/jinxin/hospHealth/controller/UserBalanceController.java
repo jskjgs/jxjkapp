@@ -84,9 +84,9 @@ public class UserBalanceController extends MyBaseController{
     @RequestMapping(value="/lock", method = RequestMethod.POST)
     @ResponseBody
     public JSONObject lock(
-            @ApiParam(value = "手机号码", required = true) @RequestBody(required = false) String phone,
-            @ApiParam(value = "用户ID", required = true) @RequestBody(required = false) Long userId,
-            @ApiParam(value = "金额", required = true) @RequestBody BigDecimal amount) throws Exception {
+            @ApiParam(value = "手机号码", required = false) @RequestBody(required = false) String phone,
+            @ApiParam(value = "用户ID", required = false) @RequestBody(required = false) Long userId,
+            @ApiParam(value = "金额", required = true) @RequestBody double amount) throws Exception {
         DPreconditions.checkState(phone != null || userId !=null,
                 Language.get("user-balance.user-id-phone-null"),
                 true);
@@ -105,7 +105,7 @@ public class UserBalanceController extends MyBaseController{
         //锁定用户余额
         HospUserBalance updateUserBalance = new HospUserBalance();
         updateUserBalance.setUserId(hospUserInfo.getId());
-        updateUserBalance.setLockBalance(amount);
+        updateUserBalance.setLockBalance(BigDecimal.valueOf(amount));
         userBalanceService.update(updateUserBalance);
         return ResponseWrapperSuccess(new UserBalanceVO(
                 updateUserBalance.getUserId(),
