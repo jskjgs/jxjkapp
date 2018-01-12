@@ -4,60 +4,13 @@
 <script>
 import wepy from 'wepy'
 import 'wepy-async-function'
-import convertDate from '@/utils/convertDate'
+import '@/utils/nativeExtend'
 
-Promise.prototype.finally = function (callback) {
-  let P = this.constructor
-  return this.then(
-    value => P.resolve(callback()).then(() => value),
-    reason => P.resolve(callback()).then(() => { throw reason })
-  )
-}
-
-;(['page', 'component']).forEach(function (item) {
-  Object.defineProperties(wepy[item].prototype, {
-    '$_request': {
-      value (cfg, noLoading) {
-        cfg = Object.assign({}, cfg)
-        if (!noLoading) {
-          wx.showLoading({
-            title: '加载中..',
-            mask: true
-          })
-        }
-        cfg.url = 'http://182.92.78.118:9001/hospHealth' + cfg.url
-        return new Promise(function (resolve, reject) {
-          wepy.request(cfg).then(res => {
-            return res.data || {}
-          }).then(data => {
-            resolve(data)
-          }).catch((e) => {
-            reject(e)
-          })
-        }).finally(() => {
-          wx.hideLoading()
-        })
-      }
-    },
-    '$_getPage': {
-      value () {
-        return this.getCurrentPages().slice(-1)[0]
-      }
-    },
-    '$_getRoute': {
-      value () {
-        return this.getCurrentPages().slice(-1)[0].route
-      }
-    },
-    '$_convertDate': {
-      value (timeStamp) {
-        return convertDate(timeStamp)
-      }
-    }
-  })
-})
 export default class extends wepy.app {
   config = {
+    networkTimeout: {
+      'request': 10000
+    },
     pages: [
       'pages/index',
       'pages/banner_detail',
@@ -90,10 +43,10 @@ export default class extends wepy.app {
       backgroundTextStyle: 'light',
       navigationBarBackgroundColor: '#9190FF',
       navigationBarTitleText: 'WeChat',
-      navigationBarTextStyle: 'white',
-      enablePullDownRefresh: true
+      navigationBarTextStyle: 'white'
     },
     tabBar: {
+      selectedColor: '#9190FF',
       list: [{
         'pagePath': 'pages/index',
         'iconPath': './assets/images/tab-index.png',
@@ -114,7 +67,10 @@ export default class extends wepy.app {
   }
 
   globalData = {
-    userInfo: null
+    userInfo: {
+      userId: 1,
+      isVip: true
+    }
   }
 
   constructor () {
@@ -127,24 +83,10 @@ export default class extends wepy.app {
     wx.setEnableDebug({
       enableDebug: true
     })
-    wx.reLaunch({
-      url: '/pages/my_relations'
-    })
+    // wx.reLaunch({
+    //   url: '/pages/my'
+    // })
   }
-
-  sleep (s) {
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        resolve('promise resolved')
-      }, s * 1000)
-    })
-  }
-
-  async testAsync () {
-    const data = await this.sleep(3)
-    console.log(data)
-  }
-
   getUserInfo(cb) {
     console.log('globalData', this.globalData)
     const that = this

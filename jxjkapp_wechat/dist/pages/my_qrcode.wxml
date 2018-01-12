@@ -1,13 +1,14 @@
 
   <view id="page-my-qrcode">
     <view class="qrcode-box-wrap">
-      <view class="qrcode-box flex--col">
+      <view class="qrcode-box flex--col main-bg">
         <view class="row flex--vcenter">
-          <image class="thumbnail-avatar" src="../assets/images/demo.png"/>
+          <image class="thumbnail-avatar" src="../assets/images/avatar.png"/>
           <text class="username">YK 陈御珂</text>
         </view>
         <view class="flex-item flex--center">
           <view class="qrcode-wrap">
+            <canvas id="qrcode" canvas-id="mycanvas"/>
           </view>
         </view>
       </view>

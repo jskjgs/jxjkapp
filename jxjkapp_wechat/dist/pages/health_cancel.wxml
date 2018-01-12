@@ -33,7 +33,7 @@
       </view>
     </view>
     <view class="btn-wrap">
-      <button wx:if="{{ canCancel }}" bindtap="submit">
+      <button wx:if="{{ canCancel }}" class="primary-btn" disabled="{{ !textareaValue }}" bindtap="submit">
         立即提交
       </button>
     </view>

@@ -1,2 +1,0 @@
-@import "./../components/customCard.wxss";
-#page-health-appraise .appraise-content-wrap .textarea-wrap{position:relative}#page-health-appraise .appraise-content-wrap textarea{box-sizing:border-box;border:2rpx solid #ccc;border-radius:10rpx;padding:20rpx;width:auto;height:230rpx;background:#FAFAFA;font-size:13px}#page-health-appraise .appraise-content-wrap .textarea-count{position:absolute;right:16rpx;bottom:16rpx}

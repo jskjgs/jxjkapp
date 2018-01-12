@@ -36,8 +36,12 @@
       })
     }
   }, {
-    label: '退出登陆',
+    label: '退出登录',
     handlerTap () {
+      this.$_request({
+        url: '/other/logout',
+        method: 'POST'
+      }, false)
     }
   }]
   export default class Index extends wepy.page {

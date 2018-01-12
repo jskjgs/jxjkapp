@@ -21,15 +21,15 @@
             </view>
           </view>
         </block>
-        <view  wx:if="{{ isLastPage }}" class="no-more-tip">
-          <text>已无更多内容了</text>
-        </view>
       </view>
     </view>
   
     </block>
     <view  wx:if="{{ $CustomPage$noData || $CustomPage$noServer }}" class="fail-tip flex--center">
       <image mode="widthFix" class="fail-tip-image" wx:if="{{ $CustomPage$noData }}" src="../assets/images/no-data.png"/>
-      <image mode="widthFix" class="fail-tip-image" wx:elif="{{ $CustomPage$noServer }}" src="../assets/images/no-server.png"/>
+      <image mode="widthFix" class="fail-tip-image" wx:elif="{{ $CustomPage$noServer }}" src="../assets/images/no-server.png" bindtap="$CustomPage$refreshPage"/>
+    </view>
+    <view wx:if="{{ $CustomPage$isLastPage }}" class="no-more-tip">
+      <text>已无更多内容了</text>
     </view>
   </view>

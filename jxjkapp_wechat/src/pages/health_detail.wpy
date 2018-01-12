@@ -7,7 +7,24 @@
     padding: 0 30rpx;
     height: 300rpx;
     color: #fff;
-    background: #ccc;
+
+    &__image, &__mask {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 0;
+      bottom: 0;
+      z-index: -1;
+    }
+    &__image {
+      image {
+        width: 100%;
+        height: 100%;
+      }
+    }
+    &__mask {
+      background: rgba(26, 25, 61, 0.3);
+    }
 
     .title {
       font-size: 18px;
@@ -29,12 +46,44 @@
     }
 
     .dropdown-btn {
+      overflow: hidden;
       position: absolute;
       width: 30rpx;
       height: 30rpx;
-      background: red;
       right: 30rpx;
       bottom: 20rpx;
+
+      image {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        opacity: 0.5;
+        transform: translate3d(0, -50%, 0);
+        @keyframes fadeOut1{
+          from {
+            opacity: 1;
+          }
+          to{
+            opacity: .5;
+          }
+        }
+        @keyframes fadeOut2{
+          from {
+            opacity: 0.5;
+          }
+          to{
+            opacity: 1;
+          }
+        }
+        animation: fadeOut1 1s infinite;
+
+        &.dropdown-overlay {
+          animation: fadeOut2 1s infinite;
+          transform: translate3d(0, 50%, 0);
+        }
+      }
     }
   }
 
@@ -98,16 +147,18 @@
       position: absolute;
       right: 0;
       border: 20rpx solid transparent;
-      border-width: 14rpx 18rpx;
+      border-width: 12rpx 12rpx;
     }
-    .arrow-bt {
+    .arrow-bt-btn {
+      margin-top: 10rpx;
       @extend %arrow-common;
-      border-top-color: #B8B8B8;
+      border-top-color: $color1;
     }
-    .arrow-top {
+    .arrow-top-btn {
+      margin-top: 10rpx;
       @extend %arrow-common;
       transform: translate3d(0, -50%, 0);
-      border-bottom-color: #B8B8B8;
+      border-bottom-color: $color1;
     }
   }
   .item-symptom--clone {
@@ -119,9 +170,39 @@
     justify-content: flex-end;
     button {
       margin: 0 0 0 30rpx;
-      width: 120rpx;
-      height: 50rpx;
-      line-height: 50rpx;
+      width: 60px;
+      height: 24px;
+      line-height: 24px;
+
+      &[disabled] {
+        color: #fff;
+      }
+      &:not([disabled]) {
+        &::after {
+          border-color: $primaryColor;
+        }
+      }
+
+      &.cancel-btn {
+        &:not([disabled]) {
+          color: $primaryColor;
+        }
+        &[disabled] {
+          &::after {
+            border-color: #FFB400;
+          }
+          background: #FFB400;
+        }
+      }
+      &.comment-btn {
+        &:not([disabled]) {
+          background: $primaryColor;
+          color: #fff;
+        }
+        &[disabled] {
+          background: $color1;
+        }
+      }
     }
   }
 }
@@ -130,20 +211,32 @@
 <template>
   <view id="page-health-detail">
     <view class="top-box flex--hcenter flex--col">
-      <view class="title">Thermage 热玛吉</view>
-      <view class="process-wrap">
-        <text class="process-text">第 <text class="num">0/10</text> 次</text>
-        <progress 
-          class="process-bar"
-          stroke-width="10"
-          backgroundColor="rgba(249, 249, 255, 0.4)"
-          activeColor="#56F2F2">
-        </progress>
+      <view class="top-box__image">
+        <image src="../assets/images/health-bg.png" mode="aspectFill"/>
       </view>
-      <view 
-        class="dropdown-btn"
-        hidden="{{projectDesVisible}}"
-        @tap="dropdown">
+      <view class="top-box__mask"></view>
+      <view class="top-box__inner">
+        <view class="title">Thermage 热玛吉</view>
+        <view class="process-wrap">
+          <text class="process-text">第 <text class="num">3/10</text> 次</text>
+          <progress 
+            class="process-bar"
+            stroke-width="10"
+            percent="30"
+            backgroundColor="rgba(249, 249, 255, 0.4)"
+            activeColor="#56F2F2">
+          </progress>
+        </view>
+        <view 
+          class="dropdown-btn"
+          hidden="{{projectDesVisible}}"
+          @tap="dropdown">
+          <image 
+            src="../assets/images/double-arrow.png" />
+          <image 
+            src="../assets/images/double-arrow.png" 
+            class="dropdown-overlay" />
+        </view>
       </view>
     </view>
     <view class="project-describe {{ projectDesVisible ? 'spread' : '' }}">
@@ -163,29 +256,34 @@
           <view class="row item-top">
             <text class="item-date">治疗时间：{{ item.date }}</text>
           </view>
-          <view class="item-main" @tap="spreadSymptom({{ item.symptomSpread !== undefined }}, {{ index }})">
+          <view class="item-main" @tap="spreadSymptom({{ item._symptomSpread !== undefined }}, {{ index }})">
             <view class="row flex--vcenter">
               <text>服务人员：赵雪晴</text>
-              <!-- <text class="item-status">已完成</text> -->
             </view>
             <repeat for="{{[0, 1]}}" key="index" index="_index" item="_item">
               <view class="row flex {{ _index === 1 ? 'item-symptom--clone' : 'item-symptom' }}">
                 <text class="flex-item--none">当日症状：</text>
                 <view class="item-symptom-wrap flex-item ">
                   <text 
-                    class="{{ item.symptomSpread || _index === 1 ? '' : 'text-ellipsis--two' }} item-symptom__text">{{ item.symptom }}
+                    class="{{ item._symptomSpread || _index === 1 ? '' : 'text-ellipsis--two' }} item-symptom__text">{{ item.symptom }}
                   </text>
                   <view 
-                    wx:if="{{ item.symptomSpread !== undefined }}"
-                    class="{{ item.symptomSpread ? 'arrow-top' : 'arrow-bt' }}">
+                    wx:if="{{ item._symptomSpread !== undefined }}"
+                    class="{{ item._symptomSpread ? 'arrow-top-btn' : 'arrow-bt-btn' }}">
                   </view>
                 </view>
               </view>
             </repeat>
           </view>
           <view class="item-btn-wrap flex">
-            <button @tap="toCancel()">申请作废</button>
-            <button @tap="toComment()">评价</button>
+            <button 
+              @tap="toCancel()" 
+              class="cancel-btn"
+              disabled="{{ item.status === 'processing' }}">{{ item.status === 'processing' ? '处理中' : '申请作废' }}</button>
+            <button 
+              @tap="toComment()" 
+              class="comment-btn"
+              disabled="{{ item.status === 'commented' || item.status === 'processing' }}">{{ item.status === 'commented' ? '已' : '' }}评价</button>
           </view>
         </view>
       </repeat>
@@ -197,6 +295,16 @@
   import wepy from 'wepy'
 
   import convertDate from '@/utils/convertDate'
+
+//   评价和申请作废状态说明：
+
+// ① 未评价和未申请作废的项目，按钮展示为“评价”和“申请作废”；
+
+// ② 已评价的项目，按钮变为“已评价”；
+
+// ③ 已申请作废&后台还未通过，按钮变为“处理中”；
+
+// ④ 申请作废后台通过，该项目从列表中去掉；
 
   export default class Index extends wepy.page {
     config = {
@@ -210,15 +318,23 @@
     data = {
       projectDesVisible: false,
       processList: [{
-        symptomSpread: undefined,
+        _symptomSpread: undefined,
         date: convertDate(new Date().getTime(), 'Y-M-D h:m:s'),
         server: '赵雪晴',
-        symptom: Array.from({length: 120}).map(item => '字').join('')
+        symptom: Array.from({length: 120}).map(item => '字').join(''),
+        status: ''
       }, {
-        symptomSpread: undefined,
+        _symptomSpread: undefined,
         date: convertDate(new Date().getTime(), 'Y-M-D h:m:s'),
         server: '赵雪晴',
-        symptom: Array.from({length: 40}).map(item => '字').join('')
+        symptom: Array.from({length: 40}).map(item => '字').join(''),
+        status: 'commented'
+      }, {
+        _symptomSpread: undefined,
+        date: convertDate(new Date().getTime(), 'Y-M-D h:m:s'),
+        server: '赵雪晴',
+        symptom: Array.from({length: 40}).map(item => '字').join(''),
+        status: 'processing'
       }]
     }
 
@@ -234,7 +350,7 @@
       },
       spreadSymptom (canSpread, index) {
         if (canSpread) {
-          this.processList[index].symptomSpread = !this.processList[index].symptomSpread
+          this.processList[index]._symptomSpread = !this.processList[index]._symptomSpread
         }
       },
       toComment () {
@@ -280,7 +396,7 @@
           const clone = arguments[0][1]
           reality.forEach(function (item, index) {
             if (item.height !== clone[index].height) {
-              vm.processList[index].symptomSpread = false
+              vm.processList[index]._symptomSpread = false
               vm.$apply()
             }
           })

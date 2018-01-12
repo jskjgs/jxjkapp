@@ -1,5 +1,6 @@
 
   <view id="page-my-psd">
+    <view class="page-title-wrap">换绑请使用新的手机号验证</view>
     
   <view class="comp-tel-input">
     <view class="input-box">

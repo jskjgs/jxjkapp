@@ -2,7 +2,8 @@
   <view id="page-my-relation-info">
     
   <view class="comp-person-info">
-    <view  wx:if="{{ $PersonInfo$canEdit }}" class="flex--vcenter edit-btn-wrap">
+    <view  wx:if="{{ $PersonInfo$canEdit }}" class="flex--vcenter--sb edit-btn-wrap">
+      <button class="edit-btn" disabled bindtap="$PersonInfo$handleEditTap">解绑</button>
       <button class="edit-btn" disabled="{{ !$PersonInfo$readonly && !$PersonInfo$canSubmit }}" bindtap="$PersonInfo$handleEditTap">{{ $PersonInfo$readonly ? '编辑' : '保存' }}</button>
     </view>
     <view class="info-group required-info main-bg">
@@ -61,14 +62,14 @@
       <block wx:for="{{ $PersonInfo$PickerList$ITEMS }}" wx:for-index="$PersonInfo$PickerList$index" wx:for-item="$PersonInfo$PickerList$item" wx:key="$PersonInfo$PickerList$index">
         <view class="menu--default__item">
           <text class="item-label">{{ $PersonInfo$PickerList$item.label }}</text>
-          <picker  wx:if="{{ !$PersonInfo$PickerList$readonly }}" value="{{ $PersonInfo$PickerList$pickedIndex[$PersonInfo$PickerList$item.picker.valueBind] === -1 ? 0 : $PersonInfo$PickerList$pickedIndex[$PersonInfo$PickerList$item.picker.valueBind] }}" range="{{ $PersonInfo$PickerList$lists[$PersonInfo$PickerList$item.picker.rangeBind] }}" range-key="label" bindchange="$PersonInfo$PickerList$handlePickerChange" data-wpyhandlepickerchange-a="{{ $PersonInfo$PickerList$item.picker.valueBind }}" data-wpyhandlepickerchange-b="{{ $PersonInfo$PickerList$item.picker.rangeBind }}">
+          <picker  wx:if="{{ $PersonInfo$PickerList$lists[$PersonInfo$PickerList$item.picker.rangeBind] && !$PersonInfo$PickerList$readonly }}" value="{{ $PersonInfo$PickerList$pickedIndex[$PersonInfo$PickerList$item.picker.valueBind] === -1 ? 0 : $PersonInfo$PickerList$pickedIndex[$PersonInfo$PickerList$item.picker.valueBind] }}" mode="{{ $PersonInfo$PickerList$item.picker.mode || 'selector' }}" range="{{ $PersonInfo$PickerList$lists[$PersonInfo$PickerList$item.picker.rangeBind] }}" range-key="label" bindchange="$PersonInfo$PickerList$handlePickerChange" data-wpyhandlepickerchange-a="{{ $PersonInfo$PickerList$item.picker.valueBind }}" data-wpyhandlepickerchange-b="{{ $PersonInfo$PickerList$item.picker.rangeBind }}">
             <view class="item-value">
-              <text>{{ $PersonInfo$PickerList$pickeds[$PersonInfo$PickerList$item.picker.valueBind] !== $PersonInfo$PickerList$undefined ? $PersonInfo$PickerList$lists[$PersonInfo$PickerList$item.picker.rangeBind][$PersonInfo$PickerList$pickedIndex[$PersonInfo$PickerList$item.picker.valueBind]].label || $PersonInfo$PickerList$lists[$PersonInfo$PickerList$item.picker.rangeBind][$PersonInfo$PickerList$pickedIndex[$PersonInfo$PickerList$item.picker.valueBind]] : '请选择' }}</text>
+              <text>{{ $PersonInfo$PickerList$pickeds[$PersonInfo$PickerList$item.picker.valueBind] !== $PersonInfo$PickerList$undefined ? ($PersonInfo$PickerList$lists[$PersonInfo$PickerList$item.picker.rangeBind][$PersonInfo$PickerList$pickedIndex[$PersonInfo$PickerList$item.picker.valueBind]].label || $PersonInfo$PickerList$lists[$PersonInfo$PickerList$item.picker.rangeBind][$PersonInfo$PickerList$pickedIndex[$PersonInfo$PickerList$item.picker.valueBind]]) : '请选择' }}</text>
               <view class="arrow-rt"/>
             </view>
           </picker>
           <view  wx:else class="item-value">
-            <text>{{ $PersonInfo$PickerList$pickeds[$PersonInfo$PickerList$item.picker.valueBind] !== $PersonInfo$PickerList$undefined ? $PersonInfo$PickerList$lists[$PersonInfo$PickerList$item.picker.rangeBind][$PersonInfo$PickerList$pickedIndex[$PersonInfo$PickerList$item.picker.valueBind]].label || $PersonInfo$PickerList$lists[$PersonInfo$PickerList$item.picker.rangeBind][$PersonInfo$PickerList$pickedIndex[$PersonInfo$PickerList$item.picker.valueBind]] : '未选择' }}</text>
+            <text>{{ $PersonInfo$PickerList$pickeds[$PersonInfo$PickerList$item.picker.valueBind] !== $PersonInfo$PickerList$undefined ? ($PersonInfo$PickerList$lists[$PersonInfo$PickerList$item.picker.rangeBind][$PersonInfo$PickerList$pickedIndex[$PersonInfo$PickerList$item.picker.valueBind]].label || $PersonInfo$PickerList$lists[$PersonInfo$PickerList$item.picker.rangeBind][$PersonInfo$PickerList$pickedIndex[$PersonInfo$PickerList$item.picker.valueBind]] || $PersonInfo$PickerList$pickeds[$PersonInfo$PickerList$item.picker.valueBind]) : '未选择' }}</text>
           </view>
         </view>
       </block>

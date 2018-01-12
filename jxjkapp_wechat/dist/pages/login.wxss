@@ -1,4 +1,2 @@
-@import "./../components/customInput.wxss";
-@import "./../components/customInput.wxss";
 @import "./../components/telInput.wxss";
 #page-login{padding-top:78rpx}#page-login .page-title-wrap{margin:0 0 78rpx 0;font-size:16px;font-weight:bold;text-align:center}

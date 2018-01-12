@@ -1,13 +1,21 @@
 
   <view id="page-health-detail">
     <view class="top-box flex--hcenter flex--col">
-      <view class="title">Thermage 热玛吉</view>
-      <view class="process-wrap">
-        <text class="process-text">第 <text class="num">0/10</text> 次</text>
-        <progress class="process-bar" stroke-width="10" backgroundColor="rgba(249, 249, 255, 0.4)" activeColor="#56F2F2">
-        </progress>
+      <view class="top-box__image">
+        <image src="../assets/images/health-bg.png" mode="aspectFill"/>
       </view>
-      <view class="dropdown-btn" hidden="{{projectDesVisible}}" bindtap="dropdown">
+      <view class="top-box__mask"/>
+      <view class="top-box__inner">
+        <view class="title">Thermage 热玛吉</view>
+        <view class="process-wrap">
+          <text class="process-text">第 <text class="num">3/10</text> 次</text>
+          <progress class="process-bar" stroke-width="10" percent="30" backgroundColor="rgba(249, 249, 255, 0.4)" activeColor="#56F2F2">
+          </progress>
+        </view>
+        <view class="dropdown-btn" hidden="{{projectDesVisible}}" bindtap="dropdown">
+          <image src="../assets/images/double-arrow.png"/>
+          <image src="../assets/images/double-arrow.png" class="dropdown-overlay"/>
+        </view>
       </view>
     </view>
     <view class="project-describe {{ projectDesVisible ? 'spread' : '' }}">
@@ -25,26 +33,25 @@
           <view class="row item-top">
             <text class="item-date">治疗时间：{{ item.date }}</text>
           </view>
-          <view class="item-main" bindtap="spreadSymptom" data-wpyspreadsymptom-a="{{ item.symptomSpread !== undefined }}" data-wpyspreadsymptom-b="{{ index }}">
+          <view class="item-main" bindtap="spreadSymptom" data-wpyspreadsymptom-a="{{ item._symptomSpread !== undefined }}" data-wpyspreadsymptom-b="{{ index }}">
             <view class="row flex--vcenter">
               <text>服务人员：赵雪晴</text>
-              <!-- <text class="item-status">已完成</text> -->
             </view>
             <block wx:for="{{[0, 1]}}" wx:for-index="_index" wx:for-item="_item" wx:key="index">
               <view class="row flex {{ _index === 1 ? 'item-symptom--clone' : 'item-symptom' }}">
                 <text class="flex-item--none">当日症状：</text>
                 <view class="item-symptom-wrap flex-item ">
-                  <text class="{{ item.symptomSpread || _index === 1 ? '' : 'text-ellipsis--two' }} item-symptom__text">{{ item.symptom }}
+                  <text class="{{ item._symptomSpread || _index === 1 ? '' : 'text-ellipsis--two' }} item-symptom__text">{{ item.symptom }}
                   </text>
-                  <view  wx:if="{{ item.symptomSpread !== undefined }}" class="{{ item.symptomSpread ? 'arrow-top' : 'arrow-bt' }}">
+                  <view  wx:if="{{ item._symptomSpread !== undefined }}" class="{{ item._symptomSpread ? 'arrow-top-btn' : 'arrow-bt-btn' }}">
                   </view>
                 </view>
               </view>
             </block>
           </view>
           <view class="item-btn-wrap flex">
-            <button bindtap="toCancel" data-wpytocancel-a="">申请作废</button>
-            <button bindtap="toComment" data-wpytocomment-a="">评价</button>
+            <button bindtap="toCancel" class="cancel-btn" disabled="{{ item.status === 'processing' }}" data-wpytocancel-a="">{{ item.status === 'processing' ? '处理中' : '申请作废' }}</button>
+            <button bindtap="toComment" class="comment-btn" disabled="{{ item.status === 'commented' || item.status === 'processing' }}" data-wpytocomment-a="">{{ item.status === 'commented' ? '已' : '' }}评价</button>
           </view>
         </view>
       </block>

@@ -49,14 +49,7 @@
     mixins = []
 
     data = {
-      list: [{
-        name: 'zj',
-        self: true,
-        id: '0'
-      }, {
-        name: 'paul',
-        id: '1'
-      }]
+      list: []
     }
 
     computed = {
@@ -74,6 +67,24 @@
     }
 
     onLoad() {
+      this.$_request({
+        url: '/patientInfo/all',
+        method: 'POST',
+        data: {
+          pageNum: 1,
+          pageSize: 10
+        }
+      }).then(content => {
+        content = content || {}
+        const list = content.list || []
+        this.list = list.map(item => {
+          return {
+            name: item.name,
+            id: item.id
+          }
+        })
+        this.$apply()
+      })
     }
   }
 </script>

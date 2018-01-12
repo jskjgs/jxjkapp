@@ -47,7 +47,7 @@
       </view>
     </view>
     <view class="btn-wrap">
-      <button wx:if="{{ canComment }}" bindtap="submit">
+      <button wx:if="{{ canComment }}" class="primary-btn" disabled="{{ commentStar === 0 }}" bindtap="submit">
         立即评价
       </button>
     </view>

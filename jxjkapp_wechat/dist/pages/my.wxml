@@ -3,7 +3,7 @@
     <view class="avatar-box flex--center">
       <image class="avatar-box-bg" mode="aspectFill" src="../assets/images/my-bg.png"/>
       <view class="avatar-wrap">
-        <image src="../assets/images/demo.png" class="avatar"/>
+        <image src="../assets/images/avatar.png" class="avatar"/>
         <view class="flex--hcenter">
           <text  wx:if="{{ !!userInfo }}" class="username">YK 陈御珂</text>
           <text  wx:else bindtap="toLogin">请登录账号</text>

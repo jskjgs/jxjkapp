@@ -76,7 +76,7 @@
     .price-detail, .order-date {
       font-size: 14px;
       .label {
-        color: #B8B8B8;
+        color: $color1;
       }
     }
     .price-detail {

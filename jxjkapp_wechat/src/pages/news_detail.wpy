@@ -51,7 +51,8 @@
     data = {
       title: '',
       date: '',
-      content: ''
+      content: '',
+      id: ''
     }
 
     computed = {
@@ -63,13 +64,19 @@
     }
 
     onLoad({ id }) {
+      this.id = id
+      setTimeout(() => {
+        this.initPageData()
+      })
+    }
+
+    initPageData () {
       this.$_request({
         url: `/news/`,
         data: {
-          id
+          id: this.id
         }
-      }).then(res => {
-        const content = res.content || {}
+      }).then(content => {
         if (content) {
           this.title = content.title
           this.date = this.$_convertDate(content.createDate)

@@ -1,19 +1,33 @@
 
-  <view id="page-project-list">
-    <view class="list-wrap">
-      <view class="list flex">
-        <block wx:for="{{listData}}" wx:for-index="index" wx:for-item="item" wx:key="index">
-          <navigator url="/pages/project_order" class="list-item flex-item--none" style="background-image: url({{item.bg}});">
-            <view class="list-item__inner">
-              <view class="item-title">
-                <text>硬化剂注射</text>
+  
+  <view class="comp-custom-page">
+    <block  wx:if="{{ $CustomPage$dataInited }}">
+      
+    <view id="page-project-list">
+      <view class="list-wrap">
+        <view class="list flex">
+          <block wx:for="{{listData}}" wx:for-index="index" wx:for-item="item" wx:key="index">
+            <navigator url="{{ '/pages/project_order?id=' + item.id }}" class="list-item flex-item--none" style="background-image: url({{item.bg}});">
+              <view class="list-item__inner">
+                <view class="item-title">
+                  <text>硬化剂注射</text>
+                </view>
+                <view class="item-describe">
+                  <text class="text-ellipsis--two">{{ item.description }}</text>
+                </view>
               </view>
-              <view class="item-describe">
-                <text class="text-ellipsis--two">主治：这是描述描述描述描述描述描很多的述描述描述描述描述描很多的述描述描述描述描述描很多的述描述描述描述描述描很多的</text>
-              </view>
-            </view>
-          </navigator>
-        </block>
+            </navigator>
+          </block>
+        </view>
       </view>
+    </view>
+  
+    </block>
+    <view  wx:if="{{ $CustomPage$noData || $CustomPage$noServer }}" class="fail-tip flex--center">
+      <image mode="widthFix" class="fail-tip-image" wx:if="{{ $CustomPage$noData }}" src="../assets/images/no-data.png"/>
+      <image mode="widthFix" class="fail-tip-image" wx:elif="{{ $CustomPage$noServer }}" src="../assets/images/no-server.png" bindtap="$CustomPage$refreshPage"/>
+    </view>
+    <view wx:if="{{ $CustomPage$isLastPage }}" class="no-more-tip">
+      <text>已无更多内容了</text>
     </view>
   </view>

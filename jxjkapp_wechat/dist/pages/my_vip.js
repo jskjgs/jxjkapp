@@ -34,15 +34,26 @@ var Index = function (_wepy$page) {
     }
 
     return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = Index.__proto__ || Object.getPrototypeOf(Index)).call.apply(_ref, [this].concat(args))), _this), _this.config = {
-      navigationBarTitleText: 'VIP预约列表'
+      navigationBarTitleText: 'VIP用户管理'
     }, _this.components = {}, _this.mixins = [], _this.data = {
       list: [{}, {}]
-    }, _this.computed = {}, _this.methods = {}, _this.events = {}, _temp), _possibleConstructorReturn(_this, _ret);
+    }, _this.computed = {}, _this.methods = {
+      delItem: function delItem() {}
+    }, _this.events = {}, _temp), _possibleConstructorReturn(_this, _ret);
   }
 
   _createClass(Index, [{
     key: 'onLoad',
     value: function onLoad() {}
+    // 获取余额
+
+  }, {
+    key: 'getBalance',
+    value: function getBalance() {
+      this.$_request({
+        url: '/userBalance/'
+      }).then(function () {});
+    }
   }]);
 
   return Index;
@@ -51,4 +62,4 @@ var Index = function (_wepy$page) {
 
 Page(require('./../npm/wepy/lib/wepy.js').default.$createPage(Index , 'pages/my_vip'));
 
-//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIm15X3ZpcC5qcyJdLCJuYW1lcyI6WyJJbmRleCIsImNvbmZpZyIsIm5hdmlnYXRpb25CYXJUaXRsZVRleHQiLCJjb21wb25lbnRzIiwibWl4aW5zIiwiZGF0YSIsImxpc3QiLCJjb21wdXRlZCIsIm1ldGhvZHMiLCJldmVudHMiLCJwYWdlIl0sIm1hcHBpbmdzIjoiOzs7Ozs7Ozs7QUFDRTs7Ozs7Ozs7Ozs7O0lBRXFCQSxLOzs7Ozs7Ozs7Ozs7OztvTEFDbkJDLE0sR0FBUztBQUNQQyw4QkFBd0I7QUFEakIsSyxRQUdUQyxVLEdBQWEsRSxRQUdiQyxNLEdBQVMsRSxRQUVUQyxJLEdBQU87QUFDTEMsWUFBTSxDQUFDLEVBQUQsRUFBSyxFQUFMO0FBREQsSyxRQUlQQyxRLEdBQVcsRSxRQUdYQyxPLEdBQVUsRSxRQUVWQyxNLEdBQVMsRTs7Ozs7NkJBR0EsQ0FDUjs7OztFQXRCZ0MsZUFBS0MsSTs7a0JBQW5CVixLIiwiZmlsZSI6Im15X3ZpcC5qcyIsInNvdXJjZXNDb250ZW50IjpbIlxuICBpbXBvcnQgd2VweSBmcm9tICd3ZXB5J1xuXG4gIGV4cG9ydCBkZWZhdWx0IGNsYXNzIEluZGV4IGV4dGVuZHMgd2VweS5wYWdlIHtcbiAgICBjb25maWcgPSB7XG4gICAgICBuYXZpZ2F0aW9uQmFyVGl0bGVUZXh0OiAnVklQ6aKE57qm5YiX6KGoJ1xuICAgIH1cbiAgICBjb21wb25lbnRzID0ge1xuICAgIH1cblxuICAgIG1peGlucyA9IFtdXG5cbiAgICBkYXRhID0ge1xuICAgICAgbGlzdDogW3t9LCB7fV1cbiAgICB9XG5cbiAgICBjb21wdXRlZCA9IHtcbiAgICB9XG5cbiAgICBtZXRob2RzID0ge31cblxuICAgIGV2ZW50cyA9IHtcbiAgICB9XG5cbiAgICBvbkxvYWQoKSB7XG4gICAgfVxuICB9XG4iXX0=
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIm15X3ZpcC5qcyJdLCJuYW1lcyI6WyJJbmRleCIsImNvbmZpZyIsIm5hdmlnYXRpb25CYXJUaXRsZVRleHQiLCJjb21wb25lbnRzIiwibWl4aW5zIiwiZGF0YSIsImxpc3QiLCJjb21wdXRlZCIsIm1ldGhvZHMiLCJkZWxJdGVtIiwiZXZlbnRzIiwiJF9yZXF1ZXN0IiwidXJsIiwidGhlbiIsInBhZ2UiXSwibWFwcGluZ3MiOiI7Ozs7Ozs7OztBQUNFOzs7Ozs7Ozs7Ozs7SUFFcUJBLEs7Ozs7Ozs7Ozs7Ozs7O29MQUNuQkMsTSxHQUFTO0FBQ1BDLDhCQUF3QjtBQURqQixLLFFBR1RDLFUsR0FBYSxFLFFBR2JDLE0sR0FBUyxFLFFBRVRDLEksR0FBTztBQUNMQyxZQUFNLENBQUMsRUFBRCxFQUFLLEVBQUw7QUFERCxLLFFBSVBDLFEsR0FBVyxFLFFBR1hDLE8sR0FBVTtBQUNSQyxhQURRLHFCQUNHLENBQ1Y7QUFGTyxLLFFBS1ZDLE0sR0FBUyxFOzs7Ozs2QkFHQSxDQUNSO0FBQ0Q7Ozs7aUNBQ2M7QUFDWixXQUFLQyxTQUFMLENBQWU7QUFDYkMsYUFBSztBQURRLE9BQWYsRUFFR0MsSUFGSCxDQUVRLFlBQU0sQ0FDYixDQUhEO0FBSUQ7Ozs7RUFoQ2dDLGVBQUtDLEk7O2tCQUFuQmQsSyIsImZpbGUiOiJteV92aXAuanMiLCJzb3VyY2VzQ29udGVudCI6WyJcbiAgaW1wb3J0IHdlcHkgZnJvbSAnd2VweSdcblxuICBleHBvcnQgZGVmYXVsdCBjbGFzcyBJbmRleCBleHRlbmRzIHdlcHkucGFnZSB7XG4gICAgY29uZmlnID0ge1xuICAgICAgbmF2aWdhdGlvbkJhclRpdGxlVGV4dDogJ1ZJUOeUqOaIt+euoeeQhidcbiAgICB9XG4gICAgY29tcG9uZW50cyA9IHtcbiAgICB9XG5cbiAgICBtaXhpbnMgPSBbXVxuXG4gICAgZGF0YSA9IHtcbiAgICAgIGxpc3Q6IFt7fSwge31dXG4gICAgfVxuXG4gICAgY29tcHV0ZWQgPSB7XG4gICAgfVxuXG4gICAgbWV0aG9kcyA9IHtcbiAgICAgIGRlbEl0ZW0gKCkge1xuICAgICAgfVxuICAgIH1cblxuICAgIGV2ZW50cyA9IHtcbiAgICB9XG5cbiAgICBvbkxvYWQoKSB7XG4gICAgfVxuICAgIC8vIOiOt+WPluS9meminVxuICAgIGdldEJhbGFuY2UgKCkge1xuICAgICAgdGhpcy4kX3JlcXVlc3Qoe1xuICAgICAgICB1cmw6ICcvdXNlckJhbGFuY2UvJ1xuICAgICAgfSkudGhlbigoKSA9PiB7XG4gICAgICB9KVxuICAgIH1cbiAgfVxuIl19

@@ -2,10 +2,10 @@
   <view id="index-page">
     <!-- 顶部banner -->
     <view class="top-banner">
-      <swiper indicator-dots="{{ true }}" autoplay="{{ true }}">
+      <swiper indicator-dots="{{ true }}" autoplay="{{ true }}" circular="{{ true }}">
         <block wx:for="{{ bannerList }}" wx:for-index="index" wx:for-item="item" wx:key="index">
           <swiper-item bindtap="handleBannerTap" data-wpyhandlebannertap-a="{{ item.jumpUrl }}">
-            <image src="{{ item.bannerUrl }}" class="slide-image"/>
+            <image src="{{ item.bannerUrl }}" mode="aspectFit" class="slide-image"/>
           </swiper-item>
         </block>
       </swiper>
@@ -13,17 +13,20 @@
     <!-- 项目选项 -->
     <view class="panel project-items">
       <view class="panel__title">项目分类</view>
-      <view class="panel__body flex">
-        <block wx:for="{{projects}}" wx:for-index="index" wx:for-item="item" wx:key="index">
-          <navigator url="/pages/project?target={{ item.target }}">
-            <view class="project-item flex-item--none">
-              <view class="item-icon">
-                <image src="{{ item.image }}"/>
-              </view>
-              <text class="item-text">{{ item.text }}</text>
-            </view>
-          </navigator>
-        </block>
+      <view class="panel__body" style="padding: {{ projectTypeList.length > 5 ? '0 20rpx;' : ';' }}">
+        <scroll-view scroll-x style="width: 100%;">
+          <view class="project-items-wrap flex--vcenter">
+            <block wx:for="{{projectTypeList}}" wx:for-index="index" wx:for-item="item" wx:key="index">
+              <navigator class="project-item flex-item--none" url="/pages/project?typeId={{ item.id }}&type={{ item.name }}">
+                <view class="item-icon">
+                  <image src="{{ item.image }}"/>
+                </view>
+                <text class="item-text">{{ item.name }}</text>
+              </navigator>
+            </block>
+            <view  wx:if="{{ projectTypeList && projectTypeList.length === 0 }}" class="flex--center no-data-tip" style="color: #BDBDBD;width: 100%;">暂无数据</view>
+          </view>
+        </scroll-view>
       </view>
     </view>
     <!-- 医院中心 -->
@@ -32,13 +35,13 @@
       <view class="panel__body flex">
         <navigator url="/pages/doctor" open-type="navigate">
           <view class="item-pane">
-            <image class="pane-image"/>
+            <image class="pane-image" src="../assets/images/doctor-center.png"/>
             <text class="panel-text">医护人员</text>
           </view>
         </navigator>
         <navigator url="/pages/news" open-type="navigate">
           <view class="item-pane">
-            <image class="pane-image"/>
+            <image class="pane-image" src="../assets/images/news-center.png"/>
             <text class="panel-text">新闻中心</text>
           </view>
         </navigator>
@@ -48,7 +51,7 @@
       <view  wx:if="{{ !queueNoticeSpread }}" class="fold-text-wrap flex--center text-col">
         <text class="fold-text">排号</text>
       </view>
-      <view  wx:elif="{{ queueNoticeSpread && queueNotice }}" class="queue-notice">
+      <view wx:elif="{{ queueNoticeSpread && queueNotice }}" class="queue-notice">
         <view class="project-name">
           <text>{{ queueNotice.project }}：</text>
         </view>

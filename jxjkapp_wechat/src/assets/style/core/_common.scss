@@ -21,8 +21,8 @@
     transform-origin: center;
     width: 100%;
     height: 100%;
-    border: 2rpx solid #B8B8B8;
-    border-color: #B8B8B8 #B8B8B8 transparent transparent;
+    border: 2rpx solid $color1;
+    border-color: $color1 $color1 transparent transparent;
   }
 }
 .arrow-rt {
@@ -90,8 +90,11 @@
   color: #fff;
   background: $primaryColor;
 
+  &::after {
+    border: 0;
+  }
   &[disabled][type="default"], &[disabled]:not([type]) {
-    background: #B8B8B8;
+    background: $color1;
     color: #fff;
   }
 }
@@ -125,8 +128,8 @@
     color: $primaryColor;
 
     &[disabled] {
-      border-color: #B8B8B8;
-      color: #B8B8B8;
+      border-color: $color1;
+      color: $color1;
     }
   }
 }

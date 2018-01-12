@@ -1,4 +1,5 @@
 <style lang="scss">
+@import '../assets/style/variables/theme.scss';
 #page-my-qrcode {
   width: 100vw;
   height: 100vh;
@@ -20,14 +21,20 @@
       height: 100rpx;
     }
     .qrcode-wrap {
-      width: 374rpx;
-      height: 374rpx;
-      background: red;
+      // width: 374rpx;
+      // height: 374rpx;
+      width: 400rpx;
+      height: 400rpx;
+
+      canvas {
+        width: 100%;
+        height: 100%;
+      }
     }
   }
   .qrcode-tip {
     padding: 40rpx 76rpx;
-    color: #B8B8B8;
+    color: $color1;
     font-size: 11px;
   }
 }
@@ -36,13 +43,14 @@
 <template>
   <view id="page-my-qrcode">
     <view class="qrcode-box-wrap">
-      <view class="qrcode-box flex--col">
+      <view class="qrcode-box flex--col main-bg">
         <view class="row flex--vcenter">
-          <image class="thumbnail-avatar" src="../assets/images/demo.png"></image>
+          <image class="thumbnail-avatar" src="../assets/images/avatar.png"></image>
           <text class="username">YK 陈御珂</text>
         </view>
         <view class="flex-item flex--center">
           <view class="qrcode-wrap">
+            <canvas id="qrcode" canvas-id="mycanvas"/>
           </view>
         </view>
       </view>
@@ -55,6 +63,8 @@
 
 <script>
   import wepy from 'wepy'
+
+  import QR from '@/utils/qrcode.js'
 
   export default class Index extends wepy.page {
     config = {
@@ -78,6 +88,16 @@
     }
 
     onLoad() {
+      this.drawQrcode('1222')
+    }
+
+    drawQrcode (content) {
+      const query = wx.createSelectorQuery()
+      query.select('#qrcode').fields({
+        size: true
+      }, (res) => {
+        QR.api.draw(content, 'mycanvas', res.width, res.height)
+      }).exec()
     }
   }
 </script>

@@ -31,7 +31,6 @@
   .card-image {
     width: 100%;
     height: 320rpx;
-    background: blue;
     border-radius: 20rpx 20rpx 0 0;
   }
   .card-title {
@@ -72,8 +71,9 @@
       margin-top: 100rpx;
       border-radius: 4rpx; 
       font-size: 18px;
-      background: #9190FF;
-      color: #fff;
+      &:not([disabled]) {
+        background: #9190FF;
+      }
       // box-shadow: 0rpx 10rpx 20rpx 0rpx #8988D4;
     }
   }

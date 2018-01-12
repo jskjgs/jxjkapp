@@ -1,14 +1,23 @@
 <style lang="scss">
 @import '../assets/style/variables/theme.scss';
 #page-my-psd {
-  padding-top: 100rpx;
+  padding-top: 78rpx;
+  .page-title-wrap {
+    margin: 0 0 78rpx 0;
+    font-size: 16px;
+    // font-weight: bold;
+    color: $color1;
+    text-align: center;
+  }
 }
 </style>
 
 <template>
   <view id="page-my-psd">
+    <view class="page-title-wrap">换绑请使用新的手机号验证</view>
     <TelInput 
       submitBtnText="确认换绑" 
+      codeType="2"
       :value.sync="formData"
       @submit.user="handleSumbit"/>
   </view>
@@ -40,7 +49,19 @@
 
     methods = {
       handleSumbit () {
-        console.log(this.formData)
+        this.$_request({
+          url: '/other/updatePhone',
+          method: 'POST',
+          data: {
+            phone: this.formData.phone,
+            phoneCode: this.formData.code
+          }
+        }).then(content => {
+          content = content || {}
+          wx.showToast({
+            title: '手机换绑成功'
+          })
+        })
       }
     }
 

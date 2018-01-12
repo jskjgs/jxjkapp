@@ -42,45 +42,53 @@
 </style>
 
 <template>
-  <view id="page-project-list">
-    <view class="list-wrap">
-      <view class="list flex">
-        <repeat for="{{listData}}" key="index" item="item" index="index">
-          <navigator 
-            url="/pages/project_order" 
-            class="list-item flex-item--none"
-            style="background-image: url({{item.bg}});">
-            <view class="list-item__inner">
-              <view class="item-title">
-                <text>硬化剂注射</text>
+  <CustomPage>
+    <view id="page-project-list">
+      <view class="list-wrap">
+        <view class="list flex">
+          <repeat for="{{listData}}" key="index" item="item" index="index">
+            <navigator 
+              url="{{ '/pages/project_order?id=' + item.id }}" 
+              class="list-item flex-item--none"
+              style="background-image: url({{item.bg}});">
+              <view class="list-item__inner">
+                <view class="item-title">
+                  <text>硬化剂注射</text>
+                </view>
+                <view class="item-describe">
+                  <text class="text-ellipsis--two">{{ item.description }}</text>
+                </view>
               </view>
-              <view class="item-describe">
-                <text class="text-ellipsis--two">主治：这是描述描述描述描述描述描很多的述描述描述描述描述描很多的述描述描述描述描述描很多的述描述描述描述描述描很多的</text>
-              </view>
-            </view>
-          </navigator>
-        </repeat>
+            </navigator>
+          </repeat>
+        </view>
       </view>
     </view>
-  </view>
+  </CustomPage>
 </template>
 
 <script>
   import wepy from 'wepy'
 
+  import CustomPage from '@/components/customPage'
+  import pageMixin from '@/mixins/listPage'
+
   export default class Index extends wepy.page {
     config = {
-      navigationBarTitleText: ''
+      navigationBarTitleText: '',
+      enablePullDownRefresh: true
     }
     components = {
+      CustomPage
     }
 
-    mixins = []
+    mixins = [pageMixin]
 
     data = {
-      listData: Array.from({length: 7}).map(item => ({
+      typeId: '',
+      listData: [] /* Array.from({length: 7}).map(item => ({
         bg: '../assets/images/demo.png' && ''
-      }))
+      })) */
     }
 
     computed = {
@@ -91,10 +99,33 @@
     events = {
     }
 
-    onLoad({ target }) {
-      console.log(arguments, 1111)
+    onLoad({ type, typeId }) {
       wx.setNavigationBarTitle({
-        title: target
+        title: type
+      })
+      this.typeId = typeId
+      this.initPageData()
+    }
+
+    initPageData () {
+      this.getList()
+    }
+
+    getList (params) {
+      this.initData({
+        url: '/product/query',
+        method: 'POST',
+        data: Object.assign({}, params, {
+          pageSize: 10,
+          productTypeId: this.typeId
+        })
+      }, (listItem, res) => {
+        return {
+          bg: listItem.images,
+          name: listItem.name,
+          description: listItem.description,
+          id: listItem.id
+        }
       })
     }
   }

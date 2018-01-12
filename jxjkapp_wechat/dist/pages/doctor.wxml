@@ -5,7 +5,9 @@
       
     <view id="page-doctor">
       <view class="search-bar flex--vcenter--sb">
-        <view  wx:if="{{ !onSearch }}" class="filter-btn flex-item--none" bindtap="openFilterBox">筛选</view>
+        <view  wx:if="{{ !onSearch }}" class="filter-btn flex-item--none flex--vcenter" bindtap="openFilterBox">
+          <image class="filter-icon" src="../assets/images/filter-icon.png"/><text>筛选</text>
+        </view>
         <view class="search-input-wrap flex-item flex--vcenter">
           <icon type="search" size="16"/>
           <input class="flex-item" value="{{ searchParams.searchWord }}" placeholder-style="color: #B8B8B8;" placeholder="搜索" bindconfirm="handleSearch" bindfocus="handleSearchFocus"/>
@@ -46,7 +48,7 @@
             <block wx:for="{{ listData }}" wx:for-index="index" wx:for-item="item" wx:key="index">
               <view class="doctor-item main-bg" bindtap="handleItemTap" data-wpyhandleitemtap-a="{{ item.id }}">
                 <view class="avatar-wrap flex--center">
-                  <image src="{{ item.avatar }}"/>
+                  <image src="../assets/images/doctor-avatar.png"/>
                 </view>
                 <view class="name-wrap">
                   <text>{{ item.name }}</text>
@@ -58,15 +60,15 @@
             </block>
           </view>
         </view>
-        <view wx:if="{{ isLastPage }}" class="no-more-tip">
-          <text>已无更多内容了</text>
-        </view>
       </scroll-view>
     </view>
   
     </block>
     <view wx:if="{{ $CustomPage$noData || $CustomPage$noServer }}" class="fail-tip flex--center">
       <image mode="widthFix" class="fail-tip-image" wx:if="{{ $CustomPage$noData }}" src="../assets/images/no-data.png"/>
-      <image mode="widthFix" class="fail-tip-image" wx:elif="{{ $CustomPage$noServer }}" src="../assets/images/no-server.png"/>
+      <image mode="widthFix" class="fail-tip-image" wx:elif="{{ $CustomPage$noServer }}" src="../assets/images/no-server.png" bindtap="$CustomPage$refreshPage"/>
+    </view>
+    <view wx:if="{{ $CustomPage$isLastPage }}" class="no-more-tip">
+      <text>已无更多内容了</text>
     </view>
   </view>

@@ -6,14 +6,14 @@ page {
   min-height: 100%;
   color: $page_fc;
 }
-view {
+view, view::before, view::after {
   box-sizing: border-box;
 }
 image {
   display: block;
   width: auto;
   height: auto;
-  &:not([src]) {
+  &:not([src]), &[src=""] {
     background: #e6e6e6;
   }
 }
@@ -26,7 +26,7 @@ button {
   &::after {
     border-radius: 4rpx;
   }
-  &[disabled]{
-    background: #B8B8B8; 
-  }
+  // &[disabled]{
+  //   color: #B8B8B8;
+  // }
 }
