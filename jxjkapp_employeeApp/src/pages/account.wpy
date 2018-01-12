@@ -1,0 +1,110 @@
+<style lang="scss">
+// @import '../assets/style/variables/theme.scss';
+#page-login {
+  padding-top: 78rpx;
+  .page-title-wrap {
+    margin: 0 0 78rpx 0;
+    font-size: 16px;
+    font-weight: bold;
+    text-align: center;
+  }
+}
+</style>
+
+<template>
+  <view id="page-login">
+    <view wx:if="{{!isLogin}}">
+      <LoginInput 
+        title="登录"
+        submitBtnText="确认登录" 
+        :value.sync="formData"
+        @submit.user="handleLogin"/>
+    </view>
+    <view wx:if="{{isLogin}}">
+      <Logout 
+        submitBtnText="退出登录" 
+        :value.sync="formData"
+        @submit.user="handleLogout"/>
+    </view>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import LoginInput from '@/components/loginInput'
+  import Logout from '@/components/logout'
+  import {
+      isLogin, userLogin, userLogout
+    } from '@/utils/validator'
+  export default class Index extends wepy.page {
+    config = {
+      navigationBarTitleText: '账号管理'
+    }
+    components = {
+      LoginInput: LoginInput,
+      Logout: Logout
+    }
+
+    mixins = []
+
+    data = {
+      isLogin: isLogin(false),
+      formData: {
+        username: '111',
+        password: ''
+      }
+    }
+
+    computed = {
+    }
+
+    watch = {
+    }
+
+    methods = {
+      handleLogout () {
+        this.$_request({
+          url: `/other/logoutByUser?username=${this.formData.username}`,
+          method: 'POST'
+        }, true).then(res => {
+          const content = res.content || {}
+          if (content.empty) {
+            wx.navigateTo({
+              url: '/pages/account'
+            })
+          } else {
+            wx.redirectTo({
+              url: '/pages/account'
+            })
+          }
+          userLogout()
+        })
+      },
+      handleLogin () {
+        this.$_request({
+          url: `/other/loginByPwd?username=${this.formData.username}&password=${this.formData.password}`,
+          method: 'POST'
+        }, true).then(res => {
+          const content = res.content || {}
+          if (content.empty) {
+            wx.navigateTo({
+              url: '/pages/serviceDetail'
+            })
+          } else {
+            wx.redirectTo({
+              url: '/pages/account'
+            })
+          }
+        })
+      }
+    }
+
+    events = {
+    }
+
+    onLoad () {
+    }
+    onUnload () {
+    }
+  }
+</script>

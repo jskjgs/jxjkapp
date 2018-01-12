@@ -1,0 +1,68 @@
+<style lang="scss">
+// @import '../assets/style/variables/theme.scss';
+#page-login {
+  padding-top: 78rpx;
+  .page-title-wrap {
+    margin: 0 0 78rpx 0;
+    font-size: 16px;
+    font-weight: bold;
+    text-align: center;
+  }
+}
+</style>
+
+<template>
+  <view id="page-serviceDetail">
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import {
+      isLogin
+    } from '@/utils/validator'
+  export default class serviceDetail extends wepy.page {
+    config = {
+      navigationBarTitleText: '历史记录'
+    }
+    components = {
+    }
+
+    mixins = []
+
+    data = {
+    }
+
+    computed = {
+    }
+
+    watch = {
+    }
+
+    methods = {
+      handleSumbit () {
+        this.$_request({
+          url: `/other/loginByPwd?username=${this.formData.username}&password=${this.formData.password}`,
+          method: 'POST'
+        }, true).then(res => {
+          const content = res.content || {}
+          if (content.empty) {} else {
+            wx.redirectTo({
+              url: '/pages/account'
+            })
+          }
+        })
+      }
+    }
+
+    events = {
+    }
+    onShow () {
+      isLogin(true)
+    }
+    onLoad () {
+    }
+    onUnload () {
+    }
+  }
+</script>

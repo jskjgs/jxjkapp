@@ -1,0 +1,86 @@
+<style lang="scss">
+// @import '../assets/style/variables/theme.scss';
+#page-login {
+  padding-top: 78rpx;
+  .page-title-wrap {
+    margin: 0 0 78rpx 0;
+    font-size: 16px;
+    font-weight: bold;
+    text-align: center;
+  }
+}
+</style>
+
+<template>
+  <view id="page-serviceDetail">
+    <view>扫一扫</view>
+    <scroll-view scroll-y="true">  
+      <repeat wx:for="{{ list }}" key="index" item="item" index="index" @tap="showDetail({{index}})">
+          <view style="flex-direction:row;">
+            <view>服务项目名称</view><view>派单时间{{ item.orderAssignTime }}</view>
+          </view>
+          <view style="flex-direction:row;">
+            <view>用户姓名:</view><view>{{ item.userName }}</view>
+          </view>
+          <view style="flex-direction:row;">
+            <view>手机号:</view><view>{{ item.phoneNumber }}</view>
+          </view>
+      </repeat>
+    </scroll-view>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+
+  export default class serviceDetail extends wepy.page {
+    config = {
+      navigationBarTitleText: '服务派单'
+    }
+    components = {
+    }
+
+    mixins = []
+
+    data = {
+      searchLoading: false, //"上拉加载"的变量，默认false，隐藏  
+      searchLoadingComplete: false,  //“没有数据”的变量，默认false，隐藏  
+      list: [
+      {'orderAssignTime': '2017-10-21', 'userName': '王晓路', 'phoneNumber': '15928113204'},
+      {'orderAssignTime': '2017-10-21', 'userName': '王晓路', 'phoneNumber': '15928113204'},
+      {'orderAssignTime': '2017-10-21', 'userName': '王晓路', 'phoneNumber': '15928113204'}]
+    }
+
+    computed = {
+    }
+
+    watch = {
+    }
+
+    methods = {
+      showDetail (index) {
+        console.log(index)
+        this.$_request({
+          url: `/other/loginByPwd?username=${this.formData.username}&password=${this.formData.password}`,
+          method: 'POST'
+        }, true).then(res => {
+          const content = res.content || {}
+          if (content.empty) {} else {
+            wx.redirectTo({
+              url: '/pages/account'
+            })
+          }
+        })
+      }
+    }
+    events = {
+    }
+    onShow () {
+      //isLogin(true)
+    }
+    onLoad () {
+    }
+    onUnload () {
+    }
+  }
+</script>
