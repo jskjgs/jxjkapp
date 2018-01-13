@@ -1,9 +1,0 @@
-
-  <view id="page-my-consent">
-    <block wx:for="{{ list }}" wx:for-index="index" wx:for-item="item" wx:key="index">
-      <view class="list-item flex--vcenter--sb">
-        <text>同意书名称（一）</text>
-        <view class="arrow-rt"/>
-      </view>
-    </block>
-  </view>

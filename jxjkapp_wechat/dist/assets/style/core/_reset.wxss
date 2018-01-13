@@ -1,1 +1,0 @@
-page{background:#F9F9FF;font-size:13px;min-height:100%;color:#414141}view,view::before,view::after{box-sizing:border-box}image{display:block;width:auto;height:auto}image:not([src]),image[src=""]{background:#e6e6e6}button{margin:0;border-radius:4rpx;padding:0;font-size:13px;text-align:center}button::after{border-radius:4rpx}

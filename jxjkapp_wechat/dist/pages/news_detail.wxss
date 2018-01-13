@@ -1,2 +1,0 @@
-@import "./../components/customPage.wxss";
-#page-news-detail{min-height:100vh;padding:40rpx}#page-news-detail .news-title{font-size:15px;font-weight:bold}#page-news-detail .news-date{margin-top:20rpx;color:#818181}#page-news-detail .news-content{margin-top:36rpx}
