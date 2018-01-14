@@ -21,7 +21,7 @@ export const validPwd = function (pwd) {
 // 判断用户是否登录
 export const isLogin = function (isShowPage) {
   var hasToken = wx.getStorage({
-    key: 'token'
+    key: 'userInfo'
   }) == null ? false : true
   if (!hasToken && isShowPage) {
     wx.reLaunch({
@@ -32,17 +32,17 @@ export const isLogin = function (isShowPage) {
 }
 
 // 保存用户登录token
-export const userLogin = function (token) {
+export const storageUserData = function (userInfo) {
   wx.setStorage({
-    key: 'token',
-    data: token
+    key: 'userInfo',
+    data: userInfo
   })
 }
 
 // 删除用户登录token
 export const userLogout = function () {
   wx.removeStorage({
-    key: 'token',
+    key: 'userInfo',
     success: function(res) {
       console.log(res.data)
     }

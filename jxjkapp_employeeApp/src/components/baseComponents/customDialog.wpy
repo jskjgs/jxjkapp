@@ -1,0 +1,72 @@
+<style lang="scss">
+.comp-dialog {
+  .dialog__modal, .dialog__inner {
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    z-index: 11111;
+  }
+  .dialog__modal {
+    background: rgba(0, 0, 0, 0.4);
+  }
+  .dialog__inner {
+    margin: auto;
+    border-radius: 20rpx;
+    width: 630rpx;
+    height: 660rpx;
+    background: #fff;
+  }
+}
+</style>
+
+<template>
+  <view class="comp-dialog" hidden="{{ !visible }}">
+    <view class="dialog__modal" @tap="modalClick"></view>
+    <view class="dialog__inner" style="{{ innerStyle }}">
+      <slot></slot>
+    </view>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+
+  export default class Dialog extends wepy.component {
+    components = {
+    }
+
+    props = {
+      visible: {
+        type: Boolean,
+        twoWay: true,
+        default: false
+      },
+      innerStyle: {
+        type: String,
+        default: ''
+      }
+    }
+    mixins = []
+
+    data = {
+    }
+
+    computed = {
+    }
+
+    methods = {
+      modalClick () {
+        this.visible = false
+      }
+    }
+
+    events = {
+    }
+
+    onLoad() {
+      console.log(this.visible, 111)
+    }
+  }
+</script>

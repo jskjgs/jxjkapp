@@ -47,8 +47,8 @@
     mixins = []
 
     data = {
-      isLogin:true,
-      userId:0,
+      isLogin: true,
+      userId: 0
     }
 
     watch = {

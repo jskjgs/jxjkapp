@@ -62,10 +62,10 @@ export default class extends wepy.app {
       'request': 30000
     },
     pages: [
+      'pages/serviceList',
+      'pages/serviceHistory',
       'pages/account',
       'pages/serviceDetail',
-      'pages/serviceHistory',
-      'pages/serviceList',
       'pages/serviceRecord'
     ],
     window: {
@@ -78,13 +78,13 @@ export default class extends wepy.app {
       selectedColor: '#9190FF',
       list: [{
         'pagePath': 'pages/serviceList',
-        'iconPath': './assets/images/tab-index.png',
-        'selectedIconPath': './assets/images/tab-index-active.png',
+        'iconPath': './assets/images/service_normal.png',
+        'selectedIconPath': './assets/images/service_press.png',
         'text': '服务派单'
       }, {
         'pagePath': 'pages/serviceHistory',
-        'iconPath': './assets/images/tab-health.png',
-        'selectedIconPath': './assets/images/tab-health-active.png',
+        'iconPath': './assets/images/history_normal.png',
+        'selectedIconPath': './assets/images/history_press.png',
         'text': '历史记录'
       }, {
         'pagePath': 'pages/account',
@@ -96,7 +96,9 @@ export default class extends wepy.app {
   }
 
   globalData = {
-    userInfo: null
+    userInfo: {
+      userId: 1
+    }
   }
 
   constructor () {
@@ -109,36 +111,9 @@ export default class extends wepy.app {
     wx.setEnableDebug({
       enableDebug: true
     })
-    wx.reLaunch({
-      url: '/pages/account'
-    })
-  }
-
-  sleep (s) {
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        resolve('promise resolved')
-      }, s * 1000)
-    })
-  }
-
-  async testAsync () {
-    const data = await this.sleep(3)
-    console.log(data)
-  }
-
-  getUserInfo(cb) {
-    console.log('globalData', this.globalData)
-    const that = this
-    if (this.globalData.userInfo) {
-      return this.globalData.userInfo
-    }
-    wepy.getUserInfo({
-      success (res) {
-        that.globalData.userInfo = res.userInfo
-        cb && cb(res.userInfo)
-      }
-    })
+    // wx.reLaunch({
+    //   url: '/pages/serviceDetail'
+    // })
   }
 }
 </script>

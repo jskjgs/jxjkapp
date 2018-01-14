@@ -1,0 +1,105 @@
+<style lang="scss">
+@import '../assets/style/variables/theme.scss';
+.comp-sign-dialog {
+  .sign-dialog-title {
+    font-size: 15px;
+    color: #414141;
+    margin-bottom: 44rpx;
+  }
+  .sign-panel {
+    height: 350rpx;
+    background: #F6D6AF;
+  }
+}
+</style>
+
+<template>
+  <view class="comp-sign-dialog">
+    <CustomDialog 
+      :visible.sync="dialogVisible"
+      innerStyle="width: 660rpx; height: 610rpx; padding: 60rpx 30rpx;">
+      <view class="sign-dialog__inner">
+        <view class="sign-dialog-title flex--center">{{ title }}</view>
+        <view class="sign-panel"></view>
+      </view>
+    </CustomDialog>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import CustomDialog from './baseComponents/customDialog'
+
+  export default class Index extends wepy.component {
+    components = {
+      CustomDialog
+    }
+
+    props = {
+      visible: {
+        type: Boolean,
+        twoWay: true,
+        default: false
+      },
+      title: {
+        type: String,
+        default: ''
+      }
+    }
+
+    mixins = []
+
+    data = {
+      dialogVisible: false,
+      results: []
+    }
+
+    watch = {
+      visible (newVal) {
+        this.dialogVisible = newVal
+        this.$apply()
+      },
+      dialogVisible (newVal) {
+        this.visible = newVal
+      }
+    }
+
+    computed = {
+    }
+
+    methods = {
+      // 搜索
+      handleSearch ({ detail }) {
+        // const value = detail.value
+        this.results = [{
+          id: 1,
+          name: '员工1',
+          jobId: '34324324'
+        }, {
+          id: 2,
+          name: '员工2',
+          jobId: '90920392'
+        }]
+      },
+      // 取消搜索
+      handleCancelSearch () {
+        this.visible = false
+        this.results = []
+      },
+      // 选择搜索结果
+      handlePickItem (item) {
+        this.$emit('picked', item)
+        this.results = []
+        this.visible = false
+      }
+    }
+
+    events = {
+    }
+
+    onload () {
+      console.log('onload')
+      // this.dialogVisible = this.visible
+    }
+  }
+</script>

@@ -1,62 +1,29 @@
 <template>
   <view id="page-serviceDetail">
-    <view class="service-record">
-      <view class="service-record-title">服务项目的名称</view>
-      <view class="service-record-user">
-          <view>用户姓名：笨小孩</view>
-          <view class="service-record-user-phone">手机号：111111111111</view>
-      </view>
-    </view>
-    <view class="service-item service-item-pd">
-      <view class="service-item-partner">
-        <text>合作人：</text>
-        <text class="service-item-text">无</text>
-      </view>
-      <view class="service-item-Jssignature">
-        <text>技师签字：</text>
-        <text class="service-item-text">djj</text>
-      </view>
-    </view>
-    <view class="service-item">
-      <view class="service-item-user">
-        <text>用户签字：</text>
-        <text class="service-item-text">无</text>
-      </view>
-    </view>
-    <view class="service-item">
-      <view class="service-item-diagnosis">
-        <text>诊断内容：</text>
-        <view class="service-item-diagnosis-content service-item-text">检查并无大碍，建议多喝热水，平时多锻炼。不要久坐，不要...</view>
-      </view>
-    </view>
-    <view class="service-item">
-      <view class="service-item-mark">
-        <text>消费备注：</text>
-        <text class="service-item-text">未使用优惠卡券</text>
-      </view>
-    </view>
-    <view class="service-item">
-      <view class="service-item-mark">
-        <text>购买备注：</text>
-        <text class="service-item-text">空</text>
-      </view>
-    </view>
+    <OrderInfo 
+      @submit.user="handleSubmit"
+      :readonly.sync="readonly">
+    </OrderInfo>
   </view>
 </template>
 
 <script>
   import wepy from 'wepy'
 
+  import OrderInfo from '@/components/orderInfo'
+
   export default class serviceDetail extends wepy.page {
     config = {
       navigationBarTitleText: '记录详情'
     }
     components = {
+      OrderInfo
     }
 
     mixins = []
 
     data = {
+      readonly: true
     }
 
     computed = {
@@ -66,18 +33,8 @@
     }
 
     methods = {
-      handleSumbit () {
-        this.$_request({
-          url: `/other/loginByPwd?username=${this.formData.username}&password=${this.formData.password}`,
-          method: 'POST'
-        }, true).then(res => {
-          const content = res.content || {}
-          if (content.empty) {} else {
-            wx.redirectTo({
-              url: '/pages/account'
-            })
-          }
-        })
+      handleSubmit (formData) {
+        console.log('handleSubmit:formData', formData)
       }
     }
 
@@ -86,79 +43,9 @@
 
     onLoad () {
     }
-    onUnload () {
-    }
   }
 </script>
 
 <style lang="scss">
 // @import '../assets/style/variables/theme.scss';
-#page-login {
-  padding-top: 78rpx;
-  .page-title-wrap {
-    margin: 0 0 78rpx 0;
-    font-size: 16px;
-    font-weight: bold;
-    text-align: center;
-  }
-}
-.service {
-  &-record {
-    background-color: #fff;
-    margin-bottom: 20rpx;
-    padding: 0 30rpx;
-    &-user {
-      display: flex;
-      align-items: center;
-      color: #818181;
-      font-size: 26rpx;
-      padding-bottom: 30rpx;
-      &-phone {
-        margin-left: 66rpx;
-      }
-    }
-    &-title {
-      font-size: 30rpx;
-      color: #414141;
-      padding: 30rpx 0;
-    }
-  }
-  &-item {
-    background-color: #fff;
-    margin-bottom: 20rpx;
-    padding: 10rpx 30rpx;
-    &-pd {
-      padding: 10rpx 0;
-    }
-    &-partner, &-Jssignature, &-user, &-diagnosis, &-mark {
-      padding: 30rpx 0rpx;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-size: 30rpx;
-      color: #818181;
-    }
-    &-partner, &-Jssignature {
-      padding-right: 30rpx;
-      padding-left: 30rpx;
-    }
-    &-partner {
-      border-bottom: 1px solid #F2F2F2;
-    }
-    &-diagnosis {
-      justify-content: flex-start;
-      align-items: flex-start;
-      &-content {
-        flex: 1;
-      }
-    }
-    &-text {
-      font-size: 30rpx;
-      color: #414141;
-    }
-    &-mark {
-      justify-content: flex-start;
-    }
-  }
-}
 </style>

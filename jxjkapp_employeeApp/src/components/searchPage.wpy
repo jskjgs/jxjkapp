@@ -1,0 +1,128 @@
+<style lang="scss">
+@import '../assets/style/variables/theme.scss';
+.comp-search-page {
+  position: fixed;
+  z-index: 10;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  .search-bar {
+    padding: 0 30rpx;
+    height: 88rpx;
+    font-size: 15px;
+    box-shadow: 0 2rpx 10rpx 0 #E3E3E3;
+    .search-input-wrap {
+      icon {
+        margin-right: -40rpx;
+      }
+      input {
+        padding-left: 48rpx; 
+        border: 2rpx solid #E6E6EA;
+        border-radius: 28rpx;
+        height: 56rpx;
+      }
+    }
+    .cancel-btn {
+      margin-left: 40rpx;
+      color: $primaryColor;
+    }
+  }
+
+  .search-results {
+    .result-item {
+      border-bottom: 1px solid #F2F2F2;
+      padding: 30rpx;
+    }
+  }
+}
+</style>
+
+<template>
+  <view hidden="{{ !visible }}" class="comp-search-page main-bg">
+    <view class="search-bar flex--vcenter--sb">
+      <view class="search-input-wrap flex-item flex--vcenter">
+        <icon type="search" size="16"></icon>
+        <input
+          class="flex-item"
+          value="{{ searchParams.searchWord }}" 
+          placeholder-style="color: #B8B8B8;"
+          placeholder="搜索" 
+          bindconfirm="handleSearch"/>
+      </view>
+      <view
+        class="cancel-btn"
+        @tap="handleCancelSearch">取消</view>
+    </view>
+    <view class="search-results">
+      <repeat 
+        for="{{ results }}"
+        key="index"
+        index="index"
+        item="item">
+        <view class="result-item flex--vcenter--sb" @tap="handlePickItem({{ item }})">
+          <text class="item-label">{{ item.name }}</text>
+          <text class="item-info">工号：{{ item.jobId }}</text>
+        </view>
+      </repeat>
+    </view>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  export default class Index extends wepy.component {
+    components = {
+    }
+
+    props = {
+      visible: {
+        type: Boolean,
+        twoWay: true,
+        default: false
+      }
+    }
+
+    mixins = []
+
+    data = {
+      results: []
+    }
+
+    watch = {
+    }
+
+    computed = {
+    }
+
+    methods = {
+      // 搜索
+      handleSearch ({ detail }) {
+        // const value = detail.value
+        this.results = [{
+          id: 1,
+          name: '员工1',
+          jobId: '34324324'
+        }, {
+          id: 2,
+          name: '员工2',
+          jobId: '90920392'
+        }]
+      },
+      // 取消搜索
+      handleCancelSearch () {
+        this.visible = false
+        this.results = []
+      },
+      // 选择搜索结果
+      handlePickItem (item) {
+        this.$emit('picked', item)
+        this.results = []
+        this.visible = false
+      }
+    }
+
+    events = {
+    }
+  }
+</script>

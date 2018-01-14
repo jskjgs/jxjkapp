@@ -1,0 +1,282 @@
+<template>
+  <view class="comp-serviceDetail">
+    <SignDialog 
+      :visible.sync="signDialogVisible"
+      :title.sync="signDialogTitle"/>
+    <SearchPage 
+      :visible.sync="onSearchPartner"
+      @picked.user="handlePartnerPicked" />
+    <view class="service-record main-bg">
+      <view class="service-record-title">{{ storageData.serviceName }}</view>
+      <view class="service-record-user flex--vcenter--sb">
+          <view>用户姓名：{{ storageData.userName }}</view>
+          <view class="service-record-user-phone">手机号：{{ storageData.userTel }}</view>
+      </view>
+    </view>
+    <view class="service-item service-item-pd main-bg">
+      <view 
+        class="input-item flex--vcenter--sb"
+        style="border-bottom: 1px solid #F2F2F2;">
+        <text class="item-label">合作人：</text>
+        <view wx:if="{{ readonly }}">
+          {{ storageData.partner != undefined && storageData.partner !== '' ? storageData.partner : '未选择' }}
+        </view>
+        <picker 
+          wx:else
+          bindchange="handlePartnerPickerChange" 
+          value="{{ partnerPickerIndex }}" 
+          range="{{ partnerPickerRange }}"
+          range-key="label">
+          {{ storageData.partner != undefined && storageData.partner !== '' ? storageData.partner : '请选择' }}<text class="arrow-rt"></text>
+        </picker>
+      </view>
+      <view class="input-item service-item-Jssignature flex--vcenter--sb">
+        <text class="item-label">技师签字：</text>
+        <view @tap="showSignDialog('doctor')">
+          <text class="arrow-rt"></text>
+        </view>
+      </view>
+    </view>
+    <view class="service-item main-bg">
+      <view class="input-item flex--vcenter--sb">
+        <text class="item-label">诊断模版：</text>
+        <view wx:if="{{ readonly }}">
+          {{ storageData.templateName != undefined && storageData.templateName !== '' ? storageData.templateName : '未选择' }}
+        </view>
+        <picker 
+          wx:else
+          bindchange="handleTemplatePickerChange" 
+          value="{{ templatePickerIndex }}" 
+          range="{{ templatePickerRange }}"
+          range-key="label">
+          {{ storageData.templateName != undefined && storageData.templateName !== '' ? storageData.templateName : '请选择' }}<text class="arrow-rt"></text>
+        </picker>
+      </view>
+      <block wx:if="{{ readonly }}">
+        <view wx:if="{{ templateContent }}">{{ templateContent }}</view>
+      </block>
+      <view wx:else class="input-item">
+        <DiagnoseInput 
+          type="textarea" 
+          class="diagnose-input"
+          :disabled.sync="diagnoseInputDisabled"
+          :value.sync="templateContent"/>
+      </view>
+    </view>
+    <view class="service-item main-bg">
+      <view class="input-item service-item-mark flex--sb">
+        <text class="item-label">消费备注：</text>
+        <view wx:if="{{ readonly }}">{{ consumeInfo }}</view>
+        <ConsumeInfoInput 
+          wx:else
+          class="flex-item"
+          type="textarea"
+          :value.sync="consumeInfo" />
+      </view>
+    </view>
+    <view class="service-item main-bg">
+      <view class="input-item service-item-user flex--vcenter--sb">
+        <text class="item-label">用户签字：</text>
+        <view @tap="showSignDialog('user')">
+          <text class="arrow-rt"></text>
+        </view>
+      </view>
+    </view>
+    <view class="service-item main-bg">
+      <view class="input-item service-item-mark flex--sb">
+        <text class="item-label">购买备注：</text>
+        <view wx:if="{{ readonly }}"></view>
+        <PurchaseInfoInput
+          wx:else
+          class="flex-item" 
+          type="textarea"
+          :value.sync="purchaseInfo"/>
+      </view>
+    </view>
+    <view wx:if="{{ !readonly }}" class="btn-wrap flex--center">
+      <button class="primary-btn" @tap="submit">确认提交</button>
+    </view>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+
+  import CustomInput from '@/components/baseComponents/customInput'
+  import SearchPage from '@/components/searchPage'
+  import SignDialog from '@/components/signDialog'
+
+  export default class Index extends wepy.component {
+    components = {
+      SignDialog,
+      SearchPage,
+      DiagnoseInput: CustomInput,
+      ConsumeInfoInput: CustomInput,
+      PurchaseInfoInput: CustomInput
+    }
+
+    props = {
+      readonly: {
+        type: Boolean,
+        default: false
+      }
+    }
+
+    data = {
+      signDialogVisible: false, // 签名弹框显示状态
+      signDialogTitle: '', // 签名弹框标题
+      onSearchPartner: false, // 标示在搜索
+      diagnoseInputDisabled: true, // 诊断内容输入框是否禁用
+      partnerPickerIndex: 0, // 合伙人类型选择
+      partnerPickerRange: [{ // 合伙人类型列表
+        label: '单独完成',
+        value: 0
+      }, {
+        label: '合作完成',
+        value: 1
+      }],
+      templatePickerIndex: 0, // 诊断模板选择
+      templatePickerRange: [{ // 诊断模板列表
+        label: '模板1',
+        value: 1
+      }, {
+        label: '模板2',
+        value: 2
+      }],
+      storageData: {
+        serviceName: '服务项目的名称', // 服务名称
+        userName: '王晓璐', // 用户姓名
+        userTel: '12321232222', // 用户电话
+        partner: '', // 合伙人
+        partnerId: '', // 合伙人id
+        templateId: '', // 诊断模板id
+        templateName: '', // 诊断模板name
+      },
+      templateContent: '', // 诊断模板内容
+      consumeInfo: '', // 消费备注
+      purchaseInfo: '' // 购买备注
+    }
+
+    computed = {
+      formData () {
+        return {
+          templateContent: this.templateContent,
+          consumeInfo: this.consumeInfo,
+          purchaseInfo: this.purchaseInfo,
+          ...this.storageData
+        }
+      }
+    }
+
+    watch = {
+      signDialogVisible (newVal) {
+      },
+      formData (newVal) {
+        if (newVal.templateName === '') {
+          this.diagnoseInputDisabled = true
+        } else {
+          this.diagnoseInputDisabled = false
+        }
+        this.$apply()
+        console.log('formData', newVal)
+      },
+      templateContent (templateContent) {
+        console.log('templateContent', templateContent)
+      }
+    }
+
+    methods = {
+      // 合伙人类型选择
+      handlePartnerPickerChange ({ detail }) {
+        const index = detail.value
+        const picked = this.partnerPickerRange[index]
+        if (picked.value === 0) {
+          this.storageData.partner = picked.label
+          this.storageData.partnerId = picked.value
+        } else {
+          this.onSearchPartner = true
+        }
+      },
+      // 合伙人选择
+      handlePartnerPicked (partner) {
+        console.log('partner', partner)
+        this.storageData.partner = partner.name
+      },
+      // 模板选择
+      handleTemplatePickerChange ({ detail }) {
+        const index = detail.value
+        const picked = this.templatePickerRange[index]
+        this.templatePickerIndex = index
+        this.storageData.templateId = picked.value
+        this.storageData.templateName = picked.label
+      },
+      // 显示签字弹框
+      showSignDialog (type) {
+        if (type === 'doctor') {
+          this.signDialogTitle = '技师签名'
+        } else if (type === 'user') {
+          this.signDialogTitle = '用户签名'
+        }
+        this.signDialogVisible = true
+      },
+      // 提交表单
+      submit () {
+        this.$emit('submit', this.formData)
+      }
+    }
+
+    events = {
+    }
+
+    onLoad () {
+    }
+  }
+</script>
+
+<style lang="scss">
+// @import '../assets/style/variables/theme.scss';
+.comp-serviceDetail {
+  .service {
+    &-record {
+      background-color: #fff;
+      margin-bottom: 20rpx;
+      padding: 0 30rpx;
+      &-user {
+        color: #818181;
+        padding-bottom: 30rpx;
+        &-phone {
+          margin-left: 66rpx;
+        }
+      }
+      &-title {
+        font-weight: bold;
+        font-size: 15px;
+        color: #414141;
+        padding: 30rpx 0;
+      }
+    }
+  }
+  .service-item {
+    margin-bottom: 20rpx;
+  }
+  .input-item {
+    padding: 40rpx 30rpx;
+    font-size: 15px;
+    .item-label {
+      color: #818181;
+    }
+
+    textarea {
+      height: 80rpx;
+    }
+    .diagnose-input {
+      textarea {
+        height: 260rpx;
+      }
+    }
+  }
+  .btn-wrap {
+    margin: 30rpx 0 40rpx;
+  }
+}
+</style>
