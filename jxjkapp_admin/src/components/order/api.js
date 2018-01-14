@@ -11,24 +11,3 @@ export const queryOrderApi = (params) => {
     params
   })
 }
-
-// 修改医生信息
-export const MODIFY_DOCTOR_URL = '/doctor_i/modifyDoctor'
-export const modifyDoctorApi = (params, data) => {
-  return fetchApi({
-    url: MODIFY_DOCTOR_URL,
-    type: 'post',
-    params,
-    data
-  })
-}
-
-// 置顶医生
-export const TOP_DOCTOR_URL = '/doctor_i/topDoctor'
-export const topDoctorApi = (data) => {
-  return fetchApi({
-    url: TOP_DOCTOR_URL,
-    type: 'post',
-    data
-  })
-}

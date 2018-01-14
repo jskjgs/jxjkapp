@@ -11,7 +11,7 @@ import ImgZoom from '@/components/_common/imgZoom/ImgZoom.vue'
 import SearchTable from '@/components/_common/searchTable/SearchTable'
 
 import {
-  queryOrderApi
+  queryOrderDetailApi
 } from './api'
 
 export default {
@@ -94,19 +94,12 @@ export default {
       }
     }]
     this.listApi = {
-      requestFn: queryOrderApi,
+      requestFn: queryOrderDetailApi,
       responseFn (data) {
         let content = data.content || {}
         console.log(data.content)
         this.tableData = (content.list || []).map((item) => ({
-          orderCode: item.code,
-          orderAmount: (item.orderSalesPrice + '￥'),
-          createTime: item.createDate,
-          orderState: item.state,
-          userName: item.userName,
-          userLevel: item.userLevel,
-          areaId: item.areaId,
-          phoneNumber: item.phoneNumber
+          orderCode: item.code
         }))
         this.total = content.total || 0
       }
@@ -170,7 +163,6 @@ export default {
     assginSubmit (rowData) {
     },
     openDetail (rowData) {
-      this.$router.push('/login')
       this.editDialogVisible = true
       // 跳转到详情页
     }
