@@ -18,6 +18,10 @@ public class HospPatientInfo extends PageBean{
     @Id
     @ApiModelProperty("就诊人的ID")
     private Long id;
+    @ApiModelProperty("就诊卡号")
+    private String patientCard;
+    @ApiModelProperty("就诊人姓名")
+    private Long name;
     @ApiModelProperty("用户ID")
     private Long userId;
     @ApiModelProperty("身份证号")

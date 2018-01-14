@@ -1,19 +1,17 @@
 package com.jinxin.hospHealth.dao.models;
 
-import com.doraemon.base.controller.bean.PageBean;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import javax.persistence.Id;
 import javax.persistence.Table;
-import java.math.BigDecimal;
 import java.util.Date;
 
 @Data
-@ApiModel("用户信息")
-@Table(name="hosp_user_info")
-public class HospUserInfo extends PageBean{
+@ApiModel("admin账户信息")
+@Table(name="hosp_admin_user_info")
+public class HospAdminUserInfo {
     @Id
     @ApiModelProperty("用户ID")
     private Long id;
@@ -21,8 +19,6 @@ public class HospUserInfo extends PageBean{
     private String name;
     @ApiModelProperty("密码")
     private String password;
-    @ApiModelProperty("为了推送做的唯一识别用户的id")
-    private String pushId;
     @ApiModelProperty("头像")
     private String headPortrait;
     @ApiModelProperty("性别 0 女 1 男")
@@ -35,8 +31,6 @@ public class HospUserInfo extends PageBean{
     private Integer age;
     @ApiModelProperty("生日")
     private Date birthday;
-    @ApiModelProperty("是否是vip")
-    private Integer isVip;
     @ApiModelProperty("创建时间")
     private Date createDate;
     @ApiModelProperty("更新时间")

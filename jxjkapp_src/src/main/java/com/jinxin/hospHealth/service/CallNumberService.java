@@ -6,7 +6,7 @@ import com.doraemon.base.guava.DPreconditions;
 import com.doraemon.base.language.Language;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.github.pagehelper.StringUtil;
+import com.github.pagehelper.util.StringUtil;
 import com.jinxin.hospHealth.dao.DaoEnumValid;
 import com.jinxin.hospHealth.dao.mapper.HospCallNumberMapper;
 import com.jinxin.hospHealth.dao.models.HospCallNumber;
@@ -152,6 +152,8 @@ public class CallNumberService implements BaseService<HospCallNumber,HospCallNum
      */
     @Override
     public PageInfo<HospCallNumber> selectAll(PageBean pageBean) throws Exception {
+        if(pageBean == null)
+            pageBean = new PageBean();
         PageHelper.startPage(pageBean.getPageNum(), pageBean.getPageSize());
         if (StringUtil.isNotEmpty(pageBean.getField()))
             PageHelper.orderBy(pageBean.getField());

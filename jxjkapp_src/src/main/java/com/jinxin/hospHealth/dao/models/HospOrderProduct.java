@@ -34,7 +34,7 @@ public class HospOrderProduct extends PageBean{
     private BigDecimal productShowPrice;
     @ApiModelProperty("购买的数量")
     private Integer quantity;
-    @ApiModelProperty("如果购买的是服务，服务的总次数")
+    @ApiModelProperty("如果是服务订单，服务的总次数")
     private Integer serviceQuantity;
     @ApiModelProperty("开始使用的时间")
     private Date startDate;
@@ -42,7 +42,7 @@ public class HospOrderProduct extends PageBean{
     private Date stopDate;
     @ApiModelProperty("订单评价ID")
     private Long gradeId;
-    @ApiModelProperty("状态 ")
+    @ApiModelProperty("状态 0 正常 1 申请作废 2 已作废")
     private Integer state;
     @ApiModelProperty("创建时间")
     private Date createDate;
@@ -52,5 +52,8 @@ public class HospOrderProduct extends PageBean{
     @Transient
     @ApiModelProperty("商品详情")
     private HospProductSku hospProductSku;
+    @Transient
+    @ApiModelProperty("如果是服务订单,已经使用的数量")
+    private int useNumber;
 
 }

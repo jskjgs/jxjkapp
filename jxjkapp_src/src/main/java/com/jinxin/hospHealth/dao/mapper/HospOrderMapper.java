@@ -11,7 +11,7 @@ import java.util.List;
 public interface HospOrderMapper extends MyMapper<HospOrder> {
 
     @Select({"<script>" +
-            " select * from hosp_order where 1=1 " +
+            " select * from hosp_order where enable = #{order.enable}" +
             " <if test = 'order.id != null and order.id != \"\"'> " +
             "   and id = #{order.id}" +
             " </if>  " +
@@ -30,9 +30,6 @@ public interface HospOrderMapper extends MyMapper<HospOrder> {
             " <if test = 'order.paymentType != null and order.paymentType != \"\"'> " +
             "   and payment_type = #{order.paymentType}" +
             " </if>  " +
-            " <if test = 'order.enable != null and order.enable != \"\"'> " +
-            "   and enable = #{order.enable}" +
-            " </if>  " +
             " <if test = 'order.startTime != null and order.startTime != \"\"'>" +
             "   and create_date &gt;= #{order.startTime}" +
             " </if>" +
@@ -43,6 +40,6 @@ public interface HospOrderMapper extends MyMapper<HospOrder> {
             "   and user_id in (#{order.userIds})" +
             " </if>" +
             " </script>"})
-    List<HospOrder> selectByExampleByCustom(@Param("order")OrderInfoPO orderInfoPO);
+    List<HospOrder> selectByExampleByCustom(@Param("order") OrderInfoPO orderInfoPO);
 
 }

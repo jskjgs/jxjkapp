@@ -8,7 +8,7 @@ import com.doraemon.base.util.UUidGenerate;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.jinxin.hospHealth.dao.mapper.HospOrderProductMapper;
-import com.github.pagehelper.StringUtil;
+import com.github.pagehelper.util.StringUtil;
 import com.jinxin.hospHealth.dao.models.HospOrderProduct;
 import com.jinxin.hospHealth.dao.models.HospProductSku;
 import com.jinxin.hospHealth.dao.modelsEnum.OrderProductStateEnum;
@@ -60,7 +60,7 @@ public class OrderProductService implements BaseService<HospOrderProduct,HospOrd
         add.setServiceQuantity(hospOrderProduct.getServiceQuantity());
         add.setStartDate(hospOrderProduct.getStartDate());
         add.setStopDate(hospOrderProduct.getStopDate());
-        add.setState(OrderProductStateEnum.CREATE.getCode());
+        add.setState(OrderProductStateEnum.NORMAL.getCode());
         add.setCreateDate(new Date());
         add.setUpdateDate(new Date());
         DPreconditions.checkNotNull(hospOrderProductMapper.insertReturnId(add),
@@ -141,6 +141,8 @@ public class OrderProductService implements BaseService<HospOrderProduct,HospOrd
      */
     @Override
     public PageInfo<HospOrderProduct> selectAll(PageBean pageBean) throws Exception {
+        if(pageBean == null)
+            pageBean = new PageBean();
         PageHelper.startPage(pageBean.getPageNum(), pageBean.getPageSize());
         if (StringUtil.isNotEmpty(pageBean.getField())) {
             PageHelper.orderBy(pageBean.getField());

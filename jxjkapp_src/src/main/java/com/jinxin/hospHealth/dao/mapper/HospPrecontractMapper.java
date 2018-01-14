@@ -17,6 +17,12 @@ public interface HospPrecontractMapper extends MyMapper<HospPrecontract> {
             " <if test = 'hospPrecontract.userIds != null and hospPrecontract.userIds != \"\"'> " +
             "   and user_id in (#{hospPrecontract.userIds})" +
             " </if>  " +
+            " <if test = 'hospPrecontract.userId != null and hospPrecontract.userId != \"\"'> " +
+            "   and user_id = #{hospPrecontract.userId}" +
+            " </if>  " +
+            " <if test = 'hospPrecontract.areaId != null and hospPrecontract.areaId != \"\"'> " +
+            "   and area_id = #{hospPrecontract.areaId}" +
+            " </if>  " +
             " <if test = 'hospPrecontract.productSkuIds != null and hospPrecontract.productSkuIds != \"\"'> " +
             "   and product_sku_id in (#{hospPrecontract.productSkuIds})" +
             " </if>  " +

@@ -12,8 +12,9 @@ public class DaoEnumValid {
     public static void checkOrderProductState(Integer state) {
         if (state == null)
             return;
-        DPreconditions.checkState(state.equals(OrderProductStateEnum.CREATE.getCode())
-                        || state.equals(OrderProductStateEnum.USE.getCode()),
+        DPreconditions.checkState(state.equals(OrderProductStateEnum.NORMAL.getCode())
+                        || state.equals(OrderProductStateEnum.APPLY_CANCELLATION.getCode())
+                        || state.equals(OrderProductStateEnum.CANCELLATION.getCode()),
                 Language.get("parameter-valid.order-product-state-scope"),
                 true);
     }

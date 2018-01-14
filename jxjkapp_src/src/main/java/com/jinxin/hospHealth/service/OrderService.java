@@ -10,7 +10,7 @@ import com.doraemon.base.util.DBigDecimal;
 import com.doraemon.base.util.UUidGenerate;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.github.pagehelper.StringUtil;
+import com.github.pagehelper.util.StringUtil;
 import com.jinxin.hospHealth.controller.protocol.PO.OrderInfoPO;
 import com.jinxin.hospHealth.controller.protocol.PO.OrderProductPO;
 import com.jinxin.hospHealth.dao.DaoEnumValid;
@@ -23,6 +23,7 @@ import com.jinxin.hospHealth.dao.modelsEnum.EnableEnum;
 import com.jinxin.hospHealth.dao.modelsEnum.OrderPayTypeEnum;
 import com.jinxin.hospHealth.dao.modelsEnum.OrderStateEnum;
 import com.jinxin.hospHealth.dao.modelsEnum.OrderTypeEnum;
+import lombok.extern.log4j.Log4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -35,6 +36,7 @@ import java.util.*;
  * Created by zbs on 2018/1/10.
  */
 @Service
+@Log4j
 public class OrderService implements BaseService<HospOrder,OrderInfoPO> {
 
     @Autowired
@@ -50,10 +52,6 @@ public class OrderService implements BaseService<HospOrder,OrderInfoPO> {
     @Autowired
     UserBalanceService userBalanceService;
 
-    @Value("${order.refund-que}")
-    String orderRefundQueName;
-    @Value("${order.exception-pay-que}")
-    String exceptionPayQue;
 
     /**
      * 增加一个订单
@@ -196,7 +194,7 @@ public class OrderService implements BaseService<HospOrder,OrderInfoPO> {
         DPreconditions.checkNotNull(orderInfoPO.getId(),
                 Language.get("order.id-null"),
                 true);
-        HospOrder hospOrder = DPreconditions.checkNotNull(
+        DPreconditions.checkNotNull(
                 selectOne(orderInfoPO.getId()),
                 Language.get("order.select-not-exist"),
                 true);
@@ -209,15 +207,33 @@ public class OrderService implements BaseService<HospOrder,OrderInfoPO> {
                 true);
     }
 
-
-    /**
-     * 删除订单(软删除)
-     * @param id
-     * @throws Exception
-     */
     @Override
     public void deleteOne(Long id) throws Exception {
         throw new ShowExceptions(Language.get("service.invalid-method"));
+    }
+
+    /**
+     * 关闭订单
+     * @param id
+     * @throws Exception
+     */
+    @Transactional
+    public void close(Long id) throws Exception {
+        DPreconditions.checkNotNull(id,
+                Language.get("order.id-null"),
+                true);
+        HospOrder hospOrder = DPreconditions.checkNotNull(
+                selectOne(id),
+                Language.get("order.select-not-exist"),
+                true);
+        DPreconditions.checkState(
+                hospOrder.getState().equals(OrderStateEnum.NON_PAYMENT.getCode()),
+                Language.get("order.close-order-tyep-failure"),
+                true);
+        OrderInfoPO update = new OrderInfoPO();
+        update.setId(id);
+        update.setState(OrderStateEnum.CLOSE.getCode());
+        update(update);
     }
 
     /**
@@ -234,12 +250,10 @@ public class OrderService implements BaseService<HospOrder,OrderInfoPO> {
                 selectOne(id),
                 Language.get("order.select-not-exist"),
                 true);
-        HospOrder update = new HospOrder();
+        OrderInfoPO update = new OrderInfoPO();
         update.setId(id);
         update.setEnable(EnableEnum.ENABLE_DELETE.getCode());
-        DPreconditions.checkState(hospOrderMapper.updateByPrimaryKeySelective(update) ==1 ,
-                Language.get("service.delete-failure"),
-                true);
+        update(update);
     }
 
     /**
@@ -278,6 +292,7 @@ public class OrderService implements BaseService<HospOrder,OrderInfoPO> {
             PageHelper.orderBy(orderInfoPO.getDefaultField());
         }
         orderInfoPO.setEnable(EnableEnum.ENABLE_NORMAL.getCode());
+        log.info("order info po : "+JSON.toJSON(orderInfoPO));
         List<HospOrder> req = hospOrderMapper.selectByExampleByCustom(orderInfoPO);
         return new PageInfo(selectOrderProductListByOrderId(req));
     }
@@ -290,6 +305,8 @@ public class OrderService implements BaseService<HospOrder,OrderInfoPO> {
      */
     @Override
     public PageInfo selectAll(PageBean pageBean) throws Exception {
+        if(pageBean == null)
+            pageBean = new PageBean();
         PageHelper.startPage(pageBean.getPageNum(), pageBean.getPageSize());
         if (StringUtil.isNotEmpty(pageBean.getField())) {
             PageHelper.orderBy(pageBean.getField());
@@ -347,6 +364,8 @@ public class OrderService implements BaseService<HospOrder,OrderInfoPO> {
      */
     @Override
     public PageInfo selectAllAdmin(PageBean pageBean) throws Exception {
+        if(pageBean == null)
+            pageBean = new PageBean();
         PageHelper.startPage(pageBean.getPageNum(), pageBean.getPageSize());
         if (StringUtil.isNotEmpty(pageBean.getField())) {
             PageHelper.orderBy(pageBean.getField());

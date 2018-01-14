@@ -9,6 +9,7 @@ user:
     id-repeat: 该用户信息已经存在,不能重复增加.
     select-object-null: 用户查询信息不能为空.
     phone-repeat: 手机号码已经被注册.
+    password-null: 密码不能为空.
 patient:
     select-not-exist: 就诊人信息不存在
     id-null: 就诊人唯一标识不能为空.
@@ -85,6 +86,8 @@ order:
     pay-price-not-equal: 支付回调传入的价格和订单价格不相等.
     have-to-pay-state: 回退的订单必须为已经支付的订单.
     order-product-null: 订单中关联的商品未查询到.
+    close-failure: 关闭订单失败.
+    close-order-tyep-failure: 被关闭的订单状态必须是未支付的状态.
 order-product:
     order-id-null: 订单ID不能为空.
     sku-not-exist: 商品不存在.
@@ -100,3 +103,4 @@ service:
     update-failure: 更新信息失败.
     delete-failure: 删除信息失败.
     select-failure: 查询信息失败.
+    invalid-failure: 订单置为无效失败.
