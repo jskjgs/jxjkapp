@@ -20,7 +20,7 @@
         :value.sync="formData"
         @submit.user="handleLogin"/>
     </view>
-    <view wx:if="{{isLogin}}">
+    <view wx:else>
       <Logout 
         submitBtnText="退出登录" 
         :value.sync="formData"
@@ -34,7 +34,7 @@
   import LoginInput from '@/components/loginInput'
   import Logout from '@/components/logout'
   import {
-      isLogin, userLogin, userLogout
+      isLogin, storageUserData, userLogout
     } from '@/utils/validator'
   export default class Index extends wepy.page {
     config = {

@@ -9,6 +9,13 @@ import Vue from 'vue'
 import store from '@/store'
 import router from '@/router'
 
+Object.defineProperty(Vue.prototype, '$uploadFile', {
+  value: function (formData) {
+    return new Promise(function (resolve, reject) {
+    })
+  }
+})
+
 import './rootApi'
 
 /* 全局指令 */

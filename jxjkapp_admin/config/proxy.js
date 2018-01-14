@@ -1,6 +1,6 @@
 module.exports =  {
-  '/reservation': {
-    target: 'http://doc.hpx10.com/',
+  '/hospHealth': {
+    target: 'http://182.92.78.118:9001',
     changeOrigin: true,
     // pathRewrite: {
     //   '^/admin': '/admin'
@@ -9,5 +9,3 @@ module.exports =  {
     secure: false
   }
 }
-
-

@@ -99,8 +99,7 @@
     <view wx:if="{{ canEdit }}" class="flex--vcenter--sb edit-btn-wrap">
       <button 
         class="edit-btn"
-        disabled
-        @tap="handleEditTap">解绑</button>
+        @tap="unbindPatient">解绑</button>
       <button 
         class="edit-btn"
         disabled="{{ !readonly && !canSubmit }}"
@@ -113,7 +112,7 @@
           <IdInput
             class="item-input__inner"
             :disabled.sync="readonly"
-            :value.sync="id" />
+            :value.sync="patientCard" />
         </view>
       </view>
       <view class="info-item required flex--sb">
@@ -249,17 +248,13 @@
 
     data = {
       canSubmit: false,
-      id: '', // 卡号
+      patientCard: '', // 卡号
       cardId: '', // 身份证号
       allergies: '', // 过敏史
       disease: '', // 疾病史
       address: '', // 联系地址
       PICKER_ITEMS,
       pickerLists: {
-        // deliveryDate: [{
-        //   value: 1,
-        //   label: '232'
-        // }],
         deliveryInfo: [{
           value: '顺利',
           label: '顺利'
@@ -277,6 +272,9 @@
         userSource: [{
           value: '介绍',
           label: '介绍'
+        }, {
+          value: '网络推广',
+          label: '网络推广'
         }]
       },
       pickerPickeds: {
@@ -286,7 +284,7 @@
     computed = {
       formData () {
         return {
-          id: this.id,
+          patientCard: this.patientCard,
           cardId: this.cardId,
           allergies: this.allergies,
           disease: this.disease,
@@ -298,15 +296,15 @@
 
     watch = {
       formData (newVal) {
-        const id = newVal.id && (newVal.id + '').trim()
+        const patientCard = newVal.patientCard && (newVal.patientCard + '').trim()
         const cardId = newVal.cardId && newVal.cardId.trim()
-        if (id && validCardId(cardId)) {
+        if (patientCard && validCardId(cardId)) {
           this.canSubmit = true
         } else {
           this.canSubmit = false
         }
         this.$apply()
-        this.$emit('pickedsChange', newVal)
+        this.$emit('formDataChange', newVal)
       }
     }
 
@@ -320,6 +318,9 @@
       },
       submit () {
         this.$emit('submit', this.formData)
+      },
+      unbindPatient () {
+        this.$emit('unbindPatient', this.formData)
       }
     }
 
@@ -330,8 +331,8 @@
     }
 
     syncFormData (formData) {
-      const {id, cardId, allergies, disease, address, ...pickerPickeds} = formData
-      this.id = id
+      const {patientCard, cardId, allergies, disease, address, ...pickerPickeds} = formData
+      this.patientCard = patientCard
       this.cardId = cardId
       this.allergies = allergies
       this.disease = disease

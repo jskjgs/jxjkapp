@@ -10,7 +10,10 @@
       :canEdit.sync="canEdit"
       :isMaster.sync="isMaster"
       submitBtnText="确认添加"
-      @pickedsChange.user="handlePickedsChange">
+      @formDataChange.user="handleFormDataChange"
+      @submit.user="handleSubmit"
+      @editSubmit.user="handleEditSubmit"
+      @unbindPatient.user="handleUnbindPatient">
     </PersonInfo>
   </view>
 </template>
@@ -37,11 +40,69 @@
     }
 
     computed = {
+      userId () {
+        return (this.$parent.globalData.userInfo || {}).userId
+      }
     }
 
     methods = {
-      handlePickedsChange (formData) {
+      // 编辑表单数据变化
+      handleFormDataChange (formData) {
         this.formData = formData
+      },
+      // 编辑提交
+      handleEditSubmit () {
+        this.$_request({
+          url: '/patientInfo/',
+          method: 'PUT',
+          data: {
+            id: this.id,
+            userId: this.userId,
+            ...this.formData
+          }
+        }).then(content => {
+          this.getPatientInfo().then(() => {
+            wx.showToast({
+              icon: 'success',
+              title: '修改成功'
+            })
+          })
+          this.readonly = true
+          this.$apply()
+        })
+      },
+      // 解绑就诊人
+      handleUnbindPatient () {
+        this.$_request({
+          url: '/patientInfo/?id=' + this.id,
+          method: 'DELETE'
+        }).then(content => {
+          wx.showToast({
+            icon: 'success',
+            title: '解绑成功'
+          })
+          wx.navigateBack({
+            delta: 1
+          })
+        })
+      },
+      // 新增提交
+      handleSubmit () {
+        this.$_request({
+          url: '/patientInfo/',
+          method: 'POST',
+          data: {
+            type: 1,
+            userId: this.userId,
+            ...this.formData
+          }
+        }).then(() => {
+          wx.showToast({
+            icon: 'success',
+            title: '添加成功'
+          })
+          wx.navigateBack()
+        })
       }
     }
 
@@ -49,33 +110,14 @@
     }
 
     onLoad({ id }) {
+      this.id = id
       if (id !== undefined) { // query中有id说明是查看绑定的就诊人信息（可编辑）
         wx.setNavigationBarTitle({
           title: '就诊人信息'
         })
         this.readonly = true
         this.canEdit = true
-
-        this.isMaster = id === '0' // 假设登录人账号id为0
-        this.$_request({
-          url: '/patientInfo/',
-          data: {
-            id
-          }
-        }).then(content => {
-          content = content || {}
-          this.$invoke('PersonInfo', 'syncFormData', {
-            id: content.id, // 卡号
-            cardId: content.cardId, // 身份证号
-            allergies: content.allergies, // 过敏史
-            disease: content.disease, // 疾病史
-            address: content.address, // 联系地址
-            deliveryDate: this.$_convertDate(content.deliveryDate),
-            deliveryInfo: content.deliveryInfo,
-            babySex: content.babySex === 0 ? '女' : '男',
-            userSource: content.userSource
-          })
-        })
+        this.getPatientInfo()
       } else {
         wx.setNavigationBarTitle({
           title: '添加就诊人'
@@ -83,6 +125,29 @@
         this.readonly = false
         this.canEdit = false
       }
+    }
+
+    getPatientInfo () {
+      return this.$_request({
+        url: '/patientInfo/',
+        data: {
+          id: this.id
+        }
+      }).then(content => {
+        content = content || {}
+        this.isMaster = content.type === 0
+        this.$invoke('PersonInfo', 'syncFormData', {
+          patientCard: content.patientCard, // 卡号
+          cardId: content.cardId, // 身份证号
+          allergies: content.allergies, // 过敏史
+          disease: content.disease, // 疾病史
+          address: content.address, // 联系地址
+          deliveryDate: this.$_convertDate(content.deliveryDate),
+          deliveryInfo: content.deliveryInfo,
+          babySex: content.babySex,
+          userSource: content.userSource
+        })
+      })
     }
   }
 </script>

@@ -40,7 +40,8 @@
     props = {
       visible: {
         type: Boolean,
-        twoWay: true
+        twoWay: true,
+        default: false
       },
       innerStyle: {
         type: String,
