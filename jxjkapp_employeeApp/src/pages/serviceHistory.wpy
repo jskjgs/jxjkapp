@@ -1,18 +1,32 @@
-<style lang="scss">
-// @import '../assets/style/variables/theme.scss';
-#page-login {
-  padding-top: 78rpx;
-  .page-title-wrap {
-    margin: 0 0 78rpx 0;
-    font-size: 16px;
-    font-weight: bold;
-    text-align: center;
-  }
-}
-</style>
-
 <template>
   <view id="page-serviceDetail">
+    <view class="date-flex">
+      <image class="date-img" src="../assets/images/calendar.png" mode="aspectFit"></image>
+      <text class="date-text">2017-12</text>
+      <image class="date-img-arrow" src="../assets/images/arrow.png"></image>
+    </view>
+    <scroll-view scroll-y="true">
+      <repeat for="{{ historyList }}" key="index" item="item" index="index">
+        <view class="history-box" @tap="serviceDetail">
+          <view class="history-head">
+            <text class="history-name">服务项目的名称</text>
+          </view>
+          <view class="history-msg">
+            <view class="history-user">
+              <text class="history-user-title">用户姓名</text>
+              <text class="history-user-title">治疗时间</text>
+            </view>
+            <view class="history-user">
+              <text class="history-user-title">：{{ item.userName }}</text>
+              <text class="history-user-title">：{{ item.phoneNumber }}</text>
+            </view>
+          </view>
+        </view>
+      </repeat>
+      <view class="history-total">
+        共计{{historyList.length}}条记录
+      </view>
+    </scroll-view>
   </view>
 </template>
 
@@ -21,7 +35,7 @@
   import {
       isLogin
     } from '@/utils/validator'
-  export default class serviceDetail extends wepy.page {
+  export default class serviceHistory extends wepy.page {
     config = {
       navigationBarTitleText: '历史记录'
     }
@@ -31,6 +45,11 @@
     mixins = []
 
     data = {
+      historyList: [
+        {'orderAssignTime': '2017-10-21', 'userName': '王晓路', 'phoneNumber': '15928113204'},
+        {'orderAssignTime': '2017-10-21', 'userName': '王晓路', 'phoneNumber': '15928113204'},
+        {'orderAssignTime': '2017-10-21', 'userName': '王晓路', 'phoneNumber': '15928113204'}
+      ]
     }
 
     computed = {
@@ -52,13 +71,18 @@
             })
           }
         })
+      },
+      serviceDetail () {
+        wx.navigateTo({
+          url: '/pages/serviceDetail'
+        })
       }
     }
 
     events = {
     }
     onShow () {
-      isLogin(true)
+      // isLogin(true)
     }
     onLoad () {
     }
@@ -66,3 +90,76 @@
     }
   }
 </script>
+
+<style lang="scss">
+// @import '../assets/style/variables/theme.scss';
+#page-login {
+  padding-top: 78rpx;
+  .page-title-wrap {
+    margin: 0 0 78rpx 0;
+    font-size: 16px;
+    font-weight: bold;
+    text-align: center;
+  }
+}
+.date {
+  &-flex {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    padding: 15rpx 0;
+  }
+  &-img {
+    height: 34rpx;
+    width: 34rpx;
+    &-arrow {
+      height: 12rpx;
+      width: 24rpx;
+      margin-right: 30rpx;
+    }
+  }
+  &-text {
+    color:#9190FF;
+    font-size: 30rpx;
+    margin: 0 14rpx 0 20rpx;
+  }
+}
+.history {
+  &-box {
+    margin-bottom: 20rpx;
+    padding: 0 30rpx 40rpx;
+    background-color: #fff;
+  }
+  &-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid #F2F2F2;
+    padding: 40rpx 0 20rpx;
+  }
+  &-name {
+    font-size: 28rpx;
+    color: #414141;
+  }
+  &-time {
+    font-size: 24rpx;
+    color: #B8B8B8;
+  }
+  &-msg {
+    display: flex;
+  }
+  &-user {
+    font-size: 26rpx;
+    color: #818181;
+    margin-top: 20rpx;
+    display: flex;
+    flex-direction: column;
+  }
+  &-total {
+    color: #818181;
+    font-size: 26rpx;
+    text-align: center;
+    margin-top: 40rpx;
+  }
+}
+</style>

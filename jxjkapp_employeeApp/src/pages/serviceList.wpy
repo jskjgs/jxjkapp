@@ -1,30 +1,30 @@
-<style lang="scss">
-// @import '../assets/style/variables/theme.scss';
-#page-login {
-  padding-top: 78rpx;
-  .page-title-wrap {
-    margin: 0 0 78rpx 0;
-    font-size: 16px;
-    font-weight: bold;
-    text-align: center;
-  }
-}
-</style>
-
 <template>
   <view id="page-serviceDetail">
-    <view>扫一扫</view>
-    <scroll-view scroll-y="true">  
-      <repeat wx:for="{{ list }}" key="index" item="item" index="index" @tap="showDetail({{index}})">
-          <view style="flex-direction:row;">
-            <view>服务项目名称</view><view>派单时间{{ item.orderAssignTime }}</view>
+    <view class="scan-flex">
+      <image class="scan-img" src="../assets/images/scan.png" mode="aspectFit"></image>
+      <text class="scan-text">扫一扫</text>
+    </view>
+    <scroll-view scroll-y="true">
+      <repeat for="{{ list }}" key="index" item="item" index="index" @tap="showDetail({{index}})">
+        <view class="service-box">
+          <view class="service-head">
+            <text class="service-name">服务项目名称</text>
+            <text class="service-time">派单时间：{{ item.orderAssignTime }}</text>
           </view>
-          <view style="flex-direction:row;">
-            <view>用户姓名:</view><view>{{ item.userName }}</view>
+          <view class="service-msg">
+            <view class="service-user">
+              <text class="service-user-title">用户姓名</text>
+              <text class="service-user-title">手机号</text>
+            </view>
+            <view class="service-user">
+              <text class="service-user-title">：{{ item.userName }}</text>
+              <text class="service-user-title">：{{ item.phoneNumber }}</text>
+            </view>
           </view>
-          <view style="flex-direction:row;">
-            <view>手机号:</view><view>{{ item.phoneNumber }}</view>
+          <view class="service-bto">
+            <view class="service-btn" @tap="orders">接单</view>
           </view>
+        </view>
       </repeat>
     </scroll-view>
   </view>
@@ -33,7 +33,7 @@
 <script>
   import wepy from 'wepy'
 
-  export default class serviceDetail extends wepy.page {
+  export default class serviceList extends wepy.page {
     config = {
       navigationBarTitleText: '服务派单'
     }
@@ -43,8 +43,8 @@
     mixins = []
 
     data = {
-      searchLoading: false, //"上拉加载"的变量，默认false，隐藏  
-      searchLoadingComplete: false,  //“没有数据”的变量，默认false，隐藏  
+      searchLoading: false, //"上拉加载"的变量，默认false，隐藏
+      searchLoadingComplete: false,  //“没有数据”的变量，默认false，隐藏
       list: [
       {'orderAssignTime': '2017-10-21', 'userName': '王晓路', 'phoneNumber': '15928113204'},
       {'orderAssignTime': '2017-10-21', 'userName': '王晓路', 'phoneNumber': '15928113204'},
@@ -71,6 +71,11 @@
             })
           }
         })
+      },
+      orders () {
+        wx.navigateTo({
+          url: '/pages/serviceRecord'
+        })
       }
     }
     events = {
@@ -84,3 +89,81 @@
     }
   }
 </script>
+
+<style lang="scss">
+// @import '../assets/style/variables/theme.scss';
+#page-login {
+  padding-top: 78rpx;
+  .page-title-wrap {
+    margin: 0 0 78rpx 0;
+    font-size: 16px;
+    font-weight: bold;
+    text-align: center;
+  }
+}
+.scan {
+  &-flex {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    padding: 15rpx 0;
+  }
+  &-img {
+    width: 34rpx;
+    height: 30rpx;
+  }
+  &-text {
+    font-size: 28rpx;
+    padding: 0 33rpx 0 20rpx;
+    color: #9190FF;
+  }
+}
+.service {
+  &-box {
+    margin-bottom: 20rpx;
+    padding: 0 30rpx;
+    background-color: #fff;
+  }
+  &-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid #F2F2F2;
+    padding: 40rpx 0 20rpx;
+  }
+  &-name {
+    font-size: 28rpx;
+    color: #414141;
+  }
+  &-time {
+    font-size: 24rpx;
+    color: #B8B8B8;
+  }
+  &-msg {
+    display: flex;
+  }
+  &-user {
+    font-size: 26rpx;
+    color: #818181;
+    margin-top: 20rpx;
+    display: flex;
+    flex-direction: column;
+  }
+  &-bto {
+    display: flex;
+    justify-content: flex-end;
+    padding: 20rpx 0;
+  }
+  &-btn {
+    font-size: 26rpx;
+    color: #fff;
+    background-color: #FFB400;
+    width: 120rpx;
+    height: 52rpx;
+    border-radius: 5rpx;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+}
+</style>

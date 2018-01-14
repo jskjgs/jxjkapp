@@ -9,6 +9,7 @@ import SearchTable from '@/components/_common/searchTable/SearchTable'
 
 import {
   getListApi,
+  deleteBannerApi,
   deleteBannerBatchApi,
   addBanenrApi,
   modifyBannerApi,
@@ -205,15 +206,16 @@ export default {
         type: 'warning',
         beforeClose: (action, instance, done) => {
           if (action === 'confirm') {
-            deleteBannerBatchApi({
-              bannerIdList: row.id
+            deleteBannerApi({
+              id: row.id
             }).then(res => {
-              done()
               this.$message({
                 type: 'success',
                 message: '删除成功'
               })
               this.$refs.searchTable.getList()
+            }).finally(() => {
+              done()
             })
           } else {
             done()
@@ -239,18 +241,23 @@ export default {
     // 提交编辑或新增
     handleEditSubmit (data, respondCb) {
       let formData
+      let bannerUrl
       if (data.file) {
         formData = new FormData()
         formData.append('file', data.file)
+        this.$uploadFile(formData).then(res => {
+          bannerUrl = res.content
+        })
       }
       let sendData = {
         name: data.name,
+        bannerUrl: bannerUrl,
         jumpUrl: data.link,
         orderNumber: data.no,
         bannerId: data.id
       }
       let requestFn = adding ? addBanenrApi : modifyBannerApi
-      requestFn(sendData, formData).then(res => {
+      requestFn(sendData).then(res => {
         this.$message({
           type: 'success',
           message: adding ? '添加成功' : '修改成功'

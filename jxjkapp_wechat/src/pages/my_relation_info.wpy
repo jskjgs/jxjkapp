@@ -137,7 +137,7 @@
         content = content || {}
         this.isMaster = content.type === 0
         this.$invoke('PersonInfo', 'syncFormData', {
-          cardNo: content.id, // 卡号
+          patientCard: content.patientCard, // 卡号
           cardId: content.cardId, // 身份证号
           allergies: content.allergies, // 过敏史
           disease: content.disease, // 疾病史
