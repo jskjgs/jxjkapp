@@ -21,7 +21,7 @@
         <view 
           class="menu--default__item"
           @tap="toRelationInfo({{ item.id }})">
-          <text class="item-label">{{ item.self ? '本人' : '就诊人' + index }}
+          <text class="item-label">{{ item.type === 0 ? '本人' : '就诊人' + index }}
           </text>
           <view class="item-value">
             <text>姓名1</text>
@@ -66,11 +66,16 @@
     events = {
     }
 
-    onLoad() {
-      this.$_request({
-        url: '/patientInfo/all',
+    onShow() {
+      this.getList()
+    }
+
+    getList () {
+      return this.$_request({
+        url: '/patientInfo/query',
         method: 'POST',
         data: {
+          userId: (this.$parent.globalData.userInfo || {}).userId,
           pageNum: 1,
           pageSize: 10
         }
@@ -79,6 +84,7 @@
         const list = content.list || []
         this.list = list.map(item => {
           return {
+            type: item.type,
             name: item.name,
             id: item.id
           }

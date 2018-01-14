@@ -12,7 +12,11 @@ Promise.prototype.finally = function (callback) {
   Object.defineProperties(wepy[item].prototype, {
     '$_request': {
       value (cfg, showLoading = true) {
-        cfg = Object.assign({}, cfg)
+        cfg = Object.assign({}, {
+          header: {
+            Authorization: (this.$parent.globalData.userInfo || {}).token
+          }
+        }, cfg)
         if (showLoading) {
           wx.showLoading({
             title: '加载中..',

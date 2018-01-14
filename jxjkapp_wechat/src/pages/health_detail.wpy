@@ -209,92 +209,95 @@
 </style>
 
 <template>
-  <view id="page-health-detail">
-    <view class="top-box flex--hcenter flex--col">
-      <view class="top-box__image">
-        <image src="../assets/images/health-bg.png" mode="aspectFill"/>
-      </view>
-      <view class="top-box__mask"></view>
-      <view class="top-box__inner">
-        <view class="title">Thermage 热玛吉</view>
-        <view class="process-wrap">
-          <text class="process-text">第 <text class="num">3/10</text> 次</text>
-          <progress 
-            class="process-bar"
-            stroke-width="10"
-            percent="30"
-            backgroundColor="rgba(249, 249, 255, 0.4)"
-            activeColor="#56F2F2">
-          </progress>
+  <CustomPage :isLastPage.sync="isLastPage">
+    <view id="page-health-detail">
+      <view class="top-box flex--hcenter flex--col">
+        <view class="top-box__image">
+          <image src="../assets/images/health-bg.png" mode="aspectFill"/>
         </view>
-        <view 
-          class="dropdown-btn"
-          hidden="{{projectDesVisible}}"
-          @tap="dropdown">
-          <image 
-            src="../assets/images/double-arrow.png" />
-          <image 
-            src="../assets/images/double-arrow.png" 
-            class="dropdown-overlay" />
-        </view>
-      </view>
-    </view>
-    <view class="project-describe {{ projectDesVisible ? 'spread' : '' }}">
-      <view class="project-describe__inner">
-        <view 
-          class="dropup-btn"
-          @tap="dropup">
-          收起 <view class="arrow-top"></view>
-        </view>
-        <text>备注 ：本症为整个毛囊细菌感染发生化脓性炎症。初起为红色丘疹，逐渐演变成
-        </text>
-      </view>
-    </view>
-    <view class="process-list">
-      <repeat for="{{ processList }}" key="index" index="index" item="item">
-        <view class="process-item">
-          <view class="row item-top">
-            <text class="item-date">治疗时间：{{ item.date }}</text>
+        <view class="top-box__mask"></view>
+        <view class="top-box__inner">
+          <view class="title">Thermage 热玛吉</view>
+          <view class="process-wrap">
+            <text class="process-text">第 <text class="num">3/10</text> 次</text>
+            <progress 
+              class="process-bar"
+              stroke-width="10"
+              percent="30"
+              backgroundColor="rgba(249, 249, 255, 0.4)"
+              activeColor="#56F2F2">
+            </progress>
           </view>
-          <view class="item-main" @tap="spreadSymptom({{ item._symptomSpread !== undefined }}, {{ index }})">
-            <view class="row flex--vcenter">
-              <text>服务人员：赵雪晴</text>
+          <view 
+            class="dropdown-btn"
+            hidden="{{projectDesVisible}}"
+            @tap="dropdown">
+            <image 
+              src="../assets/images/double-arrow.png" />
+            <image 
+              src="../assets/images/double-arrow.png" 
+              class="dropdown-overlay" />
+          </view>
+        </view>
+      </view>
+      <view class="project-describe {{ projectDesVisible ? 'spread' : '' }}">
+        <view class="project-describe__inner">
+          <view 
+            class="dropup-btn"
+            @tap="dropup">
+            收起 <view class="arrow-top"></view>
+          </view>
+          <text>备注 ：本症为整个毛囊细菌感染发生化脓性炎症。初起为红色丘疹，逐渐演变成
+          </text>
+        </view>
+      </view>
+      <view class="process-list">
+        <repeat for="{{ listData }}" key="index" index="index" item="item">
+          <view class="process-item">
+            <view class="row item-top">
+              <text class="item-date">治疗时间：{{ item.date }}</text>
             </view>
-            <repeat for="{{[0, 1]}}" key="index" index="_index" item="_item">
-              <view class="row flex {{ _index === 1 ? 'item-symptom--clone' : 'item-symptom' }}">
-                <text class="flex-item--none">当日症状：</text>
-                <view class="item-symptom-wrap flex-item ">
-                  <text 
-                    class="{{ item._symptomSpread || _index === 1 ? '' : 'text-ellipsis--two' }} item-symptom__text">{{ item.symptom }}
-                  </text>
-                  <view 
-                    wx:if="{{ item._symptomSpread !== undefined }}"
-                    class="{{ item._symptomSpread ? 'arrow-top-btn' : 'arrow-bt-btn' }}">
+            <view class="item-main" @tap="spreadSymptom({{ item._symptomSpread !== undefined }}, {{ index }})">
+              <view class="row flex--vcenter">
+                <text>服务人员：赵雪晴</text>
+              </view>
+              <repeat for="{{[0, 1]}}" key="index" index="_index" item="_item">
+                <view class="row flex {{ _index === 1 ? 'item-symptom--clone' : 'item-symptom' }}">
+                  <text class="flex-item--none">当日症状：</text>
+                  <view class="item-symptom-wrap flex-item ">
+                    <text 
+                      class="{{ item._symptomSpread || _index === 1 ? '' : 'text-ellipsis--two' }} item-symptom__text">{{ item.symptom }}
+                    </text>
+                    <view 
+                      wx:if="{{ item._symptomSpread !== undefined }}"
+                      class="{{ item._symptomSpread ? 'arrow-top-btn' : 'arrow-bt-btn' }}">
+                    </view>
                   </view>
                 </view>
-              </view>
-            </repeat>
+              </repeat>
+            </view>
+            <view class="item-btn-wrap flex">
+              <button 
+                @tap="toCancel()" 
+                class="cancel-btn"
+                disabled="{{ item.status === 'processing' }}">{{ item.status === 'processing' ? '处理中' : '申请作废' }}</button>
+              <button 
+                @tap="toComment()" 
+                class="comment-btn"
+                disabled="{{ item.status === 'commented' || item.status === 'processing' }}">{{ item.status === 'commented' ? '已' : '' }}评价</button>
+            </view>
           </view>
-          <view class="item-btn-wrap flex">
-            <button 
-              @tap="toCancel()" 
-              class="cancel-btn"
-              disabled="{{ item.status === 'processing' }}">{{ item.status === 'processing' ? '处理中' : '申请作废' }}</button>
-            <button 
-              @tap="toComment()" 
-              class="comment-btn"
-              disabled="{{ item.status === 'commented' || item.status === 'processing' }}">{{ item.status === 'commented' ? '已' : '' }}评价</button>
-          </view>
-        </view>
-      </repeat>
+        </repeat>
+      </view>
     </view>
-  </view>
+  </CustomPage>
 </template>
 
 <script>
   import wepy from 'wepy'
 
-  import convertDate from '@/utils/convertDate'
+  import CustomPage from '@/components/customPage'
+  import listPageMixin from '@/mixins/listPage'
 
 //   评价和申请作废状态说明：
 
@@ -308,34 +311,36 @@
 
   export default class Index extends wepy.page {
     config = {
-      navigationBarTitleText: '健康记录'
+      navigationBarTitleText: '健康记录',
+      enablePullDownRefresh: true
     }
     components = {
+      CustomPage
     }
 
-    mixins = []
+    mixins = [listPageMixin]
 
     data = {
-      projectDesVisible: false,
-      processList: [{
-        _symptomSpread: undefined,
-        date: convertDate(new Date().getTime(), 'Y-M-D h:m:s'),
-        server: '赵雪晴',
-        symptom: Array.from({length: 120}).map(item => '字').join(''),
-        status: ''
-      }, {
-        _symptomSpread: undefined,
-        date: convertDate(new Date().getTime(), 'Y-M-D h:m:s'),
-        server: '赵雪晴',
-        symptom: Array.from({length: 40}).map(item => '字').join(''),
-        status: 'commented'
-      }, {
-        _symptomSpread: undefined,
-        date: convertDate(new Date().getTime(), 'Y-M-D h:m:s'),
-        server: '赵雪晴',
-        symptom: Array.from({length: 40}).map(item => '字').join(''),
-        status: 'processing'
-      }]
+      projectDesVisible: false
+      // listData: [{
+      //   _symptomSpread: undefined,
+      //   date: convertDate(new Date().getTime(), 'Y-M-D h:m:s'),
+      //   server: '赵雪晴',
+      //   symptom: Array.from({length: 120}).map(item => '字').join(''),
+      //   status: ''
+      // }, {
+      //   _symptomSpread: undefined,
+      //   date: convertDate(new Date().getTime(), 'Y-M-D h:m:s'),
+      //   server: '赵雪晴',
+      //   symptom: Array.from({length: 40}).map(item => '字').join(''),
+      //   status: 'commented'
+      // }, {
+      //   _symptomSpread: undefined,
+      //   date: convertDate(new Date().getTime(), 'Y-M-D h:m:s'),
+      //   server: '赵雪晴',
+      //   symptom: Array.from({length: 40}).map(item => '字').join(''),
+      //   status: 'processing'
+      // }]
     }
 
     computed = {
@@ -350,7 +355,7 @@
       },
       spreadSymptom (canSpread, index) {
         if (canSpread) {
-          this.processList[index]._symptomSpread = !this.processList[index]._symptomSpread
+          this.listData[index]._symptomSpread = !this.listData[index]._symptomSpread
         }
       },
       toComment () {
@@ -368,19 +373,16 @@
     events = {
     }
 
-    onLoad() {
+    onLoad({id}) {
+      this.id = id
     }
 
     onReady () {
-      this.initData()
     }
 
-    initData () {
-      let vm = this
-      setTimeout(() => {
-        vm.initSymptom()
-      }, 1000)
+    onShow () {
     }
+
     // 初始化症状文字
     initSymptom () {
       let vm = this
@@ -396,11 +398,20 @@
           const clone = arguments[0][1]
           reality.forEach(function (item, index) {
             if (item.height !== clone[index].height) {
-              vm.processList[index]._symptomSpread = false
+              vm.listData[index]._symptomSpread = false
               vm.$apply()
             }
           })
         })
+    }
+
+    // 固定方法
+    initPageData () {
+    }
+    // 获取记录列表
+    getList () {
+      return this.initData({
+      })
     }
   }
 </script>

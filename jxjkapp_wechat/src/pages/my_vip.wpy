@@ -41,49 +41,58 @@
 </style>
 
 <template>
-  <view id="page-my-vip">
-    <view class="my-balance flex--center main-bg">
-      余额：12000元
-    </view>
-    <view class="list-wrap">
-      <repeat for="{{ list }}" key="index" item="item" index="index">
-        <view class="list-item">
-          <view class="row flex--vcenter--sb">
-            <text class="order-project">Thermage 热玛吉</text>
-            <view class="del-btn" @click="delItem()"><image src="../assets/images/del-icon.png"/></view>
-          </view>
-          <view class="row flex--vcenter--sb" style="margin-top: 30rpx;">
-            <view>
-              <view class="order-hospital">预约院区：锦江附属医院</view>
-              <view class="order-date">预约时间：2017-11-22 08:00-10:00</view>
+  <CustomPage :isLastPage.sync="isLastPage">
+    <view id="page-my-vip">
+      <view class="my-balance flex--center main-bg">
+        余额：{{ balance }}元
+      </view>
+      <view class="list-wrap">
+        <repeat for="{{ listData }}" key="index" item="item" index="index">
+          <view class="list-item">
+            <view class="row flex--vcenter--sb">
+              <text class="order-project">{{ item.productName }}</text>
+              <view class="del-btn" @click="delItem()"><image src="../assets/images/del-icon.png"/></view>
             </view>
-            <navigator url="/pages/my_vip_update">
-              <button class="order-btn">修改</button>
-            </navigator>
+            <view class="row flex--vcenter--sb" style="margin-top: 30rpx;">
+              <view>
+                <view class="order-hospital">预约院区：{{ item.hospital }}</view>
+                <view class="order-date">预约时间：{{ item.date }}</view>
+              </view>
+              <navigator url="/pages/my_vip_update">
+                <button class="order-btn">修改</button>
+              </navigator>
+            </view>
           </view>
-        </view>
-      </repeat>
+        </repeat>
+      </view>
     </view>
-  </view>
+  </CustomPage>
 </template>
 
 <script>
   import wepy from 'wepy'
+
+  import CustomPage from '@/components/customPage'
+  import listPageMixin from '@/mixins/listPage'
 
   export default class Index extends wepy.page {
     config = {
       navigationBarTitleText: 'VIP用户管理'
     }
     components = {
+      CustomPage
     }
 
-    mixins = []
+    mixins = [listPageMixin]
 
     data = {
-      list: [{}, {}]
+      balance: '' // 余额
     }
 
     computed = {
+      userId () {
+        return (this.$parent.globalData.userInfo || {}).userId
+      }
     }
 
     methods = {
@@ -95,12 +104,36 @@
     }
 
     onLoad() {
+      this.initPageData()
     }
     // 获取余额
     getBalance () {
       this.$_request({
         url: '/userBalance/'
       }).then(() => {
+      })
+    }
+    // 固定方法
+    initPageData () {
+      this.getList()
+    }
+
+    getList () {
+      return this.initData({
+        url: '/precontract/query',
+        method: 'POST',
+        data: {
+          id: this.userId,
+          userId: this.userId
+        }
+      }, (listItem, res) => {
+        const skuData = listItem.sku || {}
+        return {
+          id: listItem.id,
+          date: listItem.precontractDate,
+          productName: skuData.name,
+          hospital: listItem.hospital
+        }
       })
     }
   }

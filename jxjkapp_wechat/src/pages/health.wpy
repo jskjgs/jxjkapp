@@ -76,7 +76,7 @@
     <view id="health-page">
       <view class="order-list">
         <repeat for="{{ listData }}" key="index" index="index" item="item">
-          <navigator url="/pages/health_detail">
+          <navigator url="{{ '/pages/health_detail?id=' + item.id }}">
             <view class="order-item">
               <view class="row flex--vcenter--sb">
                 <text class="order-date">订单生成时间: {{ item.date }}</text>
@@ -89,7 +89,7 @@
                 <view class="order-text-wrap flex-item flex--vcenter--sb">
                   <view class="flex--col">
                     <text class="order-project">{{ item.project }}</text>
-                    <text class="order-price">数量：{{ item.num }} 已用：{{ item.total }}</text>
+                    <text class="order-price">数量：{{ item.total }} 已用：{{ item.usedNum }}</text>
                   </view>
                   <text style="color: {{orderStatusDict[item.status].color}}">{{orderStatusDict[item.status].text}}</text>
                 </view>
@@ -135,6 +135,9 @@
     }
 
     computed = {
+      userId () {
+        return (this.$parent.globalData.userInfo || {}).userId
+      }
     }
 
     methods = {
@@ -152,6 +155,7 @@
         url: '/order/query',
         method: 'POST',
         data: {
+          userId: 1 || this.userId,
           pageSize: 5
         }
       }, (listItem, res) => {
@@ -162,10 +166,10 @@
           id: listItem.id,
           image: skuData.images,
           date: this.$_convertDate(listItem.createDate),
-          hospital: '医院名',
-          project: skuData.name,
-          num: 10,
-          total: skuData.serviceQuantity,
+          hospital: listItem.hospitalArea || '',
+          project: hospOrderProduct.productSkuName,
+          usedNum: hospOrderProduct.useNumber == undefined ? '' : hospOrderProduct.useNumber,
+          total: hospOrderProduct.serviceQuantity == undefined ? '' : hospOrderProduct.serviceQuantity,
           status: 'inUse',
           isChild: false
         }
