@@ -22,7 +22,7 @@
 </style>
 
 <template>
-  <view class="comp-dialog" style="display: {{ visible ? 'block' : 'none' }};">
+  <view class="comp-dialog" hidden="{{ !visible }}">
     <view class="dialog__modal" @tap="modalClick"></view>
     <view class="dialog__inner" style="{{ innerStyle }}">
       <slot></slot>
@@ -43,7 +43,8 @@
         twoWay: true
       },
       innerStyle: {
-        type: String
+        type: String,
+        default: ''
       }
     }
     mixins = []
