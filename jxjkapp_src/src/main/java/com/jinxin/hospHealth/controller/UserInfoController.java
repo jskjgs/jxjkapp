@@ -30,7 +30,7 @@ public class UserInfoController extends MyBaseController{
     @RequestMapping(value="/", method = RequestMethod.POST)
     @ResponseBody
     public JSONObject add(
-            @ApiParam(value = "商品信息", required = true) @RequestBody HospUserInfo userInfo) throws Exception {
+            @ApiParam(value = "用户信息", required = true) @RequestBody HospUserInfo userInfo) throws Exception {
         Map<String,Long> map = new HashMap<>();
         userInfoService.add(userInfo);
         map.put("id",userInfo.getId());
@@ -41,8 +41,17 @@ public class UserInfoController extends MyBaseController{
     @RequestMapping(value="/", method = RequestMethod.PUT)
     @ResponseBody
     public JSONObject update(
-            @ApiParam(value = "商品信息", required = true)  @RequestBody HospUserInfo userInfo) throws Exception {
+            @ApiParam(value = "用户信息", required = true)  @RequestBody HospUserInfo userInfo) throws Exception {
         userInfoService.update(userInfo);
+        return ResponseWrapperSuccess(null);
+    }
+
+    @ApiOperation(value = "更新用户VIP信息 升级/降级")
+    @RequestMapping(value="/vip", method = RequestMethod.PUT)
+    @ResponseBody
+    public JSONObject updateVIP(
+            @ApiParam(value = "用户ID", required = true) @RequestParam(value = "id", required = true) Long id) throws Exception {
+        userInfoService.updateVip(id);
         return ResponseWrapperSuccess(null);
     }
 

@@ -4,7 +4,7 @@ import com.doraemon.base.exceptions.ShowExceptions;
 import com.doraemon.base.guava.DPreconditions;
 import com.doraemon.base.language.Language;
 import com.doraemon.base.redis.RedisOperation;
-import com.github.pagehelper.StringUtil;
+import com.github.pagehelper.util.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;

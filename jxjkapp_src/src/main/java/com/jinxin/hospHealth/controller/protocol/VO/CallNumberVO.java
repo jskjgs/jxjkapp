@@ -25,6 +25,10 @@ public class CallNumberVO extends PageBean {
     private HospPatientInfo hospPatientInfo;
     @ApiModelProperty("状态(0 : 等待  1 : 使用  2 : 过号)")
     private Integer state;
+    @ApiModelProperty("排队序号")
+    private Integer orderNumber;
+    @ApiModelProperty("前面等待人数")
+    private Integer waitNumber;
     @ApiModelProperty("创建时间")
     private Date createDate;
     @ApiModelProperty("更新时间")

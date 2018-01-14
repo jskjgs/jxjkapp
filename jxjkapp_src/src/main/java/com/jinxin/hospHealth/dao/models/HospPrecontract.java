@@ -19,6 +19,8 @@ public class HospPrecontract extends PageBean{
     @Id
     @ApiModelProperty("预约ID")
     private Long id;
+    @ApiModelProperty("院区ID")
+    private Long areaId;
     @ApiModelProperty("用户ID")
     private Long userId;
     @ApiModelProperty("预约时间")

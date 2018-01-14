@@ -23,10 +23,15 @@ dynamic:
         updatePhone: 60
 
 order:
-    #申请退款的订单队列
-    refund-que: order-refund-que
+    #需要关闭的订单队列
+    clone-que: order-clone-que
     #异常支付订单队列
     exception-pay-que: exception-pay-que
+    #未支付订单关闭时间(毫秒计算)
+    close-time: 1800000
+cron:
+    send-close-order-time: 0 0/1 * * * ?
+    clone-order-time: 0 0/1 * * * ?
 
 #语言配置文件
 language:

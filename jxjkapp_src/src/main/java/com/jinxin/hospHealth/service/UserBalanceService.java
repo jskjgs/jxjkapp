@@ -7,7 +7,7 @@ import com.doraemon.base.language.Language;
 import com.doraemon.base.util.MD5Encryption;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.github.pagehelper.StringUtil;
+import com.github.pagehelper.util.StringUtil;
 import com.jinxin.hospHealth.dao.DaoEnumValid;
 import com.jinxin.hospHealth.dao.mapper.HospUserBalanceMapper;
 import com.jinxin.hospHealth.dao.models.HospUserBalance;
@@ -286,6 +286,8 @@ public class UserBalanceService implements BaseService<HospUserBalance,HospUserB
      */
     @Override
     public PageInfo<HospUserBalance> selectAll(PageBean pageBean) throws Exception {
+        if(pageBean == null)
+            pageBean = new PageBean();
         PageHelper.startPage(pageBean.getPageNum(), pageBean.getPageSize());
         if (StringUtil.isNotEmpty(pageBean.getField()))
             PageHelper.orderBy(pageBean.getField());
@@ -330,6 +332,8 @@ public class UserBalanceService implements BaseService<HospUserBalance,HospUserB
      */
     @Override
     public PageInfo<HospUserBalance> selectAllAdmin(PageBean pageBean) throws Exception {
+        if(pageBean == null)
+            pageBean = new PageBean();
         PageHelper.startPage(pageBean.getPageNum(), pageBean.getPageSize());
         if (StringUtil.isNotEmpty(pageBean.getField()))
             PageHelper.orderBy(pageBean.getField());

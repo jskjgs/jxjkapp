@@ -6,7 +6,7 @@ import com.doraemon.base.guava.DPreconditions;
 import com.doraemon.base.language.Language;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.github.pagehelper.StringUtil;
+import com.github.pagehelper.util.StringUtil;
 import com.jinxin.hospHealth.dao.mapper.HospDoctorTypeMapper;
 import com.jinxin.hospHealth.dao.mapper.HospPatientInfoMapper;
 import com.jinxin.hospHealth.dao.models.HospPatientInfo;
@@ -42,6 +42,9 @@ public class PatientInfoService implements BaseService<HospPatientInfo,HospPatie
                 true);
         DPreconditions.checkNotNull(hospPatientInfo.getType(),
                 "就诊人类型不能为空",
+                true);
+        DPreconditions.checkNotNull(hospPatientInfo.getPatientCard(),
+                "就诊卡号不能为空",
                 true);
         if(hospPatientInfo.getBabySex() == null)
             hospPatientInfo.setBabySex(0);
@@ -125,6 +128,8 @@ public class PatientInfoService implements BaseService<HospPatientInfo,HospPatie
      * @return
      */
     public PageInfo<HospPatientInfo> selectAll(PageBean pageBean) {
+        if(pageBean == null)
+            pageBean = new PageBean();
         PageHelper.startPage(pageBean.getPageNum(), pageBean.getPageSize());
         if (StringUtil.isNotEmpty(pageBean.getField()))
             PageHelper.orderBy(pageBean.getField());

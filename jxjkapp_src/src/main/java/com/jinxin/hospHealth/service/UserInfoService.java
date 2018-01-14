@@ -7,9 +7,10 @@ import com.doraemon.base.language.Language;
 import com.doraemon.base.util.MD5Encryption;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.github.pagehelper.StringUtil;
+import com.github.pagehelper.util.StringUtil;
 import com.jinxin.hospHealth.dao.mapper.HospUserInfoMapper;
 import com.jinxin.hospHealth.dao.models.HospUserInfo;
+import com.jinxin.hospHealth.dao.modelsEnum.UserVipEnum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -44,7 +45,7 @@ public class UserInfoService implements BaseService<HospUserInfo,HospUserInfo>{
         DPreconditions.checkNotNullAndEmpty(hospUserInfo.getPhone(),
                 Language.get("user.phone-null"),
                 true);
-        DPreconditions.checkState(selectOneByPhone(hospUserInfo.getPhone())==null,
+        DPreconditions.checkState(selectOneByPhone(hospUserInfo.getPhone())!=null,
                 Language.get("user.phone-repeat"),
                 true);
         Date date = new Date();
@@ -59,10 +60,8 @@ public class UserInfoService implements BaseService<HospUserInfo,HospUserInfo>{
         }
         if (hospUserInfo.getSex() == null)
             hospUserInfo.setSex(0);
-        if (hospUserInfo.getCreateDate() == null)
-            hospUserInfo.setCreateDate(date);
-        if (hospUserInfo.getUpdateDate() == null)
-            hospUserInfo.setUpdateDate(date);
+        hospUserInfo.setCreateDate(date);
+        hospUserInfo.setUpdateDate(date);
         DPreconditions.checkState(hospUserInfoMapper.insertSelectiveReturnId(hospUserInfo) == 1,
                 Language.get("service.save-failure"),
                 true);
@@ -91,11 +90,29 @@ public class UserInfoService implements BaseService<HospUserInfo,HospUserInfo>{
         update.setEmail(hospUserInfo.getEmail());
         update.setHeadPortrait(hospUserInfo.getHeadPortrait());
         update.setSex(hospUserInfo.getSex());
+        update.setIsVip(hospUserInfo.getIsVip());
         DPreconditions.checkState(hospUserInfoMapper.updateByPrimaryKeySelective(hospUserInfo) == 1,
                 "更新用户信息失败.",
                 true);
     }
 
+    /**
+     * 升级 或 去掉 用户 VIP 资格
+     * @param id
+     */
+    public void updateVip(Long id){
+        DPreconditions.checkNotNull(id,
+                Language.get("user.id-null"),
+                true);
+        HospUserInfo hospUserInfo = DPreconditions.checkNotNull(selectOne(id),
+                Language.get("user.select-not-exist"),
+                true);
+        HospUserInfo update = new HospUserInfo();
+        update.setIsVip(hospUserInfo.getIsVip().equals(UserVipEnum.NOT_VIP.getCode()) ?
+                UserVipEnum.VIP.getCode() :
+                UserVipEnum.NOT_VIP.getCode());
+        update(update);
+    }
 
     /**
      * 删除单个用户信息
@@ -182,6 +199,8 @@ public class UserInfoService implements BaseService<HospUserInfo,HospUserInfo>{
      */
     @Override
     public PageInfo<HospUserInfo> selectAll(PageBean pageBean) {
+        if(pageBean == null)
+            pageBean = new PageBean();
         PageHelper.startPage(pageBean.getPageNum(), pageBean.getPageSize());
         if (StringUtil.isNotEmpty(pageBean.getField()))
             PageHelper.orderBy(pageBean.getField());
