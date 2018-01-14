@@ -1,23 +1,13 @@
 import { fetchApi } from '@/utils/index'
 
-// 获取项目列表
+// 订单管理
 
-// 获取科室列表
-export const QUERY_DEPARTMENT_URL = '/department/queryAllDepartment'
-export const queryDepartmentApi = (params) => {
+// 获取所有订单
+export const QUERY_ORDER_URL = '/order/admin/all'
+export const queryOrderApi = (params) => {
   return fetchApi({
-    url: QUERY_DEPARTMENT_URL,
-    type: 'get',
-    params
-  })
-}
-
-// 获取医生列表
-export const GET_LIST_URL = '/doctor_i/queryAllDoctor'
-export const getListApi = (params) => {
-  return fetchApi({
-    url: GET_LIST_URL,
-    type: 'get',
+    url: QUERY_ORDER_URL,
+    type: 'post',
     params
   })
 }

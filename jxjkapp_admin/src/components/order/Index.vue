@@ -11,10 +11,7 @@ import ImgZoom from '@/components/_common/imgZoom/ImgZoom.vue'
 import SearchTable from '@/components/_common/searchTable/SearchTable'
 
 import {
-  getListApi,
-  modifyDoctorApi,
-  topDoctorApi,
-  queryDepartmentApi
+  queryOrderApi
 } from './api'
 
 export default {
@@ -34,40 +31,42 @@ export default {
     }
     this.columnData = [{
       attrs: {
-        'prop': 'name',
-        'label': '姓名',
+        'prop': 'orderCode',
+        'label': '订单号',
+        'min-width': '180',
+        'show-overflow-tooltip': true
+      }
+    }, {
+      attrs: {
+        'prop': 'orderAmount',
+        'label': '订单金额',
         'min-width': '100',
         'show-overflow-tooltip': true
       }
     }, {
       attrs: {
-        'prop': 'avatar',
-        'min-width': '120',
-        'label': '照片'
-      },
-      scopedSlots: {
-        default: (scope) => {
-          return (
-            <img-zoom
-              src={scope.row.avatar}
-              style="width: 80px;height: 60px;">
-            </img-zoom>
-          )
-        }
-      }
-    }, {
-      attrs: {
-        'prop': 'ksmc',
-        'label': '医生分类',
-        'min-width': '160',
+        'prop': 'createTime',
+        'label': '订单创建时间',
+        'min-width': '100',
         'show-overflow-tooltip': true
       }
     }, {
       attrs: {
-        'prop': 'ksmc',
-        'label': '院区',
-        'min-width': '160',
-        'show-overflow-tooltip': true
+        'prop': 'orderState',
+        'label': '状态',
+        'min-width': '50'
+      }
+    }, {
+      attrs: {
+        'prop': 'areaId',
+        'label': '购买院区',
+        'min-width': '70'
+      }
+    }, {
+      attrs: {
+        'prop': 'paymentType',
+        'label': '支付方式',
+        'min-width': '70'
       }
     }, {
       attrs: {
@@ -78,22 +77,20 @@ export default {
         default: (scope) => {
           return (
             <div class="flex--center operations">
-              <span class="operate-item top-switch flex--vcenter">
-                <el-switch
-                  value={scope.row.top}
-                  onInput={(top) => (scope.row.top = top)}
-                  onChange={() => this.switchTop(scope.row)}
-                  {...{props: { 'on-text': '', 'off-text': '' }}}>
-                </el-switch>
-                { scope.row.top ? '置顶' : '取消置顶' }
+              <span
+                  class="operate-item"
+                  onClick={() => this.rejectOrder(scope.row)}>
+                  退费
               </span>
               <span
-                  class="operate-item el-icon-edit"
-                  onClick={() => this.openEditDialog(scope.row)}>
+                  class="operate-item"
+                  onClick={() => this.assginOrder(scope.row)}>
+                  派单
               </span>
               <span
-                class="operate-item el-icon-view"
-                onClick={() => this.openEditDialog(scope.row)}>
+                class="operate-item "
+                onClick={() => this.openDetail(scope.row)}>
+                  详情
               </span>
             </div>
           )
@@ -101,31 +98,25 @@ export default {
       }
     }]
     this.listApi = {
-      requestFn: getListApi,
+      requestFn: queryOrderApi,
       responseFn (data) {
         let content = data.content || {}
-        this.tableData = (content.list || []).map((item) => {
-          let doctor = item.doctor || {}
-          return {
-            no: doctor.orderNumber,
-            name: doctor.name,
-            avatar: doctor.headPortrait,
-            ksmc: doctor.ksmc,
-            describe: doctor.goodDescribe,
-            top: !!doctor.isTop,
-            id: doctor.id
-          }
-        })
+        console.log(data.content)
+        this.tableData = (content.list || []).map((item) => ({
+          orderCode: item.code,
+          orderAmount: (item.orderSalesPrice + '￥'),
+          createTime: item.createDate,
+          orderState: item.state,
+          userName: item.userName,
+          paymentType: item.paymentType,
+          areaId: item.areaId
+        }))
         this.total = content.total || 0
       }
     }
-
     return {
-      departments: [],
-      // project: '',
-      department: '',
-      departmentId: '',
-      doctorName: '',
+      orders: [],
+      keyWords: '',
       editDialogVisible: false,
       editData: {},
       apiKeysMap: {
@@ -133,11 +124,11 @@ export default {
           value: 10,
           innerKey: 'pageSize' // searchTable组件内部映射的key
         },
-        departmentId: {
-          value: undefined
-        },
-        doctorName: {
+        orderId: {
           value: ''
+        },
+        userPhone: {
+          value: undefined
         },
         currentPage: 'pageNum',
         orderBy: {
@@ -151,9 +142,6 @@ export default {
   },
   created () {
     this.placeholderImg = placeholderImg
-    this.searchDepartment().then(departments => {
-      this.departments = departments
-    })
   },
   watch: {
     editDialogVisible (val) {
@@ -168,85 +156,34 @@ export default {
     }
   },
   methods: {
-    searchProject () {
+    rejectOrder (rowData) {
     },
-    searchDepartment () {
-      // console.log(queryString)
-      return queryDepartmentApi({
-        pageNum: 1,
-        pageSize: this.pageSize
-      }).then(res => {
-        let content = res.content || []
-        let departments = content.map(item => {
-          return {
-            value: item.id,
-            label: item.name
-          }
-        })
-        return departments
-      })
-    },
-    handleProjectSelect () {},
-    // handleDepartmentSelect (item) {
-    //   this.departmentId = item.id
-    // },
     handleSearch () {
       this.apiKeysMap = Object.assign({}, this.apiKeysMap, {
-        departmentId: {
-          value: this.departmentId || undefined
+        keyWords: {
+          value: this.keyWords || undefined
         }
       })
     },
-    openEditDialog (rowData, isAdd) {
-      this.editDialogVisible = true
-      this.editData = rowData
+    assginOrder (rowData) {
     },
-    handleEditCancel () {
+    assginCancel (rowData) {
+      this.editDialogVisible = false
     },
-    handleEditSubmit (data, respondCb) {
-      let formData
-      if (data.file) {
-        formData = new FormData()
-        formData.append('file', data.file)
-      }
-      let sendData = {
-        goodDescribe: data.describe,
-        doctorId: data.id
-      }
-      modifyDoctorApi(sendData, formData).then(res => {
-        this.$message({
-          type: 'success',
-          message: '修改成功'
-        })
-        this.editDialogVisible = false
-        this.$refs.searchTable.getList()
-        respondCb(true)
-      }).catch(() => {
-        respondCb()
-      })
+    assginSubmit (rowData) {
     },
-    // 切换置顶状态
-    switchTop (rowData) {
-      topDoctorApi({
-        doctorId: rowData.id
-      }).then(res => {
-        this.$message({
-          type: 'success',
-          message: rowData.top ? '置顶成功' : '取消置顶成功'
-        })
-      }).finally(() => {
-        this.$refs.searchTable.init()
-      })
+    openDetail (rowData) {
+      // 跳转到详情页
     }
   }
 }
 </script>
 
 <template>
-  <div id="doctor">
+  <div id="order">
     <div class="flex--vcenter page-top">
       <div class="page-title">
-        医护人员管理
+        订单管理
       </div>
     </div>
     <search-table
@@ -258,19 +195,8 @@ export default {
       <div class="table-tools flex--vcenter" slot="table-tools">
         <div class="search-wrap flex--vcenter">
           <div class="tool-item">
-            院区：
-            <el-select v-model="departmentId" placeholder="选择分类">
-              <el-option
-                v-for="item in departments"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value">
-              </el-option>
-            </el-select>
-          </div>
-          <div class="tool-item">
-            医生姓名：
-            <el-input v-model="doctorName" style="width: auto;"></el-input>
+            搜索关键字：
+            <el-input v-model="keyWords" style="width: auto;"></el-input>
           </div>
           <el-button
             class="tool-item"
@@ -282,7 +208,7 @@ export default {
           <el-button
             class="btn--add"
             type="primary"
-            @click="openEditDialog(null, true)">
+            @click="openDetail(null, true)">
             新增 <i class="el-icon-plus"></i>
           </el-button>
         </div>
@@ -291,8 +217,8 @@ export default {
     <edit-dialog
       v-model="editDialogVisible"
       :data="editData"
-      @cancel="handleEditCancel"
-      @submit="handleEditSubmit">
+      @cancel="assginCancel"
+      @submit="assginSubmit">
     </edit-dialog>
   </div>
 </template>
