@@ -59,12 +59,14 @@
     mixins = []
 
     data = {
-      settings: getSettings.call(this)
     }
 
     computed = {
       userInfo () {
         return this.$parent.globalData.userInfo
+      },
+      settings () {
+        return getSettings.call(this)
       }
     }
 
