@@ -27,8 +27,12 @@ Promise.prototype.finally = function (callback) {
         return new Promise(function (resolve, reject) {
           wepy.request(cfg).then(res => {
             const data = res.data || {}
-            const content = data.content
-            resolve(content, data)
+            if (data.code + '' === '200') {
+              const content = data.content
+              resolve(content, data)
+            } else {
+              throw new Error(data)
+            }
           }).catch((e) => {
             reject(e)
           })

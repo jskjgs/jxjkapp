@@ -297,7 +297,7 @@
   import wepy from 'wepy'
 
   import CustomPage from '@/components/customPage'
-  import listPageMixin from '@/mixins/listPage'
+  import pageMixin from '@/mixins/page'
 
 //   评价和申请作废状态说明：
 
@@ -318,7 +318,7 @@
       CustomPage
     }
 
-    mixins = [listPageMixin]
+    mixins = [pageMixin]
 
     data = {
       projectDesVisible: false

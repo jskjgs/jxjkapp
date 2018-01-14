@@ -53,6 +53,7 @@
   }, {
     label: '预约日期',
     picker: {
+      mode: 'date',
       valueBind: 'orderDate',
       rangeBind: 'orderDateList'
     }
@@ -68,8 +69,7 @@
         type: Object,
         default: {
           hospitalList: [],
-          projectList: [],
-          orderDateList: []
+          projectList: []
         }
       },
       pickeds: {

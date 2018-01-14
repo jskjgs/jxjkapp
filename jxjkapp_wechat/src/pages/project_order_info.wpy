@@ -77,6 +77,7 @@
       :pickeds.sync="pickeds">
       <button 
         slot="submitBtn"
+        disabled="{{ !(pickeds.hospital != undefined && pickeds.orderDate != undefined) }}"
         class="submit-btn primary-btn"
         @tap="submit">
         确认提交
@@ -141,18 +142,35 @@
     }
 
     computed = {
+      userId () {
+        return (this.$parent.globalData.userInfo || {}).userId
+      }
     }
 
     methods = {
       submit () {
-        if (Math.random() > 0.5) {
+        wx.showToast({
+          image: '../assets/images/error.png',
+          title: '提交失败'
+        })
+        const pickeds = this.pickeds
+        this.$_request({
+          url: '/precontract/',
+          method: 'POST',
+          data: {
+            userId: this.userId,
+            productSkuId: this.skuId,
+            precontractDate: pickeds.orderDate,
+            areaId: pickeds.hospital
+          }
+        }, false).then(content => {
           this.successDialogVisible = true
-        } else {
+        }).catch(() => {
           wx.showToast({
-            image: '../assets/images/demo.png',
+            image: '../assets/images/error.png',
             title: '提交失败'
           })
-        }
+        })
       },
       closeDialog () {
         this.successDialogVisible = false
@@ -186,17 +204,6 @@
           }
         })
         this.$apply()
-      })
-    }
-
-    submit () {
-      this.$_request({
-        url: '/precontract/',
-        method: 'POST',
-        data: {
-          productSkuId: this.skuId,
-          precontractDate: ''
-        }
       })
     }
   }

@@ -27,6 +27,7 @@
             mode="{{ item.picker.mode || 'selector' }}"
             range="{{ lists[item.picker.rangeBind] }}" 
             range-key="label"
+            start="{{ currDate }}"
             bindchange="handlePickerChange({{ item.picker.valueBind }}, {{ item.picker.rangeBind }})">
             <view class="item-value">
               <text>{{ pickeds[item.picker.valueBind] !== undefined ? (lists[item.picker.rangeBind][pickedIndex[item.picker.valueBind]].label || lists[item.picker.rangeBind][pickedIndex[item.picker.valueBind]] || pickedIndex[item.picker.valueBind]) : '请选择' }}</text>
@@ -85,6 +86,10 @@
     }
 
     computed = {
+      // 当前日期
+      currDate () {
+        return this.$_convertDate(new Date().getTime())
+      },
       pickedIndex () {
         const lists = this.lists
         const pickeds = this.pickeds
