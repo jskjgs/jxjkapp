@@ -25,6 +25,9 @@ import {
 import {
   INDEX as reserveCfg
 } from '@/components/reserve/_consts/routers'
+import {
+  INDEX as orderCfg
+} from '@/components/order/_consts/routers'
 
 export default [{
   label: '运营管理',
@@ -49,6 +52,10 @@ export default [{
     path: productCfg.path,
     permissionId: productCfg.meta.permissionId
   }]
+}, {
+  label: orderCfg.meta.label,
+  path: orderCfg.path,
+  permissionId: orderCfg.meta.permissionId
 }, {
   label: reserveCfg.meta.label,
   path: reserveCfg.path,
