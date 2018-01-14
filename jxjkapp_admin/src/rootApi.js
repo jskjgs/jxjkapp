@@ -8,23 +8,24 @@ import { Message } from 'element-ui'
 import promiseFinally from 'promise.prototype.finally'
 promiseFinally.shim()
 
+axios.defaults.headers.post['Content-Type'] = 'application/json'
 // 全局的 axios 默认transformRequest配置
 // 序列化数据
-axios.defaults.transformRequest = [function (data) {
-  if (data instanceof FormData) {
-    return data
-  } else {
-    let stringifyStr = ''
-    for (let key in data) {
-      if (data.hasOwnProperty(key)) {
-        if (data[key] !== undefined) {
-          stringifyStr += key + '=' + data[key] + '&'
-        }
-      }
-    }
-    return stringifyStr.slice(0, -1)
-  }
-}]
+// axios.defaults.transformRequest = [function (data) {
+//   if (data instanceof FormData) {
+//     return data
+//   } else {
+//     let stringifyStr = ''
+//     for (let key in data) {
+//       if (data.hasOwnProperty(key)) {
+//         if (data[key] !== undefined) {
+//           stringifyStr += key + '=' + data[key] + '&'
+//         }
+//       }
+//     }
+//     return stringifyStr.slice(0, -1)
+//   }
+// }]
 
 /* ajax拦截器 */
 // 添加请求拦截器
@@ -39,7 +40,7 @@ axios.interceptors.request.use(function (config) {
     }
     config.url += delimiter + new Date().getTime()
   }
-  config.url = '/reservation/ad' + config.url
+  config.url = '/hospHealth' + config.url
   return config
 }, function (error) {
   return Promise.reject(error)
