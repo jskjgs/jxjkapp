@@ -55,6 +55,17 @@ public class CallNumberService {
         redisOperation.usePool().sadd(waitingQueName,String.valueOf(userInfo.getId()));
     }
 
+    public void add(Long userId) throws Exception {
+        HospUserInfo userInfo = DPreconditions.checkNotNull(userInfoService.selectOne(userId),
+                Language.get("user.select-not-exist"),
+                true);
+        DPreconditions.checkState(
+                !redisOperation.usePool().sismember(waitingQueName,String.valueOf(userInfo.getId())),
+                Language.get("call-number.user-id-exist"),
+                true);
+        redisOperation.usePool().sadd(waitingQueName,String.valueOf(userInfo.getId()));
+    }
+
     /**
      * 过号恢复
      * @param phone

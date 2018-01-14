@@ -46,12 +46,11 @@ public class CallNumberController extends MyBaseController{
     @ApiOperation(value = "新增排队叫号信息")
     @RequestMapping(value="/", method = RequestMethod.POST)
     @ResponseBody
-    public JSONObject add(
-            @ApiParam(value = "排队叫号信息", required = true) @RequestBody HospCallNumber callNumber) throws Exception {
+    public JSONObject add() throws Exception {
+        Long userId = getCurrentUserId();
         Map<String,Long> map = new HashMap<>();
-        HospCallNumber hospCallNumber = callNumberService.add(callNumber);
-        map.put("id",hospCallNumber.getId());
-        return ResponseWrapperSuccess(map);
+        callNumberService.add(userId);
+        return ResponseWrapperSuccess(null);
     }
 
     @ApiOperation(value = "更新排队叫号信息")
