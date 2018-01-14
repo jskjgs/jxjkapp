@@ -20,8 +20,8 @@ public class AdminController extends MyBaseController{
     @RequestMapping(value="/login", method = RequestMethod.POST)
     @ResponseBody
     public JSONObject login(
-            @ApiParam(value = "账号", required = true) @RequestBody String account,
-            @ApiParam(value = "密码", required = true) @RequestBody String password) throws Exception {
+            @ApiParam(value = "账号", required = true) @RequestParam String account,
+            @ApiParam(value = "密码", required = true) @RequestParam String password) throws Exception {
         return ResponseWrapperSuccess(null);
     }
 }
