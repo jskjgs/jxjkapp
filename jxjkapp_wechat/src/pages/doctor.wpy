@@ -6,12 +6,18 @@ $search_h: 88rpx;
   .search-bar {
     padding: 0 30rpx;
     height: $search_h;
-    font-size: 12px;
+    font-size: 15px;
     box-shadow: 0 2rpx 10rpx 0 #E3E3E3;
 
     .filter-btn {
       margin-right: 40rpx;
       color: $primaryColor;
+      
+      .filter-icon {
+        margin-right: 14rpx;
+        width: 34rpx;
+        height: 34rpx;
+      }
     }
     .search-input-wrap {
       icon {
@@ -66,6 +72,7 @@ $search_h: 88rpx;
     }
     .sort-label {
       @extend %common;
+      color: $color1;
     }
     .filter-item {
       @extend %common;
@@ -84,6 +91,7 @@ $search_h: 88rpx;
       border-top: 2rpx solid #F2F2F2;
       height: 60rpx;
       justify-content: flex-end;
+      font-size: 15px;
 
       .reset-btn, .confirm-btn {
         height: 100%;
@@ -129,20 +137,19 @@ $search_h: 88rpx;
   .intro-wrap {
     margin-top: 30rpx;
   }
-  .no-more-tip {
-    margin-top: 20rpx;
-  }
 }
 </style>
 
 <template>
-  <CustomPage>
+  <CustomPage :isLastPage.sync="isLastPage">
     <view id="page-doctor">
       <view class="search-bar flex--vcenter--sb">
         <view 
           wx:if="{{ !onSearch }}" 
-          class="filter-btn flex-item--none"
-          @tap="openFilterBox">筛选</view>
+          class="filter-btn flex-item--none flex--vcenter"
+          @tap="openFilterBox">
+          <image class="filter-icon" src="../assets/images/filter-icon.png" /><text>筛选</text>
+        </view>
         <view class="search-input-wrap flex-item flex--vcenter">
           <icon type="search" size="16"></icon>
           <input
@@ -208,7 +215,7 @@ $search_h: 88rpx;
               index="index">
               <view class="doctor-item main-bg" @tap="handleItemTap({{ item.id }})">
                 <view class="avatar-wrap flex--center">
-                  <image src="{{ item.avatar }}"></image>
+                  <image src="../assets/images/doctor-avatar.png"></image>
                 </view>
                 <view class="name-wrap">
                   <text>{{ item.name }}</text>
@@ -220,9 +227,6 @@ $search_h: 88rpx;
             </repeat>
           </view>
         </view>
-        <view wx:if="{{ isLastPage }}" class="no-more-tip">
-          <text>已无更多内容了</text>
-        </view>
       </scroll-view>
     </view>
   </CustomPage>
@@ -232,10 +236,11 @@ $search_h: 88rpx;
   import wepy from 'wepy'
 
   import CustomPage from '@/components/customPage'
-  import pageMixin from '@/mixins/page'
+  import pageMixin from '@/mixins/listPage'
   export default class Index extends wepy.page {
     config = {
-      navigationBarTitleText: '医护人员'
+      navigationBarTitleText: '医护人员',
+      enablePullDownRefresh: true
     }
     components = {
       CustomPage
@@ -246,8 +251,8 @@ $search_h: 88rpx;
     data = {
       searchParams: {
         searchWord: undefined,
-        hospArea: undefined,
-        doctorType: undefined
+        hospAreaId: undefined,
+        doctorTypeId: undefined
       },
       onSearch: false, // 表示是否在搜索输入中
       filterVisible: false, // 筛选组件显示
@@ -263,8 +268,8 @@ $search_h: 88rpx;
       searchParams (newVal, oldVal) {
         console.log('searchParams', newVal)
         this.getList({
-          doctorType: newVal.doctorType,
-          hospArea: newVal.doctorType,
+          doctorTypeId: newVal.doctorTypeId,
+          hospAreaId: newVal.hospAreaId,
           searchWord: newVal.searchWord
         })
       }
@@ -276,10 +281,10 @@ $search_h: 88rpx;
           this.filterVisible = false
           const searchParams = this.searchParams
           this.hospAreaList.forEach((item) => {
-            item.picked = searchParams.hospArea === item.id
+            item.picked = searchParams.hospAreaId === item.id
           })
           this.doctorTypeList.forEach((item) => {
-            item.picked = searchParams.doctorType === item.id
+            item.picked = searchParams.doctorTypeId === item.id
           })
         }
         this.onSearch = true
@@ -307,8 +312,8 @@ $search_h: 88rpx;
       },
       submitFilters () {
         this.filterVisible = false
-        this.searchParams.hospArea = this.hospAreaList.find(item => item.picked).id
-        this.searchParams.doctorType = this.doctorTypeList.find(item => item.picked).id
+        this.searchParams.hospAreaId = this.hospAreaList.find(item => item.picked).id
+        this.searchParams.doctorTypeId = this.doctorTypeList.find(item => item.picked).id
       },
       handleSearch ({ detail }) {
         const value = detail.value
@@ -338,13 +343,17 @@ $search_h: 88rpx;
     }
 
     onLoad () {
+      this.initPageData()
+    }
+    // 固定方法
+    initPageData () {
       this.getList()
       this.$_request({
         url: '/hospArea/all',
         method: 'POST',
         data: {}
-      }).then(res => {
-        const content = res.content || {}
+      }).then(content => {
+        content = content || {}
         const list = content.list
         this.hospAreaList = list.map(item => {
           return {
@@ -361,9 +370,8 @@ $search_h: 88rpx;
         url: '/doctorType/all',
         method: 'POST',
         data: {}
-      }).then(res => {
-        console.log('res', res)
-        const content = res.content || {}
+      }).then(content => {
+        content = content || {}
         const list = content.list
         this.doctorTypeList = list.map(item => {
           return {
@@ -380,7 +388,7 @@ $search_h: 88rpx;
 
     getList (params) {
       this.initData({
-        url: '/doctorInfo/all',
+        url: '/doctorInfo/query',
         method: 'POST',
         data: Object.assign({}, params, {
           pageSize: 10

@@ -4,20 +4,20 @@
   font-size: 15px;
 
   .edit-btn-wrap {
-    justify-content: flex-end;
     padding: 0 30rpx;
     height: 90rpx;
 
     .edit-btn {
       color: $primaryColor;
       background: transparent;
+      font-size: 15px;
 
       &::after {
         border: 0;
       }
 
       &[disabled] {
-        color: #B8B8B8;
+        color: $color1;
       }
     }
   }
@@ -78,7 +78,7 @@
 
       &__tip {
         font-size: 12px;
-        color: #B8B8B8;
+        color: $color1;
         icon {
           margin-right: 10rpx;
         }
@@ -96,7 +96,11 @@
 
 <template>
   <view class="comp-person-info">
-    <view wx:if="{{ canEdit }}" class="flex--vcenter edit-btn-wrap">
+    <view wx:if="{{ canEdit }}" class="flex--vcenter--sb edit-btn-wrap">
+      <button 
+        class="edit-btn"
+        disabled
+        @tap="handleEditTap">解绑</button>
       <button 
         class="edit-btn"
         disabled="{{ !readonly && !canSubmit }}"
@@ -189,6 +193,7 @@
   const PICKER_ITEMS = [{
     label: '分娩日期',
     picker: {
+      mode: 'date',
       valueBind: 'deliveryDate',
       rangeBind: 'deliveryDate'
     }
@@ -251,13 +256,16 @@
       address: '', // 联系地址
       PICKER_ITEMS,
       pickerLists: {
-        deliveryDate: [{
-          value: 1,
-          label: '232'
-        }],
+        // deliveryDate: [{
+        //   value: 1,
+        //   label: '232'
+        // }],
         deliveryInfo: [{
-          value: 0,
-          label: 'labor0'
+          value: '顺利',
+          label: '顺利'
+        }, {
+          value: '不顺利',
+          label: '不顺利'
         }],
         babySex: [{
           value: 0,
@@ -267,8 +275,8 @@
           label: '男'
         }],
         userSource: [{
-          value: 0,
-          label: 'userSource0'
+          value: '介绍',
+          label: '介绍'
         }]
       },
       pickerPickeds: {
@@ -290,7 +298,7 @@
 
     watch = {
       formData (newVal) {
-        const id = newVal.id && newVal.id.trim()
+        const id = newVal.id && (newVal.id + '').trim()
         const cardId = newVal.cardId && newVal.cardId.trim()
         if (id && validCardId(cardId)) {
           this.canSubmit = true
@@ -329,6 +337,7 @@
       this.disease = disease
       this.address = address
       this.pickerPickeds = pickerPickeds
+      console.log('pickerPickeds', pickerPickeds)
       this.$apply()
     }
   }

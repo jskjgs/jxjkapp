@@ -1,0 +1,144 @@
+<style lang="scss" src="./assets/style/index.scss">
+</style>
+
+<script>
+import wepy from 'wepy'
+import 'wepy-async-function'
+import convertDate from '@/utils/convertDate'
+
+Promise.prototype.finally = function (callback) {
+  let P = this.constructor
+  return this.then(
+    value => P.resolve(callback()).then(() => value),
+    reason => P.resolve(callback()).then(() => { throw reason })
+  )
+}
+
+;(['page', 'component']).forEach(function (item) {
+  Object.defineProperties(wepy[item].prototype, {
+    '$_request': {
+      value (cfg, noLoading) {
+        cfg = Object.assign({}, cfg)
+        if (!noLoading) {
+          wx.showLoading({
+            title: '加载中..',
+            mask: true
+          })
+        }
+        cfg.url = 'http://182.92.78.118:9001/hospHealth' + cfg.url
+        return new Promise(function (resolve, reject) {
+          wepy.request(cfg).then(res => {
+            return res.data || {}
+          }).then(data => {
+            resolve(data)
+          }).catch((e) => {
+            reject(e)
+          })
+        }).finally(() => {
+          wx.hideLoading()
+        })
+      }
+    },
+    '$_getPage': {
+      value () {
+        return this.getCurrentPages().slice(-1)[0]
+      }
+    },
+    '$_getRoute': {
+      value () {
+        return this.getCurrentPages().slice(-1)[0].route
+      }
+    },
+    '$_convertDate': {
+      value (timeStamp) {
+        return convertDate(timeStamp)
+      }
+    }
+  })
+})
+export default class extends wepy.app {
+  config = {
+    networkTimeout: {
+      'request': 30000
+    },
+    pages: [
+      'pages/account',
+      'pages/serviceDetail',
+      'pages/serviceHistory',
+      'pages/serviceList',
+      'pages/serviceRecord'
+    ],
+    window: {
+      backgroundTextStyle: 'light',
+      navigationBarBackgroundColor: '#9190FF',
+      navigationBarTitleText: 'WeChat',
+      navigationBarTextStyle: 'white'
+    },
+    tabBar: {
+      selectedColor: '#9190FF',
+      list: [{
+        'pagePath': 'pages/serviceList',
+        'iconPath': './assets/images/tab-index.png',
+        'selectedIconPath': './assets/images/tab-index-active.png',
+        'text': '服务派单'
+      }, {
+        'pagePath': 'pages/serviceHistory',
+        'iconPath': './assets/images/tab-health.png',
+        'selectedIconPath': './assets/images/tab-health-active.png',
+        'text': '历史记录'
+      }, {
+        'pagePath': 'pages/account',
+        'iconPath': './assets/images/tab-my.png',
+        'selectedIconPath': './assets/images/tab-my-active.png',
+        'text': '账号管理'
+      }]
+    }
+  }
+
+  globalData = {
+    userInfo: null
+  }
+
+  constructor () {
+    super()
+    this.use('requestfix')
+    this.use('promisify')
+  }
+
+  onLaunch() {
+    wx.setEnableDebug({
+      enableDebug: true
+    })
+    wx.reLaunch({
+      url: '/pages/account'
+    })
+  }
+
+  sleep (s) {
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        resolve('promise resolved')
+      }, s * 1000)
+    })
+  }
+
+  async testAsync () {
+    const data = await this.sleep(3)
+    console.log(data)
+  }
+
+  getUserInfo(cb) {
+    console.log('globalData', this.globalData)
+    const that = this
+    if (this.globalData.userInfo) {
+      return this.globalData.userInfo
+    }
+    wepy.getUserInfo({
+      success (res) {
+        that.globalData.userInfo = res.userInfo
+        cb && cb(res.userInfo)
+      }
+    })
+  }
+}
+</script>

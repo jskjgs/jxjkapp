@@ -66,6 +66,10 @@
       },
       submitBtnText: {
         type: String
+      },
+      codeType: {
+        type: String,
+        default: '0'
       }
     }
 
@@ -96,7 +100,7 @@
       getCode () {
         console.log('getCode')
         this.$_request({
-          url: `/other/sendCode?phone=${this.phone}&type=0`,
+          url: `/other/sendCode?phone=${this.phone}&type=${this.codeType}`,
           method: 'POST'
         }, true).then(() => {
           wx.showToast({

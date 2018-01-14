@@ -1,9 +1,24 @@
 <style lang="scss">
+@import '../assets/style/variables/theme.scss';
 #page-my-vip {
+  .my-balance {
+    height: 60rpx;
+    color: $primaryColor;
+    border-bottom: 1px solid #F7F7F7;
+  }
   .list-item {
     margin-bottom: 20rpx;
-    padding: 30rpx 50rpx;
+    padding: 30rpx;
     background: #fff;
+
+    .del-btn {
+      width: 36rpx;
+      height: 36rpx;
+      image {
+        width: 100%;
+        height: 100%;
+      }
+    }
 
     .order-project {
       font-size: 14px;
@@ -27,20 +42,28 @@
 
 <template>
   <view id="page-my-vip">
-    <repeat for="{{ list }}" key="index" item="item" index="index">
-      <view class="list-item">
-        <view class="row flex--vcenter--sb">
-          <text class="order-project">Thermage 热玛吉</text>
-          <text class="order-hospital">锦江附属医院</text>
+    <view class="my-balance flex--center main-bg">
+      余额：12000元
+    </view>
+    <view class="list-wrap">
+      <repeat for="{{ list }}" key="index" item="item" index="index">
+        <view class="list-item">
+          <view class="row flex--vcenter--sb">
+            <text class="order-project">Thermage 热玛吉</text>
+            <view class="del-btn" @click="delItem()"><image src="../assets/images/del-icon.png"/></view>
+          </view>
+          <view class="row flex--vcenter--sb" style="margin-top: 30rpx;">
+            <view>
+              <view class="order-hospital">预约院区：锦江附属医院</view>
+              <view class="order-date">预约时间：2017-11-22 08:00-10:00</view>
+            </view>
+            <navigator url="/pages/my_vip_update">
+              <button class="order-btn">修改</button>
+            </navigator>
+          </view>
         </view>
-        <view class="row flex--vcenter--sb" style="margin-top: 50rpx;">
-          <text class="order-date">预约时间：2017-11-22 08:00-10:00</text>
-          <navigator url="/pages/my_vip_update">
-            <button class="order-btn">修改</button>
-          </navigator>
-        </view>
-      </view>
-    </repeat>
+      </repeat>
+    </view>
   </view>
 </template>
 
@@ -49,7 +72,7 @@
 
   export default class Index extends wepy.page {
     config = {
-      navigationBarTitleText: 'VIP预约列表'
+      navigationBarTitleText: 'VIP用户管理'
     }
     components = {
     }
@@ -63,12 +86,22 @@
     computed = {
     }
 
-    methods = {}
+    methods = {
+      delItem () {
+      }
+    }
 
     events = {
     }
 
     onLoad() {
+    }
+    // 获取余额
+    getBalance () {
+      this.$_request({
+        url: '/userBalance/'
+      }).then(() => {
+      })
     }
   }
 </script>

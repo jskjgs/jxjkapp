@@ -1,13 +1,21 @@
 <style lang="scss">
 @import "../assets/style/variables/theme.scss";
 #page-index-project-order {
-  .web-view {
-    position: absolute;
-    top: 0;
-    bottom: 90rpx;
-    left: 0;
-    right: 0;
-    overflow: auto;
+  padding: 50rpx 60rpx 100rpx;
+  min-height: 100vh;
+  background: $main_bg;
+
+  .project-image {
+    width: 100%;
+    height: 380rpx;
+  }
+  .project-name {
+    margin-top: 40rpx;
+    font-size: 15px;
+    color: $primaryColor;
+  }
+  .project-des {
+    margin-top: 40rpx;
   }
 
   .order-btn-wrap {
@@ -27,6 +35,10 @@
       border-radius: 0;
       background: $primaryColor;
       color: #fff;
+
+      &[disabled] {
+        background: $color1;
+      }
     }
   }
 }
@@ -34,13 +46,29 @@
 
 <template>
   <view id="page-index-project-order">
-    <web-view class="web-view" src="https://www.baidu.com/"></web-view>
+    <view class="project-detail-wrap">
+      <image class="project-image" src="{{ photo }}" />
+      <view class="project-name">
+        <text>{{ name }}</text>
+      </view>
+      <view class="project-des">
+        <text>{{ description }}</text>
+      </view>
+    </view>
     <view class="order-btn-wrap flex">
       <view class="disabled-tip flex-item flex--vcenter">
-        <text>充值VIP后可享受预约功能</text>
+        <view
+          wx:if="{{ !userInfo.isVip }}"
+          class="flex--center"
+          style="height: 100%;">
+          <image 
+            src="../assets/images/to-vip.png"
+            style="height: 22rpx; width: 302rpx;"/>
+        </view>
       </view>
       <button 
         class="flex-item--none flex--center"
+        disabled="{{ !userInfo.isVip }}"
         @tap="handleOrderBtnTap">
         预约项目
       </button>
@@ -51,24 +79,40 @@
 <script>
   import wepy from 'wepy'
 
+  import CustomPage from '@/components/customPage'
+  import PageMixin from '@/mixins/page'
+
   export default class Index extends wepy.page {
     config = {
       navigationBarTitleText: '项目预约'
     }
     components = {
+      CustomPage
     }
 
-    mixins = []
+    mixins = [PageMixin]
 
-    data = {}
+    data = {
+      photo: '',
+      name: '硬化剂注射',
+      description: 'Thermage紧肤除皱系统是一种专业的非手术紧肤、除皱、塑形设备。是一种安全性高、不会造成伤口的治疗方式，已获医学临床证实能收'
+    }
 
     computed = {
+      userInfo () {
+        return this.$parent.globalData.userInfo
+      }
     }
 
     methods = {
       handleOrderBtnTap () {
         wx.navigateTo({
-          url: '/pages/project_order_info'
+          url: `/pages/project_order_info?id=${this.id}&skuId=${this.skuId}&name=${this.name}`
+        })
+      },
+      toLogin () {
+        wx.navigateTo({
+          url: '/pages/login'
         })
       }
     }
@@ -76,7 +120,24 @@
     events = {
     }
 
-    onLoad() {
+    onLoad({ id }) {
+      this.id = id
+      this.initPageData()
+    }
+    initPageData () {
+      this.initData({
+        url: '/product/',
+        data: {
+          id: this.id
+        }
+      }).then(content => {
+        content = content || {}
+        this.skuId = (content.defaultSku || {}).productId
+        this.photo = content.images || ''
+        this.name = content.name || ''
+        this.description = content.description || ''
+        this.$apply()
+      })
     }
   }
 </script>

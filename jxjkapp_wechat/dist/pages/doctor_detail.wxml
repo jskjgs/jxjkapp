@@ -1,9 +1,0 @@
-
-  <view id="page-doctor-detail">
-    <view class="doctor-name">
-      <text>{{ name }}</text>
-    </view>
-    <view class="doctor-des">
-      <text>{{ description }}</text>
-    </view>
-  </view>

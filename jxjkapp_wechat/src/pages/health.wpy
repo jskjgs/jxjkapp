@@ -1,4 +1,7 @@
 <style lang="scss">
+@charset 'utf-8';
+@import '../assets/style/variables/theme.scss';
+
   #health-page {
     padding-top: 40rpx;
     
@@ -6,7 +9,6 @@
       margin-bottom: 20rpx;
       padding: 20rpx 30rpx;
       background: #fff;
-      // height: 236rpx;
 
       .order-date {
         font-size: 11px;
@@ -14,18 +16,48 @@
       .order-from {
         font-size: 12px;
       }
+      .order-thumbnail-wrap {
+        position: relative;
+        overflow: hidden;
+        width: 228rpx;
+        height: 156rpx;
+        border-radius: 10rpx;
+
+        &.child-project {
+          &::before, &::after {
+            position: absolute;
+            bottom: 15px;
+          }
+          &::before {
+            content: '\513F\7AE5';
+            padding-left: 10rpx;
+            width: 34px;
+            right: 0;
+            height: 16px;
+            line-height: 16px;
+            font-size: 10px;
+            color: #fff;
+            background: $primaryColor;
+          }
+          &::after {
+            content: '';
+            right: 34px;
+            line-height: 0;
+            border: 10rpx solid $primaryColor;
+            border-width: 8px 4px 8px 4px;
+            border-color: transparent $primaryColor $primaryColor transparent;
+          }
+        }
+      }
       .order-summary {
         margin-top: 15rpx;
       }
       .order-thumbnail {
-        width: 228rpx;
-        height: 156rpx;
-        border-radius: 10rpx;
-        background: red;
+        width: 100%;
+        height: 100%;
       }
       .order-text-wrap {
         margin-left: 48rpx;
-        margin-right: 20rpx;
       }
       .order-project {
         font-weight: bold;
@@ -33,46 +65,48 @@
       .order-price {
         margin-top: 20rpx;
         font-size: 11px;
-        color: #B8B8B8;
+        color: $color1;
       }
     }
   }
 </style>
 
 <template>
-  <view id="health-page">
-    <view class="order-list">
-      <repeat for="{{ orderList }}" key="index" index="index" item="item">
-        <navigator url="/pages/health_detail">
-          <view class="order-item">
-            <view class="row flex--vcenter--sb">
-              <text class="order-date">订单生成时间: {{ item.date }}</text>
-              <text class="order-from">{{ item.hospital }}</text>
-            </view>
-            <view class="order-summary flex">
-              <image class="order-thumbnail flex-item--none" src="{{ item.image }}" alt=""/>
-              <view class="order-text-wrap flex-item flex--vcenter--sb">
-                <view class="flex--col">
-                  <text class="order-project">{{ item.project }}</text>
-                  <text class="order-price">数量：{{ item.num }} 总价：¥{{ item.total }}</text>
+  <CustomPage :isLastPage.sync="isLastPage">
+    <view id="health-page">
+      <view class="order-list">
+        <repeat for="{{ listData }}" key="index" index="index" item="item">
+          <navigator url="/pages/health_detail">
+            <view class="order-item">
+              <view class="row flex--vcenter--sb">
+                <text class="order-date">订单生成时间: {{ item.date }}</text>
+                <text class="order-from">{{ item.hospital }}</text>
+              </view>
+              <view class="order-summary flex">
+                <view class="order-thumbnail-wrap {{ item.isChild ? 'child-project' : '' }}">
+                  <image class="order-thumbnail flex-item--none" src="{{ item.image }}" alt=""/>
                 </view>
-                <text style="color: {{orderStatusDict[item.status].color}}">{{orderStatusDict[item.status].text}}</text>
+                <view class="order-text-wrap flex-item flex--vcenter--sb">
+                  <view class="flex--col">
+                    <text class="order-project">{{ item.project }}</text>
+                    <text class="order-price">数量：{{ item.num }} 已用：{{ item.total }}</text>
+                  </view>
+                  <text style="color: {{orderStatusDict[item.status].color}}">{{orderStatusDict[item.status].text}}</text>
+                </view>
               </view>
             </view>
-          </view>
-        </navigator>
-      </repeat>
-      <view class="no-more-tip">
-        <text>已无更多内容了</text>
+          </navigator>
+        </repeat>
       </view>
     </view>
-  </view>
+  </CustomPage>
 </template>
 
 <script>
   import wepy from 'wepy'
-  import convertDate from '@/utils/convertDate'
-  console.log(convertDate)
+
+  import CustomPage from '@/components/customPage'
+  import listPageMixin from '@/mixins/listPage'
 
   const orderStatusDict = {
     'finish': {
@@ -87,32 +121,17 @@
 
   export default class Index extends wepy.page {
     config = {
-      navigationBarTitleText: '健康管理'
+      navigationBarTitleText: '健康管理',
+      enablePullDownRefresh: true
     }
     components = {
+      CustomPage
     }
 
-    mixins = []
+    mixins = [listPageMixin]
 
     data = {
-      orderStatusDict,
-      orderList: [{
-        image: '',
-        date: '2017-10-09',
-        hospital: '锦江附属医院',
-        project: '硬化剂注射',
-        num: 10,
-        total: 1000,
-        status: 'inUse'
-      }, {
-        image: '',
-        date: '2017-10-09',
-        hospital: '锦江附属医院',
-        project: '硬化剂注射',
-        num: 10,
-        total: 1000,
-        status: 'finish'
-      }]
+      orderStatusDict
     }
 
     computed = {
@@ -125,7 +144,32 @@
     }
 
     onLoad() {
-      console.log('this.$parent.globalData', this.$parent.globalData)
+      this.initPageData()
+    }
+
+    initPageData () {
+      this.initData({
+        url: '/order/query',
+        method: 'POST',
+        data: {
+          pageSize: 5
+        }
+      }, (listItem, res) => {
+        const hospOrderProductList = listItem.hospOrderProductList || []
+        const hospOrderProduct = (hospOrderProductList[0] || {})
+        const skuData = hospOrderProduct.hospProductSku || {}
+        return {
+          id: listItem.id,
+          image: skuData.images,
+          date: this.$_convertDate(listItem.createDate),
+          hospital: '医院名',
+          project: skuData.name,
+          num: 10,
+          total: skuData.serviceQuantity,
+          status: 'inUse',
+          isChild: false
+        }
+      })
     }
   }
 </script>

@@ -8,6 +8,10 @@
       width: 300rpx;
     }
   }
+
+  .no-more-tip {
+    margin-top: 20rpx;
+  }
 }
 </style>
 
@@ -28,7 +32,11 @@
         mode="widthFix" 
         class="fail-tip-image"
         wx:elif="{{ noServer }}" 
-        src="../assets/images/no-server.png" />
+        src="../assets/images/no-server.png"
+        @tap="refreshPage" />
+    </view>
+    <view wx:if="{{ isLastPage }}" class="no-more-tip">
+      <text>已无更多内容了</text>
     </view>
   </view>
 </template>
@@ -37,10 +45,12 @@
   import wepy from 'wepy'
 
   export default class CustomPage extends wepy.component {
-    components = {
+    props = {
+      isLastPage: {
+        type: Boolean,
+        default: false
+      }
     }
-
-    mixins = []
 
     data = {
       dataInited: false,
@@ -48,21 +58,17 @@
       noServer: false
     }
 
-    computed = {
-    }
-
     methods = {
+      // 初始化页面状态：无数据、网络故障、数据初始化完成
       initPage (statusObj) {
         for (let key in statusObj) {
           this[key] = statusObj[key]
         }
+        this.$apply()
+      },
+      refreshPage () {
+        this.$parent.initPageData()
       }
-    }
-
-    events = {
-    }
-
-    onLoad() {
     }
   }
 </script>

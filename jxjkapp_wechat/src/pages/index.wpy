@@ -1,16 +1,17 @@
 <style lang="scss">
+@import '../assets/style/variables/theme.scss';
   #index-page {
     // 顶部banner
     .top-banner {
-      height: 445rpx; // 480rpx
+      height: 370rpx; // 480rpx
       background: #fff;
 
       swiper {
-        height: 445rpx;
+        height: 100%;
 
         .slide-image {
           width: 750rpx;
-          height: 445rpx;
+          height: 100%;
         }
       }
     }
@@ -42,10 +43,21 @@
     }
     // 项目选项
     .project-items {
+      padding: 30rpx 20rpx;
       background: #fff;
+
+      .panel__title {
+        margin-left: 10rpx;
+      }
+
       .panel__body {
-        justify-content: space-between;
-  
+        .project-items-wrap {
+          margin-left: -40rpx;
+          flex-wrap: nowrap;
+        }
+        navigator {
+          margin-left: 40rpx;
+        }
         .project-item {
           text-align: center;
   
@@ -55,20 +67,19 @@
             width: 110rpx;
             height: 110rpx;
             border-radius: 50%;
-            background: blue;
+
+            image {
+              width: 100%;
+              height: 100%;
+            }
           }
   
           .item-text {
           }
         }
       }
-    }
-
-    // 消息列表
-    .notice-list {
-      background: red;
-      
-      .notice-item {
+      .no-data-tip {
+        min-height: 170rpx;
       }
     }
 
@@ -83,7 +94,6 @@
         text-align: center;
       }
       .pane-image {
-        background: red;
         width: 100%;
         height: 210rpx;
         border-radius: 20rpx;
@@ -130,7 +140,7 @@
         }
         .queue-info {
           font-size: 12px;
-          color: #B8B8B8;
+          color: $color1;
         }
         .wait-num {
           font-size: 18px;
@@ -151,10 +161,11 @@
     <view class="top-banner">
       <swiper 
         indicator-dots="{{ true }}"
-        autoplay="{{ true }}">
+        autoplay="{{ true }}"
+        circular="{{ true }}">
         <repeat for="{{ bannerList }}" key="index" item="item" index="index">
           <swiper-item @tap="handleBannerTap({{ item.jumpUrl }})">
-            <image src="{{ item.bannerUrl }}" class="slide-image"/>
+            <image src="{{ item.bannerUrl }}" mode="aspectFit" class="slide-image"/>
           </swiper-item>
         </repeat>
       </swiper>
@@ -162,21 +173,27 @@
     <!-- 项目选项 -->
     <view class="panel project-items">
       <view class="panel__title">项目分类</view>
-      <view class="panel__body flex">
-        <repeat 
-          for="{{projects}}"
-          key="index" 
-          index="index" 
-          item="item">
-          <navigator url="/pages/project?target={{ item.target }}">
-            <view class="project-item flex-item--none">
-              <view class="item-icon">
-                <image src="{{ item.image }}"></image>
-              </view>
-              <text class="item-text">{{ item.text }}</text>
-            </view>
-          </navigator>
-        </repeat>
+      <view class="panel__body" style="padding: {{ projectTypeList.length > 5 ? '0 20rpx;' : ';' }}">
+        <scroll-view scroll-x style="width: 100%;">
+          <view class="project-items-wrap flex--vcenter">
+            <repeat 
+              for="{{projectTypeList}}"
+              key="index" 
+              index="index" 
+              item="item">
+              <navigator class="project-item flex-item--none" url="/pages/project?typeId={{ item.id }}&type={{ item.name }}">
+                <view class="item-icon">
+                  <image src="{{ item.image }}"></image>
+                </view>
+                <text class="item-text">{{ item.name }}</text>
+              </navigator>
+            </repeat>
+            <view 
+              wx:if="{{ projectTypeList && projectTypeList.length === 0 }}" 
+              class="flex--center no-data-tip"
+              style="color: #BDBDBD;width: 100%;">暂无数据</view>
+          </view>
+        </scroll-view>
       </view>
     </view>
     <!-- 医院中心 -->
@@ -185,13 +202,13 @@
       <view class="panel__body flex">
         <navigator url="/pages/doctor" open-type="navigate">
           <view class="item-pane">
-            <image class="pane-image"></image>
+            <image class="pane-image" src="../assets/images/doctor-center.png"></image>
             <text class="panel-text">医护人员</text>
           </view>
         </navigator>
         <navigator url="/pages/news" open-type="navigate">
           <view class="item-pane">
-            <image class="pane-image"></image>
+            <image class="pane-image" src="../assets/images/news-center.png"></image>
             <text class="panel-text">新闻中心</text>
           </view>
         </navigator>
@@ -238,32 +255,39 @@
     data = {
       bannerList: [],
       // 项目分类
-      projects: [{
-        text: '皮肤美容',
+      projectTypeList: [],
+      /* [{
+        name: '皮肤美容',
         image: '',
-        target: '1'
+        id: '1'
       }, {
-        text: '瑜伽养生',
+        name: '瑜伽养生',
         image: '',
-        target: '2'
+        id: '2'
       }, {
-        text: '中医养生',
+        name: '中医养生',
         image: '',
-        target: '3'
+        id: '3'
       }, {
-        text: '产后康复',
+        name: '产后康复',
         image: '',
-        target: '4'
+        id: '4'
       }, {
-        text: '小儿推拿',
+        name: '小儿推拿',
         image: '',
-        target: '5'
-      }],
+        id: '5'
+      }] */
       queueNoticeSpread: false,
       queueNotice: ''
     }
 
     computed = {
+    }
+
+    watch = {
+      projectTypeList (newVal) {
+        console.log(newVal, 9999)
+      }
     }
 
     methods = {
@@ -288,20 +312,76 @@
     }
 
     onLoad() {
-      this.$_request({
+      this.getBanner()
+      this.getProjectType()
+    }
+
+    // 获取banner数据
+    getBanner () {
+      return this.$_request({
         url: '/banner/all',
-        method: 'POST',
+        method: 'GET',
         data: {
           pageNum: 1
         }
-      }).then(res => {
-        const content = res.content || {}
-        this.bannerList = content.list.map(item => ({
-          bannerUrl: item.bannerUrl,
+      }).then(content => {
+        content = content || {}
+        const list = content.list || []
+        this.bannerList = list.map(item => ({
+          bannerUrl: '../assets/images/banner.png', // item.bannerUrl,
           id: item.id,
           jumpUrl: item.jumpUrl
         }))
         this.$apply()
+      }).finally(() => {
+        this.bannerList = Array.from({length: 3}).map(item => {
+          return {
+            bannerUrl: '../assets/images/banner.png'
+          }
+        })
+        this.$apply()
+      })
+    }
+
+    // 获取项目分类
+    getProjectType () {
+      return this.$_request({
+        url: '/productType/all',
+        method: 'POST',
+        data: {}
+      }).then(content => {
+        content = content || {}
+        this.projectTypeList = (content.list || []).map(item => {
+          return {
+            name: item.name,
+            image: item.images,
+            id: item.id
+          }
+        })
+        this.$apply()
+      }).finally(() => {
+        // this.projectTypeList = [{
+        //   name: '皮肤美容',
+        //   image: '../assets/images/ps-pfmr.png',
+        //   id: '1'
+        // }, {
+        //   name: '瑜伽养生',
+        //   image: '../assets/images/ps-yjys.png',
+        //   id: '2'
+        // }, {
+        //   name: '中医养生',
+        //   image: '../assets/images/ps-zyrs.png',
+        //   id: '3'
+        // }, {
+        //   name: '产后康复',
+        //   image: '../assets/images/ps-chkf.png',
+        //   id: '4'
+        // }, {
+        //   name: '小儿推拿',
+        //   image: '../assets/images/ps-xetn.png',
+        //   id: '5'
+        // }]
+        // this.$apply()
       })
     }
 

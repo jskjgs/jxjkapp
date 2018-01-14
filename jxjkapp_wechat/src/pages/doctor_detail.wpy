@@ -58,8 +58,8 @@
         data: {
           id
         }
-      }).then(res => {
-        const content = res.content || {}
+      }).then(content => {
+        content = content || {}
         this.name = content.name
         this.description = content.description
         this.$apply()

@@ -73,6 +73,8 @@
       </view>
       <button 
         wx:if="{{ canCancel }}" slot="button"
+        class="primary-btn"
+        disabled="{{ !textareaValue }}"
         @tap="submit">
         立即提交
       </button>
@@ -88,14 +90,14 @@
 
   export default class Index extends wepy.page {
     config = {
-      navigationBarTitleText: 'test'
+      navigationBarTitleText: '申请作废'
     }
     components = {
       CustomCard
     }
 
     data = {
-      textareaValue: '放声大哭见风使舵剋借口借口借口借口',
+      textareaValue: '',
       textareaMaxLen: 40,
       canCancel: true,
       cancelDate: ''
@@ -107,7 +109,7 @@
     methods = {
       handleInput ({detail}) {
         const value = detail.value
-        this.textareaValue = value
+        this.textareaValue = value && value.trim()
       },
       submit () {
         this.canCancel = false

@@ -75,6 +75,8 @@
       <button 
         wx:if="{{ canComment }}" 
         slot="button"
+        class="primary-btn"
+        disabled="{{ commentStar === 0 }}"
         @tap="submit">
         立即评价
       </button>
@@ -111,10 +113,16 @@
     computed = {
     }
 
+    watch = {
+      commentStar (newVal) {
+        console.log('commentStar', newVal)
+      }
+    }
+
     methods = {
       handleInput ({detail}) {
         const value = detail.value
-        this.textareaValue = value
+        this.textareaValue = value && value.trim()
       },
       submit () {
         if (this.commentStar === 0) {
@@ -133,6 +141,7 @@
     }
 
     onLoad() {
+      console.log('commentStar', this.commentStar)
     }
   }
 </script>

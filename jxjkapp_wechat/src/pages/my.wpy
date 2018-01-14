@@ -89,7 +89,7 @@ page {
         src="../assets/images/my-bg.png" />
       <view class="avatar-wrap">
         <image 
-          src="../assets/images/demo.png" 
+          src="../assets/images/avatar.png" 
           class="avatar" />
         <view class="flex--hcenter">
           <text 
@@ -172,7 +172,7 @@ page {
     }
   }, {
     icon: '../assets/images/icon-vip.png',
-    label: 'VIP预约列表',
+    label: 'VIP用户管理',
     handlerTap () {
       wx.navigateTo({
         url: '/pages/my_vip'
@@ -184,8 +184,9 @@ page {
     handlerTap () {
       wx.showModal({
         title: '客服电话',
-        confirmlabel: '拨打',
         content: '8400561',
+        confirmText: '拨打',
+        confirmColor: '#9190ff',
         success (data) {
           if (data.confirm) {
             wx.makePhoneCall({

@@ -22,18 +22,19 @@
         <view class="menu--default__item">
           <text class="item-label">{{ item.label }}</text>
           <picker 
-            wx:if="{{ !readonly }}"
+            wx:if="{{ lists[item.picker.rangeBind] && !readonly }}"
             value="{{ pickedIndex[item.picker.valueBind] === -1 ? 0 : pickedIndex[item.picker.valueBind] }}"
+            mode="{{ item.picker.mode || 'selector' }}"
             range="{{ lists[item.picker.rangeBind] }}" 
             range-key="label"
             bindchange="handlePickerChange({{ item.picker.valueBind }}, {{ item.picker.rangeBind }})">
             <view class="item-value">
-              <text>{{ pickeds[item.picker.valueBind] !== undefined ? lists[item.picker.rangeBind][pickedIndex[item.picker.valueBind]].label || lists[item.picker.rangeBind][pickedIndex[item.picker.valueBind]] : '请选择' }}</text>
+              <text>{{ pickeds[item.picker.valueBind] !== undefined ? (lists[item.picker.rangeBind][pickedIndex[item.picker.valueBind]].label || lists[item.picker.rangeBind][pickedIndex[item.picker.valueBind]]) : '请选择' }}</text>
               <view class="arrow-rt"></view>
             </view>
           </picker>
           <view wx:else class="item-value">
-            <text>{{ pickeds[item.picker.valueBind] !== undefined ? lists[item.picker.rangeBind][pickedIndex[item.picker.valueBind]].label || lists[item.picker.rangeBind][pickedIndex[item.picker.valueBind]] : '未选择' }}</text>
+            <text>{{ pickeds[item.picker.valueBind] !== undefined ? (lists[item.picker.rangeBind][pickedIndex[item.picker.valueBind]].label || lists[item.picker.rangeBind][pickedIndex[item.picker.valueBind]] || pickeds[item.picker.valueBind]) : '未选择' }}</text>
           </view>
         </view>
       </repeat>
@@ -91,17 +92,23 @@
         this.ITEMS.forEach(item => {
           const valueBind = item.picker.valueBind
           const rangeBind = item.picker.rangeBind
-          const index = lists[rangeBind].findIndex(item => {
-            if (typeof item === 'object') {
-              return item.value === pickeds[valueBind]
+          const index = (lists[rangeBind] || []).findIndex(_item => {
+            if (typeof _item === 'object') {
+              return _item.value === pickeds[valueBind]
             } else {
-              return item === pickeds[valueBind]
+              return _item === pickeds[valueBind]
             }
           })
-          returnVal[valueBind] = index
+          returnVal[valueBind] = index || pickeds[valueBind]
         })
         console.log('returnVal', returnVal)
         return returnVal
+      }
+    }
+
+    watch = {
+      pickeds (newVal) {
+        console.log('newVal', newVal)
       }
     }
 
@@ -109,13 +116,17 @@
       handlePickerChange (valueBind, rangeBind, { detail }) {
         const index = detail.value
         console.log('index', index, this.pickedIndex)
-        if (index !== -1) {
-          const currItem = this.lists[rangeBind][index]
-          if (typeof currItem === 'object') {
-            this.pickeds[valueBind] = currItem.value
-          } else {
-            this.pickeds[valueBind] = currItem
+        if (typeof +index === 'number' && +index === +index) {
+          if (index !== -1) {
+            const currItem = this.lists[rangeBind][index]
+            if (typeof currItem === 'object') {
+              this.pickeds[valueBind] = currItem.value
+            } else {
+              this.pickeds[valueBind] = currItem
+            }
           }
+        } else {
+          this.pickeds[valueBind] = index
         }
       }
     }

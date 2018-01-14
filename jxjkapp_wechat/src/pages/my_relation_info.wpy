@@ -56,16 +56,26 @@
         this.readonly = true
         this.canEdit = true
 
-        this.isMaster = id === '0' // 假设登陆人账号id为0
-        setTimeout(() => {
+        this.isMaster = id === '0' // 假设登录人账号id为0
+        this.$_request({
+          url: '/patientInfo/',
+          data: {
+            id
+          }
+        }).then(content => {
+          content = content || {}
           this.$invoke('PersonInfo', 'syncFormData', {
-            id: '111', // 卡号
-            cardId: '1211', // 身份证号
-            allergies: '32321', // 过敏史
-            disease: 'fdsaaf', // 疾病史
-            address: 'fafas55' // 联系地址
+            id: content.id, // 卡号
+            cardId: content.cardId, // 身份证号
+            allergies: content.allergies, // 过敏史
+            disease: content.disease, // 疾病史
+            address: content.address, // 联系地址
+            deliveryDate: this.$_convertDate(content.deliveryDate),
+            deliveryInfo: content.deliveryInfo,
+            babySex: content.babySex === 0 ? '女' : '男',
+            userSource: content.userSource
           })
-        }, 1000)
+        })
       } else {
         wx.setNavigationBarTitle({
           title: '添加就诊人'

@@ -39,28 +39,22 @@
 
   import PickerList from '@/components/pickerList'
   const ITEMS = [{
+    label: '项目名称',
+    picker: {
+      valueBind: 'projectName',
+      rangeBind: 'projectList'
+    }
+  }, {
     label: '院区名称',
     picker: {
       valueBind: 'hospital',
       rangeBind: 'hospitalList'
     }
   }, {
-    label: '项目',
-    picker: {
-      valueBind: 'projectName',
-      rangeBind: 'projectList'
-    }
-  }, {
     label: '预约日期',
     picker: {
       valueBind: 'orderDate',
       rangeBind: 'orderDateList'
-    }
-  }, {
-    label: '预约时间',
-    picker: {
-      valueBind: 'orderTime',
-      rangeBind: 'orderTimeList'
     }
   }]
   
@@ -75,8 +69,7 @@
         default: {
           hospitalList: [],
           projectList: [],
-          orderDateList: [],
-          orderTimeList: []
+          orderDateList: []
         }
       },
       pickeds: {
@@ -85,8 +78,7 @@
         default: {
           hospital: '',
           projectName: '',
-          orderDate: '',
-          orderTime: ''
+          orderDate: ''
         }
       }
     }
@@ -105,7 +97,7 @@
         ITEMS.forEach(item => {
           const valueBind = item.picker.valueBind
           const rangeBind = item.picker.rangeBind
-          returnVal[valueBind] = lists[rangeBind].findIndex(item => {
+          returnVal[valueBind] = (lists[rangeBind] || []).findIndex(item => {
             return item.label === pickeds[valueBind]
           })
         })
