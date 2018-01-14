@@ -18,12 +18,12 @@ export const validPwd = function (pwd) {
   return /^.{5,10}$/.test(pwd)
 }
 
-//判断用户是否登录
+// 判断用户是否登录
 export const isLogin = function (isShowPage) {
-  var hasToken=wx.getStorage({
+  var hasToken = wx.getStorage({
     key: 'token'
-  })==null?false:true
-  if (!hasToken&&isShowPage) {
+  }) == null ? false : true
+  if (!hasToken && isShowPage) {
     wx.reLaunch({
       url: '/pages/account'
     })
@@ -31,20 +31,20 @@ export const isLogin = function (isShowPage) {
   return hasToken
 }
 
-//保存用户登录token
+// 保存用户登录token
 export const userLogin = function (token) {
   wx.setStorage({
     key: 'token',
-    data:token
+    data: token
   })
 }
 
-//删除用户登录token
+// 删除用户登录token
 export const userLogout = function () {
   wx.removeStorage({
     key: 'token',
     success: function(res) {
       console.log(res.data)
-    } 
+    }
   })
 }

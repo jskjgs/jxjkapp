@@ -1,25 +1,19 @@
-<style lang="scss">
-// @import '../assets/style/variables/theme.scss';
-#page-login {
-  padding-top: 78rpx;
-  .page-title-wrap {
-    margin: 0 0 78rpx 0;
-    font-size: 16px;
-    font-weight: bold;
-    text-align: center;
-  }
-}
-</style>
-
 <template>
   <view id="page-serviceDetail">
+    <view class="service-record">
+      <view class="service-record-title">服务项目的名称</view>
+      <view class="service-record-user">
+          <view>用户姓名：笨小孩</view>
+          <view class="service-record-user-phone">手机号：111111111111</view>
+      </view>
+    </view>
   </view>
 </template>
 
 <script>
   import wepy from 'wepy'
 
-  export default class serviceDetail extends wepy.page {
+  export default class serviceRecord extends wepy.page {
     config = {
       navigationBarTitleText: '客户服务记录'
     }
@@ -61,3 +55,38 @@
     }
   }
 </script>
+
+<style lang="scss">
+// @import '../assets/style/variables/theme.scss';
+#page-login {
+  padding-top: 78rpx;
+  .page-title-wrap {
+    margin: 0 0 78rpx 0;
+    font-size: 16px;
+    font-weight: bold;
+    text-align: center;
+  }
+}
+.service {
+  &-record {
+    background-color: #fff;
+    margin-bottom: 20rpx;
+    padding: 0 30rpx;
+    &-user {
+      display: flex;
+      align-items: center;
+      color: #818181;
+      font-size: 26rpx;
+      padding-bottom: 30rpx;
+      &-phone {
+        margin-left: 66rpx;
+      }
+    }
+    &-title {
+      font-size: 30rpx;
+      color: #414141;
+      padding: 30rpx 0;
+    }
+  }
+}
+</style>
