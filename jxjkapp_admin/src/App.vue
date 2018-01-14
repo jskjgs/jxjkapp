@@ -3,7 +3,6 @@
   import TopBar from '@/components/_common/topBar/TopBar'
   // 左侧导航
   import LeftNav from '@/components/_common/leftNav/LeftNav'
-
   export default {
     name: 'App',
     components: {

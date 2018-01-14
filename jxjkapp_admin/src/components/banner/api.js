@@ -1,12 +1,12 @@
 import { fetchApi } from '@/utils/index'
 
 // 获取banner列表
-export const GET_LIST_URL = '/home/queryAllBanner'
-export const getListApi = (params) => {
+export const GET_LIST_URL = '/banner/admin/query'
+export const getListApi = (data) => {
   return fetchApi({
     url: GET_LIST_URL,
-    type: 'get',
-    params
+    type: 'post',
+    data
   })
 }
 
@@ -22,7 +22,7 @@ export const modifyBannerApi = (params, data) => {
 }
 
 // 删除banner (单个)
-export const DELETE_BANNER_URL = '/home/deleteBanner'
+export const DELETE_BANNER_URL = '/banner/'
 export const deleteBannerApi = (params) => {
   return fetchApi({
     url: DELETE_BANNER_URL,
@@ -32,7 +32,7 @@ export const deleteBannerApi = (params) => {
 }
 
 // 删除banner (批量)
-export const DELETE_BANNER_BATCH_URL = '/home/deleteBannerBatch'
+export const DELETE_BANNER_BATCH_URL = '/banner/'
 export const deleteBannerBatchApi = (params) => {
   return fetchApi({
     url: DELETE_BANNER_BATCH_URL,
@@ -62,12 +62,11 @@ export const switchVisibleApi = (data) => {
 }
 
 // 增加banner
-export const ADD_BANNER_URL = '/home/addBanner'
-export const addBanenrApi = (params, data) => {
+export const ADD_BANNER_URL = '/banner/'
+export const addBanenrApi = (data) => {
   return fetchApi({
     url: ADD_BANNER_URL,
-    type: 'put',
-    params,
+    type: 'post',
     data
   })
 }
