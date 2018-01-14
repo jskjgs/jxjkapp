@@ -63,7 +63,7 @@ public class CallNumberController extends MyBaseController{
         return ResponseWrapperSuccess(null);
     }
 
-    @ApiOperation(value = "查询单个排队叫号信息",response = CallNumberVO.class)
+    @ApiOperation(value = "根据用户Id,查询单个排队叫号信息",response = CallNumberVO.class)
     @RequestMapping(value="/", method = RequestMethod.GET)
     @ResponseBody
     public JSONObject selectOne(

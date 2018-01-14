@@ -103,6 +103,15 @@ public class PatientInfoService implements BaseService<HospPatientInfo,HospPatie
     }
 
     /**
+     * 查下单个就诊人信息
+     * @param hospPatientInfo
+     * @return
+     */
+    public HospPatientInfo selectOne(HospPatientInfo hospPatientInfo) {
+        return hospPatientInfoMapper.selectOne(hospPatientInfo);
+    }
+
+    /**
      * 根据条件查询就诊人信息
      *
      * @param hospPatientInfo

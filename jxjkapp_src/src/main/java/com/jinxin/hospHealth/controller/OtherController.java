@@ -12,6 +12,8 @@ import com.jinxin.hospHealth.controller.protocol.VO.UserInfoVO;
 import com.jinxin.hospHealth.dao.models.HospUserInfo;
 import com.jinxin.hospHealth.service.OtherService;
 import com.jinxin.hospHealth.service.UserInfoService;
+import com.jinxin.hospHealth.utils.sms.AlidayuSms;
+import com.jinxin.hospHealth.utils.sms.SmsEnum;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -35,6 +37,8 @@ public class OtherController extends MyBaseController{
     UserInfoService userInfoService;
     @Autowired
     OtherService otherService;
+    @Autowired
+    AlidayuSms alidayuSms;
 
     @ApiOperation(value = "发送验证码",response = LoginInfoVO.class)
     @RequestMapping(value="/sendCode", method = RequestMethod.POST)
@@ -48,19 +52,21 @@ public class OtherController extends MyBaseController{
         switch (type){
             case "0":
                 otherService.saveDynamicCode(phone,type,dynamicCode,null,null);
+                alidayuSms.sendynamicCode(phone,dynamicCode, SmsEnum.LOGIN_REGISTER.getTemplateCode());
                 break;
             case "1":
                 otherService.saveDynamicCode(phone,type,dynamicCode,null,null);
+                alidayuSms.sendynamicCode(phone,dynamicCode, SmsEnum.LOGIN_REGISTER.getTemplateCode());
                 break;
             case "2":
                 newDynamicCode = RandomUtil.getRandomIntByLength(4);
                 otherService.saveDynamicCode(phone,type,dynamicCode,newPhone,newDynamicCode);
+                alidayuSms.sendynamicCode(phone,dynamicCode, SmsEnum.CHANGE_BUNDLE_TELEPHONE_OLD.getTemplateCode());
+                alidayuSms.sendynamicCode(newPhone,newDynamicCode, SmsEnum.CHANGE_BUNDLE_TELEPHONE_NEW.getTemplateCode());
                 break;
             default:
                 throw new ShowExceptions(Language.get("dynamic.type-invalid"));
         }
-
-        //todo zhoubinshan 通过阿里大鱼发送验证码 --待做--
         LoginInfoVO loginInfoVO = new LoginInfoVO();
         loginInfoVO.setCode(dynamicCode);
         loginInfoVO.setCode(newDynamicCode);
@@ -73,7 +79,10 @@ public class OtherController extends MyBaseController{
     public JSONObject loginAndRegisterByCode(
             @ApiParam(value = "电话号码", required = true) @RequestParam(value = "phone", required = true) String phone,
             @ApiParam(value = "验证码", required = true) @RequestParam(value = "code", required = true) String code) throws Exception {
-        DPreconditions.checkState(code.equals(otherService.getDynamicCode(phone,otherService.loginType)),Language.get("login.dynamic-code-error"),true);
+        DPreconditions.checkState(
+                code.equals(otherService.getDynamicCode(phone,otherService.loginType)),
+                Language.get("login.dynamic-code-error"),
+                true);
         HospUserInfo userInfo = new HospUserInfo();
         userInfo.setPhone(phone);
         HospUserInfo respUserInfo =  userInfoService.selectOne(userInfo);

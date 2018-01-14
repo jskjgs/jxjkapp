@@ -21,6 +21,8 @@ public class HospOrder extends PageBean{
     private Long id;
     @ApiModelProperty("订单编号")
     private String code;
+    @ApiModelProperty("操作人员名称")
+    private String operationName;
     @ApiModelProperty("用户ID")
     private Long userId;
     @ApiModelProperty("院区ID")

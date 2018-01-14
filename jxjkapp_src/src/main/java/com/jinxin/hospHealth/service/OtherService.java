@@ -141,7 +141,9 @@ public class OtherService {
     private void repeatSend(String type,String phone) throws Exception {
         DPreconditions.checkNotNullAndEmpty(type,"动态码类型不能为空,为空不能通过校验");
         DPreconditions.checkNotNullAndEmpty(phone,Language.get("dynamic.phone-null"),true);
-        DPreconditions.checkState(redisOperation.usePool().get(type+"_"+phone)== null, Language.get("dynamic.next-send-error"),true);
+        DPreconditions.checkState(redisOperation.usePool().get(type+"_"+phone)== null,
+                Language.get("dynamic.next-send-error"),
+                true);
         redisOperation.usePool().set(type+"_"+phone, phone);
         redisOperation.expire(type+"_"+phone,Integer.valueOf(loginNextSendTime));
     }

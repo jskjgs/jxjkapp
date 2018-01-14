@@ -57,7 +57,8 @@ productSku:
     id-not-exist: 商品SKU不存在.
 precontract:
     precontract-time-null: 预约时间不能为空.
-    id-null: 预约ID不能为空
+    id-null: 预约ID不能为空.
+    user-must-is-vip: 被预约的用户必须是VIP.
 parameter-valid:
     disable-enable-scope: 传入的禁用参数不属于默认值范围内.
     all-enable-scope: 传入的禁用/删除参数不属于默认值范围内.
@@ -72,6 +73,8 @@ call-number:
     patient-id-null: 就诊人ID不能为空.
     id-null: 排队叫号ID不能为空.
     select-not-exist: 该用户查询的排队叫号信息不存在.
+    user-id-exist: 该用户已经在等待队列中.
+    after-Call-not-exist: 该用户没有被排入叫号系统.
 order:
     id-null: 订单ID不能为空.
     code-null: 订单code不能为空.
@@ -88,6 +91,7 @@ order:
     order-product-null: 订单中关联的商品未查询到.
     close-failure: 关闭订单失败.
     close-order-tyep-failure: 被关闭的订单状态必须是未支付的状态.
+    operation-name-null: 操作人员名称为空.
 order-product:
     order-id-null: 订单ID不能为空.
     sku-not-exist: 商品不存在.
