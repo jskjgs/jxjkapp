@@ -236,7 +236,7 @@ $search_h: 88rpx;
   import wepy from 'wepy'
 
   import CustomPage from '@/components/customPage'
-  import pageMixin from '@/mixins/listPage'
+  import listPageMixin from '@/mixins/listPage'
   export default class Index extends wepy.page {
     config = {
       navigationBarTitleText: '医护人员',
@@ -246,7 +246,7 @@ $search_h: 88rpx;
       CustomPage
     }
 
-    mixins = [pageMixin]
+    mixins = [listPageMixin]
 
     data = {
       searchParams: {
@@ -348,7 +348,12 @@ $search_h: 88rpx;
     // 固定方法
     initPageData () {
       this.getList()
-      this.$_request({
+      this.getHospAreaList()
+      this.getDoctorTypeList()
+    }
+    // 获取院区列表
+    getHospAreaList () {
+      return this.$_request({
         url: '/hospArea/all',
         method: 'POST',
         data: {}
@@ -366,7 +371,10 @@ $search_h: 88rpx;
           picked: true
         }].concat(this.hospAreaList)
       })
-      this.$_request({
+    }
+    // 获取医生类型列表
+    getDoctorTypeList () {
+      return this.$_request({
         url: '/doctorType/all',
         method: 'POST',
         data: {}

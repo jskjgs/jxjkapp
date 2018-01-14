@@ -69,7 +69,8 @@ export default class extends wepy.app {
   globalData = {
     userInfo: {
       userId: 1,
-      isVip: true
+      isVip: true,
+      token: 999
     }
   }
 
@@ -84,21 +85,8 @@ export default class extends wepy.app {
       enableDebug: true
     })
     // wx.reLaunch({
-    //   url: '/pages/my'
+    //   url: '/pages/my_relations'
     // })
-  }
-  getUserInfo(cb) {
-    console.log('globalData', this.globalData)
-    const that = this
-    if (this.globalData.userInfo) {
-      return this.globalData.userInfo
-    }
-    wepy.getUserInfo({
-      success (res) {
-        that.globalData.userInfo = res.userInfo
-        cb && cb(res.userInfo)
-      }
-    })
   }
 }
 </script>

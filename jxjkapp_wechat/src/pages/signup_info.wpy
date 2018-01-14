@@ -43,7 +43,21 @@
         this.formData = formData
       },
       handleSubmit (formData) {
-        console.log('handleSubmit', formData)
+        this.$_request({
+          url: '/patientInfo/',
+          method: 'POST',
+          data: {
+            type: 0,
+            userId: this.userId,
+            ...this.formData
+          }
+        }).then(() => {
+          wx.showToast({
+            icon: 'success',
+            title: '提交成功'
+          })
+          wx.navigateBack()
+        })
       }
     }
 

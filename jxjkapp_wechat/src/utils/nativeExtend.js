@@ -12,7 +12,11 @@ Promise.prototype.finally = function (callback) {
   Object.defineProperties(wepy[item].prototype, {
     '$_request': {
       value (cfg, showLoading = true) {
-        cfg = Object.assign({}, cfg)
+        cfg = Object.assign({}, {
+          header: {
+            Authorization: (this.$parent.globalData.userInfo || {}).token
+          }
+        }, cfg)
         if (showLoading) {
           wx.showLoading({
             title: '加载中..',
@@ -23,8 +27,12 @@ Promise.prototype.finally = function (callback) {
         return new Promise(function (resolve, reject) {
           wepy.request(cfg).then(res => {
             const data = res.data || {}
-            const content = data.content
-            resolve(content, data)
+            if (data.code + '' === '200') {
+              const content = data.content
+              resolve(content, data)
+            } else {
+              throw new Error(data)
+            }
           }).catch((e) => {
             reject(e)
           })

@@ -142,10 +142,18 @@
                <!--enableCountByExample="fasle" enableUpdateByExample="fasle"-->
                <!--enableDeleteByExample="fasle" enableSelectByExample="fasle"-->
                <!--selectByExampleQueryId="fasle"></table>-->
-        <table schema="mybatis" tableName="hosp_call_number" domainObjectName="HospCallNumber"
-        enableCountByExample="fasle" enableUpdateByExample="fasle"
-        enableDeleteByExample="fasle" enableSelectByExample="fasle"
-        selectByExampleQueryId="fasle"></table>
+        <!--<table schema="mybatis" tableName="hosp_call_number" domainObjectName="HospCallNumber"-->
+        <!--enableCountByExample="fasle" enableUpdateByExample="fasle"-->
+        <!--enableDeleteByExample="fasle" enableSelectByExample="fasle"-->
+        <!--selectByExampleQueryId="fasle"></table>-->
 
+        <table schema="mybatis" tableName="hosp_admin_user_info" domainObjectName="HospAdminUserInfo"
+               enableCountByExample="fasle" enableUpdateByExample="fasle"
+               enableDeleteByExample="fasle" enableSelectByExample="fasle"
+               selectByExampleQueryId="fasle"></table>
+        <table schema="mybatis" tableName="hosp_doctor_user_info" domainObjectName="HospDoctorUserInfo"
+               enableCountByExample="fasle" enableUpdateByExample="fasle"
+               enableDeleteByExample="fasle" enableSelectByExample="fasle"
+               selectByExampleQueryId="fasle"></table>
     </context>
 </generatorConfiguration>

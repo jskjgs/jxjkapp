@@ -241,7 +241,6 @@
 
 <script>
   import wepy from 'wepy'
-  import _chunk from 'lodash/chunk'
 
   export default class Index extends wepy.page {
     config = {
@@ -314,6 +313,7 @@
     onLoad() {
       this.getBanner()
       this.getProjectType()
+      this.getQueueInfo()
     }
 
     // 获取banner数据
@@ -328,18 +328,12 @@
         content = content || {}
         const list = content.list || []
         this.bannerList = list.map(item => ({
-          bannerUrl: '../assets/images/banner.png', // item.bannerUrl,
+          bannerUrl: item.bannerUrl,
           id: item.id,
           jumpUrl: item.jumpUrl
         }))
         this.$apply()
       }).finally(() => {
-        this.bannerList = Array.from({length: 3}).map(item => {
-          return {
-            bannerUrl: '../assets/images/banner.png'
-          }
-        })
-        this.$apply()
       })
     }
 
@@ -385,9 +379,20 @@
       })
     }
 
-    _chunk (...args) {
-      console.log('_chunk(...args)', _chunk(...args))
-      return _chunk(...args)
+    // 获取排号信息
+    getQueueInfo () {
+      this.$_request({
+        url: '/call/query',
+        method: 'POST',
+        data: {
+        }
+      }).then(content => {
+        this.queueNotice = {
+          project: '手法项目排队',
+          NO: content.orderNumber,
+          waitNum: content.waitNumber
+        }
+      })
     }
   }
 </script>

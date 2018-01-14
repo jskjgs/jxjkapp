@@ -23,6 +23,8 @@ public class HospOrder extends PageBean{
     private String code;
     @ApiModelProperty("用户ID")
     private Long userId;
+    @ApiModelProperty("院区ID")
+    private Long areaId;
     @ApiModelProperty("类型（0 服务订单 1 商品订单）")
     private Integer type;
     @ApiModelProperty("状态 (0 已支付订单 1 未支付 )")
@@ -47,4 +49,5 @@ public class HospOrder extends PageBean{
     @Transient
     @ApiModelProperty("订单中商品些")
     private List<HospOrderProduct> hospOrderProductList;
+
 }

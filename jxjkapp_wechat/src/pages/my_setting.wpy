@@ -42,6 +42,7 @@
         url: '/other/logout',
         method: 'POST'
       }, false)
+      wx.removeStorageSync('userInfo')
     }
   }]
   export default class Index extends wepy.page {
