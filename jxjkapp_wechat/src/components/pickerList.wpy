@@ -30,12 +30,12 @@
             start="{{ currDate }}"
             bindchange="handlePickerChange({{ item.picker.valueBind }}, {{ item.picker.rangeBind }})">
             <view class="item-value">
-              <text>{{ pickeds[item.picker.valueBind] !== undefined ? (lists[item.picker.rangeBind][pickedIndex[item.picker.valueBind]].label || lists[item.picker.rangeBind][pickedIndex[item.picker.valueBind]] || pickedIndex[item.picker.valueBind]) : '请选择' }}</text>
+              <text>{{ pickeds[item.picker.valueBind] != undefined && pickeds[item.picker.valueBind] !== '' ? (lists[item.picker.rangeBind][pickedIndex[item.picker.valueBind]].label || lists[item.picker.rangeBind][pickedIndex[item.picker.valueBind]] || pickedIndex[item.picker.valueBind]) : '请选择' }}</text>
               <view class="arrow-rt"></view>
             </view>
           </picker>
           <view wx:else class="item-value">
-            <text>{{ pickeds[item.picker.valueBind] !== undefined ? (lists[item.picker.rangeBind][pickedIndex[item.picker.valueBind]].label || lists[item.picker.rangeBind][pickedIndex[item.picker.valueBind]] || pickeds[item.picker.valueBind]) : '未选择' }}</text>
+            <text>{{ pickeds[item.picker.valueBind] != undefined && pickeds[item.picker.valueBind] !== '' ? (lists[item.picker.rangeBind][pickedIndex[item.picker.valueBind]].label || lists[item.picker.rangeBind][pickedIndex[item.picker.valueBind]] || pickeds[item.picker.valueBind]) : '未选择' }}</text>
           </view>
         </view>
       </repeat>
