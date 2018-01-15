@@ -79,7 +79,8 @@ import axios from 'axios'
 export const fetchApi = (opts) => {
   const {type, ...cfg} = opts
   return axios(Object.assign({}, cfg, {
-    method: type || 'get'
+    method: type || 'get',
+    params: cfg.params || cfg.data
   }))
   .then((response) => {
     let successCb = opts.success

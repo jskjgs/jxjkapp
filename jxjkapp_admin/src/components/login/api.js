@@ -7,7 +7,7 @@ export default (data) => {
   return fetchApi({
     url: LOGIN_URL,
     type: 'post',
-    data: data,
+    params: data,
     success (data) {
       if (data.code === 200) {
         // 标识已登陆
