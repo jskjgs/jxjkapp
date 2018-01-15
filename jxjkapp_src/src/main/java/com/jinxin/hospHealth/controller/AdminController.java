@@ -12,6 +12,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Created by zbs on 2018/1/15.
  */
@@ -33,7 +36,10 @@ public class AdminController extends MyBaseController{
         DPreconditions.checkNotNull(adminUserInfoService.selectOneByPhoneAndPassword(account,password),
                 "用户不存在,请检查账号密码.",
                 true);
-        return ResponseWrapperSuccess(null);
+        String[] m = new String[]{"m_01","m_02","m_03","m_04","m_05","m_06","m_07","m_08"};
+        Map map = new HashMap<>();
+        map.put("permissionList",m);
+        return ResponseWrapperSuccess(map);
     }
 
     @ApiOperation(value = "新增admin用户")

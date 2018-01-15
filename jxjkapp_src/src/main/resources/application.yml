@@ -24,8 +24,8 @@ dynamic:
         updatePhone: 60
 
 oss:
-    accessKeyId:
-    accessKeySecret:
+    accessKeyId: LTAIpXq9myrkBxUV
+    accessKeySecret: sxg0punreq1ui7werfUQUfQ9RusIpo
     endpoint:
     bucketName:
     bucketUrl:
