@@ -56,7 +56,10 @@
         type: String, // 数值字符串
         default: '3'
       },
-      title: String
+      title: {
+        type: String,
+        default: ''
+      }
     }
 
     mixins = []

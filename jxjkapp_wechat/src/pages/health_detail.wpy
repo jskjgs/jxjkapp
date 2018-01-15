@@ -209,7 +209,7 @@
 </style>
 
 <template>
-  <CustomPage :isLastPage.sync="isLastPage">
+  <!-- <CustomPage :isLastPage.sync="isLastPage"> -->
     <view id="page-health-detail">
       <view class="top-box flex--hcenter flex--col">
         <view class="top-box__image">
@@ -290,14 +290,14 @@
         </repeat>
       </view>
     </view>
-  </CustomPage>
+  <!-- </CustomPage> -->
 </template>
 
 <script>
   import wepy from 'wepy'
 
   import CustomPage from '@/components/customPage'
-  import pageMixin from '@/mixins/page'
+  // import pageMixin from '@/mixins/page'
 
 //   评价和申请作废状态说明：
 
@@ -318,29 +318,11 @@
       CustomPage
     }
 
-    mixins = [pageMixin]
+    // mixins = [pageMixin]
 
     data = {
-      projectDesVisible: false
-      // listData: [{
-      //   _symptomSpread: undefined,
-      //   date: convertDate(new Date().getTime(), 'Y-M-D h:m:s'),
-      //   server: '赵雪晴',
-      //   symptom: Array.from({length: 120}).map(item => '字').join(''),
-      //   status: ''
-      // }, {
-      //   _symptomSpread: undefined,
-      //   date: convertDate(new Date().getTime(), 'Y-M-D h:m:s'),
-      //   server: '赵雪晴',
-      //   symptom: Array.from({length: 40}).map(item => '字').join(''),
-      //   status: 'commented'
-      // }, {
-      //   _symptomSpread: undefined,
-      //   date: convertDate(new Date().getTime(), 'Y-M-D h:m:s'),
-      //   server: '赵雪晴',
-      //   symptom: Array.from({length: 40}).map(item => '字').join(''),
-      //   status: 'processing'
-      // }]
+      projectDesVisible: false,
+      listData: []
     }
 
     computed = {
@@ -381,6 +363,25 @@
     }
 
     onShow () {
+      this.listData = [{
+        _symptomSpread: undefined,
+        date: this.$_convertDate(new Date().getTime(), 'Y-M-D h:m:s'),
+        server: '赵雪晴',
+        symptom: Array.from({length: 120}).map(item => '字').join(''),
+        status: ''
+      }, {
+        _symptomSpread: undefined,
+        date: this.$_convertDate(new Date().getTime(), 'Y-M-D h:m:s'),
+        server: '赵雪晴',
+        symptom: Array.from({length: 40}).map(item => '字').join(''),
+        status: 'commented'
+      }, {
+        _symptomSpread: undefined,
+        date: this.$_convertDate(new Date().getTime(), 'Y-M-D h:m:s'),
+        server: '赵雪晴',
+        symptom: Array.from({length: 40}).map(item => '字').join(''),
+        status: 'processing'
+      }]
     }
 
     // 初始化症状文字
@@ -410,8 +411,8 @@
     }
     // 获取记录列表
     getList () {
-      return this.initData({
-      })
+      // return this.initData({
+      // })
     }
   }
 </script>

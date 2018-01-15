@@ -41,13 +41,13 @@
 </style>
 
 <template>
-  <CustomPage :isLastPage.sync="isLastPage">
+  <!-- <CustomPage :isLastPage.sync="isLastPage"> -->
     <view id="page-my-vip">
       <view class="my-balance flex--center main-bg">
         余额：{{ balance }}元
       </view>
       <view class="list-wrap">
-        <repeat for="{{ listData }}" key="index" item="item" index="index">
+        <repeat for="{{ listData2 }}" key="index" item="item" index="index">
           <view class="list-item">
             <view class="row flex--vcenter--sb">
               <text class="order-project">{{ item.productName }}</text>
@@ -66,7 +66,7 @@
         </repeat>
       </view>
     </view>
-  </CustomPage>
+  <!-- </CustomPage> -->
 </template>
 
 <script>
@@ -86,7 +86,16 @@
     mixins = [listPageMixin]
 
     data = {
-      balance: '' // 余额
+      listData2: [{
+        date: '2018-01-01',
+        productName: 'Thermage 热玛吉',
+        hospital: '锦江附属医院'
+      }, {
+        date: '2018-01-01',
+        productName: 'Thermage 热玛吉',
+        hospital: '锦江附属医院'
+      }],
+      balance: '20000' // 余额
     }
 
     computed = {
