@@ -33,10 +33,11 @@ public class UserBalanceController extends MyBaseController{
     @ApiOperation(value = "查询用户余额信息")
     @RequestMapping(value="/", method = RequestMethod.GET)
     @ResponseBody
-    public JSONObject select(
-            @ApiParam(value = "用户ID", required = false) @RequestParam(required = false) Long userId) throws Exception {
+    public JSONObject select() throws Exception {
         HospUserBalance hospUserBalance = new HospUserBalance();
-        hospUserBalance.setUserId(userId);
+        hospUserBalance.setUserId(DPreconditions.checkNotNull(getCurrentUserId(),
+                Language.get("user.id-null"),
+                true));
         return ResponseWrapperSuccess(userBalanceService.select(hospUserBalance));
     }
 
@@ -44,11 +45,9 @@ public class UserBalanceController extends MyBaseController{
     @RequestMapping(value="/pay", method = RequestMethod.POST)
     @ResponseBody
     public JSONObject pay(
-            @ApiParam(value = "手机号码", required = false) @RequestParam(required = false) String phone,
-            @ApiParam(value = "用户ID", required = false) @RequestParam(required = false) Long userId,
             @ApiParam(value = "金额 ", required = true) @RequestParam(required = true) double amount) throws Exception {
-        DPreconditions.checkState(phone != null || userId !=null,
-                Language.get("user-balance.user-id-phone-null"),
+        Long userId = DPreconditions.checkNotNull(getCurrentUserId(),
+                Language.get("user.id-null"),
                 true);
         DPreconditions.checkNotNull(amount,
                 Language.get("user-balance.amount-null"),
@@ -57,9 +56,7 @@ public class UserBalanceController extends MyBaseController{
                 Language.get("user-balance.capacity"),
                 true);
         HospUserInfo hospUserInfo = DPreconditions.checkNotNull(
-                userId != null ?
-                        userInfoService.selectOne(userId) :
-                        userInfoService.selectOneByPhone(phone),
+                        userInfoService.selectOne(userId),
                 Language.get("user.select-not-exist"),
                 true);
         //如果用户信息存在,用户余额信息不存在,先创建用户余额信息.
@@ -84,19 +81,15 @@ public class UserBalanceController extends MyBaseController{
     @RequestMapping(value="/lock", method = RequestMethod.POST)
     @ResponseBody
     public JSONObject lock(
-            @ApiParam(value = "手机号码", required = false) @RequestBody(required = false) String phone,
-            @ApiParam(value = "用户ID", required = false) @RequestBody(required = false) Long userId,
             @ApiParam(value = "金额", required = true) @RequestBody double amount) throws Exception {
-        DPreconditions.checkState(phone != null || userId !=null,
-                Language.get("user-balance.user-id-phone-null"),
+        Long userId = DPreconditions.checkNotNull(getCurrentUserId(),
+                Language.get("user.id-null"),
                 true);
         DPreconditions.checkNotNull(amount,
                 Language.get("user-balance.amount-null"),
                 true);
         HospUserInfo hospUserInfo = DPreconditions.checkNotNull(
-                userId != null ?
-                        userInfoService.selectOne(userId) :
-                        userInfoService.selectOneByPhone(phone),
+                userInfoService.selectOne(userId),
                 Language.get("user.select-not-exist"),
                 true);
         DPreconditions.checkNotNull(userBalanceService.selectOne(hospUserInfo.getId()) == null,

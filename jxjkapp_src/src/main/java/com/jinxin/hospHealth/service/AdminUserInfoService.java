@@ -38,10 +38,10 @@ public class AdminUserInfoService implements BaseService<HospAdminUserInfo,HospA
         DPreconditions.checkNotNullAndEmpty(hospAdminUserInfo.getPhone(),
                 Language.get("user.phone-null"),
                 true);
-        DPreconditions.checkState(selectOneByPhone(hospAdminUserInfo.getPhone())!=null,
+        DPreconditions.checkState(selectOneByPhone(hospAdminUserInfo.getPhone())==null,
                 Language.get("user.phone-repeat"),
                 true);
-        DPreconditions.checkState(selectOneByPhone(hospAdminUserInfo.getPassword())!=null,
+        DPreconditions.checkState(hospAdminUserInfo.getPassword()!=null,
                 Language.get("user.password-null"),
                 true);
         Date date = new Date();

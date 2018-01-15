@@ -7,6 +7,8 @@ import com.jinxin.hospHealth.service.OtherService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
+import javax.servlet.http.HttpServletRequest;
+
 /**
  * Created by zbs on 2017/12/12.
  */
@@ -18,13 +20,14 @@ public class MyBaseController extends BaseController {
 
     @Override
     public Long getCurrentUserId() {
-
-        return null;
+        HttpServletRequest request = getCurrentRequest();
+        return request.getAttribute("userId") == null ? null : Long.valueOf(String.valueOf(request.getAttribute("userId")));
     }
 
     @Override
     public String getToken() {
-        return null;
+        HttpServletRequest request = getCurrentRequest();
+        return request.getHeader("Authorization");
     }
 
     // 响应包装---成功

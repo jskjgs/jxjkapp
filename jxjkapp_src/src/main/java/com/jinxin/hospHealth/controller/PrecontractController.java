@@ -2,6 +2,8 @@ package com.jinxin.hospHealth.controller;
 
 import com.alibaba.fastjson.JSONObject;
 import com.doraemon.base.controller.bean.PageBean;
+import com.doraemon.base.guava.DPreconditions;
+import com.doraemon.base.language.Language;
 import com.github.pagehelper.PageInfo;
 import com.jinxin.hospHealth.controller.protocol.VO.PrecontractVO;
 import com.jinxin.hospHealth.controller.protocol.VO.ProductVO;
@@ -47,6 +49,9 @@ public class PrecontractController extends MyBaseController{
     @ResponseBody
     public JSONObject add(
             @ApiParam(value = "预约信息", required = true) @RequestBody HospPrecontract precontract) throws Exception {
+        precontract.setUserId(DPreconditions.checkNotNull(getCurrentUserId(),
+                Language.get("user.id-null"),
+                true));
         Map<String,Long> map = new HashMap<>();
         precontractService.add(precontract);
         map.put("id",precontract.getId());
@@ -58,6 +63,9 @@ public class PrecontractController extends MyBaseController{
     @ResponseBody
     public JSONObject update(
             @ApiParam(value = "预约信息", required = true)  @RequestBody HospPrecontract precontract) throws Exception {
+        precontract.setUserId(DPreconditions.checkNotNull(getCurrentUserId(),
+                Language.get("user.id-null"),
+                true));
         precontractService.update(precontract);
         return ResponseWrapperSuccess(null);
     }
@@ -67,7 +75,12 @@ public class PrecontractController extends MyBaseController{
     @ResponseBody
     public JSONObject selectOne(
             @ApiParam(value = "预约ID", required = true) @RequestParam(value = "id", required = true) Long id) throws Exception {
-        HospPrecontract hospProduct = precontractService.selectOne(id);
+        HospPrecontract hospPrecontract =  new HospPrecontract();
+        hospPrecontract.setUserId(DPreconditions.checkNotNull(getCurrentUserId(),
+                Language.get("user.id-null"),
+                true));
+        hospPrecontract.setId(id);
+        HospPrecontract hospProduct = precontractService.selectOne(hospPrecontract);
         return ResponseWrapperSuccess(conversion(hospProduct));
     }
 
@@ -76,7 +89,16 @@ public class PrecontractController extends MyBaseController{
     @ResponseBody
     public JSONObject selectAll(
             @ApiParam(value = "分页信息", required = false)  @RequestBody(required = false) PageBean pageBean) throws Exception {
-        PageInfo pageInfo =  precontractService.selectAll(pageBean);
+        HospPrecontract hospPrecontract =  new HospPrecontract();
+        hospPrecontract.setUserId(DPreconditions.checkNotNull(getCurrentUserId(),
+                Language.get("user.id-null"),
+                true));
+        if(pageBean != null) {
+            hospPrecontract.setPageNum(pageBean.getPageNum());
+            hospPrecontract.setPageSize(pageBean.getPageSize());
+            hospPrecontract.setField(pageBean.getField());
+        }
+        PageInfo pageInfo =  precontractService.select(hospPrecontract);
         List<PrecontractVO> respList = new ArrayList<>();
         for(Object info : pageInfo.getList()) {
             respList.add(conversion((HospPrecontract) info));
@@ -90,6 +112,9 @@ public class PrecontractController extends MyBaseController{
     @ResponseBody
     public JSONObject select(
             @ApiParam(value = "预约信息", required = true)  @RequestBody(required = true) HospPrecontract precontract) throws Exception {
+        precontract.setUserId(DPreconditions.checkNotNull(getCurrentUserId(),
+                Language.get("user.id-null"),
+                true));
         PageInfo pageInfo =  precontractService.select(precontract);
         List<PrecontractVO> respList = new ArrayList<>();
         for(Object info : pageInfo.getList()) {

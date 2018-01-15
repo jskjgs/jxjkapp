@@ -2,6 +2,8 @@ package com.jinxin.hospHealth.controller;
 
 import com.alibaba.fastjson.JSONObject;
 import com.doraemon.base.controller.bean.PageBean;
+import com.doraemon.base.guava.DPreconditions;
+import com.doraemon.base.language.Language;
 import com.jinxin.hospHealth.dao.models.HospNews;
 import com.jinxin.hospHealth.dao.models.HospPatientInfo;
 import com.jinxin.hospHealth.service.PatientInfoService;
@@ -33,6 +35,9 @@ public class PatientInfoController extends MyBaseController{
     @ResponseBody
     public JSONObject add(
             @ApiParam(value = "就诊人信息", required = true) @RequestBody HospPatientInfo patientInfo) throws Exception {
+        patientInfo.setUserId(DPreconditions.checkNotNull(getCurrentUserId(),
+                Language.get("user.id-null"),
+                true));
         Map<String,Long> map = new HashMap<>();
         patientInfoService.add(patientInfo);
         map.put("id",patientInfo.getId());
@@ -44,6 +49,9 @@ public class PatientInfoController extends MyBaseController{
     @ResponseBody
     public JSONObject update(
             @ApiParam(value = "就诊人信息", required = true)  @RequestBody HospPatientInfo patientInfo) throws Exception {
+        patientInfo.setUserId(DPreconditions.checkNotNull(getCurrentUserId(),
+                Language.get("user.id-null"),
+                true));
         patientInfoService.update(patientInfo);
         return ResponseWrapperSuccess(null);
     }
@@ -53,8 +61,12 @@ public class PatientInfoController extends MyBaseController{
     @ResponseBody
     public JSONObject selectOne(
             @ApiParam(value = "就诊人ID", required = true) @RequestParam(value = "id", required = true) Long id) throws Exception {
-
-        return ResponseWrapperSuccess(patientInfoService.selectOne(id));
+        HospPatientInfo hospPatientInfo = new HospPatientInfo();
+        hospPatientInfo.setUserId(DPreconditions.checkNotNull(getCurrentUserId(),
+                Language.get("user.id-null"),
+                true));
+        hospPatientInfo.setId(id);
+        return ResponseWrapperSuccess(patientInfoService.selectOne(hospPatientInfo));
     }
 
     @ApiOperation(value = "查询全部就诊人信息",response = HospNews.class)
@@ -62,6 +74,15 @@ public class PatientInfoController extends MyBaseController{
     @ResponseBody
     public JSONObject selectAll(
             @ApiParam(value = "分页信息", required = false)  @RequestBody(required = false) PageBean pageBean) throws Exception {
+        HospPatientInfo hospPatientInfo = new HospPatientInfo();
+        hospPatientInfo.setUserId(DPreconditions.checkNotNull(getCurrentUserId(),
+                Language.get("user.id-null"),
+                true));
+        if(pageBean != null) {
+            hospPatientInfo.setPageNum(pageBean.getPageNum());
+            hospPatientInfo.setPageSize(pageBean.getPageSize());
+            hospPatientInfo.setField(pageBean.getField());
+        }
         return ResponseWrapperSuccess(patientInfoService.selectAll(pageBean));
     }
 
@@ -70,10 +91,11 @@ public class PatientInfoController extends MyBaseController{
     @ResponseBody
     public JSONObject select(
             @ApiParam(value = "就诊人信息", required = true)  @RequestBody HospPatientInfo patientInfo) throws Exception {
+        patientInfo.setUserId(DPreconditions.checkNotNull(getCurrentUserId(),
+                Language.get("user.id-null"),
+                true));
         return ResponseWrapperSuccess(patientInfoService.select(patientInfo));
     }
-
-
 
     @ApiOperation(value = "查询单个就诊人信息---admin",response = HospPatientInfo.class)
     @RequestMapping(value="/admin/", method = RequestMethod.GET)

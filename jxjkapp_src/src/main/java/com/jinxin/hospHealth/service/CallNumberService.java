@@ -4,16 +4,20 @@ import com.doraemon.base.controller.bean.PageBean;
 import com.doraemon.base.exceptions.ShowExceptions;
 import com.doraemon.base.guava.DPreconditions;
 import com.doraemon.base.language.Language;
+import com.doraemon.base.redis.RedisOperation;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.github.pagehelper.util.StringUtil;
 import com.jinxin.hospHealth.dao.DaoEnumValid;
 import com.jinxin.hospHealth.dao.mapper.HospCallNumberMapper;
 import com.jinxin.hospHealth.dao.models.HospCallNumber;
+import com.jinxin.hospHealth.dao.models.HospUserInfo;
 import com.jinxin.hospHealth.dao.modelsEnum.CallNumberEnum;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.annotation.Validated;
 
 import java.util.Date;
 
@@ -21,45 +25,75 @@ import java.util.Date;
  * Created by zbs on 2018/1/5.
  */
 @Service
-public class CallNumberService implements BaseService<HospCallNumber,HospCallNumber> {
+public class CallNumberService {
 
     @Autowired
     UserInfoService userInfoService;
-
+    @Autowired
+    RedisOperation redisOperation;
     @Autowired
     HospCallNumberMapper hospCallNumberMapper;
 
+    @Value("${call-number.waiting-que-name}")
+    String waitingQueName;
+    @Value("${call-number.after-call-que-name}")
+    String afterCallQueName;
     /**
      * 增加排队叫号信息
-     * @param hospCallNumber
+     * @param phone
      * @throws Exception
      */
-    @Override
     @Transactional
-    public HospCallNumber add(HospCallNumber hospCallNumber) throws Exception {
-        DPreconditions.checkNotNull(hospCallNumber.getPatientInfoId(),
-                Language.get("call-number.patient-id-null"),
+    public void add(String phone) throws Exception {
+        HospUserInfo userInfo = DPreconditions.checkNotNull(userInfoService.selectOneByPhone(phone),
+                Language.get("user.select-not-exist"),
                 true);
-        DPreconditions.checkNotNull(userInfoService.selectOne(hospCallNumber.getPatientInfoId()),
-                Language.get("patient.select-not-exist"),
+        DPreconditions.checkState(
+                !redisOperation.usePool().sismember(waitingQueName,String.valueOf(userInfo.getId())),
+                Language.get("call-number.user-id-exist"),
                 true);
-        HospCallNumber callNumber = new HospCallNumber();
-        callNumber.setPatientInfoId(hospCallNumber.getPatientInfoId());
-        callNumber.setState(CallNumberEnum.NORMAL.getCode());
-        callNumber.setCreateDate(new Date());
-        callNumber.setUpdateDate(new Date());
-        DPreconditions.checkState(hospCallNumberMapper.insertSelectiveReturnId(callNumber) == 1,
-                Language.get("service.save-failure"),
-                true);
-        return callNumber;
+        redisOperation.usePool().sadd(waitingQueName,String.valueOf(userInfo.getId()));
     }
+
+    public void add(Long userId) throws Exception {
+        HospUserInfo userInfo = DPreconditions.checkNotNull(userInfoService.selectOne(userId),
+                Language.get("user.select-not-exist"),
+                true);
+        DPreconditions.checkState(
+                !redisOperation.usePool().sismember(waitingQueName,String.valueOf(userInfo.getId())),
+                Language.get("call-number.user-id-exist"),
+                true);
+        redisOperation.usePool().sadd(waitingQueName,String.valueOf(userInfo.getId()));
+    }
+
+    /**
+     * 过号恢复
+     * @param phone
+     * @throws Exception
+     */
+    public void recover(String phone) throws Exception {
+        HospUserInfo userInfo = DPreconditions.checkNotNull(userInfoService.selectOneByPhone(phone),
+                Language.get("user.select-not-exist"),
+                true);
+        DPreconditions.checkState(
+                !redisOperation.usePool().sismember(waitingQueName,String.valueOf(userInfo.getId())),
+                Language.get("call-number.user-id-exist"),
+                true);
+        DPreconditions.checkState(
+                redisOperation.usePool().sismember(afterCallQueName,String.valueOf(userInfo.getId())),
+                Language.get("call-number.after-Call-not-exist"),
+                true);
+        redisOperation.usePool().smove(afterCallQueName,waitingQueName,String.valueOf(userInfo.getId()));
+        //redisOperation.usePool()
+    }
+
 
     /**
      * 更新排队叫号信息
      * @param hospCallNumber
      * @throws Exception
      */
-    @Override
+
     @Transactional
     public void update(HospCallNumber hospCallNumber) throws Exception {
         DPreconditions.checkNotNull(hospCallNumber.getId(),
@@ -85,7 +119,7 @@ public class CallNumberService implements BaseService<HospCallNumber,HospCallNum
      * @param id
      * @throws Exception
      */
-    @Override
+
     @Transactional
     public void deleteOne(Long id) throws Exception {
         DPreconditions.checkNotNull(id,
@@ -104,7 +138,7 @@ public class CallNumberService implements BaseService<HospCallNumber,HospCallNum
      * @param id
      * @throws Exception
      */
-    @Override
+
     public void setStateAsInvalid(Long id) throws Exception {
         throw new ShowExceptions(Language.get("service.invalid-method"));
     }
@@ -115,7 +149,7 @@ public class CallNumberService implements BaseService<HospCallNumber,HospCallNum
      * @return
      * @throws Exception
      */
-    @Override
+
     public HospCallNumber selectOne(Long id) throws Exception {
         DPreconditions.checkNotNull(id,
                 Language.get("call-number.id-null"),
@@ -129,7 +163,7 @@ public class CallNumberService implements BaseService<HospCallNumber,HospCallNum
      * @return
      * @throws Exception
      */
-    @Override
+
     public PageInfo<HospCallNumber> select(HospCallNumber hospCallNumber) throws Exception {
         PageHelper.startPage(hospCallNumber.getPageNum(), hospCallNumber.getPageSize());
         if (StringUtil.isNotEmpty(hospCallNumber.getField()))
@@ -150,7 +184,7 @@ public class CallNumberService implements BaseService<HospCallNumber,HospCallNum
      * @return
      * @throws Exception
      */
-    @Override
+
     public PageInfo<HospCallNumber> selectAll(PageBean pageBean) throws Exception {
         if(pageBean == null)
             pageBean = new PageBean();
@@ -160,17 +194,17 @@ public class CallNumberService implements BaseService<HospCallNumber,HospCallNum
         return new PageInfo(hospCallNumberMapper.selectAll());
     }
 
-    @Override
+
     public HospCallNumber selectOneAdmin(Long id) throws Exception {
         return selectOne(id);
     }
 
-    @Override
+
     public PageInfo<HospCallNumber> selectAdmin(HospCallNumber hospCallNumber) throws Exception {
         return select(hospCallNumber);
     }
 
-    @Override
+
     public PageInfo<HospCallNumber> selectAllAdmin(PageBean pageBean) throws Exception {
         return selectAll(pageBean);
     }

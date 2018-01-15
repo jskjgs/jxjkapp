@@ -1,6 +1,5 @@
 package com.jinxin.hospHealth.service;
 
-import com.alibaba.fastjson.JSON;
 import com.doraemon.base.controller.bean.PageBean;
 import com.doraemon.base.exceptions.ShowExceptions;
 import com.doraemon.base.guava.DPreconditions;
@@ -25,7 +24,6 @@ import com.jinxin.hospHealth.dao.modelsEnum.OrderStateEnum;
 import com.jinxin.hospHealth.dao.modelsEnum.OrderTypeEnum;
 import lombok.extern.log4j.Log4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -73,6 +71,9 @@ public class OrderService implements BaseService<HospOrder,OrderInfoPO> {
                 && orderInfoPO.getOrderProductPOList().size()>0,
                 Language.get("order.sku-null"),
                 true);
+        DPreconditions.checkNotNullAndEmpty(orderInfoPO.getOperationName(),
+                Language.get("order.operation-name-null"),
+                true);
         DaoEnumValid.checkOrderState(orderInfoPO.getState());
         DaoEnumValid.checkOrderType(orderInfoPO.getType());
         //创建 order product list 对象
@@ -87,6 +88,7 @@ public class OrderService implements BaseService<HospOrder,OrderInfoPO> {
         add.setOrderSalesPrice(orderSalesPrice(orderProductList));
         add.setCreateDate(new Date());
         add.setUpdateDate(new Date());
+        add.setOperationName(orderInfoPO.getOperationName());
         //开始保存
         DPreconditions.checkState(hospOrderMapper.insertReturnId(add) ==1,
                 Language.get("service.save-failure"),
@@ -278,6 +280,21 @@ public class OrderService implements BaseService<HospOrder,OrderInfoPO> {
     }
 
     /**
+     * 根据条件查询一个订单信息
+     * @param hospOrder
+     * @return
+     * @throws Exception
+     */
+    public HospOrder selectOne(HospOrder hospOrder) throws Exception {
+        hospOrder.setEnable(EnableEnum.ENABLE_NORMAL.getCode());
+        HospOrder req = hospOrderMapper.selectOne(hospOrder);
+        if(req != null) {
+            req.setHospOrderProductList(selectOrderProductListByOrderId(req.getId()));
+        }
+        return req;
+    }
+
+    /**
      * 根据条件查询订单信息
      * @param orderInfoPO
      * @return
@@ -292,7 +309,6 @@ public class OrderService implements BaseService<HospOrder,OrderInfoPO> {
             PageHelper.orderBy(orderInfoPO.getDefaultField());
         }
         orderInfoPO.setEnable(EnableEnum.ENABLE_NORMAL.getCode());
-        log.info("order info po : "+JSON.toJSON(orderInfoPO));
         List<HospOrder> req = hospOrderMapper.selectByExampleByCustom(orderInfoPO);
         return new PageInfo(selectOrderProductListByOrderId(req));
     }

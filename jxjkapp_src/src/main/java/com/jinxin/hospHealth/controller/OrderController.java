@@ -2,6 +2,8 @@ package com.jinxin.hospHealth.controller;
 
 import com.alibaba.fastjson.JSONObject;
 import com.doraemon.base.controller.bean.PageBean;
+import com.doraemon.base.guava.DPreconditions;
+import com.doraemon.base.language.Language;
 import com.jinxin.hospHealth.controller.protocol.PO.OrderInfoPO;
 import com.jinxin.hospHealth.dao.models.HospOrder;
 import com.jinxin.hospHealth.dao.modelsEnum.OrderPayTypeEnum;
@@ -37,6 +39,9 @@ public class OrderController extends MyBaseController {
     @ResponseBody
     public JSONObject add(
             @ApiParam(value = "订单信息", required = true) @RequestBody OrderInfoPO orderInfoPO) throws Exception {
+        orderInfoPO.setUserId(DPreconditions.checkNotNull(getCurrentUserId(),
+                Language.get("user.id-null"),
+                true));
         return ResponseWrapperSuccess(orderService.add(orderInfoPO));
     }
 
@@ -45,22 +50,39 @@ public class OrderController extends MyBaseController {
     @ResponseBody
     public JSONObject selectOne(
             @ApiParam(value = "订单ID", required = true) @RequestParam(value = "id", required = true) Long id) throws Exception {
-        return ResponseWrapperSuccess(orderService.selectOne(id));
+        HospOrder hospOrder = new HospOrder();
+        hospOrder.setUserId(DPreconditions.checkNotNull(getCurrentUserId(),
+                Language.get("user.id-null"),
+                true));
+        hospOrder.setId(id);
+        return ResponseWrapperSuccess(orderService.selectOne(hospOrder));
     }
 
-    @ApiOperation(value = "查询全部订单信息",response = HospOrder.class)
+    @ApiOperation(value = "查询该用户全部订单信息",response = HospOrder.class)
     @RequestMapping(value="/all", method = RequestMethod.POST)
     @ResponseBody
     public JSONObject selectAll(
             @ApiParam(value = "分页信息", required = false)  @RequestBody(required = false) PageBean pageBean) throws Exception {
-        return ResponseWrapperSuccess(orderService.selectAll(pageBean));
+        OrderInfoPO orderInfoPO = new OrderInfoPO();
+        orderInfoPO.setUserId(DPreconditions.checkNotNull(getCurrentUserId(),
+                Language.get("user.id-null"),
+                true));
+        if(pageBean != null) {
+            orderInfoPO.setPageNum(pageBean.getPageNum());
+            orderInfoPO.setPageSize(pageBean.getPageSize());
+            orderInfoPO.setField(pageBean.getField());
+        }
+        return ResponseWrapperSuccess(orderService.select(orderInfoPO));
     }
 
-    @ApiOperation(value = "根据条件查询订单信息",response = HospOrder.class)
+    @ApiOperation(value = "根据条件查询本用户的订单信息",response = HospOrder.class)
     @RequestMapping(value="/query", method = RequestMethod.POST)
     @ResponseBody
     public JSONObject select(
             @ApiParam(value = "订单信息", required = true)  @RequestBody OrderInfoPO orderInfoPO) throws Exception {
+        orderInfoPO.setUserId(DPreconditions.checkNotNull(getCurrentUserId(),
+                Language.get("user.id-null"),
+                true));
         return ResponseWrapperSuccess(orderService.select(orderInfoPO));
     }
 

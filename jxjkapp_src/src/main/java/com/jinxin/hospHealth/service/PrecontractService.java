@@ -9,7 +9,9 @@ import com.github.pagehelper.PageInfo;
 import com.github.pagehelper.util.StringUtil;
 import com.jinxin.hospHealth.dao.mapper.HospPrecontractMapper;
 import com.jinxin.hospHealth.dao.models.HospPrecontract;
+import com.jinxin.hospHealth.dao.models.HospUserInfo;
 import com.jinxin.hospHealth.dao.modelsEnum.PrecontractEnum;
+import com.jinxin.hospHealth.dao.modelsEnum.UserVipEnum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -43,8 +45,11 @@ public class PrecontractService implements BaseService<HospPrecontract,HospPreco
         DPreconditions.checkNotNull(hospPrecontract.getPrecontractDate(),
                 Language.get("precontract.precontract-time-null"),
                 true);
-        DPreconditions.checkNotNull(userInfoService.selectOne(hospPrecontract.getUserId()),
+        HospUserInfo userInfo = DPreconditions.checkNotNull(userInfoService.selectOne(hospPrecontract.getUserId()),
                 Language.get("user.select-not-exist"),
+                true);
+        DPreconditions.checkState(userInfo.getIsVip().equals(UserVipEnum.VIP.getCode()),
+                Language.get("precontract.user-must-is-vip"),
                 true);
         DPreconditions.checkNotNull(skuService.selectOne(hospPrecontract.getProductSkuId()),
                 Language.get("productSku.id-not-exist"),
@@ -119,6 +124,10 @@ public class PrecontractService implements BaseService<HospPrecontract,HospPreco
                 Language.get("user.id-null"),
                 true);
         return hospPrecontractMapper.selectByPrimaryKey(id);
+    }
+
+    public HospPrecontract selectOne(HospPrecontract hospPrecontract) throws Exception {
+        return hospPrecontractMapper.selectOne(hospPrecontract);
     }
 
     /**

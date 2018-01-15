@@ -17,10 +17,39 @@ dynamic:
         register: 300
         token: 31536000
         updatePhone: 300
+    #下一次发送的时间
     nextSendTime:
         login: 60
         register: 60
         updatePhone: 60
+
+oss:
+    accessKeyId:
+    accessKeySecret:
+    endpoint:
+    bucketName:
+    bucketUrl:
+
+sms:
+    region-id: cn-shenzhen
+    access-key-id: 24766573
+    access-key-secret: 7084a26058cadb98140bce2e0848dd72
+    #短信API产品名称（短信产品名固定，无需修改）
+    product: Dysmsapi
+    #短信API产品域名（接口地址固定，无需修改）
+    domain: dysmsapi.aliyuncs.com
+    #短信签名
+    name: 锦欣妇幼儿童保健医院
+
+nginx:
+    html-path: /docker/html
+    new-html-prefix: http://182.92.78.118:9001/hospHealth/new
+
+call-number:
+    #排队叫号系统等待的队列
+    waiting-que-name: call-number-waiting-que
+    #排队叫号系统呼叫过的号码队列
+    after-call-que-name: after-call-que
 
 order:
     #需要关闭的订单队列

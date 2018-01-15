@@ -20,6 +20,8 @@ public class OrderInfoPO extends PageBean{
     private Long id;
     @ApiModelProperty("订单code")
     private String code;
+    @ApiModelProperty("操作人员名称")
+    private String operationName;
     @ApiModelProperty("用户ID")
     private Long userId;
     @ApiModelProperty("类型（0 服务订单 1 商品订单）")
