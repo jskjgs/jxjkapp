@@ -7,6 +7,7 @@
     margin-bottom: 44rpx;
   }
   .sign-panel {
+    width: 100%;
     height: 350rpx;
     background: #F6D6AF;
   }
@@ -20,7 +21,24 @@
       innerStyle="width: 660rpx; height: 610rpx; padding: 60rpx 30rpx;">
       <view class="sign-dialog__inner">
         <view class="sign-dialog-title flex--center">{{ title }}</view>
-        <view class="sign-panel"></view>
+        <canvas 
+          class="sign-panel" 
+          canvas-id="myCanvasId"
+          @touchstart="handleTouchstart"
+          @touchmove="handleTouchmove">
+        </canvas>
+        <view class="btn-wrap flex--vcenter">
+          <button 
+            type="default" 
+            class="flex-item" 
+            style="margin-right: 100rpx;"
+            @tap="handleReDraw">
+            重写</button>
+          <button 
+            type="primary" 
+            class="flex-item"
+            @tap="handleSubmitDraw">提交</button>
+        </view>
       </view>
     </CustomDialog>
   </view>
@@ -36,22 +54,28 @@
     }
 
     props = {
-      visible: {
+      readonly: {
+        type: Boolean,
+        default: false
+      },
+      touchList: {
+        type: Array,
+        default: [],
+        twoWay: true
+      },
+      visible: { // 控制弹框显示
         type: Boolean,
         twoWay: true,
         default: false
       },
-      title: {
+      title: { // 弹框标题
         type: String,
         default: ''
       }
     }
 
-    mixins = []
-
     data = {
-      dialogVisible: false,
-      results: []
+      dialogVisible: false
     }
 
     watch = {
@@ -61,6 +85,11 @@
       },
       dialogVisible (newVal) {
         this.visible = newVal
+        this.$apply()
+      },
+      // 监听画线节点数据变化
+      touchList (newVal) {
+        this.drawStroke()
       }
     }
 
@@ -68,38 +97,50 @@
     }
 
     methods = {
-      // 搜索
-      handleSearch ({ detail }) {
-        // const value = detail.value
-        this.results = [{
-          id: 1,
-          name: '员工1',
-          jobId: '34324324'
-        }, {
-          id: 2,
-          name: '员工2',
-          jobId: '90920392'
-        }]
+      handleTouchstart ({ touches }) {
+        this.saveActions(touches, 'start')
       },
-      // 取消搜索
-      handleCancelSearch () {
-        this.visible = false
-        this.results = []
+      handleTouchmove ({ touches }) {
+        this.saveActions(touches, 'move')
       },
-      // 选择搜索结果
-      handlePickItem (item) {
-        this.$emit('picked', item)
-        this.results = []
-        this.visible = false
+      // 重写
+      handleReDraw () {
+        const ctx = this.canvasCtx
+        this.touchList = []
+        ctx.draw()
+      },
+      // 提交签名
+      handleSubmitDraw () {
       }
     }
 
-    events = {
+    onLoad () {
+      this.canvasCtx = wx.createCanvasContext('myCanvasId')
     }
 
-    onload () {
-      console.log('onload')
-      // this.dialogVisible = this.visible
+    // 记录画笔历史节点
+    saveActions (touches, type) {
+      if (this.readonly) {
+        return
+      }
+      const touch = touches[0]
+      this.touchList.push({
+        type,
+        ...touch
+      })
+    }
+    // 画线
+    drawStroke (touches, type) {
+      const ctx = this.canvasCtx
+      this.touchList.forEach((item) => {
+        if (item.type === 'start') {
+          ctx.moveTo(item.x, item.y)
+        } else if (item.type === 'move') {
+          ctx.lineTo(item.x, item.y)
+        }
+      })
+      ctx.stroke()
+      ctx.draw()
     }
   }
 </script>

@@ -2,7 +2,8 @@
   <view class="comp-serviceDetail">
     <SignDialog 
       :visible.sync="signDialogVisible"
-      :title.sync="signDialogTitle"/>
+      :title.sync="signDialogTitle" 
+      :touchList.sync="signDialogTouchList"/>
     <SearchPage 
       :visible.sync="onSearchPartner"
       @picked.user="handlePartnerPicked" />
@@ -125,6 +126,7 @@
     data = {
       signDialogVisible: false, // 签名弹框显示状态
       signDialogTitle: '', // 签名弹框标题
+      signDialogTouchList: [], // 签名touchList
       onSearchPartner: false, // 标示在搜索
       diagnoseInputDisabled: true, // 诊断内容输入框是否禁用
       partnerPickerIndex: 0, // 合伙人类型选择
@@ -151,6 +153,8 @@
         partnerId: '', // 合伙人id
         templateId: '', // 诊断模板id
         templateName: '', // 诊断模板name
+        doctorSignTouchList: [], // 技师签名touch数组
+        userSignTouchList: [] // 用户签名touch数组
       },
       templateContent: '', // 诊断模板内容
       consumeInfo: '', // 消费备注
@@ -169,8 +173,6 @@
     }
 
     watch = {
-      signDialogVisible (newVal) {
-      },
       formData (newVal) {
         if (newVal.templateName === '') {
           this.diagnoseInputDisabled = true
@@ -182,6 +184,13 @@
       },
       templateContent (templateContent) {
         console.log('templateContent', templateContent)
+      },
+      signDialogTouchList (newVal) {
+        if (this.signDialogType === 'doctor') {
+          this.storageData.doctorSignTouchList = newVal
+        } else if (this.signDialogType === 'user') {
+          this.storageData.userSignTouchList = newVal
+        }
       }
     }
 
@@ -212,10 +221,13 @@
       },
       // 显示签字弹框
       showSignDialog (type) {
+        this.signDialogType = type
         if (type === 'doctor') {
           this.signDialogTitle = '技师签名'
+          this.signDialogTouchList = this.storageData.doctorSignTouchList
         } else if (type === 'user') {
           this.signDialogTitle = '用户签名'
+          this.signDialogTouchList = this.storageData.userSignTouchList
         }
         this.signDialogVisible = true
       },

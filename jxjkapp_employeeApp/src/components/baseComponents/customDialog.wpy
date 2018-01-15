@@ -22,7 +22,10 @@
 </style>
 
 <template>
-  <view class="comp-dialog" hidden="{{ !visible }}">
+  <view 
+    class="comp-dialog" 
+    hidden="{{ !visible }}" 
+    @touchmove.stop="handleStopTouchmove">
     <view class="dialog__modal" @tap="modalClick"></view>
     <view class="dialog__inner" style="{{ innerStyle }}">
       <slot></slot>
@@ -57,6 +60,7 @@
     }
 
     methods = {
+      handleStopTouchmove () {},
       modalClick () {
         this.visible = false
       }

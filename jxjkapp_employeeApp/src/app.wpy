@@ -111,9 +111,9 @@ export default class extends wepy.app {
     wx.setEnableDebug({
       enableDebug: true
     })
-    // wx.reLaunch({
-    //   url: '/pages/serviceDetail'
-    // })
+    wx.reLaunch({
+      url: '/pages/serviceRecord'
+    })
   }
 }
 </script>
