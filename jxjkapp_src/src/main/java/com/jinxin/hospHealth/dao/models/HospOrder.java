@@ -1,6 +1,7 @@
 package com.jinxin.hospHealth.dao.models;
 
 import com.doraemon.base.controller.bean.PageBean;
+import com.jinxin.hospHealth.controller.protocol.VO.OrderVO;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -48,8 +49,30 @@ public class HospOrder extends PageBean{
     @ApiModelProperty("0:正常 1:禁用  99:删除")
     private Integer enable = 0;
 
-    @Transient
-    @ApiModelProperty("订单中商品些")
-    private List<HospOrderProduct> hospOrderProductList;
+//    @Transient
+//    @ApiModelProperty("订单中商品些")
+//    private List<HospOrderProduct> hospOrderProductList;
+
+
+    public OrderVO transform(HospUserInfo hospUserInfo,HospArea hospArea, List<HospOrderProduct> hospOrderProductList){
+        OrderVO orderVO = new OrderVO();
+        orderVO.setId(this.id);
+        orderVO.setOperationName(this.operationName);
+        orderVO.setCode(this.code);
+        orderVO.setCreateDate(this.createDate);
+        orderVO.setEnable(this.enable);
+        orderVO.setOrderPayPrice(this.orderPayPrice);
+        orderVO.setOrderSalesPrice(this.orderSalesPrice);
+        orderVO.setPaymentCode(this.paymentCode);
+        orderVO.setPaymentType(this.paymentType);
+        orderVO.setPromotionIds(this.promotionIds);
+        orderVO.setState(this.state);
+        orderVO.setType(this.type);
+        orderVO.setUpdateDate(this.updateDate);
+        orderVO.setUser(hospUserInfo);
+        orderVO.setArea(hospArea);
+        orderVO.setHospOrderProductList(hospOrderProductList);
+        return orderVO;
+    }
 
 }

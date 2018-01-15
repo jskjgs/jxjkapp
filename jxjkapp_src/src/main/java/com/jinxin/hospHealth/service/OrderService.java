@@ -12,12 +12,10 @@ import com.github.pagehelper.PageInfo;
 import com.github.pagehelper.util.StringUtil;
 import com.jinxin.hospHealth.controller.protocol.PO.OrderInfoPO;
 import com.jinxin.hospHealth.controller.protocol.PO.OrderProductPO;
+import com.jinxin.hospHealth.controller.protocol.VO.OrderVO;
 import com.jinxin.hospHealth.dao.DaoEnumValid;
 import com.jinxin.hospHealth.dao.mapper.HospOrderMapper;
-import com.jinxin.hospHealth.dao.models.HospOrder;
-import com.jinxin.hospHealth.dao.models.HospOrderProduct;
-import com.jinxin.hospHealth.dao.models.HospProductSku;
-import com.jinxin.hospHealth.dao.models.HospUserBalance;
+import com.jinxin.hospHealth.dao.models.*;
 import com.jinxin.hospHealth.dao.modelsEnum.EnableEnum;
 import com.jinxin.hospHealth.dao.modelsEnum.OrderPayTypeEnum;
 import com.jinxin.hospHealth.dao.modelsEnum.OrderStateEnum;
@@ -35,7 +33,7 @@ import java.util.*;
  */
 @Service
 @Log4j
-public class OrderService implements BaseService<HospOrder,OrderInfoPO> {
+public class OrderService implements BaseService<OrderVO,OrderInfoPO> {
 
     @Autowired
     HospOrderMapper hospOrderMapper;
@@ -43,6 +41,8 @@ public class OrderService implements BaseService<HospOrder,OrderInfoPO> {
     UserInfoService userInfoService;
     @Autowired
     SkuService skuService;
+    @Autowired
+    HospAreaService hospAreaService;
     @Autowired
     OrderProductService orderProductService;
     @Autowired
@@ -59,7 +59,7 @@ public class OrderService implements BaseService<HospOrder,OrderInfoPO> {
      */
     @Override
     @Transactional
-    public HospOrder add(OrderInfoPO orderInfoPO) throws Exception {
+    public OrderVO add(OrderInfoPO orderInfoPO) throws Exception {
         //校验数据
         DPreconditions.checkNotNull(userInfoService.selectOne(orderInfoPO.getUserId()),
                 Language.get("user.select-not-exist"),
@@ -97,7 +97,7 @@ public class OrderService implements BaseService<HospOrder,OrderInfoPO> {
             orderProduct.setOrderId(add.getId());
             orderProductService.add(orderProduct);
         }
-        return add;
+        return add.transform(null,null,null);
     }
 
     /**
@@ -107,7 +107,7 @@ public class OrderService implements BaseService<HospOrder,OrderInfoPO> {
      */
     @Transactional
     public void pay(OrderInfoPO orderInfoPO) throws Exception {
-            HospOrder hospOrder = orderInfoPO.getCode() != null ?
+            OrderVO orderVO = orderInfoPO.getCode() != null ?
                     DPreconditions.checkNotNull(
                             selectOneByCode(orderInfoPO.getCode()),
                             Language.get("order.select-not-exist"),
@@ -124,7 +124,7 @@ public class OrderService implements BaseService<HospOrder,OrderInfoPO> {
                     Language.get("order.amount-null"),
                     true);
             DPreconditions.checkState(
-                    hospOrder.getOrderPayPrice().compareTo(orderInfoPO.getAmount()) == 0,
+                    orderVO.getOrderPayPrice().compareTo(orderInfoPO.getAmount()) == 0,
                     Language.get("order.pay-price-not-equal"),
                     true);
             DaoEnumValid.checkOrderPayType(orderInfoPO.getPaymentType());
@@ -138,11 +138,11 @@ public class OrderService implements BaseService<HospOrder,OrderInfoPO> {
             //如果是余额支付
             if (orderInfoPO.getPaymentType().equals(OrderPayTypeEnum.BALANCE.getCode())) {
                 HospUserBalance userBalance = new HospUserBalance();
-                userBalance.setUserId(hospOrder.getUserId());
+                userBalance.setUserId(orderInfoPO.getUserId());
                 userBalance.setBalance(DBigDecimal.upsideDown(orderInfoPO.getAmount()));
                 userBalanceService.update(userBalance);
             }
-            update.setId(hospOrder.getId());
+            update.setId(orderVO.getId());
             update.setState(OrderStateEnum.PAY.getCode());
             update.setPaymentType(orderInfoPO.getPaymentType());
             update.setUpdateDate(new Date());
@@ -160,12 +160,12 @@ public class OrderService implements BaseService<HospOrder,OrderInfoPO> {
         DPreconditions.checkNotNull(id,
                 Language.get("order.id-null"),
                 true);
-        HospOrder hospOrder = DPreconditions.checkNotNull(
+        OrderVO orderVO = DPreconditions.checkNotNull(
                 selectOne(id),
                 Language.get("order.select-not-exist"),
                 true);
         DPreconditions.checkState(
-                hospOrder.getState().equals(OrderStateEnum.PAY.getCode()),
+                orderVO.getState().equals(OrderStateEnum.PAY.getCode()),
                 Language.get("order.have-to-pay-state"),
                 true);
         OrderInfoPO orderInfoPO = new OrderInfoPO();
@@ -180,15 +180,16 @@ public class OrderService implements BaseService<HospOrder,OrderInfoPO> {
      * @param code
      * @throws Exception
      * **/
-    public HospOrder selectOneByCode(String code) throws Exception {
+    public OrderVO selectOneByCode(String code) throws Exception {
         DPreconditions.checkNotNull(code,
                 Language.get("order.code-null"),
                 true);
         HospOrder hospOrder = new HospOrder();
         hospOrder.setCode(code);
         HospOrder req = hospOrderMapper.selectOne(hospOrder);
-        req.setHospOrderProductList(selectOrderProductListByOrderId(req.getId()));
-        return req;
+        return req.transform(userInfoService.selectOne(req.getUserId()),
+                hospAreaService.selectOne(req.getAreaId()),
+                selectOrderProductListByOrderId(req.getId()));
     }
 
     @Override
@@ -224,12 +225,12 @@ public class OrderService implements BaseService<HospOrder,OrderInfoPO> {
         DPreconditions.checkNotNull(id,
                 Language.get("order.id-null"),
                 true);
-        HospOrder hospOrder = DPreconditions.checkNotNull(
+        OrderVO orderVO = DPreconditions.checkNotNull(
                 selectOne(id),
                 Language.get("order.select-not-exist"),
                 true);
         DPreconditions.checkState(
-                hospOrder.getState().equals(OrderStateEnum.NON_PAYMENT.getCode()),
+                orderVO.getState().equals(OrderStateEnum.NON_PAYMENT.getCode()),
                 Language.get("order.close-order-tyep-failure"),
                 true);
         OrderInfoPO update = new OrderInfoPO();
@@ -265,7 +266,7 @@ public class OrderService implements BaseService<HospOrder,OrderInfoPO> {
      * @throws Exception
      */
     @Override
-    public HospOrder selectOne(Long id) throws Exception {
+    public OrderVO selectOne(Long id) throws Exception {
         DPreconditions.checkNotNull(id,
                 Language.get("order.id-null"),
                 true);
@@ -273,10 +274,11 @@ public class OrderService implements BaseService<HospOrder,OrderInfoPO> {
         select.setId(id);
         select.setEnable(EnableEnum.ENABLE_NORMAL.getCode());
         HospOrder req = hospOrderMapper.selectOne(select);
-        if(req != null) {
-            req.setHospOrderProductList(selectOrderProductListByOrderId(id));
-        }
-        return req;
+        return  req == null
+                ? null
+                : req.transform(userInfoService.selectOne(req.getUserId()),
+                hospAreaService.selectOne(req.getAreaId()),
+                selectOrderProductListByOrderId(req.getId()));
     }
 
     /**
@@ -285,13 +287,14 @@ public class OrderService implements BaseService<HospOrder,OrderInfoPO> {
      * @return
      * @throws Exception
      */
-    public HospOrder selectOne(HospOrder hospOrder) throws Exception {
+    public OrderVO selectOne(HospOrder hospOrder) throws Exception {
         hospOrder.setEnable(EnableEnum.ENABLE_NORMAL.getCode());
         HospOrder req = hospOrderMapper.selectOne(hospOrder);
-        if(req != null) {
-            req.setHospOrderProductList(selectOrderProductListByOrderId(req.getId()));
-        }
-        return req;
+        return  req == null
+                ? null
+                : req.transform(userInfoService.selectOne(req.getUserId()),
+                hospAreaService.selectOne(req.getAreaId()),
+                selectOrderProductListByOrderId(req.getId()));
     }
 
     /**
@@ -301,7 +304,7 @@ public class OrderService implements BaseService<HospOrder,OrderInfoPO> {
      * @throws Exception
      */
     @Override
-    public PageInfo<HospOrder> select(OrderInfoPO orderInfoPO) throws Exception {
+    public PageInfo<OrderVO> select(OrderInfoPO orderInfoPO) throws Exception {
         PageHelper.startPage(orderInfoPO.getPageNum(), orderInfoPO.getPageSize());
         if (StringUtil.isNotEmpty(orderInfoPO.getField())) {
             PageHelper.orderBy(orderInfoPO.getField());
@@ -309,8 +312,14 @@ public class OrderService implements BaseService<HospOrder,OrderInfoPO> {
             PageHelper.orderBy(orderInfoPO.getDefaultField());
         }
         orderInfoPO.setEnable(EnableEnum.ENABLE_NORMAL.getCode());
-        List<HospOrder> req = hospOrderMapper.selectByExampleByCustom(orderInfoPO);
-        return new PageInfo(selectOrderProductListByOrderId(req));
+        List<HospOrder> hospOrderList = hospOrderMapper.selectByExampleByCustom(orderInfoPO);
+        List<OrderVO> req = new ArrayList<>();
+        for(HospOrder hospOrder : hospOrderList){
+            req.add(hospOrder.transform(userInfoService.selectOne(hospOrder.getUserId()),
+                    hospAreaService.selectOne(hospOrder.getAreaId()),
+                    selectOrderProductListByOrderId(hospOrder.getId())));
+        }
+        return new PageInfo(req);
     }
 
     /**
@@ -331,8 +340,14 @@ public class OrderService implements BaseService<HospOrder,OrderInfoPO> {
         }
         HospOrder select = new HospOrder();
         select.setEnable(EnableEnum.ENABLE_NORMAL.getCode());
-        List<HospOrder> req = hospOrderMapper.select(select);
-        return new PageInfo(selectOrderProductListByOrderId(req));
+        List<HospOrder> hospOrderList = hospOrderMapper.select(select);
+        List<OrderVO> req = new ArrayList<>();
+        for(HospOrder hospOrder : hospOrderList){
+            req.add(hospOrder.transform(userInfoService.selectOne(hospOrder.getUserId()),
+                    hospAreaService.selectOne(hospOrder.getAreaId()),
+                    selectOrderProductListByOrderId(hospOrder.getId())));
+        }
+        return new PageInfo(req);
     }
 
     /**
@@ -342,14 +357,16 @@ public class OrderService implements BaseService<HospOrder,OrderInfoPO> {
      * @throws Exception
      */
     @Override
-    public HospOrder selectOneAdmin(Long id) throws Exception {
+    public OrderVO selectOneAdmin(Long id) throws Exception {
         DPreconditions.checkNotNull(id,
                 Language.get("order.id-null"),
                 true);
         HospOrder req = hospOrderMapper.selectByPrimaryKey(id);
-        if(req != null)
-            req.setHospOrderProductList(selectOrderProductListByOrderId(id));
-        return req;
+        return  req == null
+                ? null
+                : req.transform(userInfoService.selectOne(req.getUserId()),
+                hospAreaService.selectOne(req.getAreaId()),
+                selectOrderProductListByOrderId(req.getId()));
     }
 
     /**
@@ -359,7 +376,7 @@ public class OrderService implements BaseService<HospOrder,OrderInfoPO> {
      * @throws Exception
      */
     @Override
-    public PageInfo<HospOrder> selectAdmin(OrderInfoPO orderInfoPO) throws Exception {
+    public PageInfo<OrderVO> selectAdmin(OrderInfoPO orderInfoPO) throws Exception {
         PageHelper.startPage(orderInfoPO.getPageNum(), orderInfoPO.getPageSize());
         if (StringUtil.isNotEmpty(orderInfoPO.getField())) {
             PageHelper.orderBy(orderInfoPO.getField());
@@ -367,8 +384,14 @@ public class OrderService implements BaseService<HospOrder,OrderInfoPO> {
             PageHelper.orderBy(orderInfoPO.getDefaultField());
         }
         orderInfoPO.setEnable(null);
-        List<HospOrder> req = hospOrderMapper.selectByExampleByCustom(orderInfoPO);
-        return new PageInfo(selectOrderProductListByOrderId(req));
+        List<HospOrder> hospOrderList = hospOrderMapper.selectByExampleByCustom(orderInfoPO);
+        List<OrderVO> req = new ArrayList<>();
+        for(HospOrder hospOrder : hospOrderList){
+            req.add(hospOrder.transform(userInfoService.selectOne(hospOrder.getUserId()),
+                    hospAreaService.selectOne(hospOrder.getAreaId()),
+                    selectOrderProductListByOrderId(hospOrder.getId())));
+        }
+        return new PageInfo(req);
     }
 
 
@@ -388,8 +411,14 @@ public class OrderService implements BaseService<HospOrder,OrderInfoPO> {
         }else {
             PageHelper.orderBy(OrderInfoPO.getDefaultField());
         }
-        List<HospOrder> req = hospOrderMapper.selectAll();
-        return new PageInfo(selectOrderProductListByOrderId(req));
+        List<HospOrder> hospOrderList = hospOrderMapper.selectAll();
+        List<OrderVO> req = new ArrayList<>();
+        for(HospOrder hospOrder : hospOrderList){
+            req.add(hospOrder.transform(userInfoService.selectOne(hospOrder.getUserId()),
+                    hospAreaService.selectOne(hospOrder.getAreaId()),
+                    selectOrderProductListByOrderId(hospOrder.getId())));
+        }
+        return new PageInfo(req);
     }
 
     /**
@@ -453,21 +482,6 @@ public class OrderService implements BaseService<HospOrder,OrderInfoPO> {
             hospOrderProductList.add(orderProduct);
         }
         return hospOrderProductList;
-    }
-
-    /**
-     * 通过order补充order product信息
-     * @param hospOrderList
-     * @return
-     * @throws Exception
-     */
-    private List<HospOrder> selectOrderProductListByOrderId(List<HospOrder> hospOrderList) throws Exception {
-        if(hospOrderList == null)
-            return null;
-        for(HospOrder hospOrder : hospOrderList){
-            hospOrder.setHospOrderProductList(selectOrderProductListByOrderId(hospOrder.getId()));
-        }
-        return hospOrderList;
     }
 
     /**
