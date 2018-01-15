@@ -3,6 +3,7 @@ package com.jinxin.hospHealth.worker;
 import com.doraemon.base.redis.RedisOperation;
 import com.github.pagehelper.PageInfo;
 import com.jinxin.hospHealth.controller.protocol.PO.OrderInfoPO;
+import com.jinxin.hospHealth.controller.protocol.VO.OrderVO;
 import com.jinxin.hospHealth.dao.models.HospOrder;
 import com.jinxin.hospHealth.dao.modelsEnum.EnableEnum;
 import com.jinxin.hospHealth.dao.modelsEnum.OrderStateEnum;
@@ -37,16 +38,16 @@ public class OrderFailureWork {
     public void sendCloseOrder() throws Exception {
         OrderInfoPO select = new OrderInfoPO();
         select.setState(OrderStateEnum.NON_PAYMENT.getCode());
-        PageInfo<HospOrder> pageInfo = orderService.select(select);
-        List<HospOrder> hospOrderList = pageInfo.getList();
+        PageInfo<OrderVO> pageInfo = orderService.select(select);
+        List<OrderVO> hospOrderList = pageInfo.getList();
         if (hospOrderList == null)
             return;
-        for (HospOrder hospOrder : hospOrderList) {
-            Long createTime = hospOrder.getCreateDate().getTime();
+        for (OrderVO orderVO : hospOrderList) {
+            Long createTime = orderVO.getCreateDate().getTime();
             Long newTime = (new Date()).getTime();
             if ((newTime - createTime) >= Long.valueOf(orderCloseTime)) {
-                log.info("send clone order id = " + hospOrder.getId());
-                redisOperation.usePool().push(orderCloneQue, String.valueOf(hospOrder.getId()));
+                log.info("send clone order id = " + orderVO.getId());
+                redisOperation.usePool().push(orderCloneQue, String.valueOf(orderVO.getId()));
             }
         }
     }
