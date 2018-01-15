@@ -78,8 +78,14 @@ import axios from 'axios'
 
 export const fetchApi = (opts) => {
   const {type, ...cfg} = opts
+  console.log(cfg)
+  console.log(Object.assign({}, cfg, {
+    method: type || 'get',
+    params: cfg.params || cfg.data
+  }))
   return axios(Object.assign({}, cfg, {
-    method: type || 'get'
+    method: type || 'get',
+    params: cfg.params || cfg.data
   }))
   .then((response) => {
     let successCb = opts.success
