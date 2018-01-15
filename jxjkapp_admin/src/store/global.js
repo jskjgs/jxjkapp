@@ -22,7 +22,7 @@ const state = {
   // 保持状态的组件 (多个之间用','分隔)
   keepAlive: 'no-match',
   // todo: 删除`Array.from({length: 8 - 1 + 1}).map((item, index) => `m_0${index + 1}`) &&`
-  auth: __DEV__ ? Array.from({length: 8 - 1 + 1}).map((item, index) => `m_0${index + 1}`) : (getAccountInfo() || {}).permissionList || [],
+  auth: Array.from({length: 8 - 1 + 1}).map((item, index) => `m_0${index + 1}`),
   accountInfo: getAccountInfo() || {}
 }
 
@@ -45,7 +45,7 @@ const mutations = {
   [UPDATE_ACCOUNTINFO] (state, accountInfo) {
     accountInfo = accountInfo || {}
     state.accountInfo = accountInfo
-    state.auth = accountInfo.permissionList || []
+    state.auth = accountInfo.permissionList || Array.from({length: 8 - 1 + 1}).map((item, index) => `m_0${index + 1}`)
   }
 }
 const actions = {
