@@ -5,6 +5,7 @@ import com.doraemon.base.controller.bean.PageBean;
 import com.doraemon.base.guava.DPreconditions;
 import com.doraemon.base.language.Language;
 import com.jinxin.hospHealth.controller.protocol.PO.OrderInfoPO;
+import com.jinxin.hospHealth.controller.protocol.VO.OrderVO;
 import com.jinxin.hospHealth.dao.models.HospOrder;
 import com.jinxin.hospHealth.dao.modelsEnum.OrderPayTypeEnum;
 import com.jinxin.hospHealth.service.OrderProductService;
@@ -45,7 +46,7 @@ public class OrderController extends MyBaseController {
         return ResponseWrapperSuccess(orderService.add(orderInfoPO));
     }
 
-    @ApiOperation(value = "查询单个订单信息",response = HospOrder.class)
+    @ApiOperation(value = "查询单个订单信息",response = OrderVO.class)
     @RequestMapping(value="/", method = RequestMethod.GET)
     @ResponseBody
     public JSONObject selectOne(
@@ -58,7 +59,7 @@ public class OrderController extends MyBaseController {
         return ResponseWrapperSuccess(orderService.selectOne(hospOrder));
     }
 
-    @ApiOperation(value = "查询该用户全部订单信息",response = HospOrder.class)
+    @ApiOperation(value = "查询该用户全部订单信息",response = OrderVO.class)
     @RequestMapping(value="/all", method = RequestMethod.POST)
     @ResponseBody
     public JSONObject selectAll(
@@ -75,7 +76,7 @@ public class OrderController extends MyBaseController {
         return ResponseWrapperSuccess(orderService.select(orderInfoPO));
     }
 
-    @ApiOperation(value = "根据条件查询本用户的订单信息",response = HospOrder.class)
+    @ApiOperation(value = "根据条件查询本用户的订单信息",response = OrderVO.class)
     @RequestMapping(value="/query", method = RequestMethod.POST)
     @ResponseBody
     public JSONObject select(
@@ -86,7 +87,7 @@ public class OrderController extends MyBaseController {
         return ResponseWrapperSuccess(orderService.select(orderInfoPO));
     }
 
-    @ApiOperation(value = "查询单个订单信息--admin",response = HospOrder.class)
+    @ApiOperation(value = "查询单个订单信息--admin",response = OrderVO.class)
     @RequestMapping(value="/admin/", method = RequestMethod.GET)
     @ResponseBody
     public JSONObject selectOneAdmin(
@@ -94,7 +95,7 @@ public class OrderController extends MyBaseController {
         return ResponseWrapperSuccess(orderService.selectOneAdmin(id));
     }
 
-    @ApiOperation(value = "查询全部订单信息---admin",response = HospOrder.class)
+    @ApiOperation(value = "查询全部订单信息---admin",response = OrderVO.class)
     @RequestMapping(value="/admin/all", method = RequestMethod.POST)
     @ResponseBody
     public JSONObject selectAllAdmin(
@@ -102,7 +103,7 @@ public class OrderController extends MyBaseController {
         return ResponseWrapperSuccess(orderService.selectAllAdmin(pageBean));
     }
 
-    @ApiOperation(value = "根据条件查询订单信息---admin",response = HospOrder.class)
+    @ApiOperation(value = "根据条件查询订单信息---admin",response = OrderVO.class)
     @RequestMapping(value="/admin/query", method = RequestMethod.POST)
     @ResponseBody
     public JSONObject selectAdmin(
