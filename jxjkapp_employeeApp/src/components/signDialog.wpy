@@ -27,7 +27,9 @@
           @touchstart="handleTouchstart"
           @touchmove="handleTouchmove">
         </canvas>
-        <view class="btn-wrap flex--vcenter">
+        <view 
+          class="btn-wrap flex--vcenter"
+          wx:if="{{ !readonly }}">
           <button 
             type="default" 
             class="flex-item" 

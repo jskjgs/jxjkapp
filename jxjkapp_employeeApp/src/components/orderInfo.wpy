@@ -3,6 +3,7 @@
     <SignDialog 
       :visible.sync="signDialogVisible"
       :title.sync="signDialogTitle" 
+      :readonly.sync="readonly"
       :touchList.sync="signDialogTouchList"/>
     <SearchPage 
       :visible.sync="onSearchPartner"
@@ -33,7 +34,7 @@
       </view>
       <view class="input-item service-item-Jssignature flex--vcenter--sb">
         <text class="item-label">技师签字：</text>
-        <view @tap="showSignDialog('doctor')">
+        <view @tap="showSignDialog('doctor')" style="padding-left: 50px;">
           <text class="arrow-rt"></text>
         </view>
       </view>
@@ -78,7 +79,7 @@
     <view class="service-item main-bg">
       <view class="input-item service-item-user flex--vcenter--sb">
         <text class="item-label">用户签字：</text>
-        <view @tap="showSignDialog('user')">
+        <view @tap="showSignDialog('user')" style="padding-left: 50px;">
           <text class="arrow-rt"></text>
         </view>
       </view>
@@ -186,6 +187,7 @@
         console.log('templateContent', templateContent)
       },
       signDialogTouchList (newVal) {
+        console.log(newVal, 111111)
         if (this.signDialogType === 'doctor') {
           this.storageData.doctorSignTouchList = newVal
         } else if (this.signDialogType === 'user') {
