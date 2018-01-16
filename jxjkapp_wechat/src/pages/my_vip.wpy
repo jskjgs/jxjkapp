@@ -41,13 +41,13 @@
 </style>
 
 <template>
-  <!-- <CustomPage :isLastPage.sync="isLastPage"> -->
+  <CustomPage :isLastPage.sync="isLastPage">
     <view id="page-my-vip">
       <view class="my-balance flex--center main-bg">
         余额：{{ balance }}元
       </view>
       <view class="list-wrap">
-        <repeat for="{{ listData2 }}" key="index" item="item" index="index">
+        <repeat for="{{ listData }}" key="index" item="item" index="index">
           <view class="list-item">
             <view class="row flex--vcenter--sb">
               <text class="order-project">{{ item.productName }}</text>
@@ -66,7 +66,7 @@
         </repeat>
       </view>
     </view>
-  <!-- </CustomPage> -->
+  </CustomPage>
 </template>
 
 <script>
@@ -128,20 +128,18 @@
     }
 
     getList () {
+      console.log(1111111111)
       return this.initData({
-        url: '/precontract/query',
+        url: '/precontract/all',
         method: 'POST',
-        data: {
-          id: this.userId,
-          userId: this.userId
-        }
+        data: {}
       }, (listItem, res) => {
         const skuData = listItem.sku || {}
         return {
           id: listItem.id,
-          date: listItem.precontractDate,
+          date: this.$_convertDate(listItem.precontractDate),
           productName: skuData.name,
-          hospital: listItem.hospital
+          hospital: (listItem.areaId || {}).name
         }
       })
     }

@@ -72,7 +72,7 @@ export default class extends wepy.app {
       isVip: true,
       name: 'oigo'
     },
-    token: ''
+    token: 'test-test'
   }
 
   constructor () {

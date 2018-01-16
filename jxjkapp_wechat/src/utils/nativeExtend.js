@@ -1,6 +1,14 @@
 import wepy from 'wepy'
 import convertDate from '@/utils/convertDate'
 
+const $_getApp = (target) => {
+  let app = target
+  while (!(app instanceof wepy.app)) {
+    app = app.$parent
+  }
+  return app
+}
+
 Promise.prototype.finally = function (callback) {
   let P = this.constructor
   return this.then(
@@ -10,6 +18,11 @@ Promise.prototype.finally = function (callback) {
 }
 ;(['page', 'component']).forEach(function (item) {
   Object.defineProperties(wepy[item].prototype, {
+    '$_getApp': {
+      value (target) {
+        return $_getApp(target)
+      }
+    },
     // 核对是否登陆
     '$_checkLogin': {
       value (routeFn = 'redirectTo', toLogin = true) {
@@ -28,10 +41,10 @@ Promise.prototype.finally = function (callback) {
     },
     // api请求
     '$_request': {
-      value (cfg, showLoading = true, toLoginFn = 'redirectTo') {
+      value (cfg, {showLoading = true, toLoginFn = 'redirectTo'} = {}) {
         cfg = Object.assign({}, {
           header: {
-            Authorization: this.$parent.globalData.token
+            Authorization: $_getApp(this).globalData.token
           }
         }, cfg)
         if (showLoading) {

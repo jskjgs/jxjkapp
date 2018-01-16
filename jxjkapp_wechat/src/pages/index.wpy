@@ -382,10 +382,8 @@
     // 获取排号信息
     getQueueInfo () {
       this.$_request({
-        url: '/call/query',
-        method: 'POST',
-        data: {
-        }
+        url: '/call/',
+        method: 'GET'
       }).then(content => {
         content = content || {}
         this.queueNotice = {

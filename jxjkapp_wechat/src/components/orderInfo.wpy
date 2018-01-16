@@ -24,7 +24,7 @@
   <view class="comp-order-info">
     <PickerList
       :ITEMS="ITEMS"
-      :lists.sync="lists"
+      :lists.sync="pickerOptions"
       :pickeds.sync="pickeds">
     </PickerList>
     <view class="submit-btn-wrap flex--hcenter">
@@ -36,6 +36,7 @@
 
 <script>
   import wepy from 'wepy'
+  import _merge from 'lodash/merge'
 
   import PickerList from '@/components/pickerList'
   const ITEMS = [{
@@ -59,7 +60,7 @@
     }
   }]
   
-  export default class CustomCard extends wepy.component {
+  export default class OrderInfo extends wepy.component {
     components = {
       PickerList
     }
@@ -86,12 +87,18 @@
     mixins = []
 
     data = {
-      ITEMS
+      ITEMS,
+      hospitaAreaList: []
     }
 
     computed = {
+      pickerOptions () {
+        return _merge({}, this.lists, {
+          hospitalList: this.hospitaAreaList
+        })
+      },
       pickedIndex () {
-        const lists = this.lists
+        const lists = this.pickerOptions
         const pickeds = this.pickeds
         let returnVal = {}
         ITEMS.forEach(item => {
@@ -117,7 +124,29 @@
     events = {
     }
 
-    onLoad() {
+    // 获取院区列表
+    getAllHospArea () {
+      return this.$_request({
+        url: '/hospArea/all',
+        method: 'POST',
+        data: {
+          pageNum: 1
+        }
+      }).then(content => {
+        content = content || {}
+        const list = content.list || []
+        this.hospitaAreaList = list.map(item => {
+          return {
+            label: item.name,
+            value: item.id
+          }
+        })
+        this.$apply()
+      })
+    }
+
+    onLoad () {
+      this.getAllHospArea()
     }
   }
 </script>

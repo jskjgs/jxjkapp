@@ -54,7 +54,7 @@
         this.$_request({
           url: `/other/loginByCode?phone=${this.formData.phone}&code=${this.formData.code}`,
           method: 'POST'
-        }, false).then(content => {
+        }, {showLoading: false}).then(content => {
           content = content || {}
           if (content.empty) {
             wx.navigateTo({

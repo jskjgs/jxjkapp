@@ -77,7 +77,6 @@
         url: '/patientInfo/query',
         method: 'POST',
         data: {
-          userId: (this.$parent.globalData.userInfo || {}).userId,
           pageNum: 1,
           pageSize: 10
         }

@@ -29,7 +29,7 @@ export default class ListPageMixin extends wepy.mixin {
     }
   }
 
-  initData (reqParams, resCb) {
+  initData (reqParams, resCb, toLoginFn = 'redirectTo') {
     if (reqParams) { // 暂存传入的参数
       this.initFnAgrs = {
         reqParams,
@@ -40,8 +40,8 @@ export default class ListPageMixin extends wepy.mixin {
     resCb = resCb || this.initFnAgrs.resCb
     const pageNum = this.pageNum || 1
     reqParams.data.pageNum = pageNum
-    console.log('reqParams', reqParams)
-    return this.$_request(reqParams).then(content => {
+    console.log('reqParams', reqParams, 'toLoginFn', toLoginFn)
+    return this.$_request(reqParams, {toLoginFn}).then(content => {
       content = content || {}
       this.isLastPage = !!content.isLastPage
       const list = content.list || []
