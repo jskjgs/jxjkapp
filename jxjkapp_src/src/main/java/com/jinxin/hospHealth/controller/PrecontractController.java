@@ -180,7 +180,7 @@ public class PrecontractController extends MyBaseController{
     private PrecontractVO conversion(HospPrecontract precontract){
         PrecontractVO precontractVO = new PrecontractVO(precontract);
         if(precontract.getAreaId() != null)
-            precontractVO.setAreaId(areaService.selectOne(precontract.getAreaId()));
+            precontractVO.setArea(areaService.selectOne(precontract.getAreaId()));
         if(precontract.getUserId() != null)
             precontractVO.setUserInfoVO(new UserInfoVO(userInfoService.selectOne(precontract.getId())));
         if(precontract.getProductSkuId() != null) {
