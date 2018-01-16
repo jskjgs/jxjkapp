@@ -54,6 +54,10 @@ public class PrecontractService implements BaseService<HospPrecontract,HospPreco
         DPreconditions.checkNotNull(skuService.selectOne(hospPrecontract.getProductSkuId()),
                 Language.get("productSku.id-not-exist"),
                 true);
+        DPreconditions.checkNotNull(
+                hospPrecontract.getAreaId(),
+                Language.get("precontract.area-null"),
+                true);
         HospPrecontract precontract = new HospPrecontract();
         precontract.setPrecontractDate(hospPrecontract.getPrecontractDate());
         precontract.setProductSkuId(hospPrecontract.getProductSkuId());
@@ -138,9 +142,6 @@ public class PrecontractService implements BaseService<HospPrecontract,HospPreco
      */
     @Override
     public PageInfo<HospPrecontract> select(HospPrecontract hospPrecontract) throws Exception {
-        DPreconditions.checkNotNull(hospPrecontract.getId(),
-                Language.get("user.id-null"),
-                true);
         PageHelper.startPage(hospPrecontract.getPageNum(), hospPrecontract.getPageSize());
         if (StringUtil.isNotEmpty(hospPrecontract.getField()))
             PageHelper.orderBy(hospPrecontract.getField());

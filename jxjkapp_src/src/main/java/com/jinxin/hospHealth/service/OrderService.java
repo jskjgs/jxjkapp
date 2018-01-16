@@ -231,7 +231,7 @@ public class OrderService implements BaseService<OrderVO, OrderInfoPO> {
     }
 
     /**
-     * 订单无效
+     * 订单不显示
      *
      * @param id
      * @throws Exception
@@ -247,7 +247,7 @@ public class OrderService implements BaseService<OrderVO, OrderInfoPO> {
                 true);
         OrderInfoPO update = new OrderInfoPO();
         update.setId(id);
-        update.setEnable(EnableEnum.ENABLE_DELETE.getCode());
+        update.setDisplay(ShowEnum.NOT_DISPLAY.getCode());
         update(update);
     }
 
@@ -306,7 +306,6 @@ public class OrderService implements BaseService<OrderVO, OrderInfoPO> {
         } else {
             PageHelper.orderBy(orderInfoPO.getDefaultField());
         }
-        orderInfoPO.setEnable(EnableEnum.ENABLE_NORMAL.getCode());
         List<HospOrder> hospOrderList = hospOrderMapper.selectByExampleByCustom(orderInfoPO);
         List<OrderVO> req = new ArrayList<>();
         for (HospOrder hospOrder : hospOrderList) {
@@ -381,7 +380,7 @@ public class OrderService implements BaseService<OrderVO, OrderInfoPO> {
         } else {
             PageHelper.orderBy(orderInfoPO.getDefaultField());
         }
-        orderInfoPO.setEnable(null);
+        orderInfoPO.setDisplay(null);
         List<HospOrder> hospOrderList = hospOrderMapper.selectByExampleByCustom(orderInfoPO);
         List<OrderVO> req = new ArrayList<>();
         for (HospOrder hospOrder : hospOrderList) {

@@ -26,15 +26,18 @@ public class OrderInfoPO extends PageBean{
     private Long userId;
     @ApiModelProperty("类型（0 服务订单 1 商品订单）")
     private Integer type;
-    @ApiModelProperty("状态 (0 未支付 )")
-    private Integer state;
+    @ApiModelProperty("支付状态 (0 已支付订单 1 未支付 )")
+    private Integer payState;
+    @ApiModelProperty("退款状态 (0 退款申请中 1 退款完毕 )")
+    private Integer refundState;
     @ApiModelProperty("购买的商品些")
     private List<OrderProductPO> orderProductPOList;
     @ApiModelProperty("支付方式（0 微信 1 支付宝）")
     private Integer paymentType;
     @ApiModelProperty("支付金额")
     private BigDecimal amount;
-
+    @ApiModelProperty("是否显示 0:显示 1:隐藏")
+    private Integer display = 0;
 
     @ApiModelProperty("时间区间-开始时间  YYYY-MM-DD  HH:mm:ss")
     private String startTime;
@@ -42,8 +45,7 @@ public class OrderInfoPO extends PageBean{
     private String stopTime;
     @ApiModelProperty("多个用户ID,使用,分割")
     private String userIds;
-    @ApiModelProperty("0:正常 1:禁用  99:删除")
-    private Integer enable = 0;
+
 
     public static String getDefaultField() {
         return "create_date DESC";

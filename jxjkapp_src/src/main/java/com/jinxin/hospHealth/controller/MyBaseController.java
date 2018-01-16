@@ -31,7 +31,7 @@ public class MyBaseController extends BaseController {
         if (token == null)
             return null;
         try {
-            String userId = redisOperation.get(token);
+            String userId = redisOperation.usePool().get(token);
             return userId == null || "".equals(userId)
                     ? null
                     : Long.valueOf(userId);

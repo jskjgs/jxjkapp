@@ -10,10 +10,7 @@ import com.jinxin.hospHealth.controller.protocol.VO.ProductVO;
 import com.jinxin.hospHealth.controller.protocol.VO.UserInfoVO;
 import com.jinxin.hospHealth.dao.models.HospPrecontract;
 import com.jinxin.hospHealth.dao.models.HospProductSku;
-import com.jinxin.hospHealth.service.PrecontractService;
-import com.jinxin.hospHealth.service.ProductService;
-import com.jinxin.hospHealth.service.SkuService;
-import com.jinxin.hospHealth.service.UserInfoService;
+import com.jinxin.hospHealth.service.*;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -43,6 +40,8 @@ public class PrecontractController extends MyBaseController{
     ProductService productService;
     @Autowired
     UserInfoService userInfoService;
+    @Autowired
+    HospAreaService areaService;
 
     @ApiOperation(value = "新增预约信息")
     @RequestMapping(value="/", method = RequestMethod.POST)
@@ -90,9 +89,11 @@ public class PrecontractController extends MyBaseController{
     public JSONObject selectAll(
             @ApiParam(value = "分页信息", required = false)  @RequestBody(required = false) PageBean pageBean) throws Exception {
         HospPrecontract hospPrecontract =  new HospPrecontract();
-        hospPrecontract.setUserId(DPreconditions.checkNotNull(getCurrentUserId(),
-                Language.get("user.id-null"),
-                true));
+        hospPrecontract.setUserId(
+                DPreconditions.checkNotNull(
+                        getCurrentUserId(),
+                        Language.get("user.id-null"),
+                        true));
         if(pageBean != null) {
             hospPrecontract.setPageNum(pageBean.getPageNum());
             hospPrecontract.setPageSize(pageBean.getPageSize());
@@ -178,6 +179,8 @@ public class PrecontractController extends MyBaseController{
      */
     private PrecontractVO conversion(HospPrecontract precontract){
         PrecontractVO precontractVO = new PrecontractVO(precontract);
+        if(precontract.getAreaId() != null)
+            precontractVO.setArea(areaService.selectOne(precontract.getAreaId()));
         if(precontract.getUserId() != null)
             precontractVO.setUserInfoVO(new UserInfoVO(userInfoService.selectOne(precontract.getId())));
         if(precontract.getProductSkuId() != null) {

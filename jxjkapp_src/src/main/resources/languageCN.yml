@@ -60,6 +60,7 @@ precontract:
     precontract-time-null: 预约时间不能为空.
     id-null: 预约ID不能为空.
     user-must-is-vip: 被预约的用户必须是VIP.
+    area-null: 院区ID不能为空.
 call-number:
     patient-id-null: 就诊人ID不能为空.
     id-null: 排队叫号ID不能为空.

@@ -1,5 +1,6 @@
 package com.jinxin.hospHealth.controller.protocol.VO;
 
+import com.doraemon.base.controller.bean.PageBean;
 import com.jinxin.hospHealth.dao.models.HospUserInfo;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -11,7 +12,7 @@ import java.util.Date;
  */
 @Data
 @ApiModel("用户信息")
-public class UserInfoVO {
+public class UserInfoVO  {
 
     @ApiModelProperty("用户ID")
     private Long id;
