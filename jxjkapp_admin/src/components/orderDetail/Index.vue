@@ -3,246 +3,155 @@
  * Created by zhengji
  * Date: 2017/8/29
  */
+
 import placeholderImg from '@/assets/images/placeholder.png'
 
-import EditDialog from './_thumbs/EditDialog.vue'
-import ImgZoom from '@/components/_common/imgZoom/ImgZoom.vue'
-
-import SearchTable from '@/components/_common/searchTable/SearchTable'
-
 import {
-  queryOrderDetailApi
 } from './api'
 
 export default {
-  name: 'Doctor',
+  name: 'orderDetail',
   components: {
-    EditDialog,
-    ImgZoom,
-    SearchTable
   },
   data () {
-    this.tableAttrs = {
-      'props': {
-        'tooltip-effect': 'dark',
-        'style': 'width: 100%',
-        'align': 'center'
-      }
-    }
-    this.columnData = [{
-      attrs: {
-        'prop': 'orderCode',
-        'label': '订单号',
-        'min-width': '180',
-        'show-overflow-tooltip': true
-      }
-    }, {
-      attrs: {
-        'prop': 'orderAmount',
-        'label': '订单金额',
-        'min-width': '100',
-        'show-overflow-tooltip': true
-      }
-    }, {
-      attrs: {
-        'prop': 'createTime',
-        'label': '订单创建时间',
-        'min-width': '100',
-        'show-overflow-tooltip': true
-      }
-    }, {
-      attrs: {
-        'prop': 'orderState',
-        'label': '状态',
-        'min-width': '50'
-      }
-    }, {
-      attrs: {
-        'prop': 'userName',
-        'label': '用户名',
-        'min-width': '70'
-      }
-    }, {
-      attrs: {
-        'prop': 'userLevel',
-        'label': '权限',
-        'min-width': '70'
-      }
-    }, {
-      attrs: {
-        'prop': 'phoneNumber',
-        'label': '手机',
-        'min-width': '70'
-      }
-    }, {
-      attrs: {
-        'min-width': '180',
-        'label': '操作'
-      },
-      scopedSlots: {
-        default: (scope) => {
-          return (
-            <div class="flex--center operations">
-              <span
-                class="operate-item "
-                onClick={() => this.openDetail(scope.row)}>
-                  详情
-              </span>
-            </div>
-          )
-        }
-      }
-    }]
-    this.listApi = {
-      requestFn: queryOrderDetailApi,
-      responseFn (data) {
-        let content = data.content || {}
-        console.log(data.content)
-        this.tableData = (content.list || []).map((item) => ({
-          orderCode: item.code
-        }))
-        this.total = content.total || 0
-      }
-    }
     return {
-      orders: [],
-      keyWords: '',
-      editDialogVisible: false,
-      editData: {},
-      apiKeysMap: {
-        pageSize: {
-          value: 10,
-          innerKey: 'pageSize' // searchTable组件内部映射的key
-        },
-        orderId: {
-          value: ''
-        },
-        userPhone: {
-          value: undefined
-        },
-        currentPage: 'pageNum',
-        orderBy: {
-          value: 'order_number'
-        },
-        desc: {
-          value: true
-        }
-      }
+      orderId: this.$route.params.orderId,
+      orderFrom: {
+        userId: null,
+        productId: null,
+        unitPrice: null,
+        qty: null,
+        paymentPrice: null,
+        comments: null,
+        paymentNumber: null
+      },
+      selectProduct: null,
+      selectCategroy: null,
+      categroyList: {'A': [{'name': '小六1', 'id': 1, 'price': 100.00}, {'name': '小六3', 'id': 3, 'price': 300.00}],
+        'B': [{'name': '小六2', 'id': 2, 'price': 200.00}, {'name': '小六4', 'id': 4, 'price': 400.00}]}
     }
   },
   created () {
     this.placeholderImg = placeholderImg
   },
   watch: {
-    editDialogVisible (val) {
-      if (!val) {
-        this.editData = null
-      }
+    selectCategroy (val) {
+      this.selectProduct = null
     },
-    currentPage (newPageNum) {
-      this.getList({
-        pageNum: newPageNum
-      })
+    selectProduct (val) {
+      this.orderFrom.unitPrice = 0
+      this.orderFrom.qty = 0
+      if (val == null) { return }
+      this.orderFrom.productId = val.id
+      this.orderFrom.unitPrice = val.price
+    },
+    qty (newValue) {
+      this.orderFrom.paymentPrice = this.orderFrom.unitPrice * newValue
+    }
+  },
+  computed: {
+    qty () {
+      return this.orderFrom.qty
     }
   },
   methods: {
-    rejectOrder (rowData) {
+    // 根据选定的服务种类构造项目列表
+    productList () {
+      let index = this.selectCategroy
+      if (index == null) {
+        return []
+      }
+      return this.categroyList[this.selectCategroy]
     },
-    handleSearch () {
-      this.apiKeysMap = Object.assign({}, this.apiKeysMap, {
-        keyWords: {
-          value: this.keyWords || undefined
-        }
-      })
+    createOrder () {
     },
-    assginOrder (rowData) {
-    },
-    assginCancel (rowData) {
-      this.editDialogVisible = false
-    },
-    assginSubmit (rowData) {
-    },
-    openDetail (rowData) {
-      this.editDialogVisible = true
-      // 跳转到详情页
-    }
+    delOrder () {},
+    updateOrder () {},
+    // 请求商品列表，含每个sku的价格
+    initProductInfo () {}
   }
 }
 </script>
 
 <template>
-  <div id="order">
+  <div id="orderDetail">
     <div class="flex--vcenter page-top">
       <div class="page-title">
-        订单管理
+        <router-link to="/order"> 订单管理 </router-link to="/foo"> > {{ orderFrom ? '订单详情' : '添加订单' }} 
       </div>
     </div>
-    <search-table
-      ref="searchTable"
-      :table-attrs="tableAttrs"
-      :column-data="columnData"
-      :list-api="listApi"
-      :api-keys-map="apiKeysMap">
-      <div class="table-tools flex--vcenter" slot="table-tools">
-        <div class="search-wrap flex--vcenter">
-          <div class="tool-item">
-            搜索关键字：
-            <el-input v-model="keyWords" style="width: auto;" placeholder="请填入关键字"></el-input>
-          </div>
-          <el-button
-            class="tool-item"
-            type="primary"
-            @click="handleSearch">搜索
-          </el-button>
-        </div>
-        <div class="btn-wrap">
-          <el-button
-            class="btn--add"
-            type="primary"
-            @click="openDetail(null, true)">
-            新增 <i class="el-icon-plus"></i>
-          </el-button>
-        </div>
+    <div class="flex--vcenter">
+      <div class="tool-item">
+        用户标识
+        <el-input
+          v-model.trim="orderFrom.userId"
+          placeholder="请输入客户手机／就诊卡号"
+          style="width: 290px;">
+        </el-input>
       </div>
-    </search-table>
-    <edit-dialog
-      v-model="editDialogVisible"
-      :data="editData"
-      @cancel="assginCancel"
-      @submit="assginSubmit">
-    </edit-dialog>
+      <div class="tool-item">
+        *服务种类 
+        <el-select v-model="selectCategroy" placeholder="请选择">
+          <el-option
+            v-for="(key, value) in categroyList"
+            :key="key"
+            :label="value"
+            :value="value">
+          </el-option>
+        </el-select>
+      </div>
+      <div class="tool-item">
+        *项目名称
+        <el-select v-model="selectProduct" placeholder="请选择">
+          <el-option
+            v-for="product in productList()"
+            :key="product"
+            :label="product.name"
+            :value="product">
+          </el-option>
+        </el-select>
+      </div>
+    </div>
+    
+    <div class="flex--vcenter" style="margin-top: 20px; justify-content: space-between;">
+      <div class="tool-item">
+        服务单价
+        {{orderFrom.unitPrice}}
+      </div>
+      <div class="tool-item">
+        购买数量
+        <el-input
+          v-model="orderFrom.qty"
+          :disabled="!orderFrom.unitPrice"
+          placeholder="请输入数量"
+          type="number"
+          style="width: 290px;">
+        </el-input>
+      </div>
+    </div>
+
+    <div class="flex--vcenter" style="margin-top: 20px; justify-content: space-between;">
+      <div class="tool-item">
+        总金额
+        {{orderFrom.qty * orderFrom.unitPrice}}
+      </div>
+      <div class="tool-item">
+        支付金额
+        <el-input
+          v-model="orderFrom.paymentPrice"
+          :disabled="!orderFrom.qty"
+          type="number"
+          style="width: 290px;">
+        </el-input>
+      </div>
+    </div>
   </div>
 </template>
 
 <style lang="scss">
   @import "~@/assets/style/variables/index";
 
-  #order {
-    .display-num-control {
-      margin-left: 60px;
-      .label {
-        color: $color3;
-      }
-
-      .el-icon-edit {
-        color: #adb9ca;
-        cursor: pointer;
-      }
-    }
-
-    .table-tools {
-      justify-content: space-between;
-    }
-
-    .search-input {
-      width: 300px;
-      input {
-        border-radius: 18px;
-      }
-    }
-    .search-label {
-      color: $color3;
-    }
+  #orderDetail {
     .btn-wrap {
       .el-button {
         border-radius: 18px;
@@ -255,46 +164,9 @@ export default {
         border-color: transparent;
       }
     }
-
-    .el-table {
-      margin-top: 20px;
-      td {
-        height: 80px;
-      }
-    }
-    .cover-img {
-      vertical-align: middle;
-      display: inline-block;
-      background: $bg6;
-    }
-    .cover-noimg {
-      background: $bg6 url('~@/assets/images/placeholder.png') center no-repeat;
-      background-size: 40px 30px;
-    }
-
-    .operate-item {
-      color: $color4;
-      font-size: 18px;
-      cursor: pointer;
-      & + .operate-item {
-        margin-left: 20px;
-      }
-
-      .el-switch {
-        margin-right: 10px;
-      }
-    }
-    .top-switch {
-      display: inline-block;
-      width: 124px;
-      text-align: left;
+    .visible-switch {
       color: $color3;
       font-size: 14px;
-    }
-
-    .pagination-wrap {
-      margin-top: 30px;
-      text-align: right;
     }
   }
 </style>
