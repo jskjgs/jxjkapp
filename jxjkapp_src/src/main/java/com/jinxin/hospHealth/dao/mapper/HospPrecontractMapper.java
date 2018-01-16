@@ -10,9 +10,9 @@ import java.util.List;
 public interface HospPrecontractMapper extends MyMapper<HospPrecontract> {
 
     @Select({"<script>" +
-            " select * from hosp_precontract where 1=1 " +
+            "    select * from hosp_precontract where 1=1 " +
             " <if test = 'hospPrecontract.id != null and hospPrecontract.id != \"\"'> " +
-            "   and id = #{hospPrecontract.id}" +
+            "    and id = #{hospPrecontract.id}" +
             " </if>  " +
             " <if test = 'hospPrecontract.userIds != null and hospPrecontract.userIds != \"\"'> " +
             "   and user_id in (#{hospPrecontract.userIds})" +
@@ -26,13 +26,13 @@ public interface HospPrecontractMapper extends MyMapper<HospPrecontract> {
             " <if test = 'hospPrecontract.productSkuIds != null and hospPrecontract.productSkuIds != \"\"'> " +
             "   and product_sku_id in (#{hospPrecontract.productSkuIds})" +
             " </if>  " +
-            " <if test = 'hospPrecontract.status != null and hospPrecontract.status != \"\"'>" +
+            " <if test = 'hospPrecontract.status != null and hospPrecontract.status != \"\"'> " +
             "   and status = #{hospPrecontract.status}" +
             " </if>  " +
-            " <if test = 'hospPrecontract.startTime != null and hospPrecontract.startTime != \"\"'>" +
+            " <if test = 'hospPrecontract.startTime != null and hospPrecontract.startTime != \"\"'> " +
             "   and precontract_date &gt;= #{hospPrecontract.startTime}" +
             " </if>" +
-            " <if test = 'hospPrecontract.stopTime != null and hospPrecontract.stopTime != \"\"'>" +
+            " <if test = 'hospPrecontract.stopTime != null and hospPrecontract.stopTime != \"\"'> " +
             "   and precontract_date &lt;= #{hospPrecontract.stopTime}" +
             " </if>" +
             " </script>"})

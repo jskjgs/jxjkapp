@@ -7,6 +7,7 @@ import com.doraemon.base.language.Language;
 import com.doraemon.base.util.MD5Encryption;
 import com.doraemon.base.util.RandomUtil;
 import com.github.pagehelper.PageInfo;
+import com.jinxin.hospHealth.controller.protocol.PO.UserInfoPO;
 import com.jinxin.hospHealth.controller.protocol.VO.LoginInfoVO;
 import com.jinxin.hospHealth.controller.protocol.VO.UserInfoVO;
 import com.jinxin.hospHealth.dao.models.HospUserInfo;
@@ -83,14 +84,13 @@ public class OtherController extends MyBaseController{
                 code.equals(otherService.getDynamicCode(phone,otherService.loginType)),
                 Language.get("login.dynamic-code-error"),
                 true);
-        HospUserInfo userInfo = new HospUserInfo();
-        userInfo.setPhone(phone);
-        HospUserInfo respUserInfo =  userInfoService.selectOne(userInfo);
+        UserInfoPO userInfoPO = new UserInfoPO();
+        userInfoPO.setPhone(phone);
+        HospUserInfo respUserInfo =  userInfoService.selectOne(userInfoPO);
         boolean isEmpty = true;
         //用户是否存在
         if (respUserInfo == null){
-            userInfoService.add(userInfo);
-            respUserInfo = userInfo;
+            respUserInfo =  userInfoService.add(userInfoPO);;
             isEmpty = false;
         }
         String tokenCode = RandomUtil.getRandomLetterAndNum(16);
@@ -109,10 +109,10 @@ public class OtherController extends MyBaseController{
     public JSONObject loginAndByPasswd(
             @ApiParam(value = "电话号码", required = true) @RequestParam(value = "phone", required = true) String phone,
             @ApiParam(value = "密码", required = true) @RequestParam(value = "passwd", required = true) String passwd) throws Exception {
-        HospUserInfo hospUserInfo = new HospUserInfo();
-        hospUserInfo.setPhone(phone);
-        hospUserInfo.setPassword(MD5Encryption.getMD5(passwd));
-        PageInfo<HospUserInfo> pageInfo = userInfoService.select(hospUserInfo);
+        UserInfoPO userInfoPO = new UserInfoPO();
+        userInfoPO.setPhone(phone);
+        userInfoPO.setPassword(MD5Encryption.getMD5(passwd));
+        PageInfo<HospUserInfo> pageInfo = userInfoService.select(userInfoPO);
         DPreconditions.checkState(pageInfo != null && pageInfo.getList() != null && pageInfo.getList().size()>0,Language.get("login.passwd-error"),true);
         //进行登陆
         HospUserInfo respUserInfo = pageInfo.getList().get(0);

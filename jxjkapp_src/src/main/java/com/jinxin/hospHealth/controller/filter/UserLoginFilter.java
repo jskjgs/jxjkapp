@@ -21,7 +21,8 @@ import java.io.IOException;
         "/hospHealth/order/*",
         "/hospHealth/patientInfo/*",
         "/hospHealth/precontract/*",
-        "/hospHealth/userBalance/*"})
+        "/hospHealth/userBalance/*",
+        "/hospHealth/userInfo/admin/*"})
 @Log4j
 public class UserLoginFilter implements Filter {
 
@@ -36,7 +37,7 @@ public class UserLoginFilter implements Filter {
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         HttpServletRequest request = (HttpServletRequest) servletRequest;
         Result result = new Result();
-        if(adminUser(request) || user(request)){
+        if(adminUser(request) || user(request) ){
             filterChain.doFilter(servletRequest, servletResponse);
         }else {
             servletResponse.getWriter().print(result.addMessage("Please log in.").ExeFaild(401));
@@ -69,6 +70,7 @@ public class UserLoginFilter implements Filter {
             return false;
         }
     }
+
 
     @Override
     public void destroy() {
