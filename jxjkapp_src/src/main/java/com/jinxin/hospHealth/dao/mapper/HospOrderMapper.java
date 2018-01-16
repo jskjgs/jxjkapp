@@ -11,7 +11,10 @@ import java.util.List;
 public interface HospOrderMapper extends MyMapper<HospOrder> {
 
     @Select({"<script>" +
-            " select * from hosp_order where enable = #{order.enable}" +
+            " select * from hosp_order where 1=1" +
+            " <if test = 'order.display != null and order.display != \"\"'> " +
+            "   and display = #{order.display}" +
+            " </if>  " +
             " <if test = 'order.id != null and order.id != \"\"'> " +
             "   and id = #{order.id}" +
             " </if>  " +

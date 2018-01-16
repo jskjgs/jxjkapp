@@ -18,8 +18,8 @@ import java.util.Date;
 public class PrecontractVO {
     @ApiModelProperty("预约ID")
     private Long id;
-    @ApiModelProperty("院区ID")
-    private HospArea areaId;
+    @ApiModelProperty("院区")
+    private HospArea area;
     @ApiModelProperty("用户信息")
     private UserInfoVO userInfoVO;
     @ApiModelProperty("预约时间")

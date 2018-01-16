@@ -51,7 +51,7 @@ public class HospOrder extends PageBean{
     @ApiModelProperty("订单参加的全部活动，按逗号分隔")
     private String promotionIds;
     @ApiModelProperty("是否显示 0:显示 1:隐藏")
-    private Integer display = 0;
+    private Integer display;
 
     public OrderVO transform(HospUserInfo hospUserInfo,HospArea hospArea, List<HospOrderProduct> hospOderProductList){
         OrderVO orderVO = new OrderVO();

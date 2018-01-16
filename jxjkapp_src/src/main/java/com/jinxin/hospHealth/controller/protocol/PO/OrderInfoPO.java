@@ -36,7 +36,8 @@ public class OrderInfoPO extends PageBean{
     private Integer paymentType;
     @ApiModelProperty("支付金额")
     private BigDecimal amount;
-
+    @ApiModelProperty("是否显示 0:显示 1:隐藏")
+    private Integer display = 0;
 
     @ApiModelProperty("时间区间-开始时间  YYYY-MM-DD  HH:mm:ss")
     private String startTime;
@@ -44,8 +45,7 @@ public class OrderInfoPO extends PageBean{
     private String stopTime;
     @ApiModelProperty("多个用户ID,使用,分割")
     private String userIds;
-    @ApiModelProperty("0:正常 1:禁用  99:删除")
-    private Integer enable = 0;
+
 
     public static String getDefaultField() {
         return "create_date DESC";
