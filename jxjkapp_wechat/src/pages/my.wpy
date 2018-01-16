@@ -94,7 +94,7 @@ page {
         <view class="flex--hcenter">
           <text 
             wx:if="{{ !!userInfo }}" 
-            class="username">YK 陈御珂</text>
+            class="username">{{ userInfo.name }}</text>
           <text
             wx:else
             @tap="toLogin">请登录账号</text>
@@ -229,7 +229,7 @@ page {
 
     computed = {
       userInfo () {
-        return this.$parent.globalData.userInfo
+        return this.$parent.globalData.userInfo || {}
       }
     }
 

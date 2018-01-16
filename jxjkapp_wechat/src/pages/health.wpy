@@ -146,8 +146,11 @@
     events = {
     }
 
-    onLoad() {
-      this.initPageData()
+    onLoad () {
+      if (this.$_checkLogin('navigateTo')) {
+        this.initPageData()
+      }
+      console.log(this.getCurrentPages(), 1111)
     }
 
     initPageData () {

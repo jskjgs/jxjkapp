@@ -53,7 +53,7 @@
               style="background-image: url({{item.bg}});">
               <view class="list-item__inner">
                 <view class="item-title">
-                  <text>硬化剂注射</text>
+                  <text>{{ item.name }}</text>
                 </view>
                 <view class="item-describe">
                   <text class="text-ellipsis--two">{{ item.description }}</text>

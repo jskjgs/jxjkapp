@@ -10,11 +10,28 @@ Promise.prototype.finally = function (callback) {
 }
 ;(['page', 'component']).forEach(function (item) {
   Object.defineProperties(wepy[item].prototype, {
+    // 核对是否登陆
+    '$_checkLogin': {
+      value (routeFn = 'redirectTo', toLogin = true) {
+        return true
+        const userInfo = wx.getStorageSync('userInfo')
+        if (!userInfo) {
+          if (toLogin) {
+            wx[routeFn]({
+              url: '/pages/login'
+            })
+          }
+          return false
+        }
+        return true
+      }
+    },
+    // api请求
     '$_request': {
-      value (cfg, showLoading = true) {
+      value (cfg, showLoading = true, toLoginFn = 'redirectTo') {
         cfg = Object.assign({}, {
           header: {
-            Authorization: (this.$parent.globalData.userInfo || {}).token
+            Authorization: this.$parent.globalData.token
           }
         }, cfg)
         if (showLoading) {
@@ -27,15 +44,46 @@ Promise.prototype.finally = function (callback) {
         return new Promise(function (resolve, reject) {
           wepy.request(cfg).then(res => {
             const data = res.data || {}
-            if (data.code + '' === '200') {
-              const content = data.content
-              resolve(content, data)
-            } else {
-              throw new Error(data)
+            let code = +data.code
+            let errMsg = ''
+            switch (code) {
+              case 200:
+                const content = data.content
+                resolve(content, data)
+                break
+              case 400:
+                errMsg = '操作失败'
+                break
+              case 406:
+                errMsg = data.message
+                break
+              case 401:
+                errMsg = '未登陆'
+                wx[toLoginFn]({
+                  url: '/pages/login'
+                })
+                break
+              case 500:
+                errMsg = '发生未知错误'
+                break
+              default:
+                errMsg = data.message || '发生未知错误'
+            }
+            if (errMsg !== '') {
+              wx.showToast({
+                image: '../assets/images/error.png',
+                title: errMsg
+              })
+              throw new Error({
+                message: errMsg,
+                error: data
+              })
             }
           }).catch((e) => {
             reject(e)
           })
+        }).catch((e) => {
+          throw e
         }).finally(() => {
           this.$apply()
           wx.hideLoading()
@@ -52,6 +100,7 @@ Promise.prototype.finally = function (callback) {
         return this.getCurrentPages().slice(-1)[0].route
       }
     },
+    // 转换时间
     '$_convertDate': {
       value (timeStamp) {
         return convertDate(timeStamp)

@@ -387,6 +387,7 @@
         data: {
         }
       }).then(content => {
+        content = content || {}
         this.queueNotice = {
           project: '手法项目排队',
           NO: content.orderNumber,

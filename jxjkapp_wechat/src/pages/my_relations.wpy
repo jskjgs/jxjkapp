@@ -66,8 +66,10 @@
     events = {
     }
 
-    onShow() {
-      this.getList()
+    onShow () {
+      if (this.$_checkLogin()) {
+        this.getList()
+      }
     }
 
     getList () {
