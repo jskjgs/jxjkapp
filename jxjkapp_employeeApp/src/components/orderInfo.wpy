@@ -69,10 +69,14 @@
       <view class="input-item service-item-mark flex--sb">
         <text class="item-label">消费备注：</text>
         <view wx:if="{{ readonly }}">{{ consumeInfo }}</view>
+        <!-- 
+          tips: textarea 组件是由客户端创建的原生组件，它的层级是最高的，不能通过 z-index 控制层级
+        -->
         <ConsumeInfoInput 
           wx:else
           class="flex-item"
           type="textarea"
+          :disabled.sync="signDialogVisible"
           :value.sync="consumeInfo" />
       </view>
     </view>
@@ -92,6 +96,7 @@
           wx:else
           class="flex-item" 
           type="textarea"
+          :disabled.sync="signDialogVisible"
           :value.sync="purchaseInfo"/>
       </view>
     </view>
