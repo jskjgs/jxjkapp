@@ -23,6 +23,14 @@ dynamic:
         register: 60
         updatePhone: 60
 
+token:
+    #admin 用户token有效时间
+    adminToken-effectiveTime: 31536000
+    #用户 token有效时间 毫秒
+    userToken-effectiveTime: 31536000
+    #医生端 token有效时间 毫秒
+    doctor-effectiveTime: 31536000
+
 oss:
     accessKeyId: LTAIpXq9myrkBxUV
     accessKeySecret: sxg0punreq1ui7werfUQUfQ9RusIpo

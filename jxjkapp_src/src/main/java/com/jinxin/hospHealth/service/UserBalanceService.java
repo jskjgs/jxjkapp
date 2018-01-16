@@ -7,7 +7,6 @@ import com.doraemon.base.util.MD5Encryption;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.github.pagehelper.util.StringUtil;
-import com.jinxin.hospHealth.dao.DaoEnumValid;
 import com.jinxin.hospHealth.dao.mapper.HospUserBalanceMapper;
 import com.jinxin.hospHealth.dao.models.HospUserBalance;
 import com.jinxin.hospHealth.dao.modelsEnum.EnableEnum;
@@ -273,7 +272,7 @@ public class UserBalanceService implements BaseService<HospUserBalance,HospUserB
         HospUserBalance select = new HospUserBalance();
         select.setUserId(hospUserBalance.getUserId());
         select.setEnable(EnableEnum.ENABLE_NORMAL.getCode());
-        DaoEnumValid.checkAllEnable(hospUserBalance.getEnable());
+        EnableEnum.getByCode(hospUserBalance.getEnable());
         return new PageInfo(hospUserBalanceMapper.select(select));
     }
 

@@ -26,4 +26,12 @@ public enum SexEnum {
     public String getDesc() {
         return desc;
     }
+
+    public static SexEnum getSexEnumByCode(Integer code){
+        for(SexEnum sexEnum : SexEnum.values()){
+            if(code.equals(sexEnum.getCode()))
+                return sexEnum;
+        }
+        return null;
+    }
 }
