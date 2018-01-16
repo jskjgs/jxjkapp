@@ -2,7 +2,9 @@
   <view class="comp-serviceDetail">
     <SignDialog 
       :visible.sync="signDialogVisible"
-      :title.sync="signDialogTitle"/>
+      :title.sync="signDialogTitle" 
+      :readonly.sync="readonly"
+      :touchList.sync="signDialogTouchList"/>
     <SearchPage 
       :visible.sync="onSearchPartner"
       @picked.user="handlePartnerPicked" />
@@ -32,7 +34,7 @@
       </view>
       <view class="input-item service-item-Jssignature flex--vcenter--sb">
         <text class="item-label">技师签字：</text>
-        <view @tap="showSignDialog('doctor')">
+        <view @tap="showSignDialog('doctor')" style="padding-left: 50px;">
           <text class="arrow-rt"></text>
         </view>
       </view>
@@ -67,17 +69,21 @@
       <view class="input-item service-item-mark flex--sb">
         <text class="item-label">消费备注：</text>
         <view wx:if="{{ readonly }}">{{ consumeInfo }}</view>
+        <!-- 
+          tips: textarea 组件是由客户端创建的原生组件，它的层级是最高的，不能通过 z-index 控制层级
+        -->
         <ConsumeInfoInput 
           wx:else
           class="flex-item"
           type="textarea"
+          :disabled.sync="signDialogVisible"
           :value.sync="consumeInfo" />
       </view>
     </view>
     <view class="service-item main-bg">
       <view class="input-item service-item-user flex--vcenter--sb">
         <text class="item-label">用户签字：</text>
-        <view @tap="showSignDialog('user')">
+        <view @tap="showSignDialog('user')" style="padding-left: 50px;">
           <text class="arrow-rt"></text>
         </view>
       </view>
@@ -90,6 +96,7 @@
           wx:else
           class="flex-item" 
           type="textarea"
+          :disabled.sync="signDialogVisible"
           :value.sync="purchaseInfo"/>
       </view>
     </view>
@@ -125,6 +132,7 @@
     data = {
       signDialogVisible: false, // 签名弹框显示状态
       signDialogTitle: '', // 签名弹框标题
+      signDialogTouchList: [], // 签名touchList
       onSearchPartner: false, // 标示在搜索
       diagnoseInputDisabled: true, // 诊断内容输入框是否禁用
       partnerPickerIndex: 0, // 合伙人类型选择
@@ -151,6 +159,8 @@
         partnerId: '', // 合伙人id
         templateId: '', // 诊断模板id
         templateName: '', // 诊断模板name
+        doctorSignTouchList: [], // 技师签名touch数组
+        userSignTouchList: [] // 用户签名touch数组
       },
       templateContent: '', // 诊断模板内容
       consumeInfo: '', // 消费备注
@@ -169,8 +179,6 @@
     }
 
     watch = {
-      signDialogVisible (newVal) {
-      },
       formData (newVal) {
         if (newVal.templateName === '') {
           this.diagnoseInputDisabled = true
@@ -182,6 +190,14 @@
       },
       templateContent (templateContent) {
         console.log('templateContent', templateContent)
+      },
+      signDialogTouchList (newVal) {
+        console.log(newVal, 111111)
+        if (this.signDialogType === 'doctor') {
+          this.storageData.doctorSignTouchList = newVal
+        } else if (this.signDialogType === 'user') {
+          this.storageData.userSignTouchList = newVal
+        }
       }
     }
 
@@ -212,10 +228,13 @@
       },
       // 显示签字弹框
       showSignDialog (type) {
+        this.signDialogType = type
         if (type === 'doctor') {
           this.signDialogTitle = '技师签名'
+          this.signDialogTouchList = this.storageData.doctorSignTouchList
         } else if (type === 'user') {
           this.signDialogTitle = '用户签名'
+          this.signDialogTouchList = this.storageData.userSignTouchList
         }
         this.signDialogVisible = true
       },

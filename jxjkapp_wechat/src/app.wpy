@@ -68,9 +68,9 @@ export default class extends wepy.app {
 
   globalData = {
     userInfo: {
+      token: 'test-test',
       userId: 1,
-      isVip: true,
-      token: 999
+      isVip: true
     }
   }
 

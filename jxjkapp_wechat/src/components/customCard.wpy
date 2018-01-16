@@ -108,8 +108,14 @@
     }
 
     props = {
-      imageUrl: String,
-      title: String
+      imageUrl: {
+        type: String,
+        default: ''
+      },
+      title: {
+        type: String,
+        default: ''
+      }
     }
 
     mixins = []

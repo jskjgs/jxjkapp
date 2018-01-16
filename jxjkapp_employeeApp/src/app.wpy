@@ -112,7 +112,7 @@ export default class extends wepy.app {
       enableDebug: true
     })
     // wx.reLaunch({
-    //   url: '/pages/serviceDetail'
+    //   url: '/pages/serviceRecord'
     // })
   }
 }
