@@ -64,8 +64,12 @@ public class HospOrder extends PageBean{
         orderVO.setPaymentCode(this.paymentCode);
         orderVO.setPaymentType(this.paymentType);
         orderVO.setPromotionIds(this.promotionIds);
-        orderVO.setPayState(OrderPayStateEnum.getByCode(this.payState).getDesc());
-        orderVO.setRefundState(OrderRefundStateEnum.getByCode(this.refundState).getDesc());
+        orderVO.setPayState(this.payState == null
+                ? null
+                : OrderPayStateEnum.getByCode(this.payState).getDesc());
+        orderVO.setRefundState(this.refundState == null
+                ? null
+                : OrderRefundStateEnum.getByCode(this.refundState).getDesc());
         orderVO.setType(this.type);
         orderVO.setUpdateDate(this.updateDate);
         orderVO.setUser(hospUserInfo);

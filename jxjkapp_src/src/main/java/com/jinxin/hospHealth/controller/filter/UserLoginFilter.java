@@ -36,14 +36,16 @@ public class UserLoginFilter implements Filter {
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         HttpServletRequest request = (HttpServletRequest) servletRequest;
         Result result = new Result();
-        if(adminUser(request,servletResponse) || user(request,servletResponse)){
+        if(adminUser(request) || user(request)){
             filterChain.doFilter(servletRequest, servletResponse);
+        }else {
+            servletResponse.getWriter().print(result.addMessage("Please log in.").ExeFaild(401));
+            return;
         }
-        servletResponse.getWriter().print(result.addMessage("Please log in.").ExeFaild(401));
     }
 
 
-    private boolean adminUser(HttpServletRequest request,ServletResponse servletResponse) {
+    private boolean adminUser(HttpServletRequest request) {
         String token = request.getHeader(Constant.HEADER_PERMISSIONS);
         if(request.getSession().getAttribute(token) == null)
             return false;
@@ -53,7 +55,7 @@ public class UserLoginFilter implements Filter {
         return true;
     }
 
-    private boolean user(HttpServletRequest request,ServletResponse servletResponse){
+    private boolean user(HttpServletRequest request){
         String token = request.getHeader(Constant.HEADER_PERMISSIONS);
         if (token == null)
             return false;

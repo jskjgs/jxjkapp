@@ -43,7 +43,8 @@ public class AdminController extends MyBaseController{
     public JSONObject login(
             @ApiParam(value = "手机号码", required = true) @RequestParam(value = "account", required = true) String account,
             @ApiParam(value = "密码", required = true) @RequestParam(value = "password", required = true) String password) throws Exception {
-        AdminInfoVO adminInfoVO = DPreconditions.checkNotNull(adminUserInfoService.selectOneByPhoneAndPassword(account,password),
+        AdminInfoVO adminInfoVO = DPreconditions.checkNotNull(
+                adminUserInfoService.selectOneByPhoneAndPassword(account,password),
                 "用户不存在,请检查账号密码.",
                 true);
         String token = UUidGenerate.create();
@@ -59,10 +60,12 @@ public class AdminController extends MyBaseController{
     @ResponseBody
     public JSONObject add(
             @ApiParam(value = "手机号码", required = true) @RequestParam(value = "account", required = true) String account,
-            @ApiParam(value = "密码", required = true) @RequestParam(value = "password", required = true) String password) throws Exception {
+            @ApiParam(value = "密码", required = true) @RequestParam(value = "password", required = true) String password,
+            @ApiParam(value = "权限", required = true) @RequestParam(value = "permissions", required = true) String permissions) throws Exception {
         HospAdminUserInfo hospAdminUserInfo = new HospAdminUserInfo();
         hospAdminUserInfo.setPhone(account);
         hospAdminUserInfo.setPassword(password);
+        hospAdminUserInfo.setPermissions(permissions);
         AdminInfoVO adminInfoVO = adminUserInfoService.add(hospAdminUserInfo);
         return ResponseWrapperSuccess(adminInfoVO);
     }
