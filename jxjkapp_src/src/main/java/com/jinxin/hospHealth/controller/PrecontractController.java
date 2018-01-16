@@ -90,9 +90,11 @@ public class PrecontractController extends MyBaseController{
     public JSONObject selectAll(
             @ApiParam(value = "分页信息", required = false)  @RequestBody(required = false) PageBean pageBean) throws Exception {
         HospPrecontract hospPrecontract =  new HospPrecontract();
-        hospPrecontract.setUserId(DPreconditions.checkNotNull(getCurrentUserId(),
-                Language.get("user.id-null"),
-                true));
+        hospPrecontract.setUserId(
+                DPreconditions.checkNotNull(
+                        getCurrentUserId(),
+                        Language.get("user.id-null"),
+                        true));
         if(pageBean != null) {
             hospPrecontract.setPageNum(pageBean.getPageNum());
             hospPrecontract.setPageSize(pageBean.getPageSize());

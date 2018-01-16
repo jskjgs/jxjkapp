@@ -138,9 +138,6 @@ public class PrecontractService implements BaseService<HospPrecontract,HospPreco
      */
     @Override
     public PageInfo<HospPrecontract> select(HospPrecontract hospPrecontract) throws Exception {
-        DPreconditions.checkNotNull(hospPrecontract.getId(),
-                Language.get("user.id-null"),
-                true);
         PageHelper.startPage(hospPrecontract.getPageNum(), hospPrecontract.getPageSize());
         if (StringUtil.isNotEmpty(hospPrecontract.getField()))
             PageHelper.orderBy(hospPrecontract.getField());
