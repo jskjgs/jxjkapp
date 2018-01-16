@@ -56,7 +56,7 @@ public class Swagger2 {
     private List<Parameter> globalParameters() {
         ParameterBuilder tokenPar = new ParameterBuilder();
         List<Parameter> pars = new ArrayList<>();
-        tokenPar.name(Constant.HEADER_TEST_ACCOUNT_ID).description("测试账号id").modelRef(new ModelRef("Long")).parameterType("header").required(false);
+        tokenPar.name(Constant.HEADER_PERMISSIONS).description("测试账号id").modelRef(new ModelRef("Long")).parameterType("header").required(false);
         pars.add(tokenPar.build());
         return pars;
     }

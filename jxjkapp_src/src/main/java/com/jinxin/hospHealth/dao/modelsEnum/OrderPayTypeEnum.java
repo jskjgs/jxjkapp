@@ -1,5 +1,8 @@
 package com.jinxin.hospHealth.dao.modelsEnum;
 
+import com.doraemon.base.exceptions.ShowExceptions;
+import com.doraemon.base.language.Language;
+
 /**
  * 订单支付类型
  * Created by zbs on 2018/1/10.
@@ -24,5 +27,13 @@ public enum OrderPayTypeEnum {
 
     public String getDesc() {
         return desc;
+    }
+
+    public static OrderPayTypeEnum getByCode(Integer code){
+        for(OrderPayTypeEnum orderPayTypeEnum : OrderPayTypeEnum.values()){
+            if(code.equals(orderPayTypeEnum.getCode()))
+                return orderPayTypeEnum;
+        }
+        throw new ShowExceptions(Language.get("service.not-scope"));
     }
 }

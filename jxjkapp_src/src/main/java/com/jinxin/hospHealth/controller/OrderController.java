@@ -35,17 +35,6 @@ public class OrderController extends MyBaseController {
     @Autowired
     OrderProductService orderProductService;
 
-    @ApiOperation(value = "新增订单信息")
-    @RequestMapping(value="/", method = RequestMethod.POST)
-    @ResponseBody
-    public JSONObject add(
-            @ApiParam(value = "订单信息", required = true) @RequestBody OrderInfoPO orderInfoPO) throws Exception {
-        orderInfoPO.setUserId(DPreconditions.checkNotNull(getCurrentUserId(),
-                Language.get("user.id-null"),
-                true));
-        return ResponseWrapperSuccess(orderService.add(orderInfoPO));
-    }
-
     @ApiOperation(value = "查询单个订单信息",response = OrderVO.class)
     @RequestMapping(value="/", method = RequestMethod.GET)
     @ResponseBody
@@ -81,10 +70,57 @@ public class OrderController extends MyBaseController {
     @ResponseBody
     public JSONObject select(
             @ApiParam(value = "订单信息", required = true)  @RequestBody OrderInfoPO orderInfoPO) throws Exception {
+        orderInfoPO.setUserId(
+                DPreconditions.checkNotNull(
+                        getCurrentUserId(),
+                        Language.get("user.id-null"),
+                        true));
+        return ResponseWrapperSuccess(orderService.select(orderInfoPO));
+    }
+
+    @ApiOperation(value = "本用户申请订单退款")
+    @RequestMapping(value="/refund", method = RequestMethod.DELETE)
+    @ResponseBody
+    public JSONObject refund(
+            @ApiParam(value = "订单ID", required = true) @RequestParam(value = "id", required = true) Long id) throws Exception {
+        HospOrder select = new HospOrder();
+        select.setId(id);
+        select.setUserId(
+                DPreconditions.checkNotNull(
+                        getCurrentUserId(),
+                        Language.get("user.id-null"),
+                        true));
+        DPreconditions.checkNotNull(
+                orderService.selectOne(select),
+                Language.get("order.must-is-own-order"),
+                true);
+        orderService.refund(id);
+        return ResponseWrapperSuccess(null);
+    }
+
+
+    @ApiOperation(value = "订单退款完毕 ---admin")
+    @RequestMapping(value="/admin/refundOver", method = RequestMethod.DELETE)
+    @ResponseBody
+    public JSONObject refundOver(
+            @ApiParam(value = "订单ID", required = true) @RequestParam(value = "id", required = true) Long id) throws Exception {
+        Long adminUserId = DPreconditions.checkNotNull(
+                getAdminUserId(),
+                Language.get(""),
+                true);
+
+        return ResponseWrapperSuccess(null);
+    }
+
+    @ApiOperation(value = "新增订单信息 ---admin")
+    @RequestMapping(value="/admin", method = RequestMethod.POST)
+    @ResponseBody
+    public JSONObject add(
+            @ApiParam(value = "订单信息", required = true) @RequestBody OrderInfoPO orderInfoPO) throws Exception {
         orderInfoPO.setUserId(DPreconditions.checkNotNull(getCurrentUserId(),
                 Language.get("user.id-null"),
                 true));
-        return ResponseWrapperSuccess(orderService.select(orderInfoPO));
+        return ResponseWrapperSuccess(orderService.add(orderInfoPO));
     }
 
     @ApiOperation(value = "查询单个订单信息--admin",response = OrderVO.class)
@@ -111,21 +147,12 @@ public class OrderController extends MyBaseController {
         return ResponseWrapperSuccess(orderService.selectAdmin(orderInfoPO));
     }
 
-    @ApiOperation(value = "订单信息置为无效")
+    @ApiOperation(value = "订单信息置为无效 ---admin")
     @RequestMapping(value="/invalid", method = RequestMethod.DELETE)
     @ResponseBody
     public JSONObject setStateAsInvalid(
             @ApiParam(value = "订单ID", required = true) @RequestParam(value = "id", required = true) Long id) throws Exception {
         orderService.setStateAsInvalid(id);
-        return ResponseWrapperSuccess(null);
-    }
-
-    @ApiOperation(value = "订单申请退款")
-    @RequestMapping(value="/refund", method = RequestMethod.DELETE)
-    @ResponseBody
-    public JSONObject refund(
-            @ApiParam(value = "订单ID", required = true) @RequestParam(value = "id", required = true) Long id) throws Exception {
-        orderService.refund(id);
         return ResponseWrapperSuccess(null);
     }
 

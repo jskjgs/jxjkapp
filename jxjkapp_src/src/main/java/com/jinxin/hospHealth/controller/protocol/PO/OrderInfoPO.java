@@ -44,7 +44,8 @@ public class OrderInfoPO extends PageBean{
     private String userIds;
     @ApiModelProperty("0:正常 1:禁用  99:删除")
     private Integer enable = 0;
+
     public static String getDefaultField() {
-        return "state ASC,create_date DESC";
+        return "create_date DESC";
     }
 }

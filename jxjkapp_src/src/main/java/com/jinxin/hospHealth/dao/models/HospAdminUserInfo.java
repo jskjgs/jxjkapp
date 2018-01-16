@@ -1,5 +1,8 @@
 package com.jinxin.hospHealth.dao.models;
 
+import com.jinxin.hospHealth.controller.protocol.VO.AdminInfoVO;
+import com.jinxin.hospHealth.controller.protocol.VO.OrderVO;
+import com.jinxin.hospHealth.dao.modelsEnum.SexEnum;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -31,9 +34,32 @@ public class HospAdminUserInfo {
     private Integer age;
     @ApiModelProperty("生日")
     private Date birthday;
+    @ApiModelProperty("权限")
+    private String permissions;
     @ApiModelProperty("创建时间")
     private Date createDate;
     @ApiModelProperty("更新时间")
     private Date updateDate;
+
+
+    public AdminInfoVO transform(){
+        AdminInfoVO adminInfoVO = new AdminInfoVO();
+        adminInfoVO.setId(this.id);
+        adminInfoVO.setUpdateDate(this.updateDate);
+        adminInfoVO.setAge(this.age);
+        adminInfoVO.setBirthday(this.birthday);
+        adminInfoVO.setCreateDate(this.createDate);
+        adminInfoVO.setEmail(this.email);
+        adminInfoVO.setHeadPortrait(this.headPortrait);
+        adminInfoVO.setPermissionList(this.permissions == null
+                ? null
+                : this.permissions.split(","));
+        adminInfoVO.setPhone(this.phone);
+        adminInfoVO.setSex(SexEnum.getSexEnumByCode(this.sex) == null
+                ? null
+                : SexEnum.getSexEnumByCode(this.sex).getDesc());
+        adminInfoVO.setName(this.name);
+        return adminInfoVO;
+    }
 
 }

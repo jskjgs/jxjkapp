@@ -8,7 +8,6 @@ import com.doraemon.base.redis.RedisOperation;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.github.pagehelper.util.StringUtil;
-import com.jinxin.hospHealth.dao.DaoEnumValid;
 import com.jinxin.hospHealth.dao.mapper.HospCallNumberMapper;
 import com.jinxin.hospHealth.dao.models.HospCallNumber;
 import com.jinxin.hospHealth.dao.models.HospUserInfo;
@@ -17,7 +16,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.validation.annotation.Validated;
 
 import java.util.Date;
 
@@ -105,8 +103,9 @@ public class CallNumberService {
         HospCallNumber update = new HospCallNumber();
         update.setId(hospCallNumber.getId());
         if(hospCallNumber.getState() != null) {
-            DaoEnumValid.checkCallNumberState(hospCallNumber.getState());
-            update.setState(hospCallNumber.getState());
+            update.setState(
+                    CallNumberEnum.getByCode(
+                            hospCallNumber.getState()).getCode());
         }
         update.setUpdateDate(new Date());
         DPreconditions.checkState(hospCallNumberMapper.updateByPrimaryKey(hospCallNumber) == 1,

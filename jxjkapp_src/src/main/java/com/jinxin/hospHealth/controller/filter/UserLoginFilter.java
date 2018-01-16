@@ -1,21 +1,16 @@
 package com.jinxin.hospHealth.controller.filter;
 
-import com.alibaba.fastjson.JSON;
 import com.doraemon.base.controller.Result;
 import com.doraemon.base.redis.RedisOperation;
-import com.doraemon.base.util.IpTool;
 import com.jinxin.hospHealth.utils.Constant;
-import lombok.Data;
 import lombok.extern.log4j.Log4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.annotation.Order;
+import org.springframework.beans.factory.annotation.Value;
 
 import javax.servlet.*;
 import javax.servlet.annotation.WebFilter;
-import javax.servlet.annotation.WebInitParam;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
-import java.util.Map;
 
 /**
  * 对用户需要访问的页面进行拦截,判断是否有token
@@ -28,7 +23,7 @@ import java.util.Map;
         "/hospHealth/precontract/*",
         "/hospHealth/userBalance/*"})
 @Log4j
-public class UserLoginFilter implements Filter{
+public class UserLoginFilter implements Filter {
 
     @Autowired
     RedisOperation redisOperation;
@@ -41,23 +36,37 @@ public class UserLoginFilter implements Filter{
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         HttpServletRequest request = (HttpServletRequest) servletRequest;
         Result result = new Result();
-        String token = request.getHeader("Authorization");
-        if(token == null){
+        if(adminUser(request) || user(request)){
+            filterChain.doFilter(servletRequest, servletResponse);
+        }else {
             servletResponse.getWriter().print(result.addMessage("Please log in.").ExeFaild(401));
             return;
         }
+    }
+
+
+    private boolean adminUser(HttpServletRequest request) {
+        String token = request.getHeader(Constant.HEADER_PERMISSIONS);
+        if(request.getSession().getAttribute(token) == null)
+            return false;
+        String adminUserId = String.valueOf(request.getSession().getAttribute(token));
+        if(adminUserId == null || "".equals(adminUserId))
+            return false;
+        return true;
+    }
+
+    private boolean user(HttpServletRequest request){
+        String token = request.getHeader(Constant.HEADER_PERMISSIONS);
+        if (token == null)
+            return false;
         try {
             String userId = redisOperation.get(token);
-            if(userId == null || "".equals(userId)){
-                servletResponse.getWriter().print(result.addMessage("Please log in.").ExeFaild(401));
-                return;
-            }
-            servletRequest.setAttribute("userId",userId);
-            filterChain.doFilter(servletRequest, servletResponse);
-        }catch (Exception e){
+            if (userId == null || "".equals(userId))
+                return false;
+            return true;
+        } catch (Exception e) {
             e.printStackTrace();
-            servletResponse.getWriter().print(result.addMessage("Please log in.").ExeFaild(401));
-            return;
+            return false;
         }
     }
 

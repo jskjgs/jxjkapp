@@ -1,5 +1,8 @@
 package com.jinxin.hospHealth.dao.modelsEnum;
 
+import com.doraemon.base.exceptions.ShowExceptions;
+import com.doraemon.base.language.Language;
+
 /**
  * Created by zbs on 2018/1/5.
  */
@@ -23,5 +26,13 @@ public enum  CallNumberEnum {
 
     public String getDesc() {
         return desc;
+    }
+
+    public static CallNumberEnum getByCode(Integer code){
+        for(CallNumberEnum callNumberEnum : CallNumberEnum.values()){
+            if(code.equals(callNumberEnum.getCode()))
+                return callNumberEnum;
+        }
+        throw new ShowExceptions(Language.get("service.not-scope"));
     }
 }

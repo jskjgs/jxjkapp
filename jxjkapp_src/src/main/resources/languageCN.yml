@@ -10,6 +10,7 @@ user:
     select-object-null: 用户查询信息不能为空.
     phone-repeat: 手机号码已经被注册.
     password-null: 密码不能为空.
+    permissions-null: 权限不能为空.
 patient:
     select-not-exist: 就诊人信息不存在
     id-null: 就诊人唯一标识不能为空.
@@ -59,16 +60,6 @@ precontract:
     precontract-time-null: 预约时间不能为空.
     id-null: 预约ID不能为空.
     user-must-is-vip: 被预约的用户必须是VIP.
-parameter-valid:
-    disable-enable-scope: 传入的禁用参数不属于默认值范围内.
-    all-enable-scope: 传入的禁用/删除参数不属于默认值范围内.
-    display-scope: 传入的显示参数不属于默认值范围内.
-    sex-scope: 传入的性别参数不属于默认值范围内.
-    call-number-state-scope: 传入的排队叫号状态参数不属于默认值范围内.
-    order-pay-type-scope: 传入的订单支付类型参数不属于默认值范围内.
-    order-state-scope: 传入的订单状态类型参数不属于默认值范围内.
-    order-type-scope: 传入的订单类型参数不属于默认值范围内.
-    order-product-state-scope: 传入的订单商品属性类型参数不属于默认值范围内.
 call-number:
     patient-id-null: 就诊人ID不能为空.
     id-null: 排队叫号ID不能为空.
@@ -92,6 +83,7 @@ order:
     close-failure: 关闭订单失败.
     close-order-tyep-failure: 被关闭的订单状态必须是未支付的状态.
     operation-name-null: 操作人员名称为空.
+    must-is-own-order: 必须是订单拥有者的订单.
 order-product:
     order-id-null: 订单ID不能为空.
     sku-not-exist: 商品不存在.
@@ -108,3 +100,4 @@ service:
     delete-failure: 删除信息失败.
     select-failure: 查询信息失败.
     invalid-failure: 订单置为无效失败.
+    not-scope: 传入的参数不属于默认值范围内.

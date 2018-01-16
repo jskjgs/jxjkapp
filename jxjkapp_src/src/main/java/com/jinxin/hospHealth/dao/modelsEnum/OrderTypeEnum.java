@@ -1,5 +1,8 @@
 package com.jinxin.hospHealth.dao.modelsEnum;
 
+import com.doraemon.base.exceptions.ShowExceptions;
+import com.doraemon.base.language.Language;
+
 /**
  * 订单类型
  * Created by zbs on 2018/1/10.
@@ -23,5 +26,13 @@ public enum OrderTypeEnum {
 
     public String getDesc() {
         return desc;
+    }
+
+    public static OrderTypeEnum getByCode(Integer code){
+        for(OrderTypeEnum orderTypeEnum : OrderTypeEnum.values()){
+            if(code.equals(orderTypeEnum.getCode()))
+                return orderTypeEnum;
+        }
+        throw new ShowExceptions(Language.get("service.not-scope"));
     }
 }
