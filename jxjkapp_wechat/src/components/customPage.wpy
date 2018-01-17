@@ -16,7 +16,11 @@
   }
 
   .no-more-tip {
-    margin-top: 20rpx;
+    margin: 0;
+    padding: 20rpx 0;
+    font-size: 10px;
+    color:#BDBDBD;
+    text-align: center;
   }
 }
 </style>

@@ -67,20 +67,14 @@ Promise.prototype.finally = function (callback) {
               case 400:
                 errMsg = '操作失败'
                 break
-              case 406:
-                errMsg = data.message
-                break
               case 401:
                 errMsg = '未登陆'
                 wx[toLoginFn]({
                   url: '/pages/login'
                 })
                 break
-              case 500:
-                errMsg = '发生未知错误'
-                break
               default:
-                errMsg = data.message || '发生未知错误'
+                errMsg = '发生未知错误'
             }
             if (errMsg !== '') {
               wx.showToast({
