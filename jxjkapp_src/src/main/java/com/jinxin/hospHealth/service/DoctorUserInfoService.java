@@ -63,6 +63,8 @@ public class DoctorUserInfoService implements BaseService<HospDoctorUserInfo,Hos
 
     @Override
     public PageInfo<HospDoctorUserInfo> selectAllAdmin(PageBean pageBean) throws Exception {
+        if(pageBean == null)
+            pageBean = new PageBean();
         return null;
     }
 }

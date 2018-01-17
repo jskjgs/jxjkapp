@@ -9,7 +9,6 @@ import com.doraemon.base.util.RandomUtil;
 import com.github.pagehelper.PageInfo;
 import com.jinxin.hospHealth.controller.protocol.PO.UserInfoPO;
 import com.jinxin.hospHealth.controller.protocol.VO.LoginInfoVO;
-import com.jinxin.hospHealth.controller.protocol.VO.UserInfoVO;
 import com.jinxin.hospHealth.dao.models.HospUserInfo;
 import com.jinxin.hospHealth.service.OtherService;
 import com.jinxin.hospHealth.service.UserInfoService;
@@ -97,7 +96,7 @@ public class OtherController extends MyBaseController{
         otherService.saveToker(phone,tokenCode,respUserInfo.getId());
         LoginInfoVO loginInfoVO = new LoginInfoVO();
         loginInfoVO.setToken(tokenCode);
-        loginInfoVO.setUserInfo(new UserInfoVO(respUserInfo));
+        loginInfoVO.setUserInfo(respUserInfo.transform());
         loginInfoVO.setEmpty(isEmpty);
         return ResponseWrapperSuccess(loginInfoVO);
     }
@@ -120,7 +119,7 @@ public class OtherController extends MyBaseController{
         otherService.saveToker(phone,tokenCode,respUserInfo.getId());
         LoginInfoVO loginInfoVO = new LoginInfoVO();
         loginInfoVO.setToken(tokenCode);
-        loginInfoVO.setUserInfo(new UserInfoVO(respUserInfo));
+        loginInfoVO.setUserInfo(respUserInfo.transform());
         loginInfoVO.setEmpty(true);
         return ResponseWrapperSuccess(loginInfoVO);
     }

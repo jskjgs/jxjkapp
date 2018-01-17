@@ -34,9 +34,9 @@ token:
 oss:
     accessKeyId: LTAIpXq9myrkBxUV
     accessKeySecret: sxg0punreq1ui7werfUQUfQ9RusIpo
-    endpoint:
-    bucketName:
-    bucketUrl:
+    endpoint: oss-cn-beijing.aliyuncs.com
+    bucketName: jx-jxjk
+    bucketUrl: http://jx-jxjk.oss-cn-beijing.aliyuncs.com/
 
 sms:
     region-id: cn-shenzhen
@@ -104,3 +104,10 @@ spring:
 redis:
     host: 119.29.108.150
     port: 6379
+
+mail:
+    smtpHost: mail.bbdservice.com
+#    smtpPort:
+    account: jishi@bbdservice.com
+    passwd: Jishi2017
+    from: jishi@bbdservice.com

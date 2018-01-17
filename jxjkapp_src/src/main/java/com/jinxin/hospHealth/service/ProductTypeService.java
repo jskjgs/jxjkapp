@@ -140,6 +140,8 @@ public class ProductTypeService implements BaseService<HospProductType,HospProdu
 
     @Override
     public PageInfo<HospProductType> selectAllAdmin(PageBean pageBean) throws Exception {
-        return selectAllAdmin(pageBean);
+        if(pageBean == null)
+            pageBean = new PageBean();
+        return selectAll(pageBean);
     }
 }

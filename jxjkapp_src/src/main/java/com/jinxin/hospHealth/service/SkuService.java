@@ -166,6 +166,8 @@ public class SkuService implements BaseService<HospProductSku,HospProductSku> {
 
     @Override
     public PageInfo<HospProductSku> selectAllAdmin(PageBean pageBean) throws Exception {
-        return selectAllAdmin(pageBean);
+        if(pageBean == null)
+            pageBean = new PageBean();
+        return selectAll(pageBean);
     }
 }

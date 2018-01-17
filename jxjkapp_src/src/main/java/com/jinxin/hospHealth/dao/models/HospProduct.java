@@ -1,14 +1,13 @@
 package com.jinxin.hospHealth.dao.models;
 
 import com.doraemon.base.controller.bean.PageBean;
+import com.jinxin.hospHealth.controller.protocol.VO.ProductVO;
 import com.jinxin.hospHealth.dao.modelsEnum.EnableEnum;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
-
 import javax.persistence.Id;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 import java.util.Date;
 
 @Data
@@ -39,4 +38,19 @@ public class HospProduct extends PageBean{
     @ApiModelProperty("删除标识 0:正常 1:禁用  99:删除")
     private Integer enable = EnableEnum.ENABLE_DELETE.getCode();
 
+    public ProductVO transform(HospProductType productType,HospProductSku defaultSku){
+        ProductVO productVO = new ProductVO();
+        productVO.setId(this.getId());
+        productVO.setName(this.getName());
+        productVO.setSortNumber( this.getSortNumber());
+        productVO.setImages(this.getImages());
+        productVO.setDescription(this.getDescription());
+        productVO.setInformation(this.getInformation());
+        productVO.setCreateDate(this.getCreateDate());
+        productVO.setUpdateDate(this.getUpdateDate());
+        productVO.setProductType(productType);
+        productVO.setDefaultSku(defaultSku);
+        productVO.setEnable(this.getEnable());
+        return productVO;
+    }
 }

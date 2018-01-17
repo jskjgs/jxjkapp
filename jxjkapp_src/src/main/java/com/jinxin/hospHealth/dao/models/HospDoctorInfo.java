@@ -1,6 +1,8 @@
 package com.jinxin.hospHealth.dao.models;
 
 import com.doraemon.base.controller.bean.PageBean;
+import com.jinxin.hospHealth.controller.protocol.VO.DoctorInfoVO;
+import com.jinxin.hospHealth.dao.modelsEnum.SexEnum;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -37,5 +39,22 @@ public class HospDoctorInfo extends PageBean{
     @ApiModelProperty("医生的描述")
     private String description;
 
-
+    public DoctorInfoVO transform(HospArea hospArea,HospDoctorType doctorType){
+        DoctorInfoVO doctorInfoVO = new DoctorInfoVO();
+        doctorInfoVO.setId(this.getId());
+        doctorInfoVO.setName(this.getName());
+        doctorInfoVO.setHospArea(hospArea);
+        doctorInfoVO.setDoctorType(doctorType);
+        doctorInfoVO.setHeadPortrait(this.getHeadPortrait());
+        doctorInfoVO.setSex(
+                this.getSex() != null
+                        ? SexEnum.getSexEnumByCode(this.getSex()).getDesc()
+                        : null);
+        doctorInfoVO.setPhone(this.getPhone());
+        doctorInfoVO.setEmail( this.getEmail());
+        doctorInfoVO.setAge(this.getAge());
+        doctorInfoVO.setBirthday(this.getBirthday());
+        doctorInfoVO.setDescription(this.getDescription());
+        return doctorInfoVO;
+    }
 }

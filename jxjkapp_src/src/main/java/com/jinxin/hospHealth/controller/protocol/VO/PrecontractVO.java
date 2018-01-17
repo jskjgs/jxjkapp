@@ -31,11 +31,4 @@ public class PrecontractVO {
     @ApiModelProperty("商品信息")
     private HospProduct product;
 
-    public PrecontractVO(HospPrecontract hospPrecontract){
-        if (hospPrecontract == null)
-            return;
-        this.id = hospPrecontract.getId();
-        this.precontractDate = hospPrecontract.getPrecontractDate();
-        this.status = hospPrecontract.getStatus();
-    }
 }

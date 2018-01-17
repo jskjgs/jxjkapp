@@ -40,7 +40,7 @@ public class DoctorInfoService implements BaseService<HospDoctorInfo,DoctorInfoP
     @Transactional
     public HospDoctorInfo add(DoctorInfoPO po) {
         //PO 转换为 daoBean
-        HospDoctorInfo hospDoctorInfo =  po.conversion();
+        HospDoctorInfo hospDoctorInfo =  po.transform();
         DPreconditions.checkState(hospDoctorInfo.getId() == null,
                 Language.get("docker.id-exist"),
                 true);
@@ -80,7 +80,7 @@ public class DoctorInfoService implements BaseService<HospDoctorInfo,DoctorInfoP
     @Override
     @Transactional
     public void update(DoctorInfoPO doctorInfoPO) {
-        HospDoctorInfo hospDoctorInfo = doctorInfoPO.conversion();
+        HospDoctorInfo hospDoctorInfo = doctorInfoPO.transform();
         DPreconditions.checkNotNull(hospDoctorInfo.getId(),
                 Language.get("docker.id-null"),
                 true);
@@ -138,7 +138,7 @@ public class DoctorInfoService implements BaseService<HospDoctorInfo,DoctorInfoP
         PageHelper.startPage(doctorInfoPO.getPageNum(), doctorInfoPO.getPageSize());
         if (StringUtil.isNotEmpty(doctorInfoPO.getField()))
             PageHelper.orderBy(doctorInfoPO.getField());
-        HospDoctorInfo select = doctorInfoPO.conversion();
+        HospDoctorInfo select = doctorInfoPO.transform();
         return new PageInfo(hospDoctorInfoMapper.select(select));
     }
 
@@ -152,7 +152,7 @@ public class DoctorInfoService implements BaseService<HospDoctorInfo,DoctorInfoP
         PageHelper.startPage(doctorInfoPO.getPageNum(), doctorInfoPO.getPageSize());
         if (StringUtil.isNotEmpty(doctorInfoPO.getField()))
             PageHelper.orderBy(doctorInfoPO.getField());
-        HospDoctorInfo select = doctorInfoPO.conversion();
+        HospDoctorInfo select = doctorInfoPO.transform();
         return new PageInfo(hospDoctorInfoMapper.selectByExampleByFuzzy(select));
     }
 
@@ -184,6 +184,8 @@ public class DoctorInfoService implements BaseService<HospDoctorInfo,DoctorInfoP
 
     @Override
     public PageInfo<HospDoctorInfo> selectAllAdmin(PageBean pageBean) throws Exception {
+        if(pageBean == null)
+            pageBean = new PageBean();
         return selectAll(pageBean);
     }
 }

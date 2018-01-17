@@ -231,6 +231,8 @@ public class UserInfoService implements BaseService<HospUserInfo, UserInfoPO> {
 
     @Override
     public PageInfo<HospUserInfo> selectAllAdmin(PageBean pageBean) throws Exception {
+        if(pageBean == null)
+            pageBean = new PageBean();
         return selectAll(pageBean);
     }
 

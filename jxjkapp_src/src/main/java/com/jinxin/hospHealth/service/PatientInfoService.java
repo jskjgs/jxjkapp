@@ -157,6 +157,8 @@ public class PatientInfoService implements BaseService<HospPatientInfo,HospPatie
 
     @Override
     public PageInfo<HospPatientInfo> selectAllAdmin(PageBean pageBean) throws Exception {
+        if(pageBean == null)
+            pageBean = new PageBean();
         return selectAll(pageBean);
     }
 }

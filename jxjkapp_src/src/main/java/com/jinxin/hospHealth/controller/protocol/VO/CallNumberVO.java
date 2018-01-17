@@ -1,13 +1,10 @@
 package com.jinxin.hospHealth.controller.protocol.VO;
 
-import com.doraemon.base.controller.bean.PageBean;
 import com.jinxin.hospHealth.dao.models.HospPatientInfo;
 import com.jinxin.hospHealth.dao.models.HospUserInfo;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
-
-import javax.persistence.Transient;
 import java.util.Date;
 
 /**
@@ -15,7 +12,7 @@ import java.util.Date;
  */
 @Data
 @ApiModel("排队叫号信息")
-public class CallNumberVO extends PageBean {
+public class CallNumberVO {
 
     @ApiModelProperty("id")
     private Long id;

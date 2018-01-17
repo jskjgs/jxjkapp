@@ -303,8 +303,6 @@ public class OrderService implements BaseService<OrderVO, OrderInfoPO> {
         PageHelper.startPage(orderInfoPO.getPageNum(), orderInfoPO.getPageSize());
         if (StringUtil.isNotEmpty(orderInfoPO.getField())) {
             PageHelper.orderBy(orderInfoPO.getField());
-        } else {
-            PageHelper.orderBy(orderInfoPO.getDefaultField());
         }
         List<HospOrder> hospOrderList = hospOrderMapper.selectByExampleByCustom(orderInfoPO);
         List<OrderVO> req = new ArrayList<>();
@@ -330,8 +328,6 @@ public class OrderService implements BaseService<OrderVO, OrderInfoPO> {
         PageHelper.startPage(pageBean.getPageNum(), pageBean.getPageSize());
         if (StringUtil.isNotEmpty(pageBean.getField())) {
             PageHelper.orderBy(pageBean.getField());
-        } else {
-            PageHelper.orderBy(OrderInfoPO.getDefaultField());
         }
         HospOrder select = new HospOrder();
         select.setDisplay(ShowEnum.NOT_DISPLAY.getCode());
@@ -377,8 +373,6 @@ public class OrderService implements BaseService<OrderVO, OrderInfoPO> {
         PageHelper.startPage(orderInfoPO.getPageNum(), orderInfoPO.getPageSize());
         if (StringUtil.isNotEmpty(orderInfoPO.getField())) {
             PageHelper.orderBy(orderInfoPO.getField());
-        } else {
-            PageHelper.orderBy(orderInfoPO.getDefaultField());
         }
         orderInfoPO.setDisplay(null);
         List<HospOrder> hospOrderList = hospOrderMapper.selectByExampleByCustom(orderInfoPO);
@@ -406,8 +400,6 @@ public class OrderService implements BaseService<OrderVO, OrderInfoPO> {
         PageHelper.startPage(pageBean.getPageNum(), pageBean.getPageSize());
         if (StringUtil.isNotEmpty(pageBean.getField())) {
             PageHelper.orderBy(pageBean.getField());
-        } else {
-            PageHelper.orderBy(OrderInfoPO.getDefaultField());
         }
         List<HospOrder> hospOrderList = hospOrderMapper.selectAll();
         List<OrderVO> req = new ArrayList<>();

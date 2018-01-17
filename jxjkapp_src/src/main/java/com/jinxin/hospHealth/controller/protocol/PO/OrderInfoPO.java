@@ -14,7 +14,7 @@ import java.util.List;
  */
 @Data
 @ApiModel("订单信息")
-public class OrderInfoPO extends PageBean{
+public class OrderInfoPO extends PageBean {
 
     @ApiModelProperty("订单ID")
     private Long id;
@@ -37,17 +37,25 @@ public class OrderInfoPO extends PageBean{
     @ApiModelProperty("支付金额")
     private BigDecimal amount;
     @ApiModelProperty("是否显示 0:显示 1:隐藏")
-    private Integer display = 0;
+    private Integer display;
 
-    @ApiModelProperty("时间区间-开始时间  YYYY-MM-DD  HH:mm:ss")
+    @ApiModelProperty("订单创建时间-开始时间  YYYY-MM-DD  HH:mm:ss")
     private String startTime;
-    @ApiModelProperty("时间区间-结束时间  YYYY-MM-DD  HH:mm:ss")
+    @ApiModelProperty("订单创建时间-结束时间  YYYY-MM-DD  HH:mm:ss")
     private String stopTime;
     @ApiModelProperty("多个用户ID,使用,分割")
     private String userIds;
 
-
-    public static String getDefaultField() {
-        return "create_date DESC";
+    /**
+     * 默认排序,如果没有传入排序的话
+     * @return
+     */
+    public String getField() {
+        if (this.field == null || "".equals(this.field)) {
+            return "create_date DESC";
+        }
+        return this.field;
     }
+
+
 }

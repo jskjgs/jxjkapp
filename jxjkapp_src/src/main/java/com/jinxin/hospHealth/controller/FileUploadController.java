@@ -33,12 +33,11 @@ public class FileUploadController extends MyBaseController{
     @RequestMapping(value="/image", method = RequestMethod.POST)
     @ResponseBody
     public JSONObject upload(
-            @ApiParam(value = "文件内容", required = true) @RequestBody MultipartFile file,
-            @ApiParam(value = "类型", required = true) @RequestBody String type) throws Exception {
+            @ApiParam(value = "文件内容", required = true) @RequestBody MultipartFile file) throws Exception {
         if(file == null){
             return ResponseWrapperShowError(null,"上传的文件内容不能为空.");
         }
-        String path = fileService.uploadImage(file,"images/"+type);
+        String path = fileService.uploadImage(file);
         return ResponseWrapperSuccess(path);
     }
 

@@ -132,6 +132,8 @@ public class HospAreaService implements BaseService<HospArea,HospArea>{
 
     @Override
     public PageInfo<HospArea> selectAllAdmin(PageBean pageBean) throws Exception {
+        if(pageBean == null)
+            pageBean = new PageBean();
         return selectAll(pageBean);
     }
 }

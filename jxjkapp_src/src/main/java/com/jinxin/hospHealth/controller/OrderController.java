@@ -117,9 +117,6 @@ public class OrderController extends MyBaseController {
     @ResponseBody
     public JSONObject add(
             @ApiParam(value = "订单信息", required = true) @RequestBody OrderInfoPO orderInfoPO) throws Exception {
-        orderInfoPO.setUserId(DPreconditions.checkNotNull(getCurrentUserId(),
-                Language.get("user.id-null"),
-                true));
         return ResponseWrapperSuccess(orderService.add(orderInfoPO));
     }
 

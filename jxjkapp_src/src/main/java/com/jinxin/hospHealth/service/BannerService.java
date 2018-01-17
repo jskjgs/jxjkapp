@@ -30,15 +30,30 @@ public class BannerService implements BaseService<HospBanner,HospBanner>{
      */
     @Override
     public HospBanner add(HospBanner hospBanner) {
-        DPreconditions.checkState(hospBanner.getId() == null, "banner的id不能填写.", true);
-        DPreconditions.checkNotNullAndEmpty(hospBanner.getName(), Language.get("banner.name-null"), true);
-        DPreconditions.checkNotNullAndEmpty(hospBanner.getBannerUrl(), Language.get("banner.imageURL-null"), true);
-        DPreconditions.checkNotNullAndEmpty(hospBanner.getJumpUrl(), Language.get("banner.jumpURL-null"), true);
+        DPreconditions.checkState(
+                hospBanner.getId() == null,
+                "banner的id不能填写.",
+                true);
+        DPreconditions.checkNotNullAndEmpty(
+                hospBanner.getName(),
+                Language.get("banner.name-null"),
+                true);
+        DPreconditions.checkNotNullAndEmpty(
+                hospBanner.getBannerUrl(),
+                Language.get("banner.imageURL-null"),
+                true);
+        DPreconditions.checkNotNullAndEmpty(
+                hospBanner.getJumpUrl(),
+                Language.get("banner.jumpURL-null"),
+                true);
         if (hospBanner.getOrderNumber() == null)
             hospBanner.setOrderNumber(1);
         if (hospBanner.getDisplay() == null)
             hospBanner.setDisplay(0);
-        DPreconditions.checkState(hospBannerMapper.insertSelectiveReturnId(hospBanner) == 1, Language.get("service.save-failure"),true);
+        DPreconditions.checkState(
+                hospBannerMapper.insertSelectiveReturnId(hospBanner) == 1,
+                Language.get("service.save-failure"),
+                true);
         return hospBanner;
     }
 
@@ -49,10 +64,21 @@ public class BannerService implements BaseService<HospBanner,HospBanner>{
      */
     @Override
     public void update(HospBanner hospBanner) {
-        DPreconditions.checkNotNull(hospBanner.getId(), Language.get("banner.id-null"), true);
+        if(hospBanner == null)
+            return;
+        DPreconditions.checkNotNull(
+                hospBanner.getId(),
+                Language.get("banner.id-null"),
+                true);
         HospBanner banner = selectOne(hospBanner.getId());
-        DPreconditions.checkNotNull(banner, Language.get("banner.id-not-exist"), true);
-        DPreconditions.checkState(hospBannerMapper.updateByPrimaryKeySelective(hospBanner) == 1, "更新banner信息失败.", true);
+        DPreconditions.checkNotNull(
+                banner,
+                Language.get("banner.id-not-exist"),
+                true);
+        DPreconditions.checkState(
+                hospBannerMapper.updateByPrimaryKeySelective(hospBanner) == 1,
+                "更新banner信息失败.",
+                true);
     }
 
     /**
@@ -63,8 +89,14 @@ public class BannerService implements BaseService<HospBanner,HospBanner>{
     @Override
     public void deleteOne(Long id) {
         HospBanner banner = selectOne(id);
-        DPreconditions.checkNotNull(banner, Language.get("banner.id-not-exist"), true);
-        DPreconditions.checkState(hospBannerMapper.deleteByPrimaryKey(id) == 1, "删除banner信息失败.");
+        DPreconditions.checkNotNull(
+                banner,
+                Language.get("banner.id-not-exist"),
+                true);
+        DPreconditions.checkState(
+                hospBannerMapper.deleteByPrimaryKey(id) == 1,
+                "删除banner信息失败.",
+                true);
     }
 
     @Override
@@ -79,7 +111,10 @@ public class BannerService implements BaseService<HospBanner,HospBanner>{
      */
     @Override
     public HospBanner selectOne(Long id) {
-        DPreconditions.checkNotNull(id, Language.get("banner.id-null"),true);
+        DPreconditions.checkNotNull(
+                id,
+                Language.get("banner.id-null"),
+                true);
         HospBanner select = new HospBanner();
         select.setId(id);
         select.setDisplay(ShowEnum.DISPLAY.getCode());
@@ -94,6 +129,8 @@ public class BannerService implements BaseService<HospBanner,HospBanner>{
      */
     @Override
     public PageInfo<HospBanner> select(HospBanner hospBanner) {
+        if(hospBanner == null)
+            return null;
         PageHelper.startPage(hospBanner.getPageNum(), hospBanner.getPageSize());
         if (StringUtil.isNotEmpty(hospBanner.getField()))
             PageHelper.orderBy(hospBanner.getField());
@@ -135,7 +172,10 @@ public class BannerService implements BaseService<HospBanner,HospBanner>{
      */
     @Override
     public HospBanner selectOneAdmin(Long id) throws Exception {
-        DPreconditions.checkNotNull(id, Language.get("banner.id-null"),true);
+        DPreconditions.checkNotNull(
+                id,
+                Language.get("banner.id-null"),
+                true);
         return hospBannerMapper.selectByPrimaryKey(id);
     }
 
@@ -147,6 +187,8 @@ public class BannerService implements BaseService<HospBanner,HospBanner>{
      */
     @Override
     public PageInfo<HospBanner> selectAdmin(HospBanner hospBanner) throws Exception {
+        if(hospBanner == null)
+            return null;
         PageHelper.startPage(hospBanner.getPageNum(), hospBanner.getPageSize());
         if (StringUtil.isNotEmpty(hospBanner.getField()))
             PageHelper.orderBy(hospBanner.getField());
@@ -166,6 +208,8 @@ public class BannerService implements BaseService<HospBanner,HospBanner>{
      */
     @Override
     public PageInfo<HospBanner> selectAllAdmin(PageBean pageBean) throws Exception {
+        if(pageBean == null)
+            pageBean = new PageBean();
         PageHelper.startPage(pageBean.getPageNum(), pageBean.getPageSize());
         if (StringUtil.isNotEmpty(pageBean.getField()))
             PageHelper.orderBy(pageBean.getField());
