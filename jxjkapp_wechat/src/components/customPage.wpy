@@ -1,12 +1,18 @@
 <style lang="scss">
 .comp-custom-page {
+  min-height: 100vh;
+  flex-direction: column;
+
   .fail-tip {
     width: 100vw;
     height: 100vh;
-    
-    .fail-tip-image {
-      width: 300rpx;
-    }
+  }
+
+  .no-data-tip {
+    min-height: 300rpx;
+  }
+  .fail-tip-image, .no-data-image {
+    width: 300rpx;
   }
 
   .no-more-tip {
@@ -16,26 +22,30 @@
 </style>
 
 <template>
-  <view class="comp-custom-page">
+  <view class="comp-custom-page flex">
     <block wx:if="{{ dataInited }}">
-      <slot></slot>
+      <view class="flex-item--none">
+        <slot></slot>
+      </view>
+      <view 
+        class="flex--center no-data-tip flex-item"
+        wx:if="{{ noData }}">
+        <image
+          mode="widthFix"
+          class="no-data-image" 
+          src="../assets/images/no-data.png" />
+      </view>
     </block>
     <view 
-      wx:if="{{ noData || noServer }}"
+      wx:if="{{ noServer }}"
       class="fail-tip flex--center">
-      <image
-        mode="widthFix"
-        class="fail-tip-image" 
-        wx:if="{{ noData }}" 
-        src="../assets/images/no-data.png" />
       <image 
         mode="widthFix" 
         class="fail-tip-image"
-        wx:elif="{{ noServer }}" 
         src="../assets/images/no-server.png"
         @tap="refreshPage" />
     </view>
-    <view wx:if="{{ isLastPage }}" class="no-more-tip">
+    <view wx:if="{{ dataInited && !noData && isLastPage }}" class="no-more-tip flex-item--none">
       <text>已无更多内容了</text>
     </view>
   </view>
