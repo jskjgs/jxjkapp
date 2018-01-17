@@ -1,0 +1,88 @@
+<style lang="scss">
+.comp-custom-page {
+  min-height: 100vh;
+  flex-direction: column;
+
+  .fail-tip {
+    width: 100vw;
+    height: 100vh;
+  }
+
+  .no-data-tip {
+    min-height: 300rpx;
+  }
+  .fail-tip-image, .no-data-image {
+    width: 300rpx;
+  }
+
+  .no-more-tip {
+    margin: 0;
+    padding: 20rpx 0;
+    font-size: 10px;
+    color:#BDBDBD;
+    text-align: center;
+  }
+}
+</style>
+
+<template>
+  <view class="comp-custom-page flex">
+    <block wx:if="{{ dataInited }}">
+      <view class="flex-item--none">
+        <slot></slot>
+      </view>
+      <view 
+        class="flex--center no-data-tip flex-item"
+        wx:if="{{ noData }}">
+        <image
+          mode="widthFix"
+          class="no-data-image" 
+          src="../assets/images/no-data.png" />
+      </view>
+    </block>
+    <view 
+      wx:if="{{ noServer }}"
+      class="fail-tip flex--center">
+      <image 
+        mode="widthFix" 
+        class="fail-tip-image"
+        src="../assets/images/no-server.png"
+        @tap="refreshPage" />
+    </view>
+    <view wx:if="{{ dataInited && !noData && isLastPage }}" class="no-more-tip flex-item--none">
+      <text>已无更多内容了</text>
+    </view>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+
+  export default class CustomPage extends wepy.component {
+    props = {
+      isLastPage: {
+        type: Boolean,
+        default: false
+      }
+    }
+
+    data = {
+      dataInited: false,
+      noData: false,
+      noServer: false
+    }
+
+    methods = {
+      // 初始化页面状态：无数据、网络故障、数据初始化完成
+      initPage (statusObj) {
+        for (let key in statusObj) {
+          this[key] = statusObj[key]
+        }
+        this.$apply()
+      },
+      refreshPage () {
+        this.$parent.initPageData()
+      }
+    }
+  }
+</script>

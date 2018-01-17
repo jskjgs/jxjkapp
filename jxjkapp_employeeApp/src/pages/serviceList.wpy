@@ -1,52 +1,59 @@
 <template>
-  <view id="page-service-list">
-    <view class="top-tools flex--vcenter--sb">
-      <ServiceTypePicker :value.sync="serviceType"/>
-      <view class="scan-flex flex--vcenter">
-        <image class="scan-img" src="../assets/images/scan.png" mode="aspectFit"></image>
-        <text class="scan-text" @tap="scanQrcode">扫一扫</text>
+  <CustomPage :isLastPage.sync="isLastPage">
+    <view id="page-service-list">
+      <view class="list-top-tools flex--vcenter--sb">
+        <ServiceTypePicker :value.sync="serviceType"/>
+        <view class="scan-flex flex--vcenter">
+          <image class="scan-img" src="../assets/images/scan.png" mode="aspectFit"></image>
+          <text class="scan-text" @tap="scanQrcode">扫一扫</text>
+        </view>
+      </view>
+      <view class="list-wrap">
+        <repeat for="{{ listData }}" key="index" item="item" index="index">
+          <view class="service-box">
+            <view class="service-head">
+              <text class="service-name">服务项目名称</text>
+              <text class="service-time">派单时间：{{ item.orderAssignTime }}</text>
+            </view>
+            <view class="service-msg">
+              <view class="service-user">
+                <text class="service-user-title">用户姓名</text>
+                <text class="service-user-title">手机号</text>
+              </view>
+              <view class="service-user">
+                <text class="service-user-title">：{{ item.userName }}</text>
+                <text class="service-user-title">：{{ item.phoneNumber }}</text>
+              </view>
+            </view>
+            <view class="service-bto">
+              <view class="service-btn" @tap="acceptOrder">接单</view>
+            </view>
+          </view>
+        </repeat>
       </view>
     </view>
-    <scroll-view scroll-y="true">
-      <repeat for="{{ list }}" key="index" item="item" index="index">
-        <view class="service-box" @tap="showDetail({{index}})">
-          <view class="service-head">
-            <text class="service-name">服务项目名称</text>
-            <text class="service-time">派单时间：{{ item.orderAssignTime }}</text>
-          </view>
-          <view class="service-msg">
-            <view class="service-user">
-              <text class="service-user-title">用户姓名</text>
-              <text class="service-user-title">手机号</text>
-            </view>
-            <view class="service-user">
-              <text class="service-user-title">：{{ item.userName }}</text>
-              <text class="service-user-title">：{{ item.phoneNumber }}</text>
-            </view>
-          </view>
-          <view class="service-bto">
-            <view class="service-btn" @tap="orders">接单</view>
-          </view>
-        </view>
-      </repeat>
-    </scroll-view>
-  </view>
+  </CustomPage>
 </template>
 
 <script>
   import wepy from 'wepy'
 
   import ServiceTypePicker from '@/components/serviceTypePicker'
+  import CustomPage from '@/components/customPage'
+
+  import listPageMixin from '@/mixins/listPage'
 
   export default class serviceList extends wepy.page {
     config = {
-      navigationBarTitleText: '服务派单'
+      navigationBarTitleText: '服务派单',
+      enablePullDownRefresh: true
     }
     components = {
-      ServiceTypePicker
+      ServiceTypePicker,
+      CustomPage
     }
 
-    mixins = []
+    mixins = [listPageMixin]
 
     data = {
       serviceType: '',
@@ -77,9 +84,7 @@
           }
         })
       },
-      showDetail (index) {
-      },
-      orders () {
+      acceptOrder () {
         wx.navigateTo({
           url: '/pages/serviceRecord'
         })
@@ -87,25 +92,36 @@
     }
     events = {
     }
+
     onShow () {
       //isLogin(true)
     }
     onLoad () {
+      this.initPageData()
     }
-    onUnload () {
+
+    initPageData () {
+      this.getList()
+    }
+
+    getList () {
+      this.initData({
+        url: '/doctorInfo/query',
+        method: 'POST',
+        data: {}
+      }, function () {})
     }
   }
 </script>
 
 <style lang="scss">
 @import '../assets/style/variables/theme.scss';
+@import '../assets/style/variables/size.scss';
 
 #page-service-list {
-  .top-tools {
-    padding: 15rpx 30rpx;
-    font-size: 15px;
-    color: $primaryColor;
+  padding-top: $topTools_H;
 
+  .list-top-tools {
     .scan {
       &-img {
         width: 34rpx;
