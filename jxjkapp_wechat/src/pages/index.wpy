@@ -291,14 +291,17 @@
 
     methods = {
       handleTapQueueNotice () {
-        this.queueNoticeSpread = !this.queueNoticeSpread
-        if (Math.random() > 0.5) {
-          this.queueNotice = {
-            project: '手法项目排队',
-            NO: 36,
-            waitNum: 6
-          }
+        if (!this.queueNoticeSpread) {
+          this.getQueueInfo()
         }
+        this.queueNoticeSpread = !this.queueNoticeSpread
+        // if (Math.random() > 0.5) {
+        //   this.queueNotice = {
+        //     project: '手法项目排队',
+        //     NO: 36,
+        //     waitNum: 6
+        //   }
+        // }
       },
       handleBannerTap (jumpUrl) {
         wx.navigateTo({
@@ -313,7 +316,6 @@
     onLoad() {
       this.getBanner()
       this.getProjectType()
-      this.getQueueInfo()
     }
 
     // 获取banner数据
@@ -353,29 +355,6 @@
           }
         })
         this.$apply()
-      }).finally(() => {
-        // this.projectTypeList = [{
-        //   name: '皮肤美容',
-        //   image: '../assets/images/ps-pfmr.png',
-        //   id: '1'
-        // }, {
-        //   name: '瑜伽养生',
-        //   image: '../assets/images/ps-yjys.png',
-        //   id: '2'
-        // }, {
-        //   name: '中医养生',
-        //   image: '../assets/images/ps-zyrs.png',
-        //   id: '3'
-        // }, {
-        //   name: '产后康复',
-        //   image: '../assets/images/ps-chkf.png',
-        //   id: '4'
-        // }, {
-        //   name: '小儿推拿',
-        //   image: '../assets/images/ps-xetn.png',
-        //   id: '5'
-        // }]
-        // this.$apply()
       })
     }
 

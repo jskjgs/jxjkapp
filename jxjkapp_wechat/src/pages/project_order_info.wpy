@@ -96,7 +96,9 @@
             style="width: 347rpx; height: 30rpx; margin: auto;" />
         </view>
         <view class="btn-wrap flex--center">
-          <button class="to-vip-btn flex--center">前往VIP用户管理</button>
+          <button 
+            class="to-vip-btn flex--center"
+            @tap="toVip">前往VIP用户管理</button>
         </view>
       </view>
       <view 
@@ -146,10 +148,6 @@
 
     methods = {
       submit () {
-        wx.showToast({
-          image: '../assets/images/error.png',
-          title: '提交失败'
-        })
         const pickeds = this.pickeds
         this.$_request({
           url: '/precontract/',
@@ -161,6 +159,7 @@
           }
         }, {showLoading: false}).then(content => {
           this.successDialogVisible = true
+          this.$apply()
         }).catch(() => {
           wx.showToast({
             image: '../assets/images/error.png',
@@ -168,8 +167,15 @@
           })
         })
       },
+      // 提交成功后弹框的关闭按钮
       closeDialog () {
-        this.successDialogVisible = false
+        wx.navigateBack()
+      },
+      // 前往VIP用户管理
+      toVip () {
+        wx.navigateTo({
+          url: '/pages/my_vip'
+        })
       }
     }
 

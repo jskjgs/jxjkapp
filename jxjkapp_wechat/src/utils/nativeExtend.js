@@ -28,7 +28,8 @@ Promise.prototype.finally = function (callback) {
       value (routeFn = 'redirectTo', toLogin = true) {
         return true
         const userInfo = wx.getStorageSync('userInfo')
-        if (!userInfo) {
+        const token = wx.getStorageSync('token')
+        if (!(userInfo && token)) {
           if (toLogin) {
             wx[routeFn]({
               url: '/pages/login'
@@ -56,7 +57,13 @@ Promise.prototype.finally = function (callback) {
         cfg.url = 'http://182.92.78.118:9001/hospHealth' + cfg.url
         return new Promise(function (resolve, reject) {
           wepy.request(cfg).then(res => {
-            const data = res.data || {}
+            console.log('res1', res, typeof res, typeof res.data)
+            let data = res.data || {}
+            if (typeof data === 'string') {
+              data = JSON.parse(data)
+              console.log('data', data)
+            }
+            console.log('typeof data', typeof data, data)
             let code = +data.code
             let errMsg = ''
             switch (code) {
@@ -87,9 +94,12 @@ Promise.prototype.finally = function (callback) {
               })
             }
           }).catch((e) => {
+            console.log('$_request:catch1', JSON.stringify(e))
+            console.dir(e)
             reject(e)
           })
         }).catch((e) => {
+          console.log('$_request:catch2', JSON.stringify(e))
           throw e
         }).finally(() => {
           this.$apply()
