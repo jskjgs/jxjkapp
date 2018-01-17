@@ -135,9 +135,6 @@
     }
 
     computed = {
-      userId () {
-        return (this.$parent.globalData.userInfo || {}).userId
-      }
     }
 
     methods = {
@@ -146,16 +143,17 @@
     events = {
     }
 
-    onLoad() {
-      this.initPageData()
+    onLoad () {
+      if (this.$_checkLogin('navigateTo')) {
+        this.initPageData()
+      }
     }
 
     initPageData () {
       this.initData({
-        url: '/order/query',
+        url: '/order/all',
         method: 'POST',
         data: {
-          userId: 1 || this.userId,
           pageSize: 5
         }
       }, (listItem, res) => {
@@ -173,7 +171,7 @@
           status: 'inUse',
           isChild: false
         }
-      })
+      }, 'navigateTo')
     }
   }
 </script>

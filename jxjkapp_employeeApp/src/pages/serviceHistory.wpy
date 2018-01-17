@@ -1,51 +1,63 @@
 <template>
-  <view id="page-serviceDetail">
-    <view class="date-flex">
-      <image class="date-img" src="../assets/images/calendar.png" mode="aspectFit"></image>
-      <text class="date-text">2017-12</text>
-      <image class="date-img-arrow" src="../assets/images/arrow.png"></image>
-    </view>
-    <scroll-view scroll-y="true">
-      <repeat for="{{ historyList }}" key="index" item="item" index="index">
-        <view class="history-box" @tap="serviceDetail">
-          <view class="history-head">
-            <text class="history-name">服务项目的名称</text>
+  <CustomPage :isLastPage.sync="isLastPage">
+    <view id="page-service-history">
+      <view class="flex--vcenter--sb list-top-tools">
+        <ServiceTypePicker :value.sync="serviceType"/>
+        <picker mode="date">
+          <view class="date-flex flex--vcenter">
+            <image class="date-img" src="../assets/images/calendar.png" mode="aspectFit" />
+            <text class="date-text" style="margin: 0 10rpx;">2017-12</text>
+            <image class="img-arrow" src="../assets/images/arrow.png" />
           </view>
-          <view class="history-msg">
-            <view class="history-user">
-              <text class="history-user-title">用户姓名</text>
-              <text class="history-user-title">治疗时间</text>
-            </view>
-            <view class="history-user">
-              <text class="history-user-title">：{{ item.userName }}</text>
-              <text class="history-user-title">：{{ item.phoneNumber }}</text>
-            </view>
-          </view>
-        </view>
-      </repeat>
-      <view class="history-total">
-        共计{{historyList.length}}条记录
+        </picker>
       </view>
-    </scroll-view>
-  </view>
+      <view class="list-wrap">
+        <repeat for="{{ listData }}" key="index" item="item" index="index">
+          <view class="history-box" @tap="serviceDetail">
+            <view class="history-head">
+              <text class="history-name">服务项目的名称</text>
+            </view>
+            <view class="history-msg">
+              <view class="history-user">
+                <text class="history-user-title">用户姓名</text>
+                <text class="history-user-title">治疗时间</text>
+              </view>
+              <view class="history-user">
+                <text class="history-user-title">：{{ item.userName }}</text>
+                <text class="history-user-title">：{{ item.phoneNumber }}</text>
+              </view>
+            </view>
+          </view>
+        </repeat>
+      </view>
+    </view>
+  </CustomPage>
 </template>
 
 <script>
   import wepy from 'wepy'
-  import {
-      isLogin
-    } from '@/utils/validator'
+  import ServiceTypePicker from '@/components/serviceTypePicker'
+  import CustomPage from '@/components/customPage'
+
+  import listPageMixin from '@/mixins/listPage'
+
   export default class serviceHistory extends wepy.page {
     config = {
-      navigationBarTitleText: '历史记录'
+      navigationBarTitleText: '历史记录',
+      enablePullDownRefresh: true
     }
     components = {
+      ServiceTypePicker,
+      CustomPage
     }
 
-    mixins = []
+    mixins = [listPageMixin]
 
     data = {
+      serviceType: '',
       historyList: [
+        {'orderAssignTime': '2017-10-21', 'userName': '王晓路', 'phoneNumber': '15928113204'},
+        {'orderAssignTime': '2017-10-21', 'userName': '王晓路', 'phoneNumber': '15928113204'},
         {'orderAssignTime': '2017-10-21', 'userName': '王晓路', 'phoneNumber': '15928113204'},
         {'orderAssignTime': '2017-10-21', 'userName': '王晓路', 'phoneNumber': '15928113204'},
         {'orderAssignTime': '2017-10-21', 'userName': '王晓路', 'phoneNumber': '15928113204'}
@@ -60,17 +72,6 @@
 
     methods = {
       handleSumbit () {
-        this.$_request({
-          url: `/other/loginByPwd?username=${this.formData.username}&password=${this.formData.password}`,
-          method: 'POST'
-        }, true).then(res => {
-          const content = res.content || {}
-          if (content.empty) {} else {
-            wx.redirectTo({
-              url: '/pages/account'
-            })
-          }
-        })
       },
       serviceDetail () {
         wx.navigateTo({
@@ -82,84 +83,82 @@
     events = {
     }
     onShow () {
-      // isLogin(true)
     }
     onLoad () {
+      this.initPageData()
     }
-    onUnload () {
+
+    initPageData () {
+      this.getList()
+    }
+
+    getList () {
+      this.initData({
+        url: '/doctorInfo/query',
+        method: 'POST',
+        data: {}
+      }, function () {})
     }
   }
 </script>
 
 <style lang="scss">
-// @import '../assets/style/variables/theme.scss';
-#page-login {
-  padding-top: 78rpx;
-  .page-title-wrap {
-    margin: 0 0 78rpx 0;
-    font-size: 16px;
-    font-weight: bold;
-    text-align: center;
-  }
-}
-.date {
-  &-flex {
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
-    padding: 15rpx 0;
-  }
-  &-img {
-    height: 34rpx;
-    width: 34rpx;
-    &-arrow {
+@import '../assets/style/variables/theme.scss';
+@import '../assets/style/variables/size.scss';
+
+#page-service-history {
+  padding-top: $topTools_H;
+
+  .list-top-tools {
+    .date {
+      &-img {
+        height: 34rpx;
+        width: 34rpx;
+      }
+    }
+    .img-arrow {
       height: 12rpx;
       width: 24rpx;
-      margin-right: 30rpx;
     }
   }
-  &-text {
-    color:#9190FF;
-    font-size: 30rpx;
-    margin: 0 14rpx 0 20rpx;
-  }
-}
-.history {
-  &-box {
-    margin-bottom: 20rpx;
-    padding: 0 30rpx 40rpx;
-    background-color: #fff;
-  }
-  &-head {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    border-bottom: 1px solid #F2F2F2;
-    padding: 40rpx 0 20rpx;
-  }
-  &-name {
-    font-size: 28rpx;
-    color: #414141;
-  }
-  &-time {
-    font-size: 24rpx;
-    color: #B8B8B8;
-  }
-  &-msg {
-    display: flex;
-  }
-  &-user {
-    font-size: 26rpx;
-    color: #818181;
-    margin-top: 20rpx;
-    display: flex;
-    flex-direction: column;
-  }
-  &-total {
-    color: #818181;
-    font-size: 26rpx;
-    text-align: center;
-    margin-top: 40rpx;
+
+  .history {
+    &-box {
+      margin-bottom: 20rpx;
+      padding: 0 30rpx 40rpx;
+      background-color: #fff;
+    }
+    &-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid #F2F2F2;
+      padding: 40rpx 0 20rpx;
+    }
+    &-name {
+      font-size: 28rpx;
+      color: #414141;
+    }
+    &-time {
+      font-size: 24rpx;
+      color: #B8B8B8;
+    }
+    &-msg {
+      display: flex;
+    }
+    &-user {
+      font-size: 26rpx;
+      color: #818181;
+      margin-top: 20rpx;
+      display: flex;
+      flex-direction: column;
+    }
+    &-total {
+      color: #818181;
+      font-size: 26rpx;
+      text-align: center;
+      margin-top: 40rpx;
+    }
   }
 }
 </style>

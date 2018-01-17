@@ -6,7 +6,6 @@
 import placeholderImg from '@/assets/images/placeholder.png'
 
 import EditDialog from './_thumbs/EditDialog.vue'
-import ImgZoom from '@/components/_common/imgZoom/ImgZoom.vue'
 
 import SearchTable from '@/components/_common/searchTable/SearchTable'
 
@@ -15,10 +14,9 @@ import {
 } from './api'
 
 export default {
-  name: 'Doctor',
+  name: 'order',
   components: {
     EditDialog,
-    ImgZoom,
     SearchTable
   },
   data () {
@@ -153,8 +151,6 @@ export default {
     }
   },
   methods: {
-    rejectOrder (rowData) {
-    },
     handleSearch () {
       this.apiKeysMap = Object.assign({}, this.apiKeysMap, {
         keyWords: {
@@ -170,9 +166,8 @@ export default {
     assginSubmit (rowData) {
     },
     openDetail (rowData) {
-      this.$router.push('/login')
-      this.editDialogVisible = true
-      // 跳转到详情页
+      rowData = !rowData ? {} : rowData
+      this.$router.push({name: 'order/detail_root', params: { orderId: rowData.orderId }})
     }
   }
 }
@@ -207,7 +202,7 @@ export default {
           <el-button
             class="btn--add"
             type="primary"
-            @click="openDetail(null, true)">
+            @click="openDetail()">
             新增 <i class="el-icon-plus"></i>
           </el-button>
         </div>

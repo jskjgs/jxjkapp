@@ -5,57 +5,8 @@
 import wepy from 'wepy'
 import 'wepy-async-function'
 import convertDate from '@/utils/convertDate'
+import '@/utils/nativeExtend'
 
-Promise.prototype.finally = function (callback) {
-  let P = this.constructor
-  return this.then(
-    value => P.resolve(callback()).then(() => value),
-    reason => P.resolve(callback()).then(() => { throw reason })
-  )
-}
-
-;(['page', 'component']).forEach(function (item) {
-  Object.defineProperties(wepy[item].prototype, {
-    '$_request': {
-      value (cfg, noLoading) {
-        cfg = Object.assign({}, cfg)
-        if (!noLoading) {
-          wx.showLoading({
-            title: '加载中..',
-            mask: true
-          })
-        }
-        cfg.url = 'http://182.92.78.118:9001/hospHealth' + cfg.url
-        return new Promise(function (resolve, reject) {
-          wepy.request(cfg).then(res => {
-            return res.data || {}
-          }).then(data => {
-            resolve(data)
-          }).catch((e) => {
-            reject(e)
-          })
-        }).finally(() => {
-          wx.hideLoading()
-        })
-      }
-    },
-    '$_getPage': {
-      value () {
-        return this.getCurrentPages().slice(-1)[0]
-      }
-    },
-    '$_getRoute': {
-      value () {
-        return this.getCurrentPages().slice(-1)[0].route
-      }
-    },
-    '$_convertDate': {
-      value (timeStamp) {
-        return convertDate(timeStamp)
-      }
-    }
-  })
-})
 export default class extends wepy.app {
   config = {
     networkTimeout: {

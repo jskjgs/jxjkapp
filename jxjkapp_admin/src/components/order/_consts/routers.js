@@ -11,7 +11,7 @@ export const INDEX = {
   path: MOUDLE_ROOT,
   name: `${MOUDLE_PREDIX}_root`,
   meta: {
-    permissionId: 'm_06',
+    permissionId: 'm_01',
     label: '订单管理'
   }
 }

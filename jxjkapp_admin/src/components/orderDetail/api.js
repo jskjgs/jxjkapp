@@ -1,33 +1,21 @@
 import { fetchApi } from '@/utils/index'
 
-// 订单管理
-
-// 获取所有订单
-export const QUERY_ORDER_DETAIL_URL = '/order/admin/all'
-export const queryOrderDetailApi = (params) => {
+// 修改roder
+export const MODIFY_BANNER_URL = '/home/modifyBanner'
+export const modifyOrderApi = (params, data) => {
   return fetchApi({
-    url: QUERY_ORDER_DETAIL_URL,
-    type: 'post',
-    params
-  })
-}
-
-// 修改医生信息
-export const MODIFY_DOCTOR_URL = '/doctor_i/modifyDoctor'
-export const modifyDoctorApi = (params, data) => {
-  return fetchApi({
-    url: MODIFY_DOCTOR_URL,
+    url: MODIFY_BANNER_URL,
     type: 'post',
     params,
     data
   })
 }
 
-// 置顶医生
-export const TOP_DOCTOR_URL = '/doctor_i/topDoctor'
-export const topDoctorApi = (data) => {
+// 增加order
+export const ADD_BANNER_URL = '/banner/'
+export const addOrderApi = (data) => {
   return fetchApi({
-    url: TOP_DOCTOR_URL,
+    url: ADD_BANNER_URL,
     type: 'post',
     data
   })

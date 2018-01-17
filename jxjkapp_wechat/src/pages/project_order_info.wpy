@@ -142,9 +142,6 @@
     }
 
     computed = {
-      userId () {
-        return (this.$parent.globalData.userInfo || {}).userId
-      }
     }
 
     methods = {
@@ -158,12 +155,11 @@
           url: '/precontract/',
           method: 'POST',
           data: {
-            userId: this.userId,
             productSkuId: this.skuId,
             precontractDate: pickeds.orderDate,
             areaId: pickeds.hospital
           }
-        }, false).then(content => {
+        }, {showLoading: false}).then(content => {
           this.successDialogVisible = true
         }).catch(() => {
           wx.showToast({
@@ -184,27 +180,6 @@
       this.skuId = skuId
       this.name = name
       this.pickeds.projectName = name
-      this.getAllHospArea()
-    }
-    // 获取院区列表
-    getAllHospArea () {
-      this.$_request({
-        url: '/hospArea/all',
-        method: 'POST',
-        data: {
-          pageNum: 1
-        }
-      }).then(content => {
-        content = content || {}
-        const list = content.list || []
-        this.lists.hospitalList = list.map(item => {
-          return {
-            label: item.name,
-            value: item.id
-          }
-        })
-        this.$apply()
-      })
     }
   }
 </script>

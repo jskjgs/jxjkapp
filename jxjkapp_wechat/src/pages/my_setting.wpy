@@ -44,7 +44,7 @@
         this.$_request({
           url: '/other/logout',
           method: 'POST'
-        }, false)
+        }, {showLoading: false})
         wx.removeStorageSync('userInfo')
       }
     }]
@@ -72,7 +72,7 @@
 
     methods = {
       itemClick (index) {
-        const handlerTap = SETTINGS[index].handlerTap
+        const handlerTap = this.settings[index].handlerTap
         handlerTap.call(this)
       }
     }

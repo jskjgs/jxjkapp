@@ -102,7 +102,7 @@
         this.$_request({
           url: `/other/sendCode?phone=${this.phone}&type=${this.codeType}`,
           method: 'POST'
-        }, true).then(() => {
+        }).then(() => {
           wx.showToast({
             title: '验证码发送成功'
           })

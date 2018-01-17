@@ -66,8 +66,10 @@
     events = {
     }
 
-    onShow() {
-      this.getList()
+    onShow () {
+      if (this.$_checkLogin()) {
+        this.getList()
+      }
     }
 
     getList () {
@@ -75,7 +77,6 @@
         url: '/patientInfo/query',
         method: 'POST',
         data: {
-          userId: (this.$parent.globalData.userInfo || {}).userId,
           pageNum: 1,
           pageSize: 10
         }

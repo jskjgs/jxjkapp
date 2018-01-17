@@ -1,5 +1,6 @@
 @import '../helpers/functions';
 @import '../variables/theme.scss';
+@import '../variables/size.scss';
 @import './layout.scss';
 .text-ellipsis--two {
   @include text-ellipsis(2);
@@ -134,10 +135,16 @@
   }
 }
 
-// 列表无更多数据提示
-.no-more-tip {
-  margin-bottom: 20rpx;
-  font-size: 10px;
-  color:#BDBDBD;
-  text-align: center;
+.list-top-tools {
+  position: fixed;
+  z-index: 10;
+  padding: 0 30rpx;
+  left: 0;
+  width: 100%;
+  top: 0;
+  height: $topTools_H;
+  font-size: 15px;
+  color: $primaryColor;
+  background: $main_bg;
+  box-shadow:0 4rpx 12px rgba(0,0,0,0.1);
 }

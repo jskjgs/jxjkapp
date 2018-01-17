@@ -29,18 +29,19 @@ export default class ListPageMixin extends wepy.mixin {
     }
   }
 
-  initData (reqParams, resCb, toLoginFn = 'redirectTo') {
+  initData (reqParams, resCb, toLoginFn) {
     if (reqParams) { // 暂存传入的参数
       this.initFnAgrs = {
         reqParams,
-        resCb
+        resCb,
+        toLoginFn: toLoginFn || 'redirectTo'
       }
     }
     reqParams = reqParams || this.initFnAgrs.reqParams
     resCb = resCb || this.initFnAgrs.resCb
+    toLoginFn = toLoginFn || this.initFnAgrs.toLoginFn
     const pageNum = this.pageNum || 1
     reqParams.data.pageNum = pageNum
-    console.log('reqParams', reqParams, 'toLoginFn', toLoginFn)
     return this.$_request(reqParams, {toLoginFn}).then(content => {
       content = content || {}
       this.isLastPage = !!content.isLastPage
@@ -63,7 +64,7 @@ export default class ListPageMixin extends wepy.mixin {
       this.$invoke('CustomPage', 'initPage', {
         dataInited: true
       })
-    }).catch(() => {
+    }).catch((e) => {
       if (pageNum > 1) {
         wx.showToast({
           title: '加载失败'

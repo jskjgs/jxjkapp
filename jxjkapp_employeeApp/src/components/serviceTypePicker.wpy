@@ -1,0 +1,72 @@
+<style lang="scss">
+@import '../assets/style/variables/theme.scss';
+.comp-service-type-picker {
+  font-size: 15px;
+  color: $primaryColor;
+
+  .img-arrow {
+    height: 12rpx;
+    width: 24rpx;
+  }
+}
+</style>
+
+<template>
+  <view class="comp-service-type-picker">
+    <picker 
+      value="{{ value }}" 
+      range="{{ range }}" 
+      range-key="label"
+      @change="handleChange">
+      <view class="flex--vcenter">
+        <text style="margin-right: 10rpx;">{{ valueLabel }}</text>
+        <image class="img-arrow" src="../assets/images/arrow.png" />
+      </view>
+    </picker>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+
+  export default class Index extends wepy.component {
+    components = {
+    }
+
+    props = {
+      value: {
+        type: null,
+        twoWay: true
+      }
+    }
+
+    data = {
+      range: [{
+        label: '全部分类',
+        value: ''
+      }, {
+        label: '到店',
+        value: '0'
+      }, {
+        label: '上门服务',
+        value: '1'
+      }]
+    }
+
+    computed = {
+      valueLabel () {
+        return this.range.find(item => item.value === this.value).label
+      }
+    }
+
+    methods = {
+      handleChange ({detail}) {
+        const valueIndex = detail.value
+        this.value = this.range[valueIndex].value
+      }
+    }
+
+    onLoad () {
+    }
+  }
+</script>
