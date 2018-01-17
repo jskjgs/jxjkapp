@@ -1,12 +1,15 @@
 <template>
-  <view id="page-serviceDetail">
-    <view class="scan-flex">
-      <image class="scan-img" src="../assets/images/scan.png" mode="aspectFit"></image>
-      <text class="scan-text" @tap="scanQrcode">扫一扫</text>
+  <view id="page-service-list">
+    <view class="top-tools flex--vcenter--sb">
+      <ServiceTypePicker :value.sync="serviceType"/>
+      <view class="scan-flex flex--vcenter">
+        <image class="scan-img" src="../assets/images/scan.png" mode="aspectFit"></image>
+        <text class="scan-text" @tap="scanQrcode">扫一扫</text>
+      </view>
     </view>
     <scroll-view scroll-y="true">
-      <repeat for="{{ list }}" key="index" item="item" index="index" @tap="showDetail({{index}})">
-        <view class="service-box">
+      <repeat for="{{ list }}" key="index" item="item" index="index">
+        <view class="service-box" @tap="showDetail({{index}})">
           <view class="service-head">
             <text class="service-name">服务项目名称</text>
             <text class="service-time">派单时间：{{ item.orderAssignTime }}</text>
@@ -33,16 +36,20 @@
 <script>
   import wepy from 'wepy'
 
+  import ServiceTypePicker from '@/components/serviceTypePicker'
+
   export default class serviceList extends wepy.page {
     config = {
       navigationBarTitleText: '服务派单'
     }
     components = {
+      ServiceTypePicker
     }
 
     mixins = []
 
     data = {
+      serviceType: '',
       searchLoading: false, //"上拉加载"的变量，默认false，隐藏
       searchLoadingComplete: false,  //“没有数据”的变量，默认false，隐藏
       list: [
@@ -91,79 +98,73 @@
 </script>
 
 <style lang="scss">
-// @import '../assets/style/variables/theme.scss';
-#page-login {
-  padding-top: 78rpx;
-  .page-title-wrap {
-    margin: 0 0 78rpx 0;
-    font-size: 16px;
-    font-weight: bold;
-    text-align: center;
+@import '../assets/style/variables/theme.scss';
+
+#page-service-list {
+  .top-tools {
+    padding: 15rpx 30rpx;
+    font-size: 15px;
+    color: $primaryColor;
+
+    .scan {
+      &-img {
+        width: 34rpx;
+        height: 30rpx;
+      }
+      &-text {
+        margin-left: 10rpx;
+        color: #9190FF;
+      }
+    }
   }
-}
-.scan {
-  &-flex {
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
-    padding: 15rpx 0;
-  }
-  &-img {
-    width: 34rpx;
-    height: 30rpx;
-  }
-  &-text {
-    font-size: 28rpx;
-    padding: 0 33rpx 0 20rpx;
-    color: #9190FF;
-  }
-}
-.service {
-  &-box {
-    margin-bottom: 20rpx;
-    padding: 0 30rpx;
-    background-color: #fff;
-  }
-  &-head {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    border-bottom: 1px solid #F2F2F2;
-    padding: 40rpx 0 20rpx;
-  }
-  &-name {
-    font-size: 28rpx;
-    color: #414141;
-  }
-  &-time {
-    font-size: 24rpx;
-    color: #B8B8B8;
-  }
-  &-msg {
-    display: flex;
-  }
-  &-user {
-    font-size: 26rpx;
-    color: #818181;
-    margin-top: 20rpx;
-    display: flex;
-    flex-direction: column;
-  }
-  &-bto {
-    display: flex;
-    justify-content: flex-end;
-    padding: 20rpx 0;
-  }
-  &-btn {
-    font-size: 26rpx;
-    color: #fff;
-    background-color: #FFB400;
-    width: 120rpx;
-    height: 52rpx;
-    border-radius: 5rpx;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+
+  .service {
+    &-box {
+      margin-bottom: 20rpx;
+      padding: 0 30rpx;
+      background-color: #fff;
+    }
+    &-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid #F2F2F2;
+      padding: 40rpx 0 20rpx;
+    }
+    &-name {
+      font-size: 28rpx;
+      color: #414141;
+    }
+    &-time {
+      font-size: 24rpx;
+      color: #B8B8B8;
+    }
+    &-msg {
+      display: flex;
+    }
+    &-user {
+      font-size: 26rpx;
+      color: #818181;
+      margin-top: 20rpx;
+      display: flex;
+      flex-direction: column;
+    }
+    &-bto {
+      display: flex;
+      justify-content: flex-end;
+      padding: 20rpx 0;
+    }
+    &-btn {
+      font-size: 26rpx;
+      color: #fff;
+      background-color: #FFB400;
+      width: 120rpx;
+      height: 52rpx;
+      border-radius: 5rpx;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
   }
 }
 </style>
