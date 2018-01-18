@@ -21,8 +21,6 @@
       height: 100rpx;
     }
     .qrcode-wrap {
-      // width: 374rpx;
-      // height: 374rpx;
       width: 400rpx;
       height: 400rpx;
 
@@ -46,7 +44,7 @@
       <view class="qrcode-box flex--col main-bg">
         <view class="row flex--vcenter">
           <image class="thumbnail-avatar" src="../assets/images/avatar.png"></image>
-          <text class="username">YK 陈御珂</text>
+          <text class="username">{{ userInfo.name }}</text>
         </view>
         <view class="flex-item flex--center">
           <view class="qrcode-wrap">
@@ -80,6 +78,9 @@
     }
 
     computed = {
+      userInfo () {
+        return this.$parent.globalData.userInfo
+      }
     }
 
     methods = {}
@@ -89,6 +90,12 @@
 
     onLoad() {
       this.drawQrcode('1222')
+    }
+
+    onShow () {
+      if (this.$_checkLogin()) {
+        this.drawQrcode()
+      }
     }
 
     drawQrcode (content) {

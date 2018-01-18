@@ -151,7 +151,9 @@
         this.toLogined = false
       } else {
         if (this.$_checkLogin('navigateTo')) {
-          this.initPageData()
+          if (!(this.listData && this.listData.length)) {
+            this.initPageData()
+          }
         } else {
           this.toLogined = true
         }

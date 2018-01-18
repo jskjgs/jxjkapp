@@ -44,8 +44,15 @@
         this.$_request({
           url: '/other/logout',
           method: 'POST'
-        }, {showLoading: false})
-        wx.removeStorageSync('userInfo')
+        }, {showLoading: false}).then(() => {
+          this.showToast({
+            title: '退出登录成功'
+          })
+        })
+        this.$_syncUserData({
+          token: null,
+          userInfo: null
+        })
       }
     }]
   }

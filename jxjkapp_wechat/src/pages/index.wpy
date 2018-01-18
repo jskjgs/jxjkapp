@@ -223,7 +223,7 @@
         <text class="fold-text">排号</text>
       </view>
       <view 
-        wx:elif="{{ queueNoticeSpread && queueNotice }}"
+        wx:elif="{{ queueNoticeSpread && userInfo && queueNotice }}"
         class="queue-notice">
         <view class="project-name">
           <text>{{ queueNotice.project }}：</text>
@@ -232,8 +232,11 @@
           <text>您的排号为{{ queueNotice.NO }}号，前面还有<text class="wait-num">{{ queueNotice.waitNum }}</text>人</text>
         </view>
       </view>
-      <view wx:else class="no-queue-notice-wrap">
+      <view wx:elif="{{ userInfo }}" class="no-queue-notice-wrap">
         <text>暂无排号信息，请到前台排队就诊！</text>
+      </view>
+      <view wx:else class="no-queue-notice-wrap">
+        <text>请登陆后查看排号信息！</text>
       </view>
     </view>
   </view>
@@ -255,32 +258,14 @@
       bannerList: [],
       // 项目分类
       projectTypeList: [],
-      /* [{
-        name: '皮肤美容',
-        image: '',
-        id: '1'
-      }, {
-        name: '瑜伽养生',
-        image: '',
-        id: '2'
-      }, {
-        name: '中医养生',
-        image: '',
-        id: '3'
-      }, {
-        name: '产后康复',
-        image: '',
-        id: '4'
-      }, {
-        name: '小儿推拿',
-        image: '',
-        id: '5'
-      }] */
       queueNoticeSpread: false,
       queueNotice: ''
     }
 
     computed = {
+      userInfo () {
+        return this.$parent.globalData.userInfo
+      }
     }
 
     watch = {
@@ -295,13 +280,6 @@
           this.getQueueInfo()
         }
         this.queueNoticeSpread = !this.queueNoticeSpread
-        // if (Math.random() > 0.5) {
-        //   this.queueNotice = {
-        //     project: '手法项目排队',
-        //     NO: 36,
-        //     waitNum: 6
-        //   }
-        // }
       },
       handleBannerTap (jumpUrl) {
         wx.navigateTo({
@@ -360,17 +338,20 @@
 
     // 获取排号信息
     getQueueInfo () {
-      this.$_request({
-        url: '/call/',
-        method: 'GET'
-      }).then(content => {
-        content = content || {}
-        this.queueNotice = {
-          project: '手法项目排队',
-          NO: content.orderNumber,
-          waitNum: content.waitNumber
-        }
-      })
+      if (this.$_checkLogin(null, false)) {
+        this.$_request({
+          url: '/call/',
+          method: 'GET'
+        }).then(content => {
+          content = content || {}
+          this.queueNotice = {
+            project: '手法项目排队',
+            NO: content.orderNumber,
+            waitNum: content.waitNumber
+          }
+        })
+      } else {
+      }
     }
   }
 </script>
