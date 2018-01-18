@@ -13,7 +13,7 @@
 
 <template>
   <view id="page-login">
-    <view wx:if="{{!isLogin}}">
+    <view wx:if="{{ !token }}">
       <LoginInput 
         title="登录"
         submitBtnText="确认登录" 
@@ -33,9 +33,7 @@
   import wepy from 'wepy'
   import LoginInput from '@/components/loginInput'
   import Logout from '@/components/logout'
-  import {
-      isLogin, storageUserData, userLogout
-    } from '@/utils/validator'
+  
   export default class Index extends wepy.page {
     config = {
       navigationBarTitleText: '账号管理'
@@ -48,14 +46,12 @@
     mixins = []
 
     data = {
-      isLogin: isLogin(false),
-      formData: {
-        username: '111',
-        password: ''
-      }
     }
 
     computed = {
+      token () {
+        return this.$parent.globalData.token
+      }
     }
 
     watch = {
@@ -63,38 +59,29 @@
 
     methods = {
       handleLogout () {
-        this.$_request({
-          url: `/other/logoutByUser?username=${this.formData.username}`,
-          method: 'POST'
-        }, true).then(res => {
-          const content = res.content || {}
-          if (content.empty) {
-            wx.navigateTo({
-              url: '/pages/account'
-            })
-          } else {
-            wx.redirectTo({
-              url: '/pages/account'
-            })
-          }
-          userLogout()
+        this.$_syncUserData({
+          token: null,
+          userInfo: null
+        })
+        wx.showToast({
+          title: '注销成功'
         })
       },
-      handleLogin () {
+      handleLogin (formData) {
         this.$_request({
-          url: `/other/loginByPwd?username=${this.formData.username}&password=${this.formData.password}`,
+          url: `/doctorUser/login?account=${formData.account}&password=${formData.password}`,
           method: 'POST'
-        }, true).then(res => {
-          const content = res.content || {}
-          if (content.empty) {
-            wx.navigateTo({
-              url: '/pages/serviceDetail'
-            })
-          } else {
-            wx.redirectTo({
-              url: '/pages/account'
-            })
-          }
+        }, true).then(content => {
+          this.$_syncUserData({
+            token: content,
+            userInfo: {}
+          })
+          wx.showToast({
+            title: '登录成功'
+          })
+          wx.switchTab({
+            url: '/pages/serviceList'
+          })
         })
       }
     }
@@ -103,8 +90,7 @@
     }
 
     onLoad () {
-    }
-    onUnload () {
+      console.log(this)
     }
   }
 </script>

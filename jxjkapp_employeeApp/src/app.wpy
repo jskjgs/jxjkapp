@@ -47,9 +47,8 @@ export default class extends wepy.app {
   }
 
   globalData = {
-    userInfo: {
-      userId: 1
-    }
+    userInfo: null,
+    token: null
   }
 
   constructor () {
@@ -59,6 +58,10 @@ export default class extends wepy.app {
   }
 
   onLaunch() {
+    const userData = this.$_syncUserData()
+    this.globalData.userInfo = userData.userInfo
+    this.globalData.token = userData.token
+
     wx.setEnableDebug({
       enableDebug: true
     })
