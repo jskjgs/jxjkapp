@@ -4,10 +4,17 @@ import com.alibaba.fastjson.JSONObject;
 import com.doraemon.base.guava.DPreconditions;
 import com.doraemon.base.language.Language;
 import com.doraemon.base.util.RandomUtil;
+import com.jinxin.hospHealth.controller.protocol.PO.AdminInfoPO;
+import com.jinxin.hospHealth.controller.protocol.PO.DoctorUserInfoPO;
 import com.jinxin.hospHealth.controller.protocol.PO.UserInfoPO;
+import com.jinxin.hospHealth.controller.protocol.VO.AdminInfoVO;
 import com.jinxin.hospHealth.controller.protocol.VO.LoginInfoVO;
+import com.jinxin.hospHealth.dao.models.HospAdminUserInfo;
+import com.jinxin.hospHealth.dao.models.HospDoctorUserInfo;
 import com.jinxin.hospHealth.dao.models.HospUserInfo;
 import com.jinxin.hospHealth.dao.modelsEnum.DynamicTypeEnum;
+import com.jinxin.hospHealth.service.AdminUserInfoService;
+import com.jinxin.hospHealth.service.DoctorUserInfoService;
 import com.jinxin.hospHealth.service.UserInfoService;
 import com.jinxin.hospHealth.utils.sms.AlidayuSms;
 import io.swagger.annotations.Api;
@@ -29,15 +36,14 @@ import org.springframework.web.bind.annotation.*;
 @Api(description = "登陆登出注册相关接口")
 public class OtherController extends MyBaseController {
 
-
     @Autowired
     UserInfoService userInfoService;
     @Autowired
+    AdminUserInfoService adminUserInfoService;
+    @Autowired
+    DoctorUserInfoService doctorUserInfoService;
+    @Autowired
     AlidayuSms alidayuSms;
-    @Value("${token.userToken-prefix}")
-    String userTokenPrefix;
-    @Value("${dynamic.effectiveTime}")
-    String effectiveTime;
 
     @ApiOperation(value = "发送验证码", response = LoginInfoVO.class)
     @RequestMapping(value = "/sendCode", method = RequestMethod.POST)
@@ -52,7 +58,7 @@ public class OtherController extends MyBaseController {
         return ResponseWrapperSuccess(dynamicCode);
     }
 
-    @ApiOperation(value = "通过手机-验证码登陆或注册", response = LoginInfoVO.class)
+    @ApiOperation(value = "user用户通过手机-验证码登陆或注册", response = LoginInfoVO.class)
     @RequestMapping(value = "/loginByCode", method = RequestMethod.POST)
     @ResponseBody
     public JSONObject loginAndRegisterByCode(
@@ -81,44 +87,46 @@ public class OtherController extends MyBaseController {
         return ResponseWrapperSuccess(loginInfoVO);
     }
 
-    @ApiOperation(value = "换绑手机号")
-    @RequestMapping(value = "/updatePhone", method = RequestMethod.POST)
+    @ApiOperation(value = "admin用户登录", response = AdminInfoVO.class)
+    @RequestMapping(value = "/adminLogin", method = RequestMethod.POST)
     @ResponseBody
-    public JSONObject updatePhone(
-            @ApiParam(value = "新手机号码", required = false) @RequestParam(value = "phone", required = true) String phone,
-            @ApiParam(value = "新手机验证码", required = true) @RequestParam(value = "code", required = true) String code) throws Exception {
-        Long userId = DPreconditions.checkNotNull(
-                getCurrentUserId(),
-                "用户ID不能为空.",
-                true);
-        String dynamicCode = redisOperation.usePool().get(DynamicTypeEnum.UPDATE_PHONE.getDesc() + "_"+phone);
-        DPreconditions.checkState(
-                code.equals(dynamicCode),
-                Language.get("login.dynamic-code-error"),
-                true);
-        UserInfoPO userInfoPO = new UserInfoPO();
-        userInfoPO.setId(userId);
-        userInfoPO.setPhone(phone);
-        userInfoService.update(userInfoPO);
-        return ResponseWrapperSuccess(null);
+    public JSONObject adminLogin(
+            @ApiParam(value = "手机号码", required = true) @RequestParam(value = "account", required = true) String account,
+            @ApiParam(value = "密码", required = true) @RequestParam(value = "password", required = true) String password) throws Exception {
+        AdminInfoPO select = new AdminInfoPO();
+        select.setPhone(account);
+        select.setPassword(password);
+        HospAdminUserInfo hospAdminUserInfo =
+                DPreconditions.checkNotNull(
+                        adminUserInfoService.selectOne(select),
+                        Language.get("admin-user.login-failure"),
+                        true);
+        LoginInfoVO loginInfoVO = new LoginInfoVO();
+        loginInfoVO.setToken(
+                createToken(hospAdminUserInfo.getId(),
+                        adminTokenPrefix));
+        return ResponseWrapperSuccess(loginInfoVO);
     }
 
-    @ApiOperation(value = "登出")
-    @RequestMapping(value = "/logout", method = RequestMethod.POST)
+    @ApiOperation(value = "doctor用户登录")
+    @RequestMapping(value = "/doctorLogin", method = RequestMethod.POST)
     @ResponseBody
-    public JSONObject logout() throws Exception {
-        Long id = getCurrentUserId();
-        String toker = DPreconditions.checkNotNullAndEmpty(
-                getToken(),
-                "toker不能为空.",
-                true);
-        DPreconditions.checkNotNull(
-                userInfoService.selectOne(id),
-                "用户没有查询到.",
-                true);
-        redisOperation.usePool().del(userTokenPrefix+toker);
-        redisOperation.usePool().del(userTokenPrefix+id);
-        return ResponseWrapperSuccess(null);
+    public JSONObject doctorLogin(
+            @ApiParam(value = "手机号码", required = true) @RequestParam(value = "account", required = true) String account,
+            @ApiParam(value = "密码", required = true) @RequestParam(value = "password", required = true) String password) throws Exception {
+        DoctorUserInfoPO select = new DoctorUserInfoPO();
+        select.setPhone(account);
+        select.setPassword(password);
+        HospDoctorUserInfo hospDoctorUserInfo =
+                DPreconditions.checkNotNull(
+                        doctorUserInfoService.selectOne(select),
+                        Language.get("admin-user.login-failure"),
+                        true);
+        LoginInfoVO loginInfoVO = new LoginInfoVO();
+        loginInfoVO.setToken(
+                createToken(
+                        hospDoctorUserInfo.getId(),
+                        doctorTokenPrefix));
+        return ResponseWrapperSuccess(loginInfoVO);
     }
-
 }
