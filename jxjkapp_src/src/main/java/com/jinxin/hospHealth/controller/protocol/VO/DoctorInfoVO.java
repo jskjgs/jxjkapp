@@ -30,8 +30,8 @@ public class DoctorInfoVO {
     private HospDoctorType doctorType;
     @ApiModelProperty("医生的头像")
     private String headPortrait;
-    @ApiModelProperty("医生的性别 性别 0 女 1 男")
-    private Integer sex;
+    @ApiModelProperty("医生的性别 性别 女/男")
+    private String sex;
     @ApiModelProperty("医生的电话")
     private String phone;
     @ApiModelProperty("医生的邮箱")
@@ -43,22 +43,4 @@ public class DoctorInfoVO {
     @ApiModelProperty("医生的描述")
     private String description;
 
-    @Autowired
-    DoctorTypeService doctorTypeService;
-    @Autowired
-    HospAreaService doctorAreaService;
-
-    public DoctorInfoVO(HospDoctorInfo hospDoctorInfo){
-        if(hospDoctorInfo == null)
-            return;
-        this.id = hospDoctorInfo.getId();
-        this.name = hospDoctorInfo.getName();
-        this.headPortrait = hospDoctorInfo.getHeadPortrait();
-        this.sex = hospDoctorInfo.getSex();
-        this.phone = hospDoctorInfo.getPhone();
-        this.email = hospDoctorInfo.getEmail();
-        this.age = hospDoctorInfo.getAge();
-        this.birthday = hospDoctorInfo.getBirthday();
-        this.description = hospDoctorInfo.getDescription();
-    }
 }

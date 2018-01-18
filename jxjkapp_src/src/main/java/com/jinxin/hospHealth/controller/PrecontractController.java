@@ -10,6 +10,7 @@ import com.jinxin.hospHealth.controller.protocol.VO.ProductVO;
 import com.jinxin.hospHealth.controller.protocol.VO.UserInfoVO;
 import com.jinxin.hospHealth.dao.models.HospPrecontract;
 import com.jinxin.hospHealth.dao.models.HospProductSku;
+import com.jinxin.hospHealth.dao.models.HospUserInfo;
 import com.jinxin.hospHealth.service.*;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -178,11 +179,16 @@ public class PrecontractController extends MyBaseController{
      * @return
      */
     private PrecontractVO conversion(HospPrecontract precontract){
-        PrecontractVO precontractVO = new PrecontractVO(precontract);
+        PrecontractVO precontractVO = precontract.transform();
         if(precontract.getAreaId() != null)
             precontractVO.setArea(areaService.selectOne(precontract.getAreaId()));
-        if(precontract.getUserId() != null)
-            precontractVO.setUserInfoVO(new UserInfoVO(userInfoService.selectOne(precontract.getId())));
+        if(precontract.getUserId() != null) {
+            HospUserInfo hospUserInfo = userInfoService.selectOne(precontract.getId());
+            precontractVO.setUserInfoVO(
+                    hospUserInfo == null
+                            ? null
+                            : hospUserInfo.transform());
+        }
         if(precontract.getProductSkuId() != null) {
             HospProductSku sku = skuService.selectOne(precontract.getId());
             precontractVO.setSku(sku);

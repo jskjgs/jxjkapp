@@ -61,6 +61,8 @@ public class OrderServiceDetailsService implements BaseService<HospOrderServiceD
 
     @Override
     public PageInfo<HospOrderServiceDetails> selectAllAdmin(PageBean pageBean) throws Exception {
+        if(pageBean == null)
+            pageBean = new PageBean();
         return null;
     }
 }

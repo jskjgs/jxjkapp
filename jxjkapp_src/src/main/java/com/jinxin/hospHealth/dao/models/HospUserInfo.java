@@ -1,13 +1,13 @@
 package com.jinxin.hospHealth.dao.models;
 
 import com.doraemon.base.controller.bean.PageBean;
+import com.jinxin.hospHealth.controller.protocol.VO.UserInfoVO;
+import com.jinxin.hospHealth.dao.modelsEnum.SexEnum;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
-
 import javax.persistence.Id;
 import javax.persistence.Table;
-import java.math.BigDecimal;
 import java.util.Date;
 
 @Data
@@ -42,6 +42,22 @@ public class HospUserInfo extends PageBean{
     @ApiModelProperty("更新时间")
     private Date updateDate;
 
-
+    public UserInfoVO transform(){
+        UserInfoVO userInfoVO = new UserInfoVO();
+        userInfoVO.setId(this.id);
+        userInfoVO.setName(this.name);
+        userInfoVO.setHeadPortrait(this.headPortrait);
+        userInfoVO.setSex(
+                this.sex != null
+                        ? SexEnum.getSexEnumByCode(this.sex).getDesc()
+                        : null);
+        userInfoVO.setPhone(this.phone);
+        userInfoVO.setEmail(this.email);
+        userInfoVO.setAge(this.age);
+        userInfoVO.setBirthday(this.birthday);
+        userInfoVO.setCreateDate(this.createDate);
+        userInfoVO.setUpdateDate(this.updateDate);
+        return userInfoVO;
+    }
 
 }

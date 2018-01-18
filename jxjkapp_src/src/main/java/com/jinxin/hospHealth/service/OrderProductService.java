@@ -180,6 +180,8 @@ public class OrderProductService implements BaseService<HospOrderProduct,HospOrd
      */
     @Override
     public PageInfo<HospOrderProduct> selectAllAdmin(PageBean pageBean) throws Exception {
+        if(pageBean == null)
+            pageBean = new PageBean();
         return selectAll(pageBean);
     }
 

@@ -4,6 +4,7 @@ import com.aliyun.oss.OSSClient;
 import com.aliyun.oss.model.PutObjectResult;
 import com.doraemon.base.util.UUidGenerate;
 import com.jinxin.hospHealth.utils.FileCheckUtil;
+import lombok.extern.log4j.Log4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -14,6 +15,7 @@ import java.io.*;
  * Created by zbs on 2018/1/14.
  */
 @Service
+@Log4j
 public class OssFileService {
 
     @Value("${oss.accessKeyId}")
@@ -31,10 +33,11 @@ public class OssFileService {
     @Value("${oss.bucketUrl}")
     String ossBucketUrl;
 
-    public String uploadImage(MultipartFile file,String folderPostition) throws IOException {
+    public String uploadImage(MultipartFile file) throws IOException {
         OSSClient ossClient = new OSSClient(OSS_ENDPOINT, OSS_ACCESSKEYID, OSS_ACCESSKEYSECRET);
-        String filePath = folderPostition+file.getOriginalFilename();
+        String filePath = "images/"+file.getOriginalFilename();
         PutObjectResult result = ossClient.putObject(OSS_BUCKETNAME,filePath, file.getInputStream());
+        log.info(result);
         ossClient.shutdown();
         return ossBucketUrl + filePath;
     }
@@ -46,8 +49,6 @@ public class OssFileService {
             file.createNewFile();
         writeFileContent(file,content.toString());
         return nginxHtmlPrefix+"/"+htmlName+".html";
-
-
     }
 
     public void writeFileContent(File file,String content) throws IOException {

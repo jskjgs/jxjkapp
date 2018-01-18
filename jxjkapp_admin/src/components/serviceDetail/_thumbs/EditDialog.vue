@@ -5,9 +5,6 @@
  */
 let fileObj = ''
 
-import ImgUploader from '@/components/_common/imgUploader/ImgUploader.vue'
-import RichText from '@/components/_common/richText/RichText'
-
 const initData = {
   submitLoading: false,
   fileInputValid: true
@@ -15,23 +12,11 @@ const initData = {
 
 export default {
   name: 'EditDialog',
-  components: {
-    ImgUploader,
-    RichText
-  },
-  props: {
-    value: {
-      type: null
-    },
-    data: {
-      type: Object
-    }
-  },
   data () {
     return {
       form: {
-        name: '',
-        describe: ''
+        provider: null,
+        orderId: null
       },
       submitLoading: false,
       fileInputValid: true

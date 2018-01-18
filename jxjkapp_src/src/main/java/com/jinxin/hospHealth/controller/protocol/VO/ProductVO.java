@@ -44,17 +44,4 @@ public class ProductVO {
     @ApiModelProperty("删除标识 0:正常 1:禁用  99:删除")
     private Integer enable;
 
-    public ProductVO(HospProduct hospProduct){
-        if (hospProduct == null)
-            return;
-        this.id = hospProduct.getId();
-        this.name = hospProduct.getName();
-        this.sortNumber = hospProduct.getSortNumber();
-        this.images = hospProduct.getImages();
-        this.description = hospProduct.getDescription();
-        this.information = hospProduct.getInformation();
-        this.createDate = hospProduct.getCreateDate();
-        this.updateDate = hospProduct.getUpdateDate();
-        this.enable = hospProduct.getEnable();
-    }
 }

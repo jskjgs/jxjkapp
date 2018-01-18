@@ -40,7 +40,7 @@ public class DoctorInfoPO extends PageBean{
     @ApiModelProperty("医生的描述")
     private String description;
 
-    public HospDoctorInfo conversion(){
+    public HospDoctorInfo transform(){
         HospDoctorInfo hospDoctorInfo = new HospDoctorInfo();
         hospDoctorInfo.setId(this.getId());
         hospDoctorInfo.setName(this.getName());

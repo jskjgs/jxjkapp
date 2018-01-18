@@ -132,6 +132,8 @@ public class DoctorTypeService implements BaseService<HospDoctorType,HospDoctorT
 
     @Override
     public PageInfo<HospDoctorType> selectAllAdmin(PageBean pageBean) throws Exception {
+        if(pageBean == null)
+            pageBean = new PageBean();
         return selectAll(pageBean);
     }
 }

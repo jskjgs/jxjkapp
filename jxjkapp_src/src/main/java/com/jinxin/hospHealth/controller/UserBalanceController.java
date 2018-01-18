@@ -34,11 +34,10 @@ public class UserBalanceController extends MyBaseController{
     @RequestMapping(value="/", method = RequestMethod.GET)
     @ResponseBody
     public JSONObject select() throws Exception {
-        HospUserBalance hospUserBalance = new HospUserBalance();
-        hospUserBalance.setUserId(DPreconditions.checkNotNull(getCurrentUserId(),
+        DPreconditions.checkNotNull(getCurrentUserId(),
                 Language.get("user.id-null"),
-                true));
-        return ResponseWrapperSuccess(userBalanceService.select(hospUserBalance));
+                true);
+        return ResponseWrapperSuccess(userBalanceService.selectOne(getCurrentUserId()));
     }
 
     @ApiOperation(value = "充值余额")

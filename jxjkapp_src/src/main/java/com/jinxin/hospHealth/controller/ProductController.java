@@ -156,11 +156,13 @@ public class ProductController extends MyBaseController{
      * @return
      */
     private ProductVO conversion(HospProduct hospProduct){
-        ProductVO productVO = new ProductVO(hospProduct);
-        if(hospProduct.getProductTypeId() != null)
-            productVO.setProductType(productTypeService.selectOne(hospProduct.getProductTypeId()));
-        if(hospProduct.getDefaultSkuId() != null)
-            productVO.setDefaultSku(skuService.selectOne(hospProduct.getDefaultSkuId()));
+        ProductVO productVO = hospProduct.transform(
+                hospProduct.getProductTypeId() != null
+                        ? productTypeService.selectOne(hospProduct.getProductTypeId())
+                        : null,
+                hospProduct.getDefaultSkuId() != null
+                        ? skuService.selectOne(hospProduct.getDefaultSkuId())
+                        : null);
         return productVO;
     }
 }

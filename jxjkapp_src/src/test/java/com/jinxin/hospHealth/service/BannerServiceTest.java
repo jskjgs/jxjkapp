@@ -23,6 +23,7 @@ public class BannerServiceTest {
     @Autowired
     BannerService bannerService;
 
+    @Test
     public HospBanner init() {
         HospBanner hospBanner = new HospBanner();
         hospBanner.setName(RandomUtil.getRandomStringByLength(5));

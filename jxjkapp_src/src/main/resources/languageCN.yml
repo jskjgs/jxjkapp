@@ -102,3 +102,9 @@ service:
     select-failure: 查询信息失败.
     invalid-failure: 订单置为无效失败.
     not-scope: 传入的参数不属于默认值范围内.
+admin-user:
+    login-failure: 该管理员用户不存在,请检查账号密码.
+    id-null: 管理员用户ID不能为空.
+    password-not-correct: 账号密码不正确.
+    id-exist: 增加管理员用户信息,id不能填写
+    change-password-wrong: 不能用更新方法更新用户的密码.

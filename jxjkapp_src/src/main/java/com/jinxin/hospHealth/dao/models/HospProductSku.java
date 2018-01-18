@@ -1,17 +1,15 @@
 package com.jinxin.hospHealth.dao.models;
 
 import com.doraemon.base.controller.bean.PageBean;
-import com.jinxin.hospHealth.dao.modelsEnum.EnableEnum;
+import com.jinxin.hospHealth.controller.protocol.VO.ProductSkuVO;
+import com.jinxin.hospHealth.controller.protocol.VO.ProductVO;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
-
 import javax.persistence.Id;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 import java.math.BigDecimal;
 import java.util.Date;
-import java.util.List;
 
 @Data
 @ApiModel("商品SKU信息")
@@ -39,4 +37,18 @@ public class HospProductSku extends PageBean{
     @ApiModelProperty("更新时间")
     private Date updateDate;
 
+    public ProductSkuVO transform(ProductVO product){
+        ProductSkuVO productSkuVO = new ProductSkuVO();
+        productSkuVO.setId(this.id);
+        productSkuVO.setProduct(product);
+        productSkuVO.setName(this.name);
+        productSkuVO.setImages(this.images);
+        productSkuVO.setDescription(this.description);
+        productSkuVO.setServiceQuantity(this.serviceQuantity);
+        productSkuVO.setSalesPrice(this.salesPrice);
+        productSkuVO.setShowPrice(this.showPrice);
+        productSkuVO.setCreateDate(this.createDate);
+        productSkuVO.setUpdateDate(this.updateDate);
+        return  productSkuVO;
+    }
 }

@@ -205,6 +205,8 @@ public class CallNumberService {
 
 
     public PageInfo<HospCallNumber> selectAllAdmin(PageBean pageBean) throws Exception {
+        if(pageBean == null)
+            pageBean = new PageBean();
         return selectAll(pageBean);
     }
 }
