@@ -106,7 +106,7 @@
 
     getList () {
       this.initData({
-        url: '/doctorInfo/query',
+        url: '/news/all',
         method: 'POST',
         data: {}
       }, function () {})
