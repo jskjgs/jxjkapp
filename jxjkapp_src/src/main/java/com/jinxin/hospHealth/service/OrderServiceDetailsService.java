@@ -92,7 +92,7 @@ public class OrderServiceDetailsService implements BaseService<HospOrderServiceD
                 "订单必须是支付的订单.",
                 true);
         DPreconditions.checkState(
-                remainingServiceNumber(po.getOrderProductId()) > 1,
+                remainingServiceNumber(po.getOrderProductId()) > 0,
                 Language.get("order-product-service.number-null"),
                 true);
         po.setCode(UUidGenerate.create());
