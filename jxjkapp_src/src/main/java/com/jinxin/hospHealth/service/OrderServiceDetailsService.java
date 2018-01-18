@@ -72,7 +72,7 @@ public class OrderServiceDetailsService implements BaseService<HospOrderServiceD
                 Language.get("order-product.select-not-exist"),
                 true);
         DPreconditions.checkState(
-                hospOrderProduct.getState().equals(OrderProductStateEnum.NORMAL),
+                hospOrderProduct.getState().equals(OrderProductStateEnum.NORMAL.getCode()),
                 Language.get("order-product.not-normal-state"),
                 true);
         HospOrder hospOrder = DPreconditions.checkNotNull(

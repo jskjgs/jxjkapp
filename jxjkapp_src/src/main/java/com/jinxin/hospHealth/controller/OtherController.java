@@ -47,7 +47,7 @@ public class OtherController extends MyBaseController{
             @ApiParam(value = "电话号码", required = true) @RequestParam(value = "phone", required = true) String phone,
             @ApiParam(value = "验证码类型(0-登陆 1-注册 2-换绑手机号)", required = true) @RequestParam(value = "type", required = true) String type,
             @ApiParam(value = "新手机号码", required = false) @RequestParam(value = "newPhone", required = false) String newPhone) throws Exception {
-        String dynamicCode = RandomUtil.getRandomIntByLength(4);
+        String dynamicCode = RandomUtil.getRandomIntByLength(6);
         String newDynamicCode = null;
         switch (type){
             case "0":
