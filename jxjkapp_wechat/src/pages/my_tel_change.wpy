@@ -50,17 +50,18 @@
     methods = {
       handleSumbit () {
         this.$_request({
-          url: '/other/updatePhone',
-          method: 'POST',
-          data: {
-            phone: this.formData.phone,
-            phoneCode: this.formData.code
-          }
+          url: `/other/updatePhone?newPhone=${this.formData.phone}&newPhoneCode=${this.formData.code}`,
+          method: 'POST'
         }).then(content => {
           content = content || {}
+          this.$_syncUserData({
+            token: content.token,
+            userInfo: content.userInfo
+          })
           wx.showToast({
             title: '手机换绑成功'
           })
+          wx.navigateBack()
         })
       }
     }

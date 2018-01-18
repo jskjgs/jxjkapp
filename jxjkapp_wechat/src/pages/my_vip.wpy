@@ -77,7 +77,8 @@
 
   export default class Index extends wepy.page {
     config = {
-      navigationBarTitleText: 'VIP用户管理'
+      navigationBarTitleText: 'VIP用户管理',
+      enablePullDownRefresh: true
     }
     components = {
       CustomPage

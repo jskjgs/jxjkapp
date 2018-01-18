@@ -24,14 +24,16 @@
           <text class="item-label">{{ item.type === 0 ? '本人' : '就诊人' + index }}
           </text>
           <view class="item-value">
-            <text>姓名1</text>
+            <text>{{ item.name || '' }}</text>
             <view class="arrow-rt"></view>
           </view>
         </view>
       </repeat>
     </view>
     <view class="flex--hcenter">
-      <button class="primary-btn add-btn" @tap="toRelationInfo('')">添加就诊人</button>
+      <button class="primary-btn add-btn" @tap="toRelationInfo('', {{ list.length }})">
+        {{ list.length ? '添加就诊人' : '完善个人信息' }}
+      </button>
     </view>
   </view>
 </template>
@@ -41,7 +43,8 @@
 
   export default class Index extends wepy.page {
     config = {
-      navigationBarTitleText: '绑定就诊人'
+      navigationBarTitleText: '绑定就诊人',
+      enablePullDownRefresh: true
     }
     components = {
     }
@@ -56,9 +59,9 @@
     }
 
     methods = {
-      toRelationInfo (id) {
+      toRelationInfo (id, listLen) {
         wx.navigateTo({
-          url: '/pages/my_relation_info' + (id === '' ? '' : `?id=${id}`)
+          url: `/pages/my_relation_info?type=${ listLen + '' === '0' ? 0 : 1 }` + (id === '' ? '' : `&id=${id}`)
         })
       }
     }
@@ -72,19 +75,9 @@
       }
     }
 
-    // onShow () {
-    //   if (this.$_checkLogin()) {
-    //     if (!(this.listData && this.listData.length)) {
-    //       this.initPageData()
-    //     }
-    //   } else {
-    //     this.toLogined = true
-    //   }
-    // }
-
     getList () {
       return this.$_request({
-        url: '/patientInfo/query',
+        url: '/patientInfo/all',
         method: 'POST',
         data: {
           pageNum: 1,
