@@ -143,9 +143,18 @@
     events = {
     }
 
-    onLoad () {
-      if (this.$_checkLogin('navigateTo')) {
-        this.initPageData()
+    onShow () {
+      if (this.toLogined) {
+        wx.switchTab({
+          url: '/pages/index'
+        })
+        this.toLogined = false
+      } else {
+        if (this.$_checkLogin('navigateTo')) {
+          this.initPageData()
+        } else {
+          this.toLogined = true
+        }
       }
     }
 

@@ -43,7 +43,7 @@
 <template>
   <CustomPage :isLastPage.sync="isLastPage">
     <view id="page-my-vip">
-      <view class="my-balance flex--center main-bg">
+      <view wx:if="{{ balance != undefined }}" class="my-balance flex--center main-bg">
         余额：{{ balance }}元
       </view>
       <view class="list-wrap">
@@ -95,7 +95,7 @@
         productName: 'Thermage 热玛吉',
         hospital: '锦江附属医院'
       }],
-      balance: '20000' // 余额
+      balance: '' // 余额
     }
 
     computed = {
@@ -114,12 +114,17 @@
 
     onLoad() {
       this.initPageData()
+      this.getBalance()
     }
     // 获取余额
     getBalance () {
       this.$_request({
         url: '/userBalance/'
-      }).then(() => {
+      }).then((content) => {
+        content = content || {}
+        let balance = content.balance
+        this.balance = balance == undefined ? '' : balance
+        this.$apply()
       })
     }
     // 固定方法
@@ -128,18 +133,18 @@
     }
 
     getList () {
-      console.log(1111111111)
       return this.initData({
         url: '/precontract/all',
         method: 'POST',
         data: {}
       }, (listItem, res) => {
         const skuData = listItem.sku || {}
+        const area = listItem.area || {}
         return {
           id: listItem.id,
           date: this.$_convertDate(listItem.precontractDate),
           productName: skuData.name,
-          hospital: (listItem.areaId || {}).name
+          hospital: area.name
         }
       })
     }
