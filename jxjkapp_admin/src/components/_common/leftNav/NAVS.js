@@ -28,6 +28,9 @@ import {
 import {
   INDEX as orderCfg
 } from '@/components/order/_consts/routers'
+import {
+  INDEX as queueCfg
+} from '@/components/queue/_consts/routers'
 
 export default [{
   label: '运营管理',
@@ -60,6 +63,10 @@ export default [{
   label: reserveCfg.meta.label,
   path: reserveCfg.path,
   permissionId: reserveCfg.meta.permissionId
+}, {
+  label: queueCfg.meta.label,
+  path: queueCfg.path,
+  permissionId: queueCfg.meta.permissionId
 }, {
   label: doctorTypeCfg.meta.label,
   path: doctorTypeCfg.path,
