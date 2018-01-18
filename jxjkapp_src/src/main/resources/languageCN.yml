@@ -79,18 +79,29 @@ order:
     invalidi-pay-type: 无效的支付方式.
     amount-null: 支付金额不能为空.
     pay-price-not-equal: 支付回调传入的价格和订单价格不相等.
-    have-to-pay-state: 回退的订单必须为已经支付的订单.
+    have-to-pay-state: 订单必须为已经支付的订单.
     order-product-null: 订单中关联的商品未查询到.
     close-failure: 关闭订单失败.
     close-order-tyep-failure: 被关闭的订单状态必须是未支付的状态.
     operation-name-null: 操作人员名称为空.
     must-is-own-order: 必须是订单拥有者的订单.
 order-product:
+    id-null: 订单商品ID不能为空.
+    select-not-exist: 订单商品不存在.
     order-id-null: 订单ID不能为空.
     sku-not-exist: 商品不存在.
     pay-price-null: 商品支付价格不能为空.
     sales-price-null: 商品销售价格不能为空.
     quantity-null: 购买的数量不能为空.
+    not-normal-state: 订单商品不是一个有效的状态.
+order-product-service:
+    order-id-null: 订单ID不能为空.
+    id-exist: 增加订单商品服务信息,id不能填写.
+    id-null: 订单商品服务ID不能为空.
+    select-not-exist: 订单商品服务不存在.
+    qty-null: 本次使用的数量不能为空.
+    address-null: 使用的地址不能为空.
+    number-null: 服务次数已经用完.
 sku:
     select-not-exist: 商品SKU不存在.
     id-null: 商品SKU ID不能为空.
@@ -107,4 +118,10 @@ admin-user:
     id-null: 管理员用户ID不能为空.
     password-not-correct: 账号密码不正确.
     id-exist: 增加管理员用户信息,id不能填写
+    change-password-wrong: 不能用更新方法更新用户的密码.
+doctor-user:
+    login-failure: 该医生端管理员用户不存在,请检查账号密码.
+    id-null: 医生端管理员用户ID不能为空.
+    password-not-correct: 账号密码不正确.
+    id-exist: 增加医生端管理员用户信息,id不能填写
     change-password-wrong: 不能用更新方法更新用户的密码.

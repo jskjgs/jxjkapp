@@ -38,7 +38,7 @@ public class AdminInfoPO extends PageBean{
     @ApiModelProperty("权限 ,分割")
     private String permissions;
 
-    public HospAdminUserInfo transform() throws Exception {
+    public HospAdminUserInfo transform(Date createDate,Date updateDate) throws Exception {
         HospAdminUserInfo hospAdminUserInfo = new HospAdminUserInfo();
         hospAdminUserInfo.setId(this.id);
         hospAdminUserInfo.setName(this.name);
@@ -53,6 +53,8 @@ public class AdminInfoPO extends PageBean{
         hospAdminUserInfo.setAge(this.age);
         hospAdminUserInfo.setBirthday(this.birthday);
         hospAdminUserInfo.setPermissions(this.permissions);
+        hospAdminUserInfo.setCreateDate(createDate);
+        hospAdminUserInfo.setUpdateDate(updateDate);
         return hospAdminUserInfo;
     }
 }

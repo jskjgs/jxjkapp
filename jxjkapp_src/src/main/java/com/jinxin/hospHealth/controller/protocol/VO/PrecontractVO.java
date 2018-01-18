@@ -25,10 +25,8 @@ public class PrecontractVO {
     @ApiModelProperty("预约时间")
     private Date precontractDate;
     @ApiModelProperty("状态 0:正常 1:取消  2:已使用 3:过期")
-    private Integer status;
+    private String status;
     @ApiModelProperty("商品sku信息")
-    private HospProductSku sku;
-    @ApiModelProperty("商品信息")
-    private HospProduct product;
+    private ProductSkuVO sku;
 
 }

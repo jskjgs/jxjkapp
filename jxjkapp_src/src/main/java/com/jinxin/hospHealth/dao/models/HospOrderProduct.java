@@ -1,6 +1,10 @@
 package com.jinxin.hospHealth.dao.models;
 
 import com.doraemon.base.controller.bean.PageBean;
+import com.jinxin.hospHealth.controller.protocol.VO.OrderProductVO;
+import com.jinxin.hospHealth.controller.protocol.VO.OrderVO;
+import com.jinxin.hospHealth.controller.protocol.VO.ProductSkuVO;
+import com.jinxin.hospHealth.dao.modelsEnum.OrderProductStateEnum;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -13,8 +17,8 @@ import java.util.Date;
 
 @Data
 @ApiModel("订单商品")
-@Table(name="hosp_order_product")
-public class HospOrderProduct extends PageBean{
+@Table(name = "hosp_order_product")
+public class HospOrderProduct extends PageBean {
     @Id
     @ApiModelProperty("订单商品ID")
     private Long id;
@@ -49,11 +53,27 @@ public class HospOrderProduct extends PageBean{
     @ApiModelProperty("更新时间")
     private Date updateDate;
 
-    @Transient
-    @ApiModelProperty("商品详情")
-    private HospProductSku hospProductSku;
-    @Transient
-    @ApiModelProperty("如果是服务订单,已经使用的数量")
-    private int useNumber;
+    public OrderProductVO transform(OrderVO orderVO, ProductSkuVO productSku, HospOrderGrade grade, int remainingServiceNumber) {
+        OrderProductVO orderProductVO = new OrderProductVO();
+        orderProductVO.setId(this.id);
+        orderProductVO.setCode(this.code);
+        orderProductVO.setOrder(orderVO);
+        orderProductVO.setProductSku(productSku);
+        orderProductVO.setProductSkuName(this.productSkuName);
+        orderProductVO.setProductPayPrice(this.productPayPrice);
+        orderProductVO.setProductShowPrice(this.productShowPrice);
+        orderProductVO.setQuantity(this.quantity);
+        orderProductVO.setServiceQuantity(this.serviceQuantity);
+        orderProductVO.setStartDate(this.startDate);
+        orderProductVO.setState(this.state != null
+                ? OrderProductStateEnum.getByCode(this.state).getDesc()
+                : null);
+        orderProductVO.setStopDate(this.stopDate);
+        orderProductVO.setGrade(grade);
+        orderProductVO.setCreateDate(this.createDate);
+        orderProductVO.setUpdateDate(this.updateDate);
+        orderProductVO.setRemainingServiceNumber(remainingServiceNumber);
+        return orderProductVO;
+    }
 
 }

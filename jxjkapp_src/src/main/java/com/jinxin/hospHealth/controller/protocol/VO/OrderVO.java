@@ -25,7 +25,7 @@ public class OrderVO {
     @ApiModelProperty("操作人员名称")
     private String operationName;
     @ApiModelProperty("用户信息")
-    private HospUserInfo user;
+    private UserInfoVO user;
     @ApiModelProperty("院区信息")
     private HospArea area;
     @ApiModelProperty("类型（0 服务订单 1 商品订单）")
@@ -49,6 +49,6 @@ public class OrderVO {
     @ApiModelProperty("订单参加的全部活动，按逗号分隔")
     private String promotionIds;
     @ApiModelProperty("订单中的商品")
-    private List<HospOrderProduct> hospOrderProductList;
+    private List<OrderProductVO> orderProductList;
 
 }

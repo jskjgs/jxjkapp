@@ -2,6 +2,9 @@ package com.jinxin.hospHealth.dao.models;
 
 import com.doraemon.base.controller.bean.PageBean;
 import com.jinxin.hospHealth.controller.protocol.VO.PrecontractVO;
+import com.jinxin.hospHealth.controller.protocol.VO.ProductSkuVO;
+import com.jinxin.hospHealth.controller.protocol.VO.UserInfoVO;
+import com.jinxin.hospHealth.dao.modelsEnum.PrecontractEnum;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -42,11 +45,14 @@ public class HospPrecontract extends PageBean{
     @ApiModelProperty("时间区间-结束时间  YYYY-MM-DD  HH:mm:ss")
     private String stopTime;
 
-    public PrecontractVO transform(){
+    public PrecontractVO transform(HospArea area,UserInfoVO userInfoVO,ProductSkuVO productSkuVO){
         PrecontractVO precontractVO = new PrecontractVO();
         precontractVO.setId(this.id);
         precontractVO.setPrecontractDate(this.precontractDate);
-        precontractVO.setStatus(this.status);
+        precontractVO.setStatus(PrecontractEnum.getByCode(this.status).getDesc());
+        precontractVO.setArea(area);
+        precontractVO.setUserInfoVO(userInfoVO);
+        precontractVO.setSku(productSkuVO);
         return precontractVO;
     }
 }

@@ -31,7 +31,7 @@ import java.util.Map;
 @RequestMapping("/doctorInfo")
 @Slf4j
 @Api(description = "医生信息相关接口")
-public class DoctorInfoController extends MyBaseController {
+public class DoctorInfoController extends TransformController {
 
     @Autowired
     DoctorInfoService doctorInfoService;
@@ -46,7 +46,7 @@ public class DoctorInfoController extends MyBaseController {
     @ResponseBody
     public JSONObject add(
             @ApiParam(value = "医生信息", required = true) @RequestBody DoctorInfoPO doctorInfoPO) throws Exception {
-        Map<String, Long> map = new HashMap<>();
+        Map<String, Long> map = new HashMap();
         HospDoctorInfo hospDoctorInfo = doctorInfoService.add(doctorInfoPO);
         map.put("id", hospDoctorInfo.getId());
         return ResponseWrapperSuccess(map);
@@ -75,7 +75,7 @@ public class DoctorInfoController extends MyBaseController {
     public JSONObject selectAll(
             @ApiParam(value = "分页信息", required = false) @RequestBody(required = false) PageBean pageBean) throws Exception {
         PageInfo<HospDoctorInfo> pageInfo = doctorInfoService.selectAll(pageBean);
-        return ResponseWrapperSuccess(transform(pageInfo));
+        return ResponseWrapperSuccess(transformByHospDoctorInfo(pageInfo));
     }
 
     @ApiOperation(value = "根据条件查询医生信息", response = DoctorInfoVO.class)
@@ -84,7 +84,7 @@ public class DoctorInfoController extends MyBaseController {
     public JSONObject select(
             @ApiParam(value = "医生 信息", required = true) @RequestBody(required = true) DoctorInfoPO doctorInfoPO) throws Exception {
         PageInfo<HospDoctorInfo> pageInfo = doctorInfoService.select(doctorInfoPO);
-        return ResponseWrapperSuccess(transform(pageInfo));
+        return ResponseWrapperSuccess(transformByHospDoctorInfo(pageInfo));
     }
 
     @ApiOperation(value = "根据条件查询医生信息 ---模糊查询", response = DoctorInfoVO.class)
@@ -93,7 +93,7 @@ public class DoctorInfoController extends MyBaseController {
     public JSONObject selectByFuzzy(
             @ApiParam(value = "医生 信息", required = true) @RequestBody(required = true) DoctorInfoPO doctorInfoPO) throws Exception {
         PageInfo<HospDoctorInfo> pageInfo = doctorInfoService.selectByFuzzy(doctorInfoPO);
-        return ResponseWrapperSuccess(transform(pageInfo));
+        return ResponseWrapperSuccess(transformByHospDoctorInfo(pageInfo));
     }
 
     @ApiOperation(value = "删除单个医生信息")
@@ -112,7 +112,7 @@ public class DoctorInfoController extends MyBaseController {
     public JSONObject selectAllAdmin(
             @ApiParam(value = "分页信息", required = false) @RequestBody(required = false) PageBean pageBean) throws Exception {
         PageInfo<HospDoctorInfo> pageInfo = doctorInfoService.selectAllAdmin(pageBean);
-        return ResponseWrapperSuccess(transform(pageInfo));
+        return ResponseWrapperSuccess(transformByHospDoctorInfo(pageInfo));
     }
 
     @ApiOperation(value = "根据条件查询医生信息---admin", response = DoctorInfoVO.class)
@@ -121,29 +121,8 @@ public class DoctorInfoController extends MyBaseController {
     public JSONObject selectAdmin(
             @ApiParam(value = "医生 信息", required = true) @RequestBody(required = true) DoctorInfoPO doctorInfoPO) throws Exception {
         PageInfo<HospDoctorInfo> pageInfo = doctorInfoService.selectAdmin(doctorInfoPO);
-        return ResponseWrapperSuccess(transform(pageInfo));
+        return ResponseWrapperSuccess(transformByHospDoctorInfo(pageInfo));
     }
 
-    public DoctorInfoVO transform(HospDoctorInfo hospDoctorInfo) {
-        HospArea hospArea = hospDoctorInfo.getHospAreaId() != null
-                ? doctorAreaService.selectOne(hospDoctorInfo.getHospAreaId())
-                : null;
-        HospDoctorType hospDoctorType = hospDoctorInfo.getDoctorTypeId() != null
-                ? doctorTypeService.selectOne(hospDoctorInfo.getDoctorTypeId())
-                : null;
-        return hospDoctorInfo.transform(hospArea, hospDoctorType);
-    }
-
-    public PageInfo<DoctorInfoVO> transform(PageInfo pageInfo) {
-        if (pageInfo == null || pageInfo.getList() == null || pageInfo.getList().size() < 1)
-            return pageInfo;
-        List<DoctorInfoVO> list = new ArrayList<>();
-        for (Object object : pageInfo.getList()) {
-            HospDoctorInfo hospDoctorInfo = (HospDoctorInfo) object;
-            list.add(transform(hospDoctorInfo));
-        }
-        pageInfo.setList(list);
-        return pageInfo;
-    }
 
 }

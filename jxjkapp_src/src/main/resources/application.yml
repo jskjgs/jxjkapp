@@ -47,7 +47,7 @@ sms:
     #短信API产品域名（接口地址固定，无需修改）
     domain: dysmsapi.aliyuncs.com
     #短信签名
-    name: 锦欣妇幼儿童保健医院
+    name: 锦欣健康
 
 nginx:
     html-path: /docker/html

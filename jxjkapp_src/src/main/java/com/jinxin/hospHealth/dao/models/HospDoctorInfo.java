@@ -1,6 +1,5 @@
 package com.jinxin.hospHealth.dao.models;
 
-import com.doraemon.base.controller.bean.PageBean;
 import com.jinxin.hospHealth.controller.protocol.VO.DoctorInfoVO;
 import com.jinxin.hospHealth.dao.modelsEnum.SexEnum;
 import io.swagger.annotations.ApiModel;
@@ -14,7 +13,7 @@ import java.util.Date;
 @Data
 @ApiModel("医生信息")
 @Table(name="hosp_doctor_info")
-public class HospDoctorInfo extends PageBean{
+public class HospDoctorInfo {
     @Id
     @ApiModelProperty("医生的ID")
     private Long id;
@@ -47,8 +46,8 @@ public class HospDoctorInfo extends PageBean{
         doctorInfoVO.setDoctorType(doctorType);
         doctorInfoVO.setHeadPortrait(this.getHeadPortrait());
         doctorInfoVO.setSex(
-                this.getSex() != null
-                        ? SexEnum.getSexEnumByCode(this.getSex()).getDesc()
+                this.sex != null
+                        ? SexEnum.getSexEnumByCode(this.sex).getDesc()
                         : null);
         doctorInfoVO.setPhone(this.getPhone());
         doctorInfoVO.setEmail( this.getEmail());

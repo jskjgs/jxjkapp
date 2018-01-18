@@ -1,5 +1,8 @@
 package com.jinxin.hospHealth.dao.models;
 
+import com.jinxin.hospHealth.controller.protocol.PO.DoctorUserInfoPO;
+import com.jinxin.hospHealth.controller.protocol.VO.DoctorUserInfoVO;
+import com.jinxin.hospHealth.dao.modelsEnum.SexEnum;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -10,7 +13,7 @@ import java.util.Date;
 
 @Data
 @ApiModel("医生账户信息")
-@Table(name="hosp_doctor_user_info")
+@Table(name = "hosp_doctor_user_info")
 public class HospDoctorUserInfo {
     @Id
     @ApiModelProperty("用户ID")
@@ -35,5 +38,24 @@ public class HospDoctorUserInfo {
     private Date createDate;
     @ApiModelProperty("更新时间")
     private Date updateDate;
+
+
+    public DoctorUserInfoVO transform() {
+        DoctorUserInfoVO doctorUserInfoVO = new DoctorUserInfoVO();
+        doctorUserInfoVO.setId(this.id);
+        doctorUserInfoVO.setUpdateDate(this.updateDate);
+        doctorUserInfoVO.setAge(this.age);
+        doctorUserInfoVO.setBirthday(this.birthday);
+        doctorUserInfoVO.setCreateDate(this.createDate);
+        doctorUserInfoVO.setEmail(this.email);
+        doctorUserInfoVO.setHeadPortrait(this.headPortrait);
+        doctorUserInfoVO.setPhone(this.phone);
+        doctorUserInfoVO.setSex(
+                this.sex != null
+                        ? SexEnum.getSexEnumByCode(this.sex).getDesc()
+                        : null);
+        doctorUserInfoVO.setName(this.name);
+        return doctorUserInfoVO;
+    }
 
 }
