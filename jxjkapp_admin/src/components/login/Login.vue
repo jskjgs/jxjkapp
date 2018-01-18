@@ -4,6 +4,8 @@
   import {
     UPDATE_ACCOUNTINFO
   } from '@/store/global'
+  import setAuthorization from '@/utils/setAuthorization'
+  
   export default {
     name: 'Login',
     data () {
@@ -35,6 +37,7 @@
               const accountInfoJson = encodeURIComponent(JSON.stringify(accountInfo))
               localStorage.setItem('accountInfo', accountInfoJson)
               this.updateAccountInfo(accountInfo)
+              setAuthorization(accountInfo.token)
               this.$router.push('/')
             }).finally(() => {
               this.loginLoading = false
