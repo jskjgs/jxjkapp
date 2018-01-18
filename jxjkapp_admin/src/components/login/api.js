@@ -1,7 +1,7 @@
 import { fetchApi } from '@/utils/index'
 import { Message } from 'element-ui'
 
-export const LOGIN_URL = '/admin/login'
+export const LOGIN_URL = '/other/adminLogin'
 
 export default (data) => {
   return fetchApi({

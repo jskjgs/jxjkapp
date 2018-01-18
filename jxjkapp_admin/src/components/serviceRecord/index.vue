@@ -5,19 +5,18 @@
  */
 import placeholderImg from '@/assets/images/placeholder.png'
 
+import EditDialog from './_thumbs/EditDialog.vue'
+
 import SearchTable from '@/components/_common/searchTable/SearchTable'
 
 import {
-  queryOrderApi
+  queryServiceRecordApi
 } from './api'
 
-import {
-  convertDate
-} from '@/utils/index'
-
 export default {
-  name: 'order',
+  name: 'ServiceRecord',
   components: {
+    EditDialog,
     SearchTable
   },
   data () {
@@ -30,51 +29,30 @@ export default {
     }
     this.columnData = [{
       attrs: {
-        'prop': 'orderCode',
-        'label': '订单号',
-        'min-width': '120',
+        'prop': 'provider',
+        'label': '服务人员',
+        'min-width': '100',
         'show-overflow-tooltip': true
       }
     }, {
       attrs: {
-        'prop': 'orderAmount',
-        'label': '订单金额',
-        'min-width': '80',
+        'prop': 'completeTime',
+        'label': '完成时间',
+        'min-width': '100',
         'show-overflow-tooltip': true
       }
     }, {
       attrs: {
-        'prop': 'createTime',
-        'label': '订单创建时间',
-        'min-width': '150',
-        'show-overflow-tooltip': true,
-        'formatter' (row, col) {
-          return row.createTime ? convertDate(row.createTime, 'Y-M-D h:m') : '--'
-        }
-      }
-    }, {
-      attrs: {
-        'prop': 'orderState',
+        'prop': 'serviceState',
         'label': '状态',
+        'min-width': '100',
+        'show-overflow-tooltip': true
+      }
+    }, {
+      attrs: {
+        'prop': 'index',
+        'label': '服务次数',
         'min-width': '50'
-      }
-    }, {
-      attrs: {
-        'prop': 'userName',
-        'label': '用户名',
-        'min-width': '70'
-      }
-    }, {
-      attrs: {
-        'prop': 'userLevel',
-        'label': '权限',
-        'min-width': '70'
-      }
-    }, {
-      attrs: {
-        'prop': 'phoneNumber',
-        'label': '手机',
-        'min-width': '70'
       }
     }, {
       attrs: {
@@ -88,12 +66,7 @@ export default {
               <span
                 class="operate-item "
                 onClick={() => this.openDetail(scope.row)}>
-                  订单详情
-              </span>
-              <span v-show={ !scope.row.state }
-                class="operate-item "
-                onClick={() => this.openServiceRecord(scope.row)}>
-                  服务记录
+                  查看详情
               </span>
             </div>
           )
@@ -101,37 +74,36 @@ export default {
       }
     }]
     this.listApi = {
-      requestFn: queryOrderApi,
+      requestFn: queryServiceRecordApi,
       responseFn (data) {
         let content = data.content || {}
-        console.log(content)
         this.tableData = (content.list || []).map((item) => ({
-          orderId: item.id,
-          orderCode: item.code,
-          orderAmount: ('￥' + item.orderSalesPrice),
-          createTime: item.createDate,
-          orderState: item.state,
-          userName: item.userName,
-          userLevel: item.userLevel,
-          areaId: item.areaId,
-          phoneNumber: item.phoneNumber
+          serviceId: item.id,
+          provider: item.provider,
+          completeTime: item.completeTime,
+          index: item.serviceIndex,
+          serviceState: item.serviceState
         }))
         this.total = content.total || 0
       }
     }
     return {
-      orders: [],
-      keyWords: '',
+      orderId: this.$route.params.orderId,
+      orderState: this.$route.params.orderState,
+      serviceRecord: [],
+      editData: null,
       editDialogVisible: false,
-      editData: {},
       apiKeysMap: {
         pageSize: {
           value: 10,
           innerKey: 'pageSize' // searchTable组件内部映射的key
         },
+        orderId: {
+          value: this.$route.params.orderId
+        },
         currentPage: 'pageNum',
         orderBy: {
-          value: 'create_time'
+          value: 'service_index'
         },
         desc: {
           value: true
@@ -155,20 +127,11 @@ export default {
     }
   },
   methods: {
-    handleSearch () {
-      this.apiKeysMap = Object.assign({}, this.apiKeysMap, {
-        keyWords: {
-          value: this.keyWords || undefined
-        }
-      })
-    },
     openDetail (rowData) {
+      console.log(1)
       rowData = !rowData ? {} : rowData
-      this.$router.push({name: 'order/detail_root', params: { orderId: rowData.orderId }})
-    },
-    openServiceRecord (rowData) {
-      rowData = !rowData ? {} : rowData
-      this.$router.push({name: 'order/serviceRecord_root', params: { orderId: rowData.orderId, orderState: rowData.orderState }})
+      this.$router.push({name: 'order/serviceDetail_root', params: { serviceId: rowData.serviceId }})
+      console.log(2)
     }
   }
 }
@@ -178,7 +141,7 @@ export default {
   <div id="order">
     <div class="flex--vcenter page-top">
       <div class="page-title">
-        订单管理
+        <router-link to="/order"> 订单管理 </router-link> > 服务记录
       </div>
     </div>
     <search-table
@@ -187,26 +150,19 @@ export default {
       :column-data="columnData"
       :list-api="listApi"
       :api-keys-map="apiKeysMap">
-      <div class="table-tools flex--vcenter" slot="table-tools">
-        <div class="search-wrap flex--vcenter">
+      <div class="table-tools flex--vcenter" slot="table-tools" style="margin-top: 20px; justify-content: space-between;">
+  
           <div class="tool-item">
-            搜索关键字：
-            <el-input v-model="keyWords" style="width: auto;" placeholder="请填入关键字"></el-input>
+            <span style="margin-right:50px">用户名:{{}}</span>
+            <span>手机号:{{}}</span>
           </div>
-          <el-button
-            class="tool-item"
-            type="primary"
-            @click="handleSearch">搜索
-          </el-button>
-        </div>
-        <div class="btn-wrap">
-          <el-button
-            class="btn--add"
-            type="primary"
-            @click="openDetail()">
-            新增 <i class="el-icon-plus"></i>
-          </el-button>
-        </div>
+          <!-- <div class="tool-item">
+            <el-button
+              style="width: 100%;"
+              type="primary"
+              @click="assginService">派发服务
+            </el-button>
+          </div> -->
       </div>
     </search-table>
   </div>
