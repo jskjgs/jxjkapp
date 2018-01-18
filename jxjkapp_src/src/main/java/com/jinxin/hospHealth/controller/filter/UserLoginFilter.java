@@ -29,15 +29,23 @@ public class UserLoginFilter implements Filter {
     @Autowired
     RedisOperation redisOperation;
 
+    @Value("${token.adminToken-prefix}")
+    String adminTokenPrefix;
+    @Value("${token.userToken-prefix}")
+    String userTokenPrefix;
+    @Value("${token.doctorToken-prefix}")
+    String doctorTokenPrefix;
+
     @Override
-    public void init(FilterConfig filterConfig) throws ServletException {
-    }
+    public void init(FilterConfig filterConfig) throws ServletException {}
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         HttpServletRequest request = (HttpServletRequest) servletRequest;
         Result result = new Result();
-        if (adminUser(request) || user(request)) {
+        if (validation(request,userTokenPrefix)
+                || validation(request,adminTokenPrefix)
+                || validation(request,doctorTokenPrefix)) {
             filterChain.doFilter(servletRequest, servletResponse);
         } else {
             servletResponse.getWriter().print(result.addMessage("Please log in.").ExeFaild(401));
@@ -45,19 +53,17 @@ public class UserLoginFilter implements Filter {
         }
     }
 
-
-    private boolean adminUser(HttpServletRequest request) {
+    private boolean validation(HttpServletRequest request,String tokenPrefix) {
         String token = request.getHeader(Constant.HEADER_PERMISSIONS);
-        if (request.getSession().getAttribute(token) == null) {
-            log.error("session中没有获取到token  --> " + token);
+        if (token == null || "".equals(token))
             return false;
-        }
         try {
-            String adminUserId = redisOperation.get(token);
-            if (adminUserId == null || "".equals(adminUserId)) {
-                log.error("从redis获取到admin user id 为空  --> " + token);
+            String id = redisOperation.usePool().get(token);
+            if (id == null || "".equals(id))
                 return false;
-            }
+            if (!token.equals(redisOperation.usePool().get(tokenPrefix + id)))
+                return false;
+            request.setAttribute(tokenPrefix+token,id);
             return true;
         } catch (Exception e) {
             e.printStackTrace();
@@ -65,20 +71,35 @@ public class UserLoginFilter implements Filter {
         }
     }
 
-    private boolean user(HttpServletRequest request) {
-        String token = request.getHeader(Constant.HEADER_PERMISSIONS);
-        if (token == null)
-            return false;
-        try {
-            String userId = redisOperation.get(token);
-            if (userId == null || "".equals(userId))
-                return false;
-            return true;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
+  //  private boolean user(HttpServletRequest request) {
+//        String token = request.getHeader(Constant.HEADER_PERMISSIONS);
+//        if (token == null)
+//            return false;
+//        try {
+//            String userId = redisOperation.get(token);
+//            if (userId == null || "".equals(userId))
+//                return false;
+//            return true;
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            return false;
+//        }
+
+//        String token = request.getHeader(Constant.HEADER_PERMISSIONS);
+//        if (token == null || "".equals(token))
+//            return false;
+//        try {
+//            String adminUserId = redisOperation.usePool().get(token);
+//            if (adminUserId == null || "".equals(adminUserId))
+//                return false;
+//            if (!token.equals(redisOperation.usePool().get(adminTokenPrefix + adminUserId)))
+//                return false;
+//            return true;
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            return false;
+//        }
+//    }
 
 
     @Override

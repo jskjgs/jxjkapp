@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.doraemon.base.controller.BaseController;
 import com.doraemon.base.controller.CodeEnum;
 import com.doraemon.base.redis.RedisOperation;
+import com.doraemon.base.util.UUidGenerate;
 import com.jinxin.hospHealth.service.OtherService;
 import com.jinxin.hospHealth.utils.Constant;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,37 +25,53 @@ public class MyBaseController extends BaseController {
     @Autowired
     RedisOperation redisOperation;
 
+    @Value("${token.adminToken-prefix}")
+    String adminTokenPrefix;
+    @Value("${token.userToken-prefix}")
+    String userTokenPrefix;
+    @Value("${token.doctorToken-prefix}")
+    String doctorTokenPrefix;
+    @Value("${token.effectiveTime}")
+    String effectiveTime;
+
+    public String createToken(Long id, String tokerPrefix) throws Exception {
+        String token = UUidGenerate.create();
+        //放token到redis,单登
+        redisOperation.usePool().set(
+                token,
+                String.valueOf(id));
+        redisOperation.usePool().expire(
+                token,
+                Integer.valueOf(effectiveTime));
+        redisOperation.usePool().set(
+                tokerPrefix + String.valueOf(id),
+                token);
+        redisOperation.usePool().expire(
+                tokerPrefix + String.valueOf(id),
+                Integer.valueOf(effectiveTime));
+        return token;
+    }
+
     @Override
     public Long getCurrentUserId() {
-        HttpServletRequest request = getCurrentRequest();
-        String token = request.getHeader(Constant.HEADER_PERMISSIONS);
-        if (token == null)
-            return null;
-        try {
-            String userId = redisOperation.usePool().get(token);
-            return userId == null || "".equals(userId)
-                    ? null
-                    : Long.valueOf(userId);
-        }catch (Exception e){
-            e.printStackTrace();
-            return null;
-        }
+        return getId(userTokenPrefix);
     }
 
     public Long getAdminUserId() {
+        return getId(adminTokenPrefix);
+    }
+
+    public Long getDoctorUserId() {
+         return getId(doctorTokenPrefix);
+    }
+
+    private Long getId(String prefix) {
         HttpServletRequest request = getCurrentRequest();
         String token = request.getHeader(Constant.HEADER_PERMISSIONS);
-        if (token == null)
-            return null;
-        try {
-            String adminUserId = redisOperation.usePool().get(token);
-            return adminUserId == null || "".equals(adminUserId)
-                    ? null
-                    : Long.valueOf(adminUserId);
-        }catch (Exception e){
-            e.printStackTrace();
-            return null;
-        }
+        Object obj = request.getAttribute(doctorTokenPrefix + token);
+        return obj == null
+                ? null
+                : Long.valueOf(String.valueOf(obj));
     }
 
     @Override
