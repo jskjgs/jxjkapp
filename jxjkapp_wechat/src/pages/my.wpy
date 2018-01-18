@@ -1,8 +1,5 @@
 <style lang="scss">
 @import '../assets/style/variables/theme.scss';
-page {
-  height: 100%;
-}
 #page-my {
   font-size: 15px;
   .avatar-box {
@@ -97,7 +94,8 @@ page {
             class="username">{{ userInfo.name }}</text>
           <text
             wx:else
-            @tap="toLogin">请登录账号</text>
+            @tap="toLogin"
+            class="text-btn">请登录账号</text>
         </view>
       </view>
     </view>
@@ -117,34 +115,11 @@ page {
         </view>
       </repeat>
     </view>
-    <QrcodeDialog :visible.sync="qrcodeVisible" innerStyle="padding: 40rpx;">
-      <view class="qrcode-dialog flex--col">
-        <view class="row flex--vcenter">
-          <image class="thumbnail-avatar" src="../assets/images/demo.png"></image>
-          <text class="username">YK 陈御珂</text>
-        </view>
-        <view class="flex-item flex--center">
-          <view class="qrcode-wrap">
-          </view>
-        </view>
-      </view>
-    </QrcodeDialog>
-    <TelDialog :visible.sync="telDialogVisible" innerStyle="width: 560rpx;height: 220rpx;">
-      <view class="tel-dialog">
-        <view class="flex--center title">
-          <text>客服电话</text>
-        </view>
-        <view class="flex--center tel" @tap="callPhone">
-          <text>021-XXXXXXXX</text>
-        </view>
-      </view>
-    </TelDialog>
   </view>
 </template>
 
 <script>
   import wepy from 'wepy'
-  import Dialog from '@/components/dialog'
 
   const MY_ITEMS = [{
     icon: '../assets/images/icon-qrcode.png',
@@ -215,21 +190,17 @@ page {
       navigationBarTitleText: '我的'
     }
     components = {
-      QrcodeDialog: Dialog,
-      TelDialog: Dialog
     }
 
     mixins = []
 
     data = {
-      qrcodeVisible: false, // 二维码弹框
-      telDialogVisible: false,
       myItems: MY_ITEMS
     }
 
     computed = {
       userInfo () {
-        return this.$parent.globalData.userInfo || {}
+        return this.$parent.globalData.userInfo
       }
     }
 

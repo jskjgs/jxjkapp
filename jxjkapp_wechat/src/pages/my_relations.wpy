@@ -72,6 +72,16 @@
       }
     }
 
+    // onShow () {
+    //   if (this.$_checkLogin()) {
+    //     if (!(this.listData && this.listData.length)) {
+    //       this.initPageData()
+    //     }
+    //   } else {
+    //     this.toLogined = true
+    //   }
+    // }
+
     getList () {
       return this.$_request({
         url: '/patientInfo/query',

@@ -3,12 +3,14 @@ import {
   fetchApi,
   Cookie
 } from '@/utils/index'
+import setAuthorization from '@/utils/setAuthorization'
+
 import { Message } from 'element-ui'
 // 添加promise的finally方法
 import promiseFinally from 'promise.prototype.finally'
 promiseFinally.shim()
 
-axios.defaults.headers.post['Authorization'] = Cookie.get('login')
+setAuthorization(Cookie.get('login'))
 axios.defaults.headers.post['Content-Type'] = 'application/json'
 // 全局的 axios 默认transformRequest配置
 // 序列化数据

@@ -56,10 +56,12 @@
           method: 'POST'
         }, {showLoading: false}).then(content => {
           content = content || {}
+          this.$_syncUserData({
+            token: content.token,
+            userInfo: content.userInfo
+          })
           if (content.empty) {
-            wx.navigateTo({
-              url: '/pages/index'
-            })
+            wx.navigateBack()
           } else {
             wx.redirectTo({
               url: '/pages/signup_info'

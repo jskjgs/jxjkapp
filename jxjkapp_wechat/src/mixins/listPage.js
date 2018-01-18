@@ -57,7 +57,6 @@ export default class ListPageMixin extends wepy.mixin {
           this.$invoke('CustomPage', 'initPage', {
             noData: true
           })
-          return
         }
       }
       this.$invoke('CustomPage', 'initPage', {

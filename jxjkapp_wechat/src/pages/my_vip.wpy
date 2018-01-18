@@ -43,7 +43,7 @@
 <template>
   <CustomPage :isLastPage.sync="isLastPage">
     <view id="page-my-vip">
-      <view wx:if="{{ balance != undefined }}" class="my-balance flex--center main-bg">
+      <view wx:if="{{ balance != undefined && balance !== '' }}" class="my-balance flex--center main-bg">
         余额：{{ balance }}元
       </view>
       <view class="list-wrap">
@@ -99,9 +99,6 @@
     }
 
     computed = {
-      userId () {
-        return (this.$parent.globalData.userInfo || {}).userId
-      }
     }
 
     methods = {
@@ -112,10 +109,16 @@
     events = {
     }
 
-    onLoad() {
-      this.initPageData()
-      this.getBalance()
+    onShow () {
+      if (this.$_checkLogin()) {
+        if (!(this.listData && this.listData.length)) {
+          this.initPageData()
+        }
+      } else {
+        this.toLogined = true
+      }
     }
+
     // 获取余额
     getBalance () {
       this.$_request({
@@ -129,6 +132,7 @@
     }
     // 固定方法
     initPageData () {
+      this.getBalance()
       this.getList()
     }
 
