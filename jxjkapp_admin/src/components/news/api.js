@@ -1,22 +1,31 @@
 import { fetchApi } from '@/utils/index'
 
 // 获取banner列表
-export const GET_LIST_URL = '/home/queryAllBanner'
-export const getListApi = (params) => {
+export const GET_LIST_URL = '/news/admin/query'
+export const getListApi = (data) => {
   return fetchApi({
     url: GET_LIST_URL,
-    type: 'get',
-    params
+    type: 'post',
+    data
   })
 }
 
-// 修改banner
-export const MODIFY_BANNER_URL = '/home/modifyBanner'
-export const modifyBannerApi = (params, data) => {
+// 修改新闻
+export const MODIFY_NEWS_URL = '/news/'
+export const modifyNewsApi = (data) => {
   return fetchApi({
-    url: MODIFY_BANNER_URL,
+    url: MODIFY_NEWS_URL,
+    type: 'put',
+    data
+  })
+}
+
+// 增加新闻
+export const ADD_NEWS_URL = '/news/'
+export const addNewsApi = (data) => {
+  return fetchApi({
+    url: ADD_NEWS_URL,
     type: 'post',
-    params,
     data
   })
 }
@@ -57,17 +66,6 @@ export const switchVisibleApi = (data) => {
   return fetchApi({
     url: SWITCH_VISIBLE_URL,
     type: 'post',
-    data
-  })
-}
-
-// 增加banner
-export const ADD_BANNER_URL = '/home/addBanner'
-export const addBanenrApi = (params, data) => {
-  return fetchApi({
-    url: ADD_BANNER_URL,
-    type: 'put',
-    params,
     data
   })
 }

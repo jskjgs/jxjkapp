@@ -11,12 +11,21 @@ export const getListApi = (data) => {
 }
 
 // 修改banner
-export const MODIFY_BANNER_URL = '/home/modifyBanner'
-export const modifyBannerApi = (params, data) => {
+export const MODIFY_BANNER_URL = '/banner/'
+export const modifyBannerApi = (data) => {
   return fetchApi({
     url: MODIFY_BANNER_URL,
+    type: 'put',
+    data
+  })
+}
+
+// 增加banner
+export const ADD_BANNER_URL = '/banner/'
+export const addBanenrApi = (data) => {
+  return fetchApi({
+    url: ADD_BANNER_URL,
     type: 'post',
-    params,
     data
   })
 }
@@ -56,16 +65,6 @@ export const SWITCH_VISIBLE_URL = '/home/hideOrShowBanner'
 export const switchVisibleApi = (data) => {
   return fetchApi({
     url: SWITCH_VISIBLE_URL,
-    type: 'post',
-    data
-  })
-}
-
-// 增加banner
-export const ADD_BANNER_URL = '/banner/'
-export const addBanenrApi = (data) => {
-  return fetchApi({
-    url: ADD_BANNER_URL,
     type: 'post',
     data
   })

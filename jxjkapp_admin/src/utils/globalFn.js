@@ -16,6 +16,10 @@ Object.defineProperties(Vue.prototype, {
         }).then(res => {
           resolve(res)
         }).catch(error => {
+          this.$message({
+            type: 'error',
+            message: '图片上传失败'
+          })
           reject(error)
         })
       })

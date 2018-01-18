@@ -213,8 +213,15 @@ export default {
     // 编辑或新增
     openEditDialog (rowData, isAdd) {
       this.editDialogVisible = true
-      this.editData = rowData
       adding = !!isAdd
+      if (rowData) {
+        this.editData = {
+          id: rowData.id,
+          name: rowData.name,
+          no: rowData.no,
+          cover: rowData.cover
+        }
+      }
     },
     // 删除单个banner
     delRow (row) {
@@ -259,38 +266,36 @@ export default {
     // 提交编辑或新增
     handleEditSubmit (data, respondCb) {
       let formData
-      let bannerUrl
+      const uploadForm = (imageUrl) => {
+        let sendData = {
+          name: data.name,
+          bannerUrl: imageUrl || '',
+          jumpUrl: data.link || 'https://www.baidu.com',
+          orderNumber: data.no,
+          id: data.id
+        }
+        let requestFn = adding ? addBanenrApi : modifyBannerApi
+        return requestFn(sendData).then(res => {
+          this.$message({
+            type: 'success',
+            message: adding ? '添加成功' : '修改成功'
+          })
+          this.editDialogVisible = false
+          this.$refs.searchTable.init()
+          respondCb(true)
+        }).catch(() => {
+          respondCb()
+        })
+      }
       if (data.file) {
         formData = new FormData()
         formData.append('file', data.file)
         // 上传图片后获取地址再上传表单数据
         this.$uploadFile(formData).then(res => {
-          bannerUrl = res.content || ''
-          let sendData = {
-            name: data.name,
-            bannerUrl: bannerUrl,
-            jumpUrl: data.link || 'https://www.baidu.com',
-            orderNumber: data.no,
-            bannerId: data.id
-          }
-          let requestFn = adding ? addBanenrApi : modifyBannerApi
-          requestFn(sendData).then(res => {
-            this.$message({
-              type: 'success',
-              message: adding ? '添加成功' : '修改成功'
-            })
-            this.editDialogVisible = false
-            this.$refs.searchTable.init()
-            respondCb(true)
-          }).catch(() => {
-            respondCb()
-          })
-        }).catch((e) => {
-          this.$message({
-            type: 'error',
-            message: '图片上传失败'
-          })
+          uploadForm(res.content)
         })
+      } else {
+        uploadForm(data.cover)
       }
     },
     // 显示／隐藏

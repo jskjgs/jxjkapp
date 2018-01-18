@@ -10,8 +10,8 @@ import SearchTable from '@/components/_common/searchTable/SearchTable'
 import {
   getListApi,
   deleteBannerBatchApi,
-  addBanenrApi,
-  modifyBannerApi,
+  modifyNewsApi,
+  addNewsApi,
   switchVisibleApi
 } from './api'
 
@@ -50,7 +50,7 @@ export default {
       }
     }, {
       attrs: {
-        'prop': 'name',
+        'prop': 'title',
         'label': '新闻标题',
         'min-width': '140',
         'show-overflow-tooltip': true
@@ -73,12 +73,30 @@ export default {
       }
     }, {
       attrs: {
-        'prop': 'createTime',
+        'prop': 'createDate',
         'label': '创建时间',
         'min-width': '160',
         'show-overflow-tooltip': true,
         'formatter' (row, col) {
-          return convertDate(row.createTime) || '--'
+          return convertDate(row.createDate) || '--'
+        }
+      }
+    }, {
+      attrs: {
+        'prop': 'jumpUrl',
+        'min-width': '120',
+        'label': '新闻链接'
+      },
+      scopedSlots: {
+        default: (scope) => {
+          const jumpUrl = scope.row.jumpUrl
+          if (jumpUrl) {
+            return (
+              <a href={jumpUrl} target="_blank">{jumpUrl}</a>
+            )
+          } else {
+            return '--'
+          }
         }
       }
     }, {
@@ -117,12 +135,12 @@ export default {
       responseFn (data) {
         let content = data.content || {}
         this.tableData = (content.list || []).map((item) => ({
-          no: item.orderNumber,
           id: item.id,
-          name: item.name,
-          cover: item.bannerUrl,
-          link: item.jumpUrl,
-          visible: !item.display  // display: 0表示显示 1表示隐藏
+          title: item.title, // 标题
+          cover: item.images, // 封面图
+          createDate: item.createDate, // 创建日期
+          sortNumber: item.sortNumber,
+          content: item.content
         }))
         this.total = content.total || 0
       }
@@ -141,7 +159,7 @@ export default {
           value: 10,
           innerKey: 'pageSize' // searchTable组件内部映射的key
         },
-        name: {
+        title: {
           value: undefined
         },
         createTimeRange: {
@@ -166,7 +184,7 @@ export default {
     // 搜索banner
     handleSearch (e) {
       this.apiKeysMap = Object.assign({}, this.apiKeysMap, {
-        name: {
+        title: {
           value: this.searchKeyword || undefined
         },
         createTimeRange: {
@@ -182,8 +200,15 @@ export default {
     // 编辑或新增
     openEditDialog (rowData, isAdd) {
       this.editDialogVisible = true
-      this.editData = rowData
       adding = !!isAdd
+      if (rowData) {
+        this.editData = {
+          id: rowData.id,
+          name: rowData.title,
+          no: rowData.sortNumber,
+          cover: rowData.cover
+        }
+      }
     },
     // 删除单个banner
     delRow (row) {
@@ -227,28 +252,36 @@ export default {
     // 提交编辑或新增
     handleEditSubmit (data, respondCb) {
       let formData
+      const uploadForm = (imageUrl) => {
+        let sendData = {
+          title: data.name,
+          sortNumber: data.no,
+          id: data.id,
+          images: imageUrl || '',
+          content: '内容。。。' // 内容
+        }
+        let requestFn = adding ? addNewsApi : modifyNewsApi
+        return requestFn(sendData).then(res => {
+          this.$message({
+            type: 'success',
+            message: adding ? '添加成功' : '修改成功'
+          })
+          this.editDialogVisible = false
+          this.$refs.searchTable.init()
+          respondCb(true)
+        }).catch(() => {
+          respondCb()
+        })
+      }
       if (data.file) {
         formData = new FormData()
         formData.append('file', data.file)
-      }
-      let sendData = {
-        name: data.name,
-        jumpUrl: data.link,
-        orderNumber: data.no,
-        bannerId: data.id
-      }
-      let requestFn = adding ? addBanenrApi : modifyBannerApi
-      requestFn(sendData, formData).then(res => {
-        this.$message({
-          type: 'success',
-          message: adding ? '添加成功' : '修改成功'
+        this.$uploadFile(formData).then(res => {
+          uploadForm(res.content)
         })
-        this.editDialogVisible = false
-        this.$refs.searchTable.init()
-        respondCb(true)
-      }).catch(() => {
-        respondCb()
-      })
+      } else {
+        uploadForm(data.cover)
+      }
     },
     // 显示／隐藏
     switchVisible (rowData) {
