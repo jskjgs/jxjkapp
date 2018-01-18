@@ -48,7 +48,7 @@ public class UserInfoService implements BaseService<HospUserInfo, UserInfoPO> {
         DPreconditions.checkNotNullAndEmpty(userInfoPO.getPhone(),
                 Language.get("user.phone-null"),
                 true);
-        DPreconditions.checkState(selectOneByPhone(userInfoPO.getPhone()) != null,
+        DPreconditions.checkState(selectOneByPhone(userInfoPO.getPhone()) == null,
                 Language.get("user.phone-repeat"),
                 true);
         Date date = new Date();

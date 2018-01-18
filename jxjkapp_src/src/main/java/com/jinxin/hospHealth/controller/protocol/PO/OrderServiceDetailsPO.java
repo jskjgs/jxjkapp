@@ -16,7 +16,7 @@ import java.util.Date;
  * Created by zbs on 2018/1/17.
  */
 @Data
-@ApiModel("订单服务详情")
+@ApiModel("订单服务详细记录")
 public class OrderServiceDetailsPO extends PageBean{
 
     @ApiModelProperty("订单服务详情ID")
