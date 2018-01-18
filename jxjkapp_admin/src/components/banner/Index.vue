@@ -60,7 +60,7 @@ export default {
       }
     }, {
       attrs: {
-        'prop': 'cover',
+        'prop': 'banner',
         'min-width': '120',
         'label': '封面图'
       },
@@ -72,6 +72,24 @@ export default {
               style="width: 80px;height: 60px;">
             </img-zoom>
           )
+        }
+      }
+    }, {
+      attrs: {
+        'prop': 'jumpUrl',
+        'min-width': '120',
+        'label': '跳转链接'
+      },
+      scopedSlots: {
+        default: (scope) => {
+          const jumpUrl = scope.row.jumpUrl
+          if (jumpUrl) {
+            return (
+              <a href={jumpUrl} target="_blank">{jumpUrl}</a>
+            )
+          } else {
+            return '--'
+          }
         }
       }
     }, {
@@ -114,7 +132,7 @@ export default {
           id: item.id,
           name: item.name,
           cover: item.bannerUrl,
-          link: item.jumpUrl,
+          jumpUrl: item.jumpUrl,
           visible: !item.display  // display: 0表示显示 1表示隐藏
         }))
         this.total = content.total || 0
@@ -245,29 +263,35 @@ export default {
       if (data.file) {
         formData = new FormData()
         formData.append('file', data.file)
+        // 上传图片后获取地址再上传表单数据
         this.$uploadFile(formData).then(res => {
-          bannerUrl = res.content
+          bannerUrl = res.content || ''
+          let sendData = {
+            name: data.name,
+            bannerUrl: bannerUrl,
+            jumpUrl: data.link || 'https://www.baidu.com',
+            orderNumber: data.no,
+            bannerId: data.id
+          }
+          let requestFn = adding ? addBanenrApi : modifyBannerApi
+          requestFn(sendData).then(res => {
+            this.$message({
+              type: 'success',
+              message: adding ? '添加成功' : '修改成功'
+            })
+            this.editDialogVisible = false
+            this.$refs.searchTable.init()
+            respondCb(true)
+          }).catch(() => {
+            respondCb()
+          })
+        }).catch((e) => {
+          this.$message({
+            type: 'error',
+            message: '图片上传失败'
+          })
         })
       }
-      let sendData = {
-        name: data.name,
-        bannerUrl: bannerUrl,
-        jumpUrl: data.link,
-        orderNumber: data.no,
-        bannerId: data.id
-      }
-      let requestFn = adding ? addBanenrApi : modifyBannerApi
-      requestFn(sendData).then(res => {
-        this.$message({
-          type: 'success',
-          message: adding ? '添加成功' : '修改成功'
-        })
-        this.editDialogVisible = false
-        this.$refs.searchTable.init()
-        respondCb(true)
-      }).catch(() => {
-        respondCb()
-      })
     },
     // 显示／隐藏
     switchVisible (rowData) {
