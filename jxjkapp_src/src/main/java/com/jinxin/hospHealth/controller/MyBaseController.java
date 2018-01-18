@@ -5,13 +5,11 @@ import com.doraemon.base.controller.BaseController;
 import com.doraemon.base.controller.CodeEnum;
 import com.doraemon.base.redis.RedisOperation;
 import com.doraemon.base.util.UUidGenerate;
-import com.jinxin.hospHealth.service.OtherService;
 import com.jinxin.hospHealth.utils.Constant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.beans.factory.annotation.Value;
 
-import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 
 /**
@@ -20,8 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 @Configurable
 public class MyBaseController extends BaseController {
 
-    @Autowired
-    OtherService otherService;
+
     @Autowired
     RedisOperation redisOperation;
 
@@ -38,10 +35,10 @@ public class MyBaseController extends BaseController {
         String token = UUidGenerate.create();
         //放token到redis,单登
         redisOperation.usePool().set(
-                token,
+                tokerPrefix+token,
                 String.valueOf(id));
         redisOperation.usePool().expire(
-                token,
+                tokerPrefix+token,
                 Integer.valueOf(effectiveTime));
         redisOperation.usePool().set(
                 tokerPrefix + String.valueOf(id),
@@ -65,13 +62,18 @@ public class MyBaseController extends BaseController {
          return getId(doctorTokenPrefix);
     }
 
-    private Long getId(String prefix) {
-        HttpServletRequest request = getCurrentRequest();
-        String token = request.getHeader(Constant.HEADER_PERMISSIONS);
-        Object obj = request.getAttribute(doctorTokenPrefix + token);
-        return obj == null
-                ? null
-                : Long.valueOf(String.valueOf(obj));
+    private Long getId(String tokenPrefix) {
+        try {
+            HttpServletRequest request = getCurrentRequest();
+            String token = request.getHeader(Constant.HEADER_PERMISSIONS);
+            String id = redisOperation.usePool().get(tokenPrefix + token);
+            return id == null
+                    ? null
+                    : Long.valueOf(id);
+        }catch (Exception e){
+            e.printStackTrace();
+            return null;
+        }
     }
 
     @Override

@@ -92,15 +92,9 @@ public class UserInfoService implements BaseService<HospUserInfo, UserInfoPO> {
         DPreconditions.checkNotNull(selectNews,
                 Language.get("user.select-not-exist"),
                 true);
-        HospUserInfo update = new HospUserInfo();
-        update.setName(userInfoPO.getName());
-        update.setUpdateDate(new Date());
-        update.setAge(userInfoPO.getAge());
-        update.setBirthday(userInfoPO.getBirthday());
-        update.setEmail(userInfoPO.getEmail());
-        update.setHeadPortrait(userInfoPO.getHeadPortrait());
-        update.setSex(userInfoPO.getSex());
-        DPreconditions.checkState(hospUserInfoMapper.updateByPrimaryKeySelective(update) == 1,
+        HospUserInfo update = userInfoPO.transform(null, new Date(), null, null);
+        DPreconditions.checkState(
+                hospUserInfoMapper.updateByPrimaryKeySelective(update) == 1,
                 "更新用户信息失败.",
                 true);
     }
@@ -170,7 +164,7 @@ public class UserInfoService implements BaseService<HospUserInfo, UserInfoPO> {
      * @return
      */
     public HospUserInfo selectOne(UserInfoPO userInfoPO) {
-        HospUserInfo hospUserInfo = userInfoPO.transform();
+        HospUserInfo hospUserInfo = userInfoPO.transform(null, null, null, null);
         return hospUserInfoMapper.selectOne(hospUserInfo);
     }
 

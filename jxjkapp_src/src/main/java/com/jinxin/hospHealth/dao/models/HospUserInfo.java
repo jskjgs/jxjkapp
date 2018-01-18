@@ -57,6 +57,7 @@ public class HospUserInfo extends PageBean{
         userInfoVO.setBirthday(this.birthday);
         userInfoVO.setCreateDate(this.createDate);
         userInfoVO.setUpdateDate(this.updateDate);
+        userInfoVO.setIsVip(this.isVip);
         return userInfoVO;
     }
 

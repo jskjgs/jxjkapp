@@ -3,6 +3,7 @@ package com.jinxin.hospHealth.controller.protocol.PO;
 import com.doraemon.base.controller.bean.PageBean;
 import com.jinxin.hospHealth.dao.models.HospOrder;
 import com.jinxin.hospHealth.dao.models.HospUserInfo;
+import com.jinxin.hospHealth.dao.modelsEnum.SexEnum;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -14,7 +15,7 @@ import java.util.Date;
  */
 @Data
 @ApiModel("用户信息")
-public class UserInfoPO  extends PageBean {
+public class UserInfoPO extends PageBean {
 
     @ApiModelProperty("用户ID")
     private Long id;
@@ -35,17 +36,24 @@ public class UserInfoPO  extends PageBean {
     @ApiModelProperty("生日")
     private Date birthday;
 
-    public HospUserInfo transform(){
+    public HospUserInfo transform(Date createDate, Date updateDate, Integer isVip, String pushId) {
         HospUserInfo hospUserInfo = new HospUserInfo();
         hospUserInfo.setId(this.id);
         hospUserInfo.setName(this.name);
         hospUserInfo.setPassword(this.password);
         hospUserInfo.setHeadPortrait(this.headPortrait);
-        hospUserInfo.setSex(this.sex);
+        hospUserInfo.setSex(
+                this.sex != null
+                        ? SexEnum.getSexEnumByCode(this.sex).getCode()
+                        : null);
         hospUserInfo.setPhone(this.phone);
         hospUserInfo.setEmail(this.email);
         hospUserInfo.setAge(this.age);
         hospUserInfo.setBirthday(this.birthday);
+        hospUserInfo.setCreateDate(createDate);
+        hospUserInfo.setUpdateDate(updateDate);
+        hospUserInfo.setIsVip(isVip);
+        hospUserInfo.setPushId(pushId);
         return hospUserInfo;
     }
 }

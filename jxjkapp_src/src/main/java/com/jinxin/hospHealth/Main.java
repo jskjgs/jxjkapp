@@ -22,7 +22,6 @@ public class Main implements CommandLineRunner {
         SpringApplication app = new SpringApplication(Main.class);
         app.run();
     }
-
     @Override
     public void run(String... strings){
         System.out.println("服务启动完毕.");

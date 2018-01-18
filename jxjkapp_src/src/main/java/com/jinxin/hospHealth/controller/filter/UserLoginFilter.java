@@ -58,12 +58,11 @@ public class UserLoginFilter implements Filter {
         if (token == null || "".equals(token))
             return false;
         try {
-            String id = redisOperation.usePool().get(token);
+            String id = redisOperation.usePool().get(tokenPrefix+token);
             if (id == null || "".equals(id))
                 return false;
             if (!token.equals(redisOperation.usePool().get(tokenPrefix + id)))
                 return false;
-            request.setAttribute(tokenPrefix+token,id);
             return true;
         } catch (Exception e) {
             e.printStackTrace();

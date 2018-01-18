@@ -28,6 +28,8 @@ public class UserInfoVO  {
     private Integer age;
     @ApiModelProperty("生日")
     private Date birthday;
+    @ApiModelProperty("是否是vip")
+    private Integer isVip;
     @ApiModelProperty("创建时间")
     private Date createDate;
     @ApiModelProperty("更新时间")
