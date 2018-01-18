@@ -22,7 +22,7 @@
   }
   .avatar {
     overflow: hidden;
-    margin-bottom: 30rpx;
+    margin: 0 0 30rpx 0;
     border-radius: 50%;
     width: 140rpx;
     height: 140rpx;
@@ -85,9 +85,11 @@
         mode="aspectFill"
         src="../assets/images/my-bg.png" />
       <view class="avatar-wrap">
-        <image 
-          src="../assets/images/avatar.png" 
-          class="avatar" />
+        <view class="flex--hcenter">
+          <image 
+            src="../assets/images/avatar.png" 
+            class="avatar" />
+        </view>
         <view class="flex--hcenter">
           <text 
             wx:if="{{ !!userInfo }}" 

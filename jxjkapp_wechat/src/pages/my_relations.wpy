@@ -15,38 +15,47 @@
 </style>
 
 <template>
-  <view id="page-my-relations">
-    <view class="menu--default">
-      <repeat for="{{ list }}" key="index" item="item" index="index">
-        <view 
-          class="menu--default__item"
-          @tap="toRelationInfo({{ item.id }})">
-          <text class="item-label">{{ item.type === 0 ? '本人' : '就诊人' + index }}
-          </text>
-          <view class="item-value">
-            <text>姓名1</text>
-            <view class="arrow-rt"></view>
+  <CustomPage>
+    <view id="page-my-relations">
+      <view class="menu--default" wx:if="{{ list && list.length }}">
+        <repeat for="{{ list }}" key="index" item="item" index="index">
+          <view 
+            class="menu--default__item"
+            @tap="toRelationInfo({{ item.id }})">
+            <text class="item-label">{{ item.type === 0 ? '本人' : '就诊人' + index }}
+            </text>
+            <view class="item-value">
+              <text>{{ item.name || '' }}</text>
+              <view class="arrow-rt"></view>
+            </view>
           </view>
-        </view>
-      </repeat>
+        </repeat>
+      </view>
+      <view class="flex--hcenter">
+        <button class="primary-btn add-btn" @tap="toRelationInfo('', {{ list.length }})">
+          {{ list.length ? '添加就诊人' : '完善个人信息' }}
+        </button>
+      </view>
     </view>
-    <view class="flex--hcenter">
-      <button class="primary-btn add-btn" @tap="toRelationInfo('')">添加就诊人</button>
-    </view>
-  </view>
+  </CustomPage>
 </template>
 
 <script>
   import wepy from 'wepy'
+  import CustomPage from '@/components/customPage'
+
+  import pageMixin from '@/mixins/page'
 
   export default class Index extends wepy.page {
     config = {
-      navigationBarTitleText: '绑定就诊人'
+      navigationBarTitleText: '绑定就诊人',
+      enablePullDownRefresh: true
     }
     components = {
+      CustomPage
     }
 
-    mixins = []
+    mixins = [pageMixin]
 
     data = {
       list: []
@@ -56,9 +65,9 @@
     }
 
     methods = {
-      toRelationInfo (id) {
+      toRelationInfo (id, listLen) {
         wx.navigateTo({
-          url: '/pages/my_relation_info' + (id === '' ? '' : `?id=${id}`)
+          url: `/pages/my_relation_info?type=${ listLen + '' === '0' ? 0 : 1 }` + (id === '' ? '' : `&id=${id}`)
         })
       }
     }
@@ -68,23 +77,21 @@
 
     onShow () {
       if (this.$_checkLogin()) {
-        this.getList()
+        this.initPageData()
       }
     }
 
-    // onShow () {
-    //   if (this.$_checkLogin()) {
-    //     if (!(this.listData && this.listData.length)) {
-    //       this.initPageData()
-    //     }
-    //   } else {
-    //     this.toLogined = true
-    //   }
-    // }
+    onPullDownRefresh () {
+      this.initPageData()
+    }
+
+    initPageData () {
+      this.getList()
+    }
 
     getList () {
-      return this.$_request({
-        url: '/patientInfo/query',
+      return this.initData({
+        url: '/patientInfo/all',
         method: 'POST',
         data: {
           pageNum: 1,

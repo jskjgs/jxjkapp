@@ -17,45 +17,45 @@
 
 <template>
   <view>
-        <view class="page-title-wrap">{{ title }}</view>
-        <view class="comp-tel-input">
-            <view class="input-box">
-            <view class="input-group">
-                <UserNameInput
-                class="input-group__inner"
-                :value.sync="username" 
-                placeholder="请输入员工账号"/>
-            </view>
-            <view 
-                class="input-group">
-                <PasswordInput
-                class="input-group__inner"
-                :value.sync="password" 
-                type="password"
-                placeholder="请输入密码"/>
-            </view>
-            </view>
-            <view class="btn-wrap flex--hcenter">
-            <button 
-                class="primary-btn"
-                disabled="{{ !usernameIsValid || !passwordIsValid }}"
-                @tap="submit">{{ submitBtnText }}</button>
-            </view>
+    <view class="page-title-wrap">{{ title }}</view>
+    <view class="comp-tel-input">
+      <view class="input-box">
+        <view class="input-group">
+          <AccountInput
+            class="input-group__inner"
+            :value.sync="account" 
+            placeholder="请输入员工账号"/>
         </view>
+        <view 
+          class="input-group">
+          <PasswordInput
+            class="input-group__inner"
+            :value.sync="password" 
+            type="password"
+            placeholder="请输入密码"/>
+        </view>
+      </view>
+      <view class="btn-wrap flex--hcenter">
+        <button 
+          class="primary-btn"
+          disabled="{{ !accountIsValid || !passwordIsValid }}"
+          @tap="submit">{{ submitBtnText }}</button>
+      </view>
     </view>
+  </view>
 </template>
 
 <script>
   import wepy from 'wepy'
   import CustomInput from '@/components/baseComponents/customInput'
   import {
-    validUserName,
+    validTel,
     validPwd
   } from '@/utils/validator'
 
   export default class login extends wepy.component {
     components = {
-      UserNameInput: CustomInput,
+      AccountInput: CustomInput,
       PasswordInput: CustomInput
     }
 
@@ -79,18 +79,18 @@
     mixins = []
 
     data = {
-      username: '', // 用户账号
+      account: '', // 用户账号
       password: '', // 密码
-      usernameIsValid: false, // 判断用户账号有效性
+      accountIsValid: false, // 判断用户账号有效性
       passwordIsValid: false // 判断密码是否有效性
     }
 
     watch = {
-      username (newVal) {
-        this.usernameIsValid = validUserName(newVal)
+      account (newVal) {
+        this.accountIsValid = validTel(newVal)
       },
       password (newVal) {
-        this.passwordIsValid = validPwd(newVal)
+        this.passwordIsValid = !!newVal
       }
     }
 
@@ -99,7 +99,10 @@
 
     methods = {
       submit () {
-        this.$emit('submit')
+        this.$emit('submit', {
+          account: this.account,
+          password: this.password
+        })
       }
     }
 

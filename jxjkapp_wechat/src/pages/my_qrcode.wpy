@@ -88,13 +88,9 @@
     events = {
     }
 
-    onLoad() {
-      this.drawQrcode('1222')
-    }
-
     onShow () {
       if (this.$_checkLogin()) {
-        this.drawQrcode()
+        this.drawQrcode('1222')
       }
     }
 

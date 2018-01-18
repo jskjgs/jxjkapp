@@ -17,7 +17,7 @@
 
 <template>
   <view>
-    <view class="page-title-wrap">{{ title }}</view>
+    <!-- <view class="page-title-wrap">{{ title }}</view> -->
     <view class="comp-tel-input">
       <view class="btn-wrap flex--hcenter">
         <button 

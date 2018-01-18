@@ -40,9 +40,6 @@
     }
 
     computed = {
-      userId () {
-        return (this.$parent.globalData.userInfo || {}).userId
-      }
     }
 
     methods = {
@@ -57,7 +54,6 @@
           method: 'PUT',
           data: {
             id: this.id,
-            userId: this.userId,
             ...this.formData
           }
         }).then(content => {
@@ -92,8 +88,7 @@
           url: '/patientInfo/',
           method: 'POST',
           data: {
-            type: 1,
-            userId: this.userId,
+            type: this.type,
             ...this.formData
           }
         }).then(() => {
@@ -109,8 +104,10 @@
     events = {
     }
 
-    onLoad({ id }) {
+    onLoad({ type, id }) {
       this.id = id
+      this.type = type
+      this.isMaster = type + '' === '0'
       if (id !== undefined) { // query中有id说明是查看绑定的就诊人信息（可编辑）
         wx.setNavigationBarTitle({
           title: '就诊人信息'
@@ -137,15 +134,15 @@
         content = content || {}
         this.isMaster = content.type === 0
         this.$invoke('PersonInfo', 'syncFormData', {
-          patientCard: content.patientCard, // 卡号
-          cardId: content.cardId, // 身份证号
-          allergies: content.allergies, // 过敏史
-          disease: content.disease, // 疾病史
-          address: content.address, // 联系地址
-          deliveryDate: this.$_convertDate(content.deliveryDate),
-          deliveryInfo: content.deliveryInfo,
-          babySex: content.babySex,
-          userSource: content.userSource
+          patientCard: content.patientCard || '', // 卡号
+          cardId: content.cardId || '', // 身份证号
+          allergies: content.allergies || '', // 过敏史
+          disease: content.disease || '', // 疾病史
+          address: content.address || '', // 联系地址
+          deliveryDate: this.$_convertDate(content.deliveryDate) || '',
+          deliveryInfo: content.deliveryInfo || '',
+          babySex: content.babySex || '',
+          userSource: content.userSource || ''
         })
       })
     }

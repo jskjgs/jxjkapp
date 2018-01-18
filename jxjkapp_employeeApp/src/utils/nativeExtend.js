@@ -16,8 +16,36 @@ Promise.prototype.finally = function (callback) {
     reason => P.resolve(callback()).then(() => { throw reason })
   )
 }
-;(['page', 'component']).forEach(function (item) {
+;(['app', 'page', 'component']).forEach(function (item) {
   Object.defineProperties(wepy[item].prototype, {
+    // 同步用户信息（储存 / 删除 / 获取）
+    '$_syncUserData': {
+      value (newData) {
+        if (newData) {
+          const {token, userInfo} = newData
+          let globalData = $_getApp(this).globalData
+          if (token && userInfo) {
+            Object.assign(globalData, {
+              token,
+              userInfo
+            })
+            wx.setStorageSync('token', token)
+            wx.setStorageSync('userInfo', JSON.stringify(userInfo))
+          } else {
+            globalData.token = null
+            globalData.userInfo = null
+            wx.removeStorageSync('token')
+            wx.removeStorageSync('userInfo')
+          }
+        } else {
+          return {
+            token: wx.getStorageSync('token'),
+            userInfo: wx.getStorageSync('userInfo') ? JSON.parse(wx.getStorageSync('userInfo')) : null
+          }
+        }
+      }
+    },
+    // 获取wepy.app实例
     '$_getApp': {
       value (target) {
         return $_getApp(target)
@@ -26,9 +54,9 @@ Promise.prototype.finally = function (callback) {
     // 核对是否登陆
     '$_checkLogin': {
       value (routeFn = 'redirectTo', toLogin = true) {
-        return true
         const userInfo = wx.getStorageSync('userInfo')
-        if (!userInfo) {
+        const token = wx.getStorageSync('token')
+        if (!(userInfo && token)) {
           if (toLogin) {
             wx[routeFn]({
               url: '/pages/login'
@@ -44,7 +72,7 @@ Promise.prototype.finally = function (callback) {
       value (cfg, {showLoading = true, toLoginFn = 'redirectTo'} = {}) {
         cfg = Object.assign({}, {
           header: {
-            Authorization: $_getApp(this).globalData.token
+            Authorization: wx.getStorageSync('token')
           }
         }, cfg)
         if (showLoading) {
@@ -54,9 +82,15 @@ Promise.prototype.finally = function (callback) {
           })
         }
         cfg.url = 'http://182.92.78.118:9001/hospHealth' + cfg.url
-        return new Promise(function (resolve, reject) {
+        return new Promise((resolve, reject) => {
           wepy.request(cfg).then(res => {
-            const data = res.data || {}
+            console.log('res1', res, typeof res, typeof res.data)
+            let data = res.data || {}
+            if (typeof data === 'string') {
+              data = JSON.parse(data)
+              console.log('data', data)
+            }
+            console.log('typeof data', typeof data, data)
             let code = +data.code
             let errMsg = ''
             switch (code) {
@@ -71,6 +105,10 @@ Promise.prototype.finally = function (callback) {
                 errMsg = '未登陆'
                 wx[toLoginFn]({
                   url: '/pages/login'
+                })
+                this.$_syncUserData({
+                  token: null,
+                  userInfo: null
                 })
                 break
               default:
@@ -87,9 +125,12 @@ Promise.prototype.finally = function (callback) {
               })
             }
           }).catch((e) => {
+            console.log('$_request:catch1', JSON.stringify(e))
+            console.dir(e)
             reject(e)
           })
         }).catch((e) => {
+          console.log('$_request:catch2', JSON.stringify(e))
           throw e
         }).finally(() => {
           this.$apply()
