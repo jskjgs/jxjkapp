@@ -18,6 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,8 +35,8 @@ public class AdminController extends TransformController {
     AdminUserInfoService adminUserInfoService;
     @Autowired
     RedisOperation redisOperation;
-    @Value("${token.userToken-effectiveTime}")
-    String userTokenEffectiveTime;
+    @Value("${token.adminToken-prefix}")
+    String adminTokenPrefix;
 
 
     @ApiOperation(value = "admin用户登录", response = AdminInfoVO.class)
@@ -51,12 +52,8 @@ public class AdminController extends TransformController {
                 adminUserInfoService.selectOne(select),
                 Language.get("admin-user.login-failure"),
                 true);
-        String token = UUidGenerate.create();
-        //放token到session
-        redisOperation.usePool().set(token,String.valueOf(hospAdminUserInfo.getId()));
-        redisOperation.usePool().expire(token,Integer.valueOf(userTokenEffectiveTime));
         AdminInfoVO adminInfoVO = hospAdminUserInfo.transform();
-        adminInfoVO.setToken(token);
+        adminInfoVO.setToken(createToken(hospAdminUserInfo.getId(),adminTokenPrefix));
         return ResponseWrapperSuccess(adminInfoVO);
     }
 
@@ -87,7 +84,7 @@ public class AdminController extends TransformController {
     @RequestMapping(value = "/all", method = RequestMethod.POST)
     @ResponseBody
     public JSONObject selectAll(
-            @ApiParam(value = "分页信息", required = false)  @RequestBody(required = false) PageBean pageBean) throws Exception {
+            @ApiParam(value = "分页信息", required = false) @RequestBody(required = false) PageBean pageBean) throws Exception {
         PageInfo<HospAdminUserInfo> pageInfo = adminUserInfoService.selectAll(pageBean);
         return ResponseWrapperSuccess(transformByHospAdminUserInfo(pageInfo));
     }

@@ -25,11 +25,10 @@ dynamic:
 
 token:
     #admin 用户token有效时间
-    adminToken-effectiveTime: 31536000
-    #用户 token有效时间 毫秒
-    userToken-effectiveTime: 31536000
-    #医生端 token有效时间 毫秒
-    doctor-effectiveTime: 31536000
+    effectiveTime: 31536000
+    adminToken-prefix: admin-
+    userToken-prefix: user-
+    doctorToken-prefix: doctor-
 
 oss:
     accessKeyId: LTAIpXq9myrkBxUV

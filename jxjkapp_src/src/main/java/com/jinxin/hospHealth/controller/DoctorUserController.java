@@ -29,16 +29,16 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/doctorUser")
 @Slf4j
 @Api(description = "医生端用户相关接口")
-public class DoctorUserController extends TransformController{
+public class DoctorUserController extends TransformController {
 
     @Autowired
     DoctorUserInfoService doctorUserInfoService;
     @Autowired
     RedisOperation redisOperation;
-    @Value("${token.userToken-effectiveTime}")
-    String userTokenEffectiveTime;
     @Autowired
     OtherService otherService;
+    @Value("${token.doctorToken-prefix}")
+    String doctorTokenPrefix;
 
 
     @ApiOperation(value = "admin用户登录")
@@ -54,10 +54,9 @@ public class DoctorUserController extends TransformController{
                 doctorUserInfoService.selectOne(select),
                 Language.get("admin-user.login-failure"),
                 true);
-        String token = UUidGenerate.create();
-        //放token到session
-        otherService.saveToker(account,token,hospDoctorUserInfo.getId());
-        return ResponseWrapperSuccess(token);
+        return ResponseWrapperSuccess(
+                createToken(hospDoctorUserInfo.getId(),
+                        doctorTokenPrefix));
     }
 
     @ApiOperation(value = "新增admin用户")
@@ -81,7 +80,7 @@ public class DoctorUserController extends TransformController{
     @RequestMapping(value = "/all", method = RequestMethod.POST)
     @ResponseBody
     public JSONObject selectAll(
-            @ApiParam(value = "分页信息", required = false)  @RequestBody(required = false) PageBean pageBean) throws Exception {
+            @ApiParam(value = "分页信息", required = false) @RequestBody(required = false) PageBean pageBean) throws Exception {
         PageInfo<HospDoctorUserInfo> pageInfo = doctorUserInfoService.selectAll(pageBean);
         return ResponseWrapperSuccess(transformByHospDoctorUserInfo(pageInfo));
     }

@@ -52,22 +52,22 @@ public class OtherService {
     public final static String updatePhoneType="2";
 
 
-    /**
-     * 保存token到redis
-     * @param phone
-     * @param tokenCode
-     * @param id
-     * @throws Exception
-     */
-    public void saveToker(String phone,String tokenCode,Long id) throws Exception {
-        Map map = new HashMap<>();
-        map.put("tokenCode",tokenCode);
-        map.put("userId",String.valueOf(id));
-        redisOperation.usePool().hset(getTokeRedisKey(phone),map);
-        redisOperation.usePool().expire(getTokeRedisKey(phone),Integer.valueOf(tokenEffectiveTime));
-        redisOperation.usePool().set(tokenCode,String.valueOf(id));
-        redisOperation.usePool().expire(tokenCode,Integer.valueOf(tokenEffectiveTime));
-    }
+//    /**
+//     * 保存token到redis
+//     * @param phone
+//     * @param tokenCode
+//     * @param id
+//     * @throws Exception
+//     */
+//    public void saveToker(String phone,String tokenCode,Long id) throws Exception {
+//        Map map = new HashMap<>();
+//        map.put("tokenCode",tokenCode);
+//        map.put("userId",String.valueOf(id));
+//        redisOperation.usePool().hset(getTokeRedisKey(phone),map);
+//        redisOperation.usePool().expire(getTokeRedisKey(phone),Integer.valueOf(tokenEffectiveTime));
+//        redisOperation.usePool().set(tokenCode,String.valueOf(id));
+//        redisOperation.usePool().expire(tokenCode,Integer.valueOf(tokenEffectiveTime));
+//    }
 
     /**
      * 查询token
