@@ -2,6 +2,7 @@ package com.jinxin.hospHealth.controller;
 
 import com.alibaba.fastjson.JSONObject;
 import com.doraemon.base.controller.bean.PageBean;
+import com.jinxin.hospHealth.controller.protocol.VO.ProductSkuVO;
 import com.jinxin.hospHealth.dao.models.HospProductSku;
 import com.jinxin.hospHealth.service.SkuService;
 import io.swagger.annotations.Api;
@@ -21,7 +22,7 @@ import java.util.Map;
 @RequestMapping("/sku")
 @Slf4j
 @Api(description = "商品SKU相关接口")
-public class SkuContoller extends MyBaseController{
+public class SkuContoller extends TransformController{
 
     @Autowired
     SkuService skuService;
@@ -46,52 +47,52 @@ public class SkuContoller extends MyBaseController{
         return ResponseWrapperSuccess(null);
     }
 
-    @ApiOperation(value = "查询单个商品SKU信息",response = HospProductSku.class)
+    @ApiOperation(value = "查询单个商品SKU信息",response = ProductSkuVO.class)
     @RequestMapping(value="/", method = RequestMethod.GET)
     @ResponseBody
     public JSONObject selectOne(
             @ApiParam(value = "商品ID", required = true) @RequestParam(value = "id", required = true) Long id) throws Exception {
-        return ResponseWrapperSuccess(skuService.selectOne(id));
+        return ResponseWrapperSuccess(transform(skuService.selectOne(id)));
     }
 
-    @ApiOperation(value = "查询全部商品SKU信息",response = HospProductSku.class)
+    @ApiOperation(value = "查询全部商品SKU信息",response = ProductSkuVO.class)
     @RequestMapping(value="/all", method = RequestMethod.POST)
     @ResponseBody
     public JSONObject selectAll(
             @ApiParam(value = "分页信息", required = false)  @RequestBody(required = false) PageBean pageBean) throws Exception {
-        return ResponseWrapperSuccess(skuService.selectAll(pageBean));
+        return ResponseWrapperSuccess(transformByHospProductSku(skuService.selectAll(pageBean)));
     }
 
-    @ApiOperation(value = "根据条件查询商品SKU信息",response = HospProductSku.class)
+    @ApiOperation(value = "根据条件查询商品SKU信息",response = ProductSkuVO.class)
     @RequestMapping(value="/query", method = RequestMethod.POST)
     @ResponseBody
     public JSONObject select(
             @ApiParam(value = "商品信息", required = true)  @RequestBody HospProductSku productSku) throws Exception {
-        return ResponseWrapperSuccess(skuService.select(productSku));
+        return ResponseWrapperSuccess(transformByHospProductSku(skuService.select(productSku)));
     }
 
-    @ApiOperation(value = "查询单个商品SKU信息---admin",response = HospProductSku.class)
+    @ApiOperation(value = "查询单个商品SKU信息---admin",response = ProductSkuVO.class)
     @RequestMapping(value="/admin/", method = RequestMethod.GET)
     @ResponseBody
     public JSONObject selectOneAdmin(
             @ApiParam(value = "商品ID", required = true) @RequestParam(value = "id", required = true) Long id) throws Exception {
-        return ResponseWrapperSuccess(skuService.selectOne(id));
+        return ResponseWrapperSuccess(transform(skuService.selectOne(id)));
     }
 
-    @ApiOperation(value = "查询全部商品SKU信息---admin",response = HospProductSku.class)
+    @ApiOperation(value = "查询全部商品SKU信息---admin",response = ProductSkuVO.class)
     @RequestMapping(value="/admin/all", method = RequestMethod.POST)
     @ResponseBody
     public JSONObject selectAllAdmin(
             @ApiParam(value = "分页信息", required = false)  @RequestBody(required = false) PageBean pageBean) throws Exception {
-        return ResponseWrapperSuccess(skuService.selectAllAdmin(pageBean));
+        return ResponseWrapperSuccess(transformByHospProductSku(skuService.selectAllAdmin(pageBean)));
     }
 
-    @ApiOperation(value = "根据条件查询商品SKU信息---admin",response = HospProductSku.class)
+    @ApiOperation(value = "根据条件查询商品SKU信息---admin",response = ProductSkuVO.class)
     @RequestMapping(value="/admin/query", method = RequestMethod.POST)
     @ResponseBody
     public JSONObject selectAdmin(
             @ApiParam(value = "商品信息", required = true)  @RequestBody HospProductSku productSku) throws Exception {
-        return ResponseWrapperSuccess(skuService.selectAdmin(productSku));
+        return ResponseWrapperSuccess(transformByHospProductSku(skuService.selectAdmin(productSku)));
     }
 
     @ApiOperation(value = "删除单个商品SKU信息")

@@ -5,9 +5,9 @@ package com.jinxin.hospHealth.utils.sms;
  */
 public enum  SmsEnum {
 
-    LOGIN_REGISTER("SMS_121930021","登录注册验证码"),
-    CHANGE_BUNDLE_TELEPHONE_OLD("SMS_122000027","换绑手机号_原手机号"),
-    CHANGE_BUNDLE_TELEPHONE_NEW("SMS_121995028","换绑手机号_新手机号");
+    LOGIN_REGISTER("SMS_121970050","登录注册验证码"),
+    CHANGE_BUNDLE_TELEPHONE_OLD("SMS_121970050","换绑手机号_原手机号"),
+    CHANGE_BUNDLE_TELEPHONE_NEW("SMS_121970050","换绑手机号_新手机号");
 
     private String templateCode;
     private String name;

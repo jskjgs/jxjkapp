@@ -42,7 +42,7 @@ public class UserInfoService implements BaseService<HospUserInfo, UserInfoPO> {
      */
     @Override
     @Transactional
-    public HospUserInfo add (UserInfoPO userInfoPO) throws NoSuchAlgorithmException {
+    public HospUserInfo add(UserInfoPO userInfoPO) throws NoSuchAlgorithmException {
         DPreconditions.checkState(userInfoPO.getId() == null,
                 "用户的id不能填写.", true);
         DPreconditions.checkNotNullAndEmpty(userInfoPO.getPhone(),
@@ -118,10 +118,13 @@ public class UserInfoService implements BaseService<HospUserInfo, UserInfoPO> {
                 Language.get("user.select-not-exist"),
                 true);
         HospUserInfo update = new HospUserInfo();
-        update.setIsVip(hospUserInfo.getIsVip().equals(UserVipEnum.NOT_VIP.getCode()) ?
-                UserVipEnum.VIP.getCode() :
-                UserVipEnum.NOT_VIP.getCode());
-        DPreconditions.checkState(hospUserInfoMapper.updateByPrimaryKeySelective(update) == 1,
+        update.setId(id);
+        update.setIsVip(
+                hospUserInfo.getIsVip().equals(UserVipEnum.NOT_VIP.getCode()) ?
+                        UserVipEnum.VIP.getCode() :
+                        UserVipEnum.NOT_VIP.getCode());
+        DPreconditions.checkState(
+                hospUserInfoMapper.updateByPrimaryKeySelective(update) == 1,
                 "更新用户信息失败.",
                 true);
     }
@@ -231,7 +234,7 @@ public class UserInfoService implements BaseService<HospUserInfo, UserInfoPO> {
 
     @Override
     public PageInfo<HospUserInfo> selectAllAdmin(PageBean pageBean) throws Exception {
-        if(pageBean == null)
+        if (pageBean == null)
             pageBean = new PageBean();
         return selectAll(pageBean);
     }

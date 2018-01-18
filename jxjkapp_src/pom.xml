@@ -63,6 +63,16 @@
             <artifactId>sdk-alipay-core</artifactId>
             <version>1.0.2</version>
         </dependency>
+        <dependency>
+            <groupId>com.us.taobao</groupId>
+            <artifactId>dayu</artifactId>
+            <version>1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>taobao</groupId>
+            <artifactId>taobao-sms</artifactId>
+            <version>1.0</version>
+        </dependency>
     </dependencies>
 
     <build>

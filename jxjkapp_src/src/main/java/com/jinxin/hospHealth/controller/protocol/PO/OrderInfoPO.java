@@ -1,12 +1,19 @@
 package com.jinxin.hospHealth.controller.protocol.PO;
 
 import com.doraemon.base.controller.bean.PageBean;
+import com.jinxin.hospHealth.dao.models.HospOrder;
+import com.jinxin.hospHealth.dao.models.HospOrderServiceDetails;
+import com.jinxin.hospHealth.dao.modelsEnum.OrderPayTypeEnum;
+import com.jinxin.hospHealth.dao.modelsEnum.OrderRefundStateEnum;
+import com.jinxin.hospHealth.dao.modelsEnum.OrderTypeEnum;
+import com.jinxin.hospHealth.dao.modelsEnum.ShowEnum;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import javax.persistence.Transient;
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -24,6 +31,8 @@ public class OrderInfoPO extends PageBean {
     private String operationName;
     @ApiModelProperty("用户ID")
     private Long userId;
+    @ApiModelProperty("院区ID")
+    private Long areaId;
     @ApiModelProperty("类型（0 服务订单 1 商品订单）")
     private Integer type;
     @ApiModelProperty("支付状态 (0 已支付订单 1 未支付 )")
@@ -57,5 +66,31 @@ public class OrderInfoPO extends PageBean {
         return this.field;
     }
 
+    public HospOrder transform(BigDecimal orderPayPrice,
+                               BigDecimal orderSalesPrice,
+                               String paymentCode,
+                               Date createDate,
+                               Date updateDate,
+                               String promotionIds,
+                               Integer display) {
+        HospOrder hospOrder = new HospOrder();
+        hospOrder.setId(this.id);
+        hospOrder.setCode(this.code);
+        hospOrder.setOperationName(this.operationName);
+        hospOrder.setUserId(this.userId);
+        hospOrder.setAreaId(this.areaId);
+        hospOrder.setType(OrderTypeEnum.getByCode(this.type).getCode());
+        hospOrder.setPayState(OrderPayTypeEnum.getByCode(this.payState).getCode());
+        hospOrder.setRefundState(OrderRefundStateEnum.getByCode(this.refundState).getCode());
+        hospOrder.setOrderPayPrice(orderPayPrice);
+        hospOrder.setOrderSalesPrice(orderSalesPrice);
+        hospOrder.setPaymentType(OrderPayTypeEnum.getByCode(this.paymentType).getCode());
+        hospOrder.setPaymentCode(paymentCode);
+        hospOrder.setCreateDate(createDate);
+        hospOrder.setUpdateDate(updateDate);
+        hospOrder.setPromotionIds(promotionIds);
+        hospOrder.setDisplay(ShowEnum.getByCode(display).getCode());
+        return hospOrder;
+    }
 
 }

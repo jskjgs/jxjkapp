@@ -31,7 +31,7 @@ import java.util.Map;
 @RequestMapping("/precontract")
 @Slf4j
 @Api(description = "预约相关接口")
-public class PrecontractController extends MyBaseController{
+public class PrecontractController extends TransformController{
 
     @Autowired
     PrecontractService precontractService;
@@ -81,7 +81,7 @@ public class PrecontractController extends MyBaseController{
                 true));
         hospPrecontract.setId(id);
         HospPrecontract hospProduct = precontractService.selectOne(hospPrecontract);
-        return ResponseWrapperSuccess(conversion(hospProduct));
+        return ResponseWrapperSuccess(transform(hospProduct));
     }
 
     @ApiOperation(value = "查询全部预约信息",response = PrecontractVO.class)
@@ -101,12 +101,7 @@ public class PrecontractController extends MyBaseController{
             hospPrecontract.setField(pageBean.getField());
         }
         PageInfo pageInfo =  precontractService.select(hospPrecontract);
-        List<PrecontractVO> respList = new ArrayList<>();
-        for(Object info : pageInfo.getList()) {
-            respList.add(conversion((HospPrecontract) info));
-        }
-        pageInfo.setList(respList);
-        return ResponseWrapperSuccess(pageInfo);
+        return ResponseWrapperSuccess(transformByHospPrecontract(pageInfo));
     }
 
     @ApiOperation(value = "根据条件查询预约信息",response = PrecontractVO.class)
@@ -118,12 +113,7 @@ public class PrecontractController extends MyBaseController{
                 Language.get("user.id-null"),
                 true));
         PageInfo pageInfo =  precontractService.select(precontract);
-        List<PrecontractVO> respList = new ArrayList<>();
-        for(Object info : pageInfo.getList()) {
-            respList.add(conversion((HospPrecontract) info));
-        }
-        pageInfo.setList(respList);
-        return ResponseWrapperSuccess(pageInfo);
+        return ResponseWrapperSuccess(transformByHospPrecontract(pageInfo));
     }
 
 
@@ -133,7 +123,7 @@ public class PrecontractController extends MyBaseController{
     public JSONObject selectOneAdmin(
             @ApiParam(value = "预约ID", required = true) @RequestParam(value = "id", required = true) Long id) throws Exception {
         HospPrecontract hospProduct = precontractService.selectOneAdmin(id);
-        return ResponseWrapperSuccess(conversion(hospProduct));
+        return ResponseWrapperSuccess(transform(hospProduct));
     }
 
     @ApiOperation(value = "查询全部预约信息---admin",response = PrecontractVO.class)
@@ -142,12 +132,7 @@ public class PrecontractController extends MyBaseController{
     public JSONObject selectAllAdmin(
             @ApiParam(value = "分页信息", required = false)  @RequestBody(required = false) PageBean pageBean) throws Exception {
         PageInfo pageInfo =  precontractService.selectAllAdmin(pageBean);
-        List<PrecontractVO> respList = new ArrayList<>();
-        for(Object info : pageInfo.getList()) {
-            respList.add(conversion((HospPrecontract) info));
-        }
-        pageInfo.setList(respList);
-        return ResponseWrapperSuccess(pageInfo);
+        return ResponseWrapperSuccess(transformByHospPrecontract(pageInfo));
     }
 
     @ApiOperation(value = "根据条件查询预约信息---admin",response = PrecontractVO.class)
@@ -156,12 +141,7 @@ public class PrecontractController extends MyBaseController{
     public JSONObject selectAdmin(
             @ApiParam(value = "预约信息", required = true)  @RequestBody(required = true) HospPrecontract precontract) throws Exception {
         PageInfo pageInfo =  precontractService.selectAdmin(precontract);
-        List<PrecontractVO> respList = new ArrayList<>();
-        for(Object info : pageInfo.getList()) {
-            respList.add(conversion((HospPrecontract) info));
-        }
-        pageInfo.setList(respList);
-        return ResponseWrapperSuccess(pageInfo);
+        return ResponseWrapperSuccess(transformByHospPrecontract(pageInfo));
     }
 
     @ApiOperation(value = "删除单个预约信息")
@@ -178,22 +158,5 @@ public class PrecontractController extends MyBaseController{
      * @param precontract
      * @return
      */
-    private PrecontractVO conversion(HospPrecontract precontract){
-        PrecontractVO precontractVO = precontract.transform();
-        if(precontract.getAreaId() != null)
-            precontractVO.setArea(areaService.selectOne(precontract.getAreaId()));
-        if(precontract.getUserId() != null) {
-            HospUserInfo hospUserInfo = userInfoService.selectOne(precontract.getId());
-            precontractVO.setUserInfoVO(
-                    hospUserInfo == null
-                            ? null
-                            : hospUserInfo.transform());
-        }
-        if(precontract.getProductSkuId() != null) {
-            HospProductSku sku = skuService.selectOne(precontract.getId());
-            precontractVO.setSku(sku);
-            precontractVO.setProduct(productService.selectOne(sku.getProductId()));
-        }
-        return precontractVO;
-    }
+
 }

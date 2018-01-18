@@ -1,16 +1,15 @@
 package com.jinxin.hospHealth.dao.models;
 
-import com.doraemon.base.controller.bean.PageBean;
+import com.jinxin.hospHealth.controller.protocol.VO.OrderProductVO;
 import com.jinxin.hospHealth.controller.protocol.VO.OrderVO;
+import com.jinxin.hospHealth.controller.protocol.VO.UserInfoVO;
 import com.jinxin.hospHealth.dao.modelsEnum.OrderPayStateEnum;
 import com.jinxin.hospHealth.dao.modelsEnum.OrderRefundStateEnum;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
-
 import javax.persistence.Id;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
@@ -18,7 +17,7 @@ import java.util.List;
 @Data
 @ApiModel("订单")
 @Table(name="hosp_order")
-public class HospOrder extends PageBean{
+public class HospOrder {
     @Id
     @ApiModelProperty("订单ID")
     private Long id;
@@ -53,7 +52,7 @@ public class HospOrder extends PageBean{
     @ApiModelProperty("是否显示 0:显示 1:隐藏")
     private Integer display;
 
-    public OrderVO transform(HospUserInfo hospUserInfo,HospArea hospArea, List<HospOrderProduct> hospOderProductList){
+    public OrderVO transform(UserInfoVO userInfoVO, HospArea hospArea, List<OrderProductVO> orderProductVOList){
         OrderVO orderVO = new OrderVO();
         orderVO.setId(this.id);
         orderVO.setOperationName(this.operationName);
@@ -72,9 +71,9 @@ public class HospOrder extends PageBean{
                 : OrderRefundStateEnum.getByCode(this.refundState).getDesc());
         orderVO.setType(this.type);
         orderVO.setUpdateDate(this.updateDate);
-        orderVO.setUser(hospUserInfo);
+        orderVO.setUser(userInfoVO);
         orderVO.setArea(hospArea);
-        orderVO.setHospOrderProductList(hospOderProductList);
+        orderVO.setOrderProductList(orderProductVOList);
         return orderVO;
     }
 

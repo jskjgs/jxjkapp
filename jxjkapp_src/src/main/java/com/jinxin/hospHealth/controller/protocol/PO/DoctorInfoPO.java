@@ -4,6 +4,7 @@ import com.doraemon.base.controller.bean.PageBean;
 import com.jinxin.hospHealth.dao.models.HospArea;
 import com.jinxin.hospHealth.dao.models.HospDoctorInfo;
 import com.jinxin.hospHealth.dao.models.HospDoctorType;
+import com.jinxin.hospHealth.dao.modelsEnum.SexEnum;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -47,15 +48,12 @@ public class DoctorInfoPO extends PageBean{
         hospDoctorInfo.setHospAreaId(this.getHospAreaId());
         hospDoctorInfo.setDoctorTypeId(this.getDoctorTypeId());
         hospDoctorInfo.setHeadPortrait(this.getHeadPortrait());
-        hospDoctorInfo.setSex(this.getSex());
+        hospDoctorInfo.setSex(SexEnum.getSexEnumByCode(this.getSex()).getCode());
         hospDoctorInfo.setPhone(this.getPhone());
         hospDoctorInfo.setEmail(this.email);
         hospDoctorInfo.setAge(this.getAge());
         hospDoctorInfo.setBirthday(this.getBirthday());
         hospDoctorInfo.setDescription(this.getDescription());
-        hospDoctorInfo.setPageNum(this.getPageNum());
-        hospDoctorInfo.setPageSize(this.getPageSize());
-        hospDoctorInfo.setField(this.getField());
         return hospDoctorInfo;
     }
 }

@@ -3,6 +3,7 @@ package com.jinxin.hospHealth.controller;
 import com.alibaba.fastjson.JSONObject;
 import com.doraemon.base.controller.bean.PageBean;
 import com.jinxin.hospHealth.controller.protocol.PO.UserInfoPO;
+import com.jinxin.hospHealth.controller.protocol.VO.UserInfoVO;
 import com.jinxin.hospHealth.dao.models.HospUserInfo;
 import com.jinxin.hospHealth.service.UserInfoService;
 import io.swagger.annotations.Api;
@@ -22,12 +23,12 @@ import java.util.Map;
 @RequestMapping("/userInfo")
 @Slf4j
 @Api(description = "用户信息相关接口")
-public class UserInfoController extends MyBaseController{
+public class UserInfoController extends TransformController{
 
     @Autowired
     UserInfoService userInfoService;
 
-    @ApiOperation(value = "新增用户信息---admin", response = UserInfoPO.class)
+    @ApiOperation(value = "新增用户信息---admin")
     @RequestMapping(value="/admin", method = RequestMethod.POST)
     @ResponseBody
     public JSONObject add(
@@ -56,52 +57,52 @@ public class UserInfoController extends MyBaseController{
         return ResponseWrapperSuccess(null);
     }
 
-    @ApiOperation(value = "查询单个用户信息",response = HospUserInfo.class)
+    @ApiOperation(value = "查询单个用户信息",response = UserInfoVO.class)
     @RequestMapping(value="/", method = RequestMethod.GET)
     @ResponseBody
     public JSONObject selectOne(
             @ApiParam(value = "用户ID", required = true) @RequestParam(value = "id", required = true) Long id) throws Exception {
-        return ResponseWrapperSuccess(userInfoService.selectOne(id));
+        return ResponseWrapperSuccess(transform(userInfoService.selectOne(id)));
     }
 
-    @ApiOperation(value = "查询全部用户信息",response = HospUserInfo.class)
+    @ApiOperation(value = "查询全部用户信息",response = UserInfoVO.class)
     @RequestMapping(value="/all", method = RequestMethod.POST)
     @ResponseBody
     public JSONObject selectAll(
             @ApiParam(value = "分页信息", required = false)  @RequestBody(required = false) PageBean pageBean) throws Exception {
-        return ResponseWrapperSuccess(userInfoService.selectAll(pageBean));
+        return ResponseWrapperSuccess(transformByHospUserInfo(userInfoService.selectAll(pageBean)));
     }
 
-    @ApiOperation(value = "根据条件查询用户信息",response = HospUserInfo.class)
+    @ApiOperation(value = "根据条件查询用户信息",response = UserInfoVO.class)
     @RequestMapping(value="/query", method = RequestMethod.POST)
     @ResponseBody
     public JSONObject select(
             @ApiParam(value = "商品信息", required = true)  @RequestBody UserInfoPO userInfoPO) throws Exception {
-        return ResponseWrapperSuccess(userInfoService.select(userInfoPO));
+        return ResponseWrapperSuccess(transformByHospUserInfo(userInfoService.select(userInfoPO)));
     }
 
-    @ApiOperation(value = "查询单个用户信息---admin",response = HospUserInfo.class)
+    @ApiOperation(value = "查询单个用户信息---admin",response = UserInfoVO.class)
     @RequestMapping(value="/admin/", method = RequestMethod.GET)
     @ResponseBody
     public JSONObject selectOneAdmin(
             @ApiParam(value = "用户ID", required = true) @RequestParam(value = "id", required = true) Long id) throws Exception {
-        return ResponseWrapperSuccess(userInfoService.selectOne(id));
+        return ResponseWrapperSuccess(transform(userInfoService.selectOneAdmin(id)));
     }
 
-    @ApiOperation(value = "查询全部用户信息---admin",response = HospUserInfo.class)
+    @ApiOperation(value = "查询全部用户信息---admin",response = UserInfoVO.class)
     @RequestMapping(value="/admin/all", method = RequestMethod.POST)
     @ResponseBody
     public JSONObject selectAllAdmin(
             @ApiParam(value = "分页信息", required = false)  @RequestBody(required = false) PageBean pageBean) throws Exception {
-        return ResponseWrapperSuccess(userInfoService.selectAllAdmin(pageBean));
+        return ResponseWrapperSuccess(transformByHospUserInfo(userInfoService.selectAllAdmin(pageBean)));
     }
 
-    @ApiOperation(value = "根据条件查询用户信息---admin",response = HospUserInfo.class)
+    @ApiOperation(value = "根据条件查询用户信息---admin",response = UserInfoVO.class)
     @RequestMapping(value="/admin/query", method = RequestMethod.POST)
     @ResponseBody
     public JSONObject selectAdmin(
             @ApiParam(value = "商品信息", required = true)  @RequestBody UserInfoPO userInfoPO) throws Exception {
-        return ResponseWrapperSuccess(userInfoService.selectAdmin(userInfoPO));
+        return ResponseWrapperSuccess(transformByHospUserInfo(userInfoService.selectAdmin(userInfoPO)));
     }
 
     @ApiOperation(value = "删除单个用户信息")

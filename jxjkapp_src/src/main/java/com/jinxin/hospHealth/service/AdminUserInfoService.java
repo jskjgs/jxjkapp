@@ -57,23 +57,19 @@ public class AdminUserInfoService implements BaseService<HospAdminUserInfo, Admi
                 po.getPermissions() != null,
                 Language.get("user.permissions-null"),
                 true);
-        Date date = new Date();
-        HospAdminUserInfo add = new HospAdminUserInfo();
-        add.setHeadPortrait(
+        po.setHeadPortrait(
                 po.getHeadPortrait() != null
                         ? po.getHeadPortrait()
                         : defaultUserHeadPortrait);
-        add.setName(
+        po.setName(
                 po.getName() != null
                         ? po.getName()
                         : po.getPhone());
-        add.setSex(
+        po.setSex(
                 po.getSex() != null
                         ? po.getSex()
                         : SexEnum.MAN.getCode());
-        add.setPassword(MD5Encryption.getMD5(po.getPassword()));
-        add.setCreateDate(date);
-        add.setUpdateDate(date);
+        HospAdminUserInfo add = po.transform(new Date(),new Date());
         DPreconditions.checkState(
                 hospAdminUserInfoMapper.insertSelectiveReturnId(add) == 1,
                 Language.get("service.save-failure"),
@@ -104,7 +100,7 @@ public class AdminUserInfoService implements BaseService<HospAdminUserInfo, Admi
      */
     @Override
     public void update(AdminInfoPO adminInfoPO) throws Exception {
-        HospAdminUserInfo hospAdminUserInfo = adminInfoPO.transform();
+        HospAdminUserInfo hospAdminUserInfo = adminInfoPO.transform(null,null);
         //如果密码不为空的话,代表修改密码,需要做修改密码前提校验,id不能为空 或者 phone不能为空.
         if (hospAdminUserInfo.getPassword() != null) {
             DPreconditions.checkState(
@@ -154,7 +150,7 @@ public class AdminUserInfoService implements BaseService<HospAdminUserInfo, Admi
                     adminInfoPO.getId() != null
                             || adminInfoPO.getPhone() != null);
         }
-        return hospAdminUserInfoMapper.selectOne(adminInfoPO.transform());
+        return hospAdminUserInfoMapper.selectOne(adminInfoPO.transform(null,null));
     }
 
     @Override
