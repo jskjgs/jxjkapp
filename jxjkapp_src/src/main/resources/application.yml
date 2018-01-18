@@ -5,23 +5,8 @@ server:
 
 #动态码
 dynamic:
-    #redis中的key标识
-    codeKey:
-        login: login
-        register: register
-        token: token
-        updatePhone: updatePhone
-    #有效时间
-    effectiveTime:
-        login: 300
-        register: 300
-        token: 31536000
-        updatePhone: 300
-    #下一次发送的时间
-    nextSendTime:
-        login: 60
-        register: 60
-        updatePhone: 60
+    effectiveTime: 5000
+
 
 token:
     #admin 用户token有效时间

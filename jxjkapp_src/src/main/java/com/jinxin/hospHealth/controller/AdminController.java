@@ -38,25 +38,6 @@ public class AdminController extends TransformController {
     @Value("${token.adminToken-prefix}")
     String adminTokenPrefix;
 
-
-    @ApiOperation(value = "admin用户登录", response = AdminInfoVO.class)
-    @RequestMapping(value = "/login", method = RequestMethod.POST)
-    @ResponseBody
-    public JSONObject login(
-            @ApiParam(value = "手机号码", required = true) @RequestParam(value = "account", required = true) String account,
-            @ApiParam(value = "密码", required = true) @RequestParam(value = "password", required = true) String password) throws Exception {
-        AdminInfoPO select = new AdminInfoPO();
-        select.setPhone(account);
-        select.setPassword(password);
-        HospAdminUserInfo hospAdminUserInfo = DPreconditions.checkNotNull(
-                adminUserInfoService.selectOne(select),
-                Language.get("admin-user.login-failure"),
-                true);
-        AdminInfoVO adminInfoVO = hospAdminUserInfo.transform();
-        adminInfoVO.setToken(createToken(hospAdminUserInfo.getId(),adminTokenPrefix));
-        return ResponseWrapperSuccess(adminInfoVO);
-    }
-
     @ApiOperation(value = "新增admin用户")
     @RequestMapping(value = "/add", method = RequestMethod.POST)
     @ResponseBody

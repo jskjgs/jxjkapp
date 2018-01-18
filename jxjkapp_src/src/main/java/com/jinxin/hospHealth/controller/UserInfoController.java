@@ -2,9 +2,12 @@ package com.jinxin.hospHealth.controller;
 
 import com.alibaba.fastjson.JSONObject;
 import com.doraemon.base.controller.bean.PageBean;
+import com.doraemon.base.guava.DPreconditions;
+import com.doraemon.base.language.Language;
 import com.jinxin.hospHealth.controller.protocol.PO.UserInfoPO;
 import com.jinxin.hospHealth.controller.protocol.VO.UserInfoVO;
 import com.jinxin.hospHealth.dao.models.HospUserInfo;
+import com.jinxin.hospHealth.dao.modelsEnum.DynamicTypeEnum;
 import com.jinxin.hospHealth.service.UserInfoService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -111,6 +114,46 @@ public class UserInfoController extends TransformController{
     public JSONObject deleteOne(
             @ApiParam(value = "用户ID", required = true) @RequestParam(value = "id", required = true) Long id) throws Exception {
         userInfoService.deleteOne(id);
+        return ResponseWrapperSuccess(null);
+    }
+    
+    @ApiOperation(value = "换绑手机号")
+    @RequestMapping(value = "/updatePhone", method = RequestMethod.POST)
+    @ResponseBody
+    public JSONObject updatePhone(
+            @ApiParam(value = "新手机号码", required = false) @RequestParam(value = "phone", required = true) String phone,
+            @ApiParam(value = "新手机验证码", required = true) @RequestParam(value = "code", required = true) String code) throws Exception {
+        Long userId = DPreconditions.checkNotNull(
+                getCurrentUserId(),
+                "用户ID不能为空.",
+                true);
+        String dynamicCode = redisOperation.usePool().get(DynamicTypeEnum.UPDATE_PHONE.getDesc() + "_"+phone);
+        DPreconditions.checkState(
+                code.equals(dynamicCode),
+                Language.get("login.dynamic-code-error"),
+                true);
+        UserInfoPO userInfoPO = new UserInfoPO();
+        userInfoPO.setId(userId);
+        userInfoPO.setPhone(phone);
+        userInfoService.update(userInfoPO);
+        return ResponseWrapperSuccess(null);
+    }
+
+    @ApiOperation(value = "登出")
+    @RequestMapping(value = "/logout", method = RequestMethod.POST)
+    @ResponseBody
+    public JSONObject logout() throws Exception {
+        Long id = getCurrentUserId();
+        String toker = DPreconditions.checkNotNullAndEmpty(
+                getToken(),
+                "toker不能为空.",
+                true);
+        DPreconditions.checkNotNull(
+                userInfoService.selectOne(id),
+                "用户没有查询到.",
+                true);
+        redisOperation.usePool().del(userTokenPrefix+toker);
+        redisOperation.usePool().del(userTokenPrefix+id);
         return ResponseWrapperSuccess(null);
     }
 }

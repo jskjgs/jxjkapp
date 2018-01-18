@@ -5,15 +5,11 @@ import com.doraemon.base.controller.bean.PageBean;
 import com.doraemon.base.guava.DPreconditions;
 import com.doraemon.base.language.Language;
 import com.doraemon.base.redis.RedisOperation;
-import com.doraemon.base.util.UUidGenerate;
 import com.github.pagehelper.PageInfo;
 import com.jinxin.hospHealth.controller.protocol.PO.DoctorUserInfoPO;
 import com.jinxin.hospHealth.controller.protocol.VO.DoctorUserInfoVO;
-import com.jinxin.hospHealth.controller.protocol.VO.LoginInfoVO;
 import com.jinxin.hospHealth.dao.models.HospDoctorUserInfo;
-import com.jinxin.hospHealth.service.DoctorInfoService;
 import com.jinxin.hospHealth.service.DoctorUserInfoService;
-import com.jinxin.hospHealth.service.OtherService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -35,29 +31,9 @@ public class DoctorUserController extends TransformController {
     DoctorUserInfoService doctorUserInfoService;
     @Autowired
     RedisOperation redisOperation;
-    @Autowired
-    OtherService otherService;
     @Value("${token.doctorToken-prefix}")
     String doctorTokenPrefix;
 
-
-    @ApiOperation(value = "admin用户登录")
-    @RequestMapping(value = "/login", method = RequestMethod.POST)
-    @ResponseBody
-    public JSONObject login(
-            @ApiParam(value = "手机号码", required = true) @RequestParam(value = "account", required = true) String account,
-            @ApiParam(value = "密码", required = true) @RequestParam(value = "password", required = true) String password) throws Exception {
-        DoctorUserInfoPO select = new DoctorUserInfoPO();
-        select.setPhone(account);
-        select.setPassword(password);
-        HospDoctorUserInfo hospDoctorUserInfo = DPreconditions.checkNotNull(
-                doctorUserInfoService.selectOne(select),
-                Language.get("admin-user.login-failure"),
-                true);
-        return ResponseWrapperSuccess(
-                createToken(hospDoctorUserInfo.getId(),
-                        doctorTokenPrefix));
-    }
 
     @ApiOperation(value = "新增admin用户")
     @RequestMapping(value = "/add", method = RequestMethod.POST)
