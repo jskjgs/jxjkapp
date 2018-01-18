@@ -82,7 +82,7 @@ Promise.prototype.finally = function (callback) {
           })
         }
         cfg.url = 'http://182.92.78.118:9001/hospHealth' + cfg.url
-        return new Promise(function (resolve, reject) {
+        return new Promise((resolve, reject) => {
           wepy.request(cfg).then(res => {
             console.log('res1', res, typeof res, typeof res.data)
             let data = res.data || {}
@@ -105,6 +105,10 @@ Promise.prototype.finally = function (callback) {
                 errMsg = '未登陆'
                 wx[toLoginFn]({
                   url: '/pages/login'
+                })
+                this.$_syncUserData({
+                  token: null,
+                  userInfo: null
                 })
                 break
               default:
