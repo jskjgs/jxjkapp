@@ -48,11 +48,15 @@ public class UserLoginFilter implements Filter {
 
     private boolean adminUser(HttpServletRequest request) {
         String token = request.getHeader(Constant.HEADER_PERMISSIONS);
-        if(request.getSession().getAttribute(token) == null)
+        if(request.getSession().getAttribute(token) == null) {
+            log.error("session中没有获取到token  --> " + token);
             return false;
+        }
         String adminUserId = String.valueOf(request.getSession().getAttribute(token));
-        if(adminUserId == null || "".equals(adminUserId))
+        if(adminUserId == null || "".equals(adminUserId)) {
+            log.error("从session获取到admin user id 为空  --> " + token);
             return false;
+        }
         return true;
     }
 
