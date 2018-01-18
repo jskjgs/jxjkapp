@@ -53,11 +53,11 @@ public class HospOrderProduct extends PageBean {
     @ApiModelProperty("更新时间")
     private Date updateDate;
 
-    public OrderProductVO transform(OrderVO orderVO, ProductSkuVO productSku, HospOrderGrade grade, int remainingServiceNumber) {
+    public OrderProductVO transform(ProductSkuVO productSku, HospOrderGrade grade, int remainingServiceNumber) {
         OrderProductVO orderProductVO = new OrderProductVO();
         orderProductVO.setId(this.id);
         orderProductVO.setCode(this.code);
-        orderProductVO.setOrder(orderVO);
+        //orderProductVO.setOrder(orderVO);
         orderProductVO.setProductSku(productSku);
         orderProductVO.setProductSkuName(this.productSkuName);
         orderProductVO.setProductPayPrice(this.productPayPrice);

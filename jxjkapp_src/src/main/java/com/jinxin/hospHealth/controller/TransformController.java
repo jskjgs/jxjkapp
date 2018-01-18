@@ -61,17 +61,17 @@ public class TransformController extends MyBaseController {
     public OrderProductVO transform(HospOrderProduct hospOrderProduct) throws Exception {
         if (hospOrderProduct == null)
             return null;
-        OrderVO orderVO =
-                hospOrderProduct.getOrderId() != null
-                        ? transform(orderService.selectOne(hospOrderProduct.getOrderId()))
-                        : null;
+//        OrderVO orderVO =
+//                hospOrderProduct.getOrderId() != null
+//                        ? transform(orderService.selectOne(hospOrderProduct.getOrderId()))
+//                        : null;
         ProductSkuVO productSkuVO =
                 hospOrderProduct.getProductSkuId() != null
                         ? transform(skuService.selectOne(hospOrderProduct.getProductSkuId()))
                         : null;
         HospOrderGrade grade = null;
         int restServcieNumber = orderServiceDetailsService.remainingServiceNumber(hospOrderProduct.getId());
-        return hospOrderProduct.transform(orderVO, productSkuVO, grade, restServcieNumber);
+        return hospOrderProduct.transform(productSkuVO, grade, restServcieNumber);
     }
 
 
