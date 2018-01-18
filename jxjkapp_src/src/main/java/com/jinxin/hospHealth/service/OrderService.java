@@ -267,7 +267,7 @@ public class OrderService implements BaseService<HospOrder, OrderInfoPO> {
                 true);
         HospOrder select = new HospOrder();
         select.setId(id);
-        select.setDisplay(ShowEnum.NOT_DISPLAY.getCode());
+        select.setDisplay(ShowEnum.DISPLAY.getCode());
         return hospOrderMapper.selectOne(select);
     }
 

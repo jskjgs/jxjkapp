@@ -40,6 +40,8 @@ public class OrderServiceDetailsService implements BaseService<HospOrderServiceD
     OrderProductService orderProductService;
     @Autowired
     OrderService orderService;
+    @Autowired
+    DoctorUserInfoService doctorUserInfoService;
 
     /**
      * 新增订单商品服务信息
@@ -83,6 +85,10 @@ public class OrderServiceDetailsService implements BaseService<HospOrderServiceD
                 hospOrder.getPayState().equals(OrderPayStateEnum.PAY.getCode()),
                 Language.get("order.have-to-pay-state"),
                 true);
+        DPreconditions.checkNotNull(
+                doctorUserInfoService.selectOne(po.getDoctorUserId()),
+                "医生用户ID不存在",
+                true);
         DPreconditions.checkState(
                 OrderTypeEnum.SERVICE.getCode() == hospOrder.getType(),
                 "订单必须是服务订单.",
@@ -92,7 +98,7 @@ public class OrderServiceDetailsService implements BaseService<HospOrderServiceD
                 "订单必须是支付的订单.",
                 true);
         DPreconditions.checkState(
-                remainingServiceNumber(po.getOrderProductId()) > 1,
+                remainingServiceNumber(po.getOrderProductId()) > 0,
                 Language.get("order-product-service.number-null"),
                 true);
         po.setCode(UUidGenerate.create());

@@ -20,8 +20,8 @@ public class OrderProductVO {
     private Long id;
     @ApiModelProperty("订单商品code")
     private String code;
-    @ApiModelProperty("订单")
-    private OrderVO order;
+//    @ApiModelProperty("订单")
+//    private OrderVO order;
     @ApiModelProperty("商品SKU")
     private ProductSkuVO productSku;
     @ApiModelProperty("商品SKU名称")

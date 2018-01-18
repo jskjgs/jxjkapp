@@ -49,6 +49,7 @@ public class OrderServiceDetailsController extends TransformController{
     @ResponseBody
     public JSONObject add(
             @ApiParam(value = "订单服务详情信息", required = true) @RequestBody OrderServiceDetailsPO orderServiceDetailsPO) throws Exception {
+        orderServiceDetailsPO.setDoctorUserId(getCurrentUserId());
         Map<String, Long> map = new HashMap<>();
         HospOrderServiceDetails hospOrderServiceDetails = orderServiceDetailsService.add(orderServiceDetailsPO);
         map.put("id", hospOrderServiceDetails.getId());
