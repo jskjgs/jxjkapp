@@ -37,9 +37,9 @@ public class UserLoginFilter implements Filter {
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         HttpServletRequest request = (HttpServletRequest) servletRequest;
         Result result = new Result();
-        if(adminUser(request) || user(request) ){
+        if (adminUser(request) || user(request)) {
             filterChain.doFilter(servletRequest, servletResponse);
-        }else {
+        } else {
             servletResponse.getWriter().print(result.addMessage("Please log in.").ExeFaild(401));
             return;
         }
@@ -48,15 +48,24 @@ public class UserLoginFilter implements Filter {
 
     private boolean adminUser(HttpServletRequest request) {
         String token = request.getHeader(Constant.HEADER_PERMISSIONS);
-        if(request.getSession().getAttribute(token) == null)
+        if (request.getSession().getAttribute(token) == null) {
+            log.error("session中没有获取到token  --> " + token);
             return false;
-        String adminUserId = String.valueOf(request.getSession().getAttribute(token));
-        if(adminUserId == null || "".equals(adminUserId))
+        }
+        try {
+            String adminUserId = redisOperation.get(token);
+            if (adminUserId == null || "".equals(adminUserId)) {
+                log.error("从redis获取到admin user id 为空  --> " + token);
+                return false;
+            }
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
             return false;
-        return true;
+        }
     }
 
-    private boolean user(HttpServletRequest request){
+    private boolean user(HttpServletRequest request) {
         String token = request.getHeader(Constant.HEADER_PERMISSIONS);
         if (token == null)
             return false;

@@ -44,12 +44,17 @@ public class MyBaseController extends BaseController {
     public Long getAdminUserId() {
         HttpServletRequest request = getCurrentRequest();
         String token = request.getHeader(Constant.HEADER_PERMISSIONS);
-        if (request.getSession().getAttribute(token) == null)
+        if (token == null)
             return null;
-        String adminUserId = String.valueOf(request.getSession().getAttribute(token));
-        return adminUserId == null || "".equals(adminUserId)
-                ? null
-                : Long.valueOf(adminUserId);
+        try {
+            String adminUserId = redisOperation.usePool().get(token);
+            return adminUserId == null || "".equals(adminUserId)
+                    ? null
+                    : Long.valueOf(adminUserId);
+        }catch (Exception e){
+            e.printStackTrace();
+            return null;
+        }
     }
 
     @Override

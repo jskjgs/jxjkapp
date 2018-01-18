@@ -53,8 +53,8 @@ public class AdminController extends TransformController {
                 true);
         String token = UUidGenerate.create();
         //放token到session
-        getCurrentRequest().getSession().setAttribute(token, hospAdminUserInfo.getId());
-        getCurrentRequest().getSession().setMaxInactiveInterval(Integer.valueOf(userTokenEffectiveTime) / 1000);
+        redisOperation.usePool().set(token,String.valueOf(hospAdminUserInfo.getId()));
+        redisOperation.usePool().expire(token,Integer.valueOf(userTokenEffectiveTime));
         AdminInfoVO adminInfoVO = hospAdminUserInfo.transform();
         adminInfoVO.setToken(token);
         return ResponseWrapperSuccess(adminInfoVO);
