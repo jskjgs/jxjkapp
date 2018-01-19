@@ -69,7 +69,7 @@
       },
       handleLogin (formData) {
         this.$_request({
-          url: `/doctorUser/login?account=${formData.account}&password=${formData.password}`,
+          url: `/other/doctorLogin?account=${formData.account}&password=${formData.password}`,
           method: 'POST'
         }, true).then(content => {
           this.$_syncUserData({
