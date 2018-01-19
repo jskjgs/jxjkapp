@@ -73,8 +73,8 @@
           method: 'POST'
         }, true).then(content => {
           this.$_syncUserData({
-            token: content,
-            userInfo: {}
+            token: content.token,
+            userInfo: content.userInfo || {}
           })
           wx.showToast({
             title: '登录成功'
