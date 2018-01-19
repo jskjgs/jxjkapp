@@ -7,6 +7,7 @@
 import placeholderImg from '@/assets/images/placeholder.png'
 
 import {
+  getOrderInfoApi
 } from './api'
 export default {
   name: 'orderDetail',
@@ -40,6 +41,7 @@ export default {
   created () {
     this.placeholderImg = placeholderImg
     this.initProductInfo()
+    this.initOrderInfo()
   },
   watch: {
     selectCategroy (val) {
@@ -95,11 +97,20 @@ export default {
       // TODO 发起退款
       console.log('退款成功')
     },
-    getOrderInfo () {
+    initOrderInfo () {
       if (!this.orderId) {
         return
       }
-      // TODO 根据传递的ID查询订单信息
+      getOrderInfoApi({
+        id: this.orderId
+      }).then((res) => {
+        console.log(res)
+      }).catch((err) => {
+        console.log(err)
+      })
+      .finally(() => {
+        this.loginLoading = false
+      })
     },
     // 请求商品列表，含每个sku的价格
     initProductInfo () {

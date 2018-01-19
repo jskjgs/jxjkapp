@@ -80,7 +80,7 @@ export const fetchApi = (opts) => {
   const {type, ...cfg} = opts
   return axios(Object.assign({}, cfg, {
     method: type || 'get',
-    params: cfg.params || cfg.data
+    params: cfg.params
   }))
   .then((response) => {
     let successCb = opts.success

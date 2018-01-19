@@ -5,8 +5,6 @@
  */
 import placeholderImg from '@/assets/images/placeholder.png'
 
-import EditDialog from './_thumbs/EditDialog.vue'
-
 import SearchTable from '@/components/_common/searchTable/SearchTable'
 
 import {
@@ -16,7 +14,6 @@ import {
 export default {
   name: 'ServiceRecord',
   components: {
-    EditDialog,
     SearchTable
   },
   data () {
@@ -77,12 +74,13 @@ export default {
       requestFn: queryServiceRecordApi,
       responseFn (data) {
         let content = data.content || {}
+        console.log(content.list)
         this.tableData = (content.list || []).map((item) => ({
-          serviceId: item.id,
-          provider: item.provider,
-          completeTime: item.completeTime,
-          index: item.serviceIndex,
-          serviceState: item.serviceState
+          serviceId: item.productSku.id,
+          provider: item.doctorUserInfo.name,
+          completeTime: item.doctorUserInfo.updateDate,
+          index: item.productSku.serviceQuantity,
+          serviceState: item.state
         }))
         this.total = content.total || 0
       }
@@ -90,15 +88,12 @@ export default {
     return {
       orderId: this.$route.params.orderId,
       orderState: this.$route.params.orderState,
-      serviceRecord: [],
-      editData: null,
-      editDialogVisible: false,
       apiKeysMap: {
         pageSize: {
           value: 10,
           innerKey: 'pageSize' // searchTable组件内部映射的key
         },
-        orderId: {
+        id: {
           value: this.$route.params.orderId
         },
         currentPage: 'pageNum',
@@ -115,16 +110,6 @@ export default {
     this.placeholderImg = placeholderImg
   },
   watch: {
-    editDialogVisible (val) {
-      if (!val) {
-        this.editData = null
-      }
-    },
-    currentPage (newPageNum) {
-      this.getList({
-        pageNum: newPageNum
-      })
-    }
   },
   methods: {
     openDetail (rowData) {
