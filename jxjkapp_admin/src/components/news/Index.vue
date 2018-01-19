@@ -36,7 +36,6 @@ export default {
 
     return {
       searchKeyword: '',
-      currentPage: 1,
       pageSize: 10,
       total: 0,
       multipleSelection: [],
@@ -56,6 +55,11 @@ export default {
         },
         currentPage: 'pageNum'
       }
+    }
+  },
+  computed: {
+    currentPage () {
+      return this.$refs.searchTable.currentPage
     }
   },
   created () {
@@ -278,7 +282,7 @@ export default {
         label="操作"
         width="200">
         <template scope="scope">
-          <div class="flex--center operations">
+          <div class="flex--center operate-items">
             <span
               class="operate-item el-icon-edit"
               @click="openEditDialog(scope.row)">
@@ -287,15 +291,10 @@ export default {
               class="operate-item el-icon-delete"
               @click="delRow(scope.row)">
             </span>
-            <!-- <span class="operate-item visible-switch flex--vcenter">
-              <el-switch
-                on-text=""
-                off-text=""
-                v-model="scope.row.visible"
-                @change="switchVisible(scope.row)">
-              </el-switch>
-              {{ scope.row.visible ? '显示' : '隐藏' }}
-            </span> -->
+            <span
+              class="operate-item">
+              <el-button type="text" :disabled="currentPage === 1 && scope.$index === 0">置顶</el-button>
+            </span>
           </div>     
         </template>
       </el-table-column>

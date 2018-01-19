@@ -289,7 +289,7 @@ export default {
         label="操作"
         width="200">
         <template scope="scope">
-          <div class="flex--center operations">
+          <div class="flex--center operate-items">
             <span
               class="operate-item el-icon-edit"
               @click="openEditDialog(scope.row)">
