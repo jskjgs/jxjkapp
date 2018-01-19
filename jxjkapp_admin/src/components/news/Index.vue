@@ -8,20 +8,16 @@ import placeholderImg from '@/assets/images/placeholder.png'
 import SearchTable from '@/components/_common/searchTable/SearchTable'
 
 import {
-  getListApi,
-  deleteBannerBatchApi,
-  addBanenrApi,
-  modifyBannerApi,
+  deleteNewsApi,
+  modifyNewsApi,
+  addNewsApi,
   switchVisibleApi
 } from './api'
 
-// import { Loading } from 'element-ui'
+import tableCfgMaker from './_consts/tableCfgMaker'
+
 import EditDialog from './_thumbs/EditDialog.vue'
 import ImgZoom from '@/components/_common/imgZoom/ImgZoom.vue'
-
-import {
-  convertDate
-} from '@/utils/index'
 
 let adding = false
 export default {
@@ -32,104 +28,14 @@ export default {
     SearchTable
   },
   data () {
-    this.tableAttrs = {
-      'props': {
-        'tooltip-effect': 'dark',
-        'style': 'width: 100%',
-        'align': 'center'
-      },
-      'on': {
-        'selection-change': this.handleSelectionChange.bind(this)
-      }
-    }
-    this.columnData = [{
-      attrs: {
-        'type': 'selection',
-        'width': '90',
-        'align': 'left'
-      }
-    }, {
-      attrs: {
-        'prop': 'name',
-        'label': '新闻标题',
-        'min-width': '140',
-        'show-overflow-tooltip': true
-      }
-    }, {
-      attrs: {
-        'prop': 'cover',
-        'min-width': '120',
-        'label': '封面图'
-      },
-      scopedSlots: {
-        default: (scope) => {
-          return (
-            <img-zoom
-              src={scope.row.cover}
-              style="width: 80px;height: 60px;">
-            </img-zoom>
-          )
-        }
-      }
-    }, {
-      attrs: {
-        'prop': 'createTime',
-        'label': '创建时间',
-        'min-width': '160',
-        'show-overflow-tooltip': true,
-        'formatter' (row, col) {
-          return convertDate(row.createTime) || '--'
-        }
-      }
-    }, {
-      attrs: {
-        'min-width': '200',
-        'label': '操作'
-      },
-      scopedSlots: {
-        default: (scope) => {
-          return (
-            <div class="flex--center operations">
-              <span
-                class="operate-item el-icon-edit"
-                onClick={() => this.openEditDialog(scope.row)}>
-              </span>
-              <span
-                class="operate-item el-icon-delete"
-                onClick={() => this.delRow(scope.row)}>
-              </span>
-              <span class="operate-item top-switch flex--vcenter">
-                <el-switch
-                  value={scope.row.top}
-                  onInput={(top) => (scope.row.top = top)}
-                  onChange={() => this.switchTop(scope.row)}
-                  {...{props: { 'on-text': '', 'off-text': '' }}}>
-                </el-switch>
-                { scope.row.top ? '置顶' : '取消置顶' }
-              </span>
-            </div>
-          )
-        }
-      }
-    }]
-    this.listApi = {
-      requestFn: getListApi,
-      responseFn (data) {
-        let content = data.content || {}
-        this.tableData = (content.list || []).map((item) => ({
-          no: item.orderNumber,
-          id: item.id,
-          name: item.name,
-          cover: item.bannerUrl,
-          link: item.jumpUrl,
-          visible: !item.display  // display: 0表示显示 1表示隐藏
-        }))
-        this.total = content.total || 0
-      }
-    }
+    // searchTable配置
+    const tableCfg = tableCfgMaker.call(this)
+    this.tableAttrs = tableCfg.tableAttrs
+    this.columnData = tableCfg.columnData
+    this.listApi = tableCfg.listApi
+
     return {
       searchKeyword: '',
-      currentPage: 1,
       pageSize: 10,
       total: 0,
       multipleSelection: [],
@@ -141,7 +47,7 @@ export default {
           value: 10,
           innerKey: 'pageSize' // searchTable组件内部映射的key
         },
-        name: {
+        title: {
           value: undefined
         },
         createTimeRange: {
@@ -149,6 +55,11 @@ export default {
         },
         currentPage: 'pageNum'
       }
+    }
+  },
+  computed: {
+    currentPage () {
+      return this.$refs.searchTable.currentPage
     }
   },
   created () {
@@ -166,7 +77,7 @@ export default {
     // 搜索banner
     handleSearch (e) {
       this.apiKeysMap = Object.assign({}, this.apiKeysMap, {
-        name: {
+        title: {
           value: this.searchKeyword || undefined
         },
         createTimeRange: {
@@ -182,8 +93,15 @@ export default {
     // 编辑或新增
     openEditDialog (rowData, isAdd) {
       this.editDialogVisible = true
-      this.editData = rowData
       adding = !!isAdd
+      if (rowData) {
+        this.editData = {
+          id: rowData.id,
+          name: rowData.title,
+          no: rowData.sortNumber,
+          cover: rowData.cover
+        }
+      }
     },
     // 删除单个banner
     delRow (row) {
@@ -193,9 +111,7 @@ export default {
         type: 'warning',
         beforeClose: (action, instance, done) => {
           if (action === 'confirm') {
-            deleteBannerBatchApi({
-              bannerIdList: row.id
-            }).then(res => {
+            deleteNewsApi(row.id).then(res => {
               done()
               this.$message({
                 type: 'success',
@@ -211,9 +127,7 @@ export default {
     },
     // 批量删除
     batchRemove () {
-      deleteBannerBatchApi({
-        bannerIdList: this.multipleSelection.map(item => item.id).join(',')
-      }).then(res => {
+      deleteNewsApi(this.multipleSelection.map(item => item.id).join(',')).then(res => {
         this.$message({
           type: 'success',
           message: '删除成功'
@@ -227,28 +141,36 @@ export default {
     // 提交编辑或新增
     handleEditSubmit (data, respondCb) {
       let formData
+      const uploadForm = (imageUrl) => {
+        let sendData = {
+          title: data.name,
+          sortNumber: data.no,
+          id: data.id,
+          images: imageUrl || '',
+          content: '内容。。。' // 内容
+        }
+        let requestFn = adding ? addNewsApi : modifyNewsApi
+        return requestFn(sendData).then(res => {
+          this.$message({
+            type: 'success',
+            message: adding ? '添加成功' : '修改成功'
+          })
+          this.editDialogVisible = false
+          this.$refs.searchTable.init()
+          respondCb(true)
+        }).catch(() => {
+          respondCb()
+        })
+      }
       if (data.file) {
         formData = new FormData()
         formData.append('file', data.file)
-      }
-      let sendData = {
-        name: data.name,
-        jumpUrl: data.link,
-        orderNumber: data.no,
-        bannerId: data.id
-      }
-      let requestFn = adding ? addBanenrApi : modifyBannerApi
-      requestFn(sendData, formData).then(res => {
-        this.$message({
-          type: 'success',
-          message: adding ? '添加成功' : '修改成功'
+        this.$uploadFile(formData).then(res => {
+          uploadForm(res.content)
         })
-        this.editDialogVisible = false
-        this.$refs.searchTable.init()
-        respondCb(true)
-      }).catch(() => {
-        respondCb()
-      })
+      } else {
+        uploadForm(data.cover)
+      }
     },
     // 显示／隐藏
     switchVisible (rowData) {
@@ -331,6 +253,51 @@ export default {
           </el-button>
         </div>
       </div>
+      <el-table-column
+        slot="column-cover"
+        align="center"
+        prop="cover"
+        label="封面图"
+        width="180">
+        <template scope="scope">
+          <img-zoom
+            :src="scope.row.cover"
+            style="width: 80px;height: 60px;">
+          </img-zoom>
+        </template>
+      </el-table-column>
+      <el-table-column
+        slot="column-jumpUrl"
+        align="center"
+        label="新闻链接"
+        min-width="120">
+        <template scope="scope">
+          <a v-if="scope.row.jumpUrl" :href="scope.row.jumpUrl" target="_blank">{{ scope.row.jumpUrl }}</a>
+          <template v-else>--</template>
+        </template>
+      </el-table-column>
+      <el-table-column
+        slot="column-operate"
+        align="center"
+        label="操作"
+        width="200">
+        <template scope="scope">
+          <div class="flex--center operate-items">
+            <span
+              class="operate-item el-icon-edit"
+              @click="openEditDialog(scope.row)">
+            </span>
+            <span
+              class="operate-item el-icon-delete"
+              @click="delRow(scope.row)">
+            </span>
+            <span
+              class="operate-item">
+              <el-button type="text" :disabled="currentPage === 1 && scope.$index === 0">置顶</el-button>
+            </span>
+          </div>     
+        </template>
+      </el-table-column>
     </search-table>
     <edit-dialog
       v-model="editDialogVisible"

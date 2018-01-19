@@ -21,7 +21,7 @@
     "vue": "^2.2.2",
     "vue-router": "^2.2.0",
     "vuex": "^2.2.1",
-    "wangeditor": "^3.0.10"
+    "wangeditor": "^3.0.15"
   },
   "devDependencies": {
     "autoprefixer": "^6.7.2",

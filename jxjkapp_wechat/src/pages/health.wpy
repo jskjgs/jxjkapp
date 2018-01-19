@@ -168,18 +168,19 @@
           pageSize: 5
         }
       }, (listItem, res) => {
-        const hospOrderProductList = listItem.hospOrderProductList || []
-        const hospOrderProduct = (hospOrderProductList[0] || {})
-        const skuData = hospOrderProduct.hospProductSku || {}
+        const hospArea = listItem.area || {}
+        const orderProductList = listItem.orderProductList || []
+        const orderProduct = orderProductList[0] || {}
+        const productSku = orderProduct.productSku || {}
         return {
           id: listItem.id,
-          image: skuData.images,
+          image: productSku.images,
           date: this.$_convertDate(listItem.createDate),
-          hospital: listItem.hospitalArea || '',
-          project: hospOrderProduct.productSkuName,
-          usedNum: hospOrderProduct.useNumber == undefined ? '' : hospOrderProduct.useNumber,
-          total: hospOrderProduct.serviceQuantity == undefined ? '' : hospOrderProduct.serviceQuantity,
-          status: 'inUse',
+          hospital: hospArea.name || '',
+          project: productSku.name,
+          usedNum: orderProduct.serviceQuantity - orderProduct.remainingServiceNumber,
+          total: orderProduct.serviceQuantity,
+          status: orderProduct.remainingServiceNumber ? 'inUse' : 'finish',
           isChild: false
         }
       }, 'navigateTo')

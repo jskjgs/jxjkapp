@@ -33,6 +33,7 @@ export default {
         name: '',
         no: '',
         link: '',
+        cover: '',
         richText: '' // 富文本html
       }
     }, initData)
@@ -101,6 +102,7 @@ export default {
         name: '',
         no: '',
         link: '',
+        cover: '',
         richText: ''
       }
       this.$refs.imgUploader.clearFileInput()

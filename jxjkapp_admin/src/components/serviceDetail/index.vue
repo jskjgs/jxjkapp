@@ -5,113 +5,40 @@
  */
 import placeholderImg from '@/assets/images/placeholder.png'
 
-import EditDialog from './_thumbs/EditDialog.vue'
-
-import SearchTable from '@/components/_common/searchTable/SearchTable'
-
 import {
   queryServiceRecordApi
 } from './api'
 
 export default {
-  name: 'Service',
+  name: 'ServiceRecord',
   components: {
-    EditDialog,
-    SearchTable
   },
   data () {
-    this.tableAttrs = {
-      'props': {
-        'tooltip-effect': 'dark',
-        'style': 'width: 100%',
-        'align': 'center'
-      }
-    }
-    this.columnData = [{
-      attrs: {
-        'prop': 'provider',
-        'label': '服务人员',
-        'min-width': '100',
-        'show-overflow-tooltip': true
-      }
-    }, {
-      attrs: {
-        'prop': 'completeTime',
-        'label': '完成时间',
-        'min-width': '100',
-        'show-overflow-tooltip': true
-      }
-    }, {
-      attrs: {
-        'prop': 'serviceState',
-        'label': '状态',
-        'min-width': '100',
-        'show-overflow-tooltip': true
-      }
-    }, {
-      attrs: {
-        'prop': 'index',
-        'label': '服务次数',
-        'min-width': '50'
-      }
-    }, {
-      attrs: {
-        'min-width': '180',
-        'label': '操作'
-      },
-      scopedSlots: {
-        default: (scope) => {
-          return (
-            <div class="flex--center operations">
-              <span
-                class="operate-item "
-                onClick={() => this.openDetail(scope.row)}>
-                  查看详情
-              </span>
-              <span v-show="scope.row"
-                class="operate-item "
-                onClick={() => this.assginService(scope.row)}>
-                  取消派单
-              </span>
-            </div>
-          )
-        }
-      }
-    }]
-    this.listApi = {
-      requestFn: queryServiceRecordApi,
-      responseFn (data) {
-        let content = data.content || {}
-        this.tableData = (content.list || []).map((item) => ({
-          serviceId: item.id,
-          provider: item.provider,
-          completeTime: item.completeTime,
-          index: item.serviceIndex,
-          serviceState: item.serviceState
-        }))
-        this.total = content.total || 0
-      }
-    }
     return {
-      orderId: this.$route.params.orderId,
-      orderState: this.$route.params.orderState,
-      serviceRecord: [],
-      editData: null,
-      editDialogVisible: false,
-      apiKeysMap: {
-        pageSize: {
-          value: 10,
-          innerKey: 'pageSize' // searchTable组件内部映射的key
-        },
-        orderId: {
-          value: this.$route.params.orderId
-        },
-        currentPage: 'pageNum',
-        orderBy: {
-          value: 'service_index'
-        },
-        desc: {
-          value: true
+      serviceId: this.$route.params.orderId,
+      serviceName: null,
+      recordNumber: null,
+      userName: null,
+      userPhone: null,
+      providerName: null,
+      serviceDate: null,
+      serviceState: null,
+      serviceComments: null,
+
+      userAutograph: null,
+
+      providerAutograph: null,
+      feedback: {
+        serviceScore: '',
+        userComments: ''
+      },
+      reject: {
+        rejectComments: '',
+        rejectState: 0,
+        rejectDate: null,
+        state: { '通过': 1, '拒绝': 2 },
+        form: {
+          rejectState: 1
         }
       }
     }
@@ -120,70 +47,103 @@ export default {
     this.placeholderImg = placeholderImg
   },
   watch: {
-    editDialogVisible (val) {
-      if (!val) {
-        this.editData = null
-      }
-    },
-    currentPage (newPageNum) {
-      this.getList({
-        pageNum: newPageNum
-      })
-    }
   },
   methods: {
-    assginService (rowData) {
-      console.log(this.orderId)
-      this.editDialogVisible = true
+    getServiceDetail () {
+      let data = queryServiceRecordApi()
+      this.serviceName = data.serviceName
+      this.recordNumber = data.recordNumber
+      this.userName = data.userName
+      this.userPhone = data.userPhone
+      this.providerName = data.providerName
+      this.serviceDate = data.serviceDate
+      this.serviceState = data.serviceState
+      this.serviceComments = data.serviceComments
+
+      this.userAutograph = data.userAutograph
+
+      this.providerAutograph = data.providerAutograph
+
+      this.feedback.serviceScore = data.serviceScore
+      this.feedback.userComments = data.userComments
+
+      this.reject.rejectComments = data.rejectComments
+      this.reject.rejectState = data.rejectState
+      this.reject.form.rejectState = this.reject.rejectState
+      this.reject.rejectDate = data.rejectDate
     },
-    assginCancel (rowData) {
-      this.editDialogVisible = false
-    },
-    assginSubmit () {
-    },
-    openDetail (rowData) {
-      console.log(rowData)
-      rowData = !rowData ? {} : rowData
-      this.$router.push({name: 'order/detail_root', params: { serviceId: rowData.serviceId }})
+    rejectState () {
+      switch (this.reject.rejectState) {
+        case 1:
+          return '通过'
+        case 2:
+          return '拒绝'
+      }
     }
   }
 }
 </script>
 
 <template>
-  <div id="order">
+  <div id="serviceDetail">
     <div class="flex--vcenter page-top">
       <div class="page-title">
-        <router-link to="/order"> 订单管理 </router-link> > 服务记录
+        <router-link to="/order"> 订单管理 </router-link> 
+        {{serviceName ? '>'+serviceName :''}} 
+        {{recordNumber ? '>'+recordNumber :''}}
       </div>
     </div>
-    <search-table
-      ref="searchTable"
-      :table-attrs="tableAttrs"
-      :column-data="columnData"
-      :list-api="listApi"
-      :api-keys-map="apiKeysMap">
-      <div class="table-tools flex--vcenter" slot="table-tools" style="margin-top: 20px; justify-content: space-between;">
-  
-          <div class="tool-item">
-            <span style="margin-right:50px">用户名:{{}}</span>
-            <span>手机号:{{}}</span>
-          </div>
-          <div class="tool-item">
-            <el-button
-              style="width: 100%;"
-              type="primary"
-              @click="assginService">派发服务
-            </el-button>
-          </div>
-      </div>
-    </search-table>
-    <edit-dialog
-      v-model="editDialogVisible"
-      :data="editData"
-      @cancel="assginCancel"
-      @submit="assginSubmit">
-    </edit-dialog>
+    <div class="flex--vcenter"  style="margin-top: 20px;">
+        <div>
+          <p>用户名称: {{userName}}</p>
+          <p>用户电话: {{userPhone}}</p>
+          <p>服务人员: {{providerName}}</p>
+          <p>治疗时间: {{serviceDate}}</p>
+          <p>订单类型: {{serviceState}}</p>
+          <p>当日症状: {{serviceComments}}</p>
+        </div>
+    </div>
+    <div class="flex--vcenter"  style="margin-top: 20px;">
+        <h3>客户签名</h3>
+        <div>
+          <p>{{userAutograph}}</p>
+        </div>
+    </div>
+    <div class="flex--vcenter"  style="margin-top: 20px;">
+        <h3>医生签名</h3>
+        <div>
+          <p>{{providerAutograph}}</p>
+        </div>
+    </div>
+    <div class="flex--vcenter"  style="margin-top: 20px;">
+        <h3>用户反馈</h3>
+        <div>
+          <p>{{feedback.serviceScore}}</p>
+          <p>评价内容：{{!feedback.userComments?'用户没有发表评论':feedback.userComments}}</p>
+        </div>
+    </div>
+    <div class="flex--vcenter"  style="margin-top: 20px;">
+        <div>
+          <h3>申请作废</h3>
+          <p>申请作废理由：{{reject.rejectComments}}</p>
+          <p>审核状态:
+            <el-select v-model="reject.form.rejectState"  :disabled="reject.rejectState > 0" placeholder="请选择">
+              <el-option
+                v-for="(item,key,value) in reject.state"
+                :key="key"
+                :label="key"
+                :value="value">
+              </el-option>
+            </el-select>
+          </p>
+          <p v-show="reject.rejectState > 0">审核时间：{{reject.rejectDate}}</p>
+          <el-button
+            v-show="!this.reject.rejectState"
+            type="primary"
+            @click="">退款
+          </el-button>
+        </div>
+    </div>
   </div>
 </template>
 

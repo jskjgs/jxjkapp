@@ -1,43 +1,54 @@
 import { fetchApi } from '@/utils/index'
 
-// 获取banner列表
-export const GET_LIST_URL = '/home/queryAllBanner'
-export const getListApi = (params) => {
+// 获取新闻列表
+export const GET_LIST_URL = '/news/admin/query'
+export const getListApi = (data) => {
   return fetchApi({
     url: GET_LIST_URL,
-    type: 'get',
-    params
-  })
-}
-
-// 修改banner
-export const MODIFY_BANNER_URL = '/home/modifyBanner'
-export const modifyBannerApi = (params, data) => {
-  return fetchApi({
-    url: MODIFY_BANNER_URL,
     type: 'post',
-    params,
     data
   })
 }
 
-// 删除banner (单个)
-export const DELETE_BANNER_URL = '/home/deleteBanner'
-export const deleteBannerApi = (params) => {
+// 修改新闻
+export const MODIFY_NEWS_URL = '/news/'
+export const modifyNewsApi = (data) => {
   return fetchApi({
-    url: DELETE_BANNER_URL,
-    type: 'delete',
-    params
+    url: MODIFY_NEWS_URL,
+    type: 'put',
+    data
   })
 }
 
-// 删除banner (批量)
-export const DELETE_BANNER_BATCH_URL = '/home/deleteBannerBatch'
-export const deleteBannerBatchApi = (params) => {
+// 增加新闻
+export const ADD_NEWS_URL = '/news/'
+export const addNewsApi = (data) => {
   return fetchApi({
-    url: DELETE_BANNER_BATCH_URL,
+    url: ADD_NEWS_URL,
+    type: 'post',
+    data
+  })
+}
+
+// // 删除banner (单个)
+// export const DELETE_BANNER_URL = '/home/deleteBanner'
+// export const deleteBannerApi = (params) => {
+//   return fetchApi({
+//     url: DELETE_BANNER_URL,
+//     type: 'delete',
+//     params
+//   })
+// }
+
+// 删除banner (批量)
+export const DELETE_NEWS_URL = '/news/'
+export const deleteNewsApi = (id) => {
+  return fetchApi({
+    url: DELETE_NEWS_URL,
     type: 'delete',
-    params
+    params: {
+      id
+    }
   })
 }
 
@@ -57,17 +68,6 @@ export const switchVisibleApi = (data) => {
   return fetchApi({
     url: SWITCH_VISIBLE_URL,
     type: 'post',
-    data
-  })
-}
-
-// 增加banner
-export const ADD_BANNER_URL = '/home/addBanner'
-export const addBanenrApi = (params, data) => {
-  return fetchApi({
-    url: ADD_BANNER_URL,
-    type: 'put',
-    params,
     data
   })
 }

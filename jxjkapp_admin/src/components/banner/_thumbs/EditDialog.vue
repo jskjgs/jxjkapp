@@ -32,6 +32,7 @@ export default {
       form: {
         name: '',
         no: '',
+        cover: '',
         richText: '' // 富文本html
       }
     }, initData)
