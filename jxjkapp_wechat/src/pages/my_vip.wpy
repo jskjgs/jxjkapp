@@ -51,14 +51,14 @@
           <view class="list-item">
             <view class="row flex--vcenter--sb">
               <text class="order-project">{{ item.productName }}</text>
-              <view class="del-btn" @click="delItem()"><image src="../assets/images/del-icon.png"/></view>
+              <view class="del-btn" @tap="delItem({{ item.id }})"><image src="../assets/images/del-icon.png"/></view>
             </view>
             <view class="row flex--vcenter--sb" style="margin-top: 30rpx;">
               <view>
                 <view class="order-hospital">预约院区：{{ item.hospital }}</view>
                 <view class="order-date">预约时间：{{ item.date }}</view>
               </view>
-              <navigator url="/pages/my_vip_update">
+              <navigator url="{{ '/pages/my_vip_update?id=' + item.id }}">
                 <button class="order-btn">修改</button>
               </navigator>
             </view>
@@ -103,7 +103,26 @@
     }
 
     methods = {
-      delItem () {
+      // 删除预约
+      delItem (id) {
+        wx.showModal({
+          title: '提示',
+          content: '确定删除该预约？',
+          confirmColor: '#9190FF',
+          success: (res) => {
+            if (res.confirm) {
+              this.$_request({
+                url: `/precontract/?id=${id}`,
+                method: 'DELETE'
+              }).then(() => {
+                this.showModal({
+                  title: '删除成功!'
+                })
+                this.initPageData()
+              })
+            }
+          }
+        })
       }
     }
 

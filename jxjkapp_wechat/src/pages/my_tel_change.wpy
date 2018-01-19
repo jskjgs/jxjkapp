@@ -17,7 +17,7 @@
     <view class="page-title-wrap">换绑请使用新的手机号验证</view>
     <TelInput 
       submitBtnText="确认换绑" 
-      codeType="2"
+      codeType="1"
       :value.sync="formData"
       @submit.user="handleSumbit"/>
   </view>

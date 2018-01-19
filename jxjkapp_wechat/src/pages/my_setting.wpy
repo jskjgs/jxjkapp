@@ -29,15 +29,6 @@
         })
       }
     }, {
-      label: '清除缓存',
-      handlerTap () {
-        wx.clearStorage()
-        wx.showToast({
-          icon: 'success',
-          title: '缓存清除成功'
-        })
-      }
-    }, {
       label: '退出登录',
       visible: !!this.userInfo,
       handlerTap () {
