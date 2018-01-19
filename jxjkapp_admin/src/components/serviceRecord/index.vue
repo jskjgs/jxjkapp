@@ -5,7 +5,7 @@
  */
 import placeholderImg from '@/assets/images/placeholder.png'
 
-import EditDialog from './_thumbs/EditDialog.vue'
+// import EditDialog from './_thumbs/EditDialog.vue'
 
 import SearchTable from '@/components/_common/searchTable/SearchTable'
 
@@ -16,7 +16,7 @@ import {
 export default {
   name: 'ServiceRecord',
   components: {
-    EditDialog,
+    // EditDialog,
     SearchTable
   },
   data () {

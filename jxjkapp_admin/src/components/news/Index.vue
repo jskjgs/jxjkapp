@@ -9,7 +9,7 @@ import SearchTable from '@/components/_common/searchTable/SearchTable'
 
 import {
   getListApi,
-  deleteBannerBatchApi,
+  deleteNewsApi,
   modifyNewsApi,
   addNewsApi,
   switchVisibleApi
@@ -218,9 +218,7 @@ export default {
         type: 'warning',
         beforeClose: (action, instance, done) => {
           if (action === 'confirm') {
-            deleteBannerBatchApi({
-              bannerIdList: row.id
-            }).then(res => {
+            deleteNewsApi(row.id).then(res => {
               done()
               this.$message({
                 type: 'success',
@@ -236,9 +234,7 @@ export default {
     },
     // 批量删除
     batchRemove () {
-      deleteBannerBatchApi({
-        bannerIdList: this.multipleSelection.map(item => item.id).join(',')
-      }).then(res => {
+      deleteNewsApi(this.multipleSelection.map(item => item.id).join(',')).then(res => {
         this.$message({
           type: 'success',
           message: '删除成功'
