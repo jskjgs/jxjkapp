@@ -5,7 +5,4 @@ package com.jinxin.hospHealth.utils;
  */
 public class Constant {
       public final static String HEADER_PERMISSIONS = "Authorization";
-
-      public final static String HEADER_USER_ID = "userId";
-      public final static String HEADER_ADMIN_ID = "adminUserId";
 }

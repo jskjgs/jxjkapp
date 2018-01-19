@@ -6,8 +6,8 @@ package com.jinxin.hospHealth.dao.modelsEnum;
  */
 public enum DynamicTypeEnum {
 
-    LOGIN(0,"SMS_121970050"),
-    UPDATE_PHONE(1,"SMS_121970050");
+    LOGIN(0,"SMS_122475006"),
+    UPDATE_PHONE(1,"SMS_122490003");
 
     private int code;
     private String desc;

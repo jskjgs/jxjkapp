@@ -85,7 +85,7 @@ public class AdminController extends TransformController {
         return ResponseWrapperSuccess(null);
     }
 
-    @ApiOperation(value = "更改密码", response = AdminInfoVO.class)
+    @ApiOperation(value = "更改密码 ---admin端登陆", response = AdminInfoVO.class)
     @RequestMapping(value = "/update/password", method = RequestMethod.POST)
     @ResponseBody
     public JSONObject permissions(

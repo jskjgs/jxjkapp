@@ -19,7 +19,7 @@ public class HospOrderGrade {
 
     private Date updateDate;
 
-    private Integer enable = EnableEnum.ENABLE_DELETE.getCode();;
+    private Integer enable = EnableEnum.ENABLE_NORMAL.getCode();;
 
     private String comment;
 

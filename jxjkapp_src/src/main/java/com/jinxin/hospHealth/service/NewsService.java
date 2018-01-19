@@ -115,7 +115,10 @@ public class NewsService implements BaseService<HospNews,HospNews>{
         DPreconditions.checkNotNull(id,
                 "新闻的id不能为空",
                 true);
-        return hospNewsMapper.selectByPrimaryKey(id);
+        HospNews hospNews = new HospNews();
+        hospNews.setEnable(EnableEnum.ENABLE_NORMAL.getCode());
+        hospNews.setId(id);
+        return hospNewsMapper.selectOne(hospNews);
     }
 
     /**
@@ -131,6 +134,7 @@ public class NewsService implements BaseService<HospNews,HospNews>{
         HospNews select = new HospNews();
         select.setSource(hospNews.getSource());
         select.setTitle(hospNews.getTitle());
+        select.setEnable(EnableEnum.ENABLE_NORMAL.getCode());
         return new PageInfo(hospNewsMapper.select(select));
     }
 
@@ -146,7 +150,9 @@ public class NewsService implements BaseService<HospNews,HospNews>{
         PageHelper.startPage(pageBean.getPageNum(), pageBean.getPageSize());
         if (StringUtil.isNotEmpty(pageBean.getField()))
             PageHelper.orderBy(pageBean.getField());
-        return new PageInfo(hospNewsMapper.selectAll());
+        HospNews hospNews = new HospNews();
+        hospNews.setEnable(EnableEnum.ENABLE_NORMAL.getCode());
+        return new PageInfo(hospNewsMapper.select(hospNews));
     }
 
     /**
@@ -160,10 +166,7 @@ public class NewsService implements BaseService<HospNews,HospNews>{
         DPreconditions.checkNotNull(id,
                 Language.get("new.select-not-exist"),
                 true);
-        HospNews select = new HospNews();
-        select.setId(id);
-        select.setEnable(null);
-        return hospNewsMapper.selectOne(select);
+        return hospNewsMapper.selectByPrimaryKey(id);
     }
 
 
@@ -198,8 +201,6 @@ public class NewsService implements BaseService<HospNews,HospNews>{
         PageHelper.startPage(pageBean.getPageNum(), pageBean.getPageSize());
         if (StringUtil.isNotEmpty(pageBean.getField()))
             PageHelper.orderBy(pageBean.getField());
-        HospNews select = new HospNews();
-        select.setEnable(null);
-        return new PageInfo(hospNewsMapper.select(select));
+        return new PageInfo(hospNewsMapper.selectAll());
     }
 }
