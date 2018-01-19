@@ -357,6 +357,9 @@
 
     onLoad({id}) {
       this.id = id
+      this.$_request({
+        url: `/order/?id=${this.id}`
+      })
     }
 
     onReady () {
@@ -411,8 +414,6 @@
     }
     // 获取记录列表
     getList () {
-      // return this.initData({
-      // })
     }
   }
 </script>
