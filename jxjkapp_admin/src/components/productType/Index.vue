@@ -8,7 +8,6 @@ import placeholderImg from '@/assets/images/placeholder.png'
 import SearchTable from '@/components/_common/searchTable/SearchTable'
 
 import {
-  getListApi,
   deleteBannerBatchApi,
   addBanenrApi,
   modifyBannerApi,
@@ -19,6 +18,8 @@ import {
 import EditDialog from './_thumbs/EditDialog.vue'
 import ImgZoom from '@/components/_common/imgZoom/ImgZoom.vue'
 
+import tableCfgMaker from './_consts/tableCfgMaker'
+
 let adding = false
 export default {
   name: 'Banner',
@@ -28,88 +29,12 @@ export default {
     SearchTable
   },
   data () {
-    this.tableAttrs = {
-      'props': {
-        'tooltip-effect': 'dark',
-        'style': 'width: 100%',
-        'align': 'center'
-      },
-      'on': {
-        'selection-change': this.handleSelectionChange.bind(this)
-      }
-    }
-    this.columnData = [{
-      attrs: {
-        'type': 'selection',
-        'width': '90',
-        'align': 'left'
-      }
-    }, {
-      attrs: {
-        'prop': 'no',
-        'label': '排序',
-        'min-width': '80'
-      }
-    }, {
-      attrs: {
-        'prop': 'name',
-        'label': '分类名称',
-        'min-width': '140',
-        'show-overflow-tooltip': true
-      }
-    }, {
-      attrs: {
-        'prop': 'cover',
-        'min-width': '120',
-        'label': '展示图片'
-      },
-      scopedSlots: {
-        default: (scope) => {
-          return (
-            <img-zoom
-              src={scope.row.cover}
-              style="width: 80px;height: 60px;">
-            </img-zoom>
-          )
-        }
-      }
-    }, {
-      attrs: {
-        'min-width': '200',
-        'label': '操作'
-      },
-      scopedSlots: {
-        default: (scope) => {
-          return (
-            <div class="flex--center operations">
-              <span
-                class="operate-item el-icon-edit"
-                onClick={() => this.openEditDialog(scope.row)}>
-              </span>
-              <span
-                class="operate-item el-icon-delete"
-                onClick={() => this.delRow(scope.row)}>
-              </span>
-            </div>
-          )
-        }
-      }
-    }]
-    this.listApi = {
-      requestFn: getListApi,
-      responseFn (data) {
-        let content = data.content || {}
-        this.tableData = (content.list || []).map((item) => ({
-          no: item.orderNumber,
-          id: item.id,
-          name: item.name,
-          cover: item.bannerUrl,
-          link: item.jumpUrl,
-          visible: !item.display  // display: 0表示显示 1表示隐藏
-        }))
-        this.total = content.total || 0
-      }
-    }
+    // searchTable配置
+    const tableCfg = tableCfgMaker.call(this)
+    this.tableAttrs = tableCfg.tableAttrs
+    this.columnData = tableCfg.columnData
+    this.listApi = tableCfg.listApi
+
     return {
       searchKeyword: '',
       currentPage: 1,
@@ -282,6 +207,37 @@ export default {
           </el-button>
         </div>
       </div>
+      <el-table-column
+        slot="column-cover"
+        align="center"
+        prop="cover"
+        label="封面图"
+        width="180">
+        <template scope="scope">
+          <img-zoom
+            :src="scope.row.cover"
+            style="width: 80px;height: 60px;">
+          </img-zoom>
+        </template>
+      </el-table-column>
+      <el-table-column
+        slot="column-operate"
+        align="center"
+        label="操作"
+        width="200">
+        <template scope="scope">
+          <div class="flex--center operate-items">
+            <span
+              class="operate-item el-icon-edit"
+              @click="openEditDialog(scope.row)">
+            </span>
+            <span
+              class="operate-item el-icon-delete"
+              @click="delRow(scope.row)">
+            </span>
+          </div>     
+        </template>
+      </el-table-column>
     </search-table>
     <edit-dialog
       v-model="editDialogVisible"
