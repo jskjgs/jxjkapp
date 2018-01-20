@@ -54,7 +54,7 @@ public class HospOrderServiceDetails {
         vo.setAccount(this.account);
         vo.setId(this.id);
         vo.setCode(this.code);
-        vo.setOrderProductVO(orderProduct);
+        vo.setOrderProduct(orderProduct);
         vo.setQty(qty);
         vo.setArea(area);
         vo.setDoctorUserInfo(doctorUserInfoVO);
