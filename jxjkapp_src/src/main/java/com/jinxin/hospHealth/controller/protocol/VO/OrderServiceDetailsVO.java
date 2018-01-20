@@ -19,7 +19,7 @@ public class OrderServiceDetailsVO {
     @ApiModelProperty("订单服务CODE")
     private String code;
     @ApiModelProperty("订单服务的商品SKU-id")
-    private OrderProductVO orderProductVO;
+    private OrderProductVO orderProduct;
     @ApiModelProperty("本次使用的数量")
     private Integer qty;
     @ApiModelProperty("医院院区")
