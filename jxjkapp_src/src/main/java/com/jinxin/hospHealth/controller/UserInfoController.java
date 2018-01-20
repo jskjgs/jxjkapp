@@ -139,7 +139,7 @@ public class UserInfoController extends TransformController{
         userInfoPO.setName(phone);
         userInfoPO.setPassword(MD5Encryption.getMD5(phone));
         userInfoService.update(userInfoPO);
-        return ResponseWrapperSuccess(transform(userInfoService.selectOne(userId));
+        return ResponseWrapperSuccess(transform(userInfoService.selectOne(userId)));
     }
 
     @ApiOperation(value = "登出")
