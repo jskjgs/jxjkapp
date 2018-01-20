@@ -150,8 +150,8 @@ Promise.prototype.finally = function (callback) {
     },
     // 转换时间
     '$_convertDate': {
-      value (timeStamp) {
-        return convertDate(timeStamp)
+      value () {
+        return convertDate(...arguments)
       }
     }
   })
