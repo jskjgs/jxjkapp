@@ -49,7 +49,10 @@ public class HospPrecontract extends PageBean{
         PrecontractVO precontractVO = new PrecontractVO();
         precontractVO.setId(this.id);
         precontractVO.setPrecontractDate(this.precontractDate);
-        precontractVO.setStatus(PrecontractEnum.getByCode(this.status).getDesc());
+        precontractVO.setStatus(
+                this.status != null
+                        ? PrecontractEnum.getByCode(this.status).getDesc()
+                        : null);
         precontractVO.setArea(area);
         precontractVO.setUserInfoVO(userInfoVO);
         precontractVO.setSku(productSkuVO);

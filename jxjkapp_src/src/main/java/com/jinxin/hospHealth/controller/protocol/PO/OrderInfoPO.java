@@ -57,6 +57,7 @@ public class OrderInfoPO extends PageBean {
 
     /**
      * 默认排序,如果没有传入排序的话
+     *
      * @return
      */
     public String getField() {
@@ -79,17 +80,32 @@ public class OrderInfoPO extends PageBean {
         hospOrder.setOperationName(this.operationName);
         hospOrder.setUserId(this.userId);
         hospOrder.setAreaId(this.areaId);
-        hospOrder.setType(OrderTypeEnum.getByCode(this.type).getCode());
-        hospOrder.setPayState(OrderPayTypeEnum.getByCode(this.payState).getCode());
-        hospOrder.setRefundState(OrderRefundStateEnum.getByCode(this.refundState).getCode());
+        hospOrder.setType(
+                this.type != null
+                        ? OrderTypeEnum.getByCode(this.type).getCode()
+                        : null);
+        hospOrder.setPayState(
+                this.payState != null
+                        ? OrderPayTypeEnum.getByCode(this.payState).getCode()
+                        : null);
+        hospOrder.setRefundState(
+                this.refundState != null
+                        ? OrderRefundStateEnum.getByCode(this.refundState).getCode()
+                        : null);
         hospOrder.setOrderPayPrice(orderPayPrice);
         hospOrder.setOrderSalesPrice(orderSalesPrice);
-        hospOrder.setPaymentType(OrderPayTypeEnum.getByCode(this.paymentType).getCode());
+        hospOrder.setPaymentType(
+                this.paymentType != null
+                        ? OrderPayTypeEnum.getByCode(this.paymentType).getCode()
+                        : null);
         hospOrder.setPaymentCode(paymentCode);
         hospOrder.setCreateDate(createDate);
         hospOrder.setUpdateDate(updateDate);
         hospOrder.setPromotionIds(promotionIds);
-        hospOrder.setDisplay(ShowEnum.getByCode(display).getCode());
+        hospOrder.setDisplay(
+                display != null
+                        ? ShowEnum.getByCode(display).getCode()
+                        : null);
         return hospOrder;
     }
 

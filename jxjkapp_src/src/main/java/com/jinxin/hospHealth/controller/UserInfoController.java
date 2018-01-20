@@ -118,7 +118,7 @@ public class UserInfoController extends TransformController{
         return ResponseWrapperSuccess(null);
     }
     
-    @ApiOperation(value = "换绑手机号")
+    @ApiOperation(value = "换绑手机号",response = UserInfoVO.class)
     @RequestMapping(value = "/updatePhone", method = RequestMethod.POST)
     @ResponseBody
     public JSONObject updatePhone(
