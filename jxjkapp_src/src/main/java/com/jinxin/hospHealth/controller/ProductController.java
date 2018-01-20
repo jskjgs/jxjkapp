@@ -66,6 +66,15 @@ public class ProductController extends TransformController{
         return ResponseWrapperSuccess(transform(hospProduct));
     }
 
+//    @ApiOperation(value = "查询全部商品--带类目",response = ProductVO.class)
+//    @RequestMapping(value="/allProductAndType", method = RequestMethod.POST)
+//    @ResponseBody
+//    public JSONObject allProductAndType(
+//            @ApiParam(value = "分页信息", required = false)  @RequestBody(required = false) PageBean pageBean) throws Exception {
+//        PageInfo pageInfo =  productService.selectAll(pageBean);
+//        return ResponseWrapperSuccess(transformByHospProduct(pageInfo));
+//    }
+
     @ApiOperation(value = "查询全部商品信息",response = ProductVO.class)
     @RequestMapping(value="/all", method = RequestMethod.POST)
     @ResponseBody

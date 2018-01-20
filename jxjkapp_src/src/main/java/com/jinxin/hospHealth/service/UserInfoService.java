@@ -52,7 +52,7 @@ public class UserInfoService implements BaseService<HospUserInfo, UserInfoPO> {
                 Language.get("user.phone-repeat"),
                 true);
         Date date = new Date();
-        HospUserInfo add = new HospUserInfo();
+        HospUserInfo add = userInfoPO.transform(new Date(),new Date(),UserVipEnum.NOT_VIP.getCode(),null);
         add.setHeadPortrait(
                 userInfoPO.getHeadPortrait() == null
                         ? defaultUserHeadPortrait
@@ -69,8 +69,6 @@ public class UserInfoService implements BaseService<HospUserInfo, UserInfoPO> {
                 userInfoPO.getSex() == null
                         ? SexEnum.MAN.getCode()
                         : userInfoPO.getSex());
-        add.setCreateDate(date);
-        add.setUpdateDate(date);
         DPreconditions.checkState(
                 hospUserInfoMapper.insertSelectiveReturnId(add) == 1,
                 Language.get("service.save-failure"),
