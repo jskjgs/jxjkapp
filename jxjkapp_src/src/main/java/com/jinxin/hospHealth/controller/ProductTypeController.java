@@ -2,7 +2,11 @@ package com.jinxin.hospHealth.controller;
 
 import com.alibaba.fastjson.JSONObject;
 import com.doraemon.base.controller.bean.PageBean;
+import com.github.pagehelper.PageInfo;
+import com.jinxin.hospHealth.controller.protocol.VO.ProductVO;
+import com.jinxin.hospHealth.dao.models.HospProduct;
 import com.jinxin.hospHealth.dao.models.HospProductType;
+import com.jinxin.hospHealth.service.ProductService;
 import com.jinxin.hospHealth.service.ProductTypeService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -12,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -22,10 +27,12 @@ import java.util.Map;
 @RequestMapping("/productType")
 @Slf4j
 @Api(description = "商品类别相关接口")
-public class ProductTypeController extends MyBaseController{
+public class ProductTypeController extends TransformController{
 
     @Autowired
     ProductTypeService productTypeService;
+    @Autowired
+    ProductService productService;
 
     @ApiOperation(value = "新增商品类别信息")
     @RequestMapping(value="/", method = RequestMethod.POST)
@@ -102,5 +109,21 @@ public class ProductTypeController extends MyBaseController{
             @ApiParam(value = "商品ID", required = true) @RequestParam(value = "id", required = true) Long id) throws Exception {
         productTypeService.deleteOne(id);
         return ResponseWrapperSuccess(null);
+    }
+
+    @ApiOperation(value = "查询全部类目--商品",response = ProductVO.class)
+    @RequestMapping(value="/allProductAndType", method = RequestMethod.POST)
+    @ResponseBody
+    public JSONObject allProductAndType() throws Exception {
+        List<HospProductType> hospProductTypeList =  productTypeService.selectAll();
+        if(hospProductTypeList == null || hospProductTypeList.size() < 1)
+            return ResponseWrapperSuccess(null);
+        for(HospProductType productType : hospProductTypeList) {
+            HospProduct hospProduct = new HospProduct();
+            hospProduct.setProductTypeId(productType.getId());
+            PageInfo<ProductVO> pageInfo = transformByHospProduct(productService.select(hospProduct));
+            productType.setProductVO(pageInfo.getList());
+        }
+        return ResponseWrapperSuccess(hospProductTypeList);
     }
 }

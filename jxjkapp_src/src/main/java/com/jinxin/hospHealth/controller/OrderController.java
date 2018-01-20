@@ -109,7 +109,7 @@ public class OrderController extends TransformController {
 
 
     @ApiOperation(value = "订单退款完毕 ---admin")
-    @RequestMapping(value = "/admin/refundOver", method = RequestMethod.DELETE)
+    @RequestMapping(value = "/admin/refundOver", method = RequestMethod.POST)
     @ResponseBody
     public JSONObject refundOver(
             @ApiParam(value = "订单ID", required = true) @RequestParam(value = "id", required = true) Long id) throws Exception {
@@ -153,7 +153,7 @@ public class OrderController extends TransformController {
     }
 
     @ApiOperation(value = "订单信息置为无效 ---admin")
-    @RequestMapping(value = "/invalid", method = RequestMethod.DELETE)
+    @RequestMapping(value = "/invalid", method = RequestMethod.POST)
     @ResponseBody
     public JSONObject setStateAsInvalid(
             @ApiParam(value = "订单ID", required = true) @RequestParam(value = "id", required = true) Long id) throws Exception {
@@ -161,13 +161,13 @@ public class OrderController extends TransformController {
         return ResponseWrapperSuccess(null);
     }
 
-    @ApiOperation(value = "计算订单的价格 ---admin")
-    @RequestMapping(value = "/countPayPrice", method = RequestMethod.DELETE)
+    @ApiOperation(value = "检查订单,并计算订单价格 ---admin")
+    @RequestMapping(value = "/checkout", method = RequestMethod.POST)
     @ResponseBody
-    public JSONObject countPayPrice(
+    public JSONObject checkout(
             @ApiParam(value = "订单信息", required = true) @RequestBody OrderInfoPO orderInfoPO) throws Exception {
-        BigDecimal payPrice = orderService.orderPayPrice(orderInfoPO);
-        return ResponseWrapperSuccess(payPrice);
+        HospOrder hospOrder = orderService.checkOutOrder(orderInfoPO);
+        return ResponseWrapperSuccess(hospOrder);
     }
 
     @ApiOperation(value = "余额支付接口")
