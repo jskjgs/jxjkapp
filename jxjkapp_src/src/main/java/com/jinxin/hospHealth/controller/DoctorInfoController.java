@@ -87,15 +87,6 @@ public class DoctorInfoController extends TransformController {
         return ResponseWrapperSuccess(transformByHospDoctorInfo(pageInfo));
     }
 
-//    @ApiOperation(value = "根据条件查询医生信息 ---模糊查询", response = DoctorInfoVO.class)
-//    @RequestMapping(value = "/query/fuzzy", method = RequestMethod.POST)
-//    @ResponseBody
-//    public JSONObject selectByFuzzy(
-//            @ApiParam(value = "医生 信息", required = true) @RequestBody(required = true) DoctorInfoPO doctorInfoPO) throws Exception {
-//        PageInfo<HospDoctorInfo> pageInfo = doctorInfoService.selectByFuzzy(doctorInfoPO);
-//        return ResponseWrapperSuccess(transformByHospDoctorInfo(pageInfo));
-//    }
-
     @ApiOperation(value = "删除单个医生信息")
     @RequestMapping(value = "/", method = RequestMethod.DELETE)
     @ResponseBody

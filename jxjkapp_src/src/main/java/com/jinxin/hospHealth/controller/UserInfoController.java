@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.doraemon.base.controller.bean.PageBean;
 import com.doraemon.base.guava.DPreconditions;
 import com.doraemon.base.language.Language;
+import com.doraemon.base.util.MD5Encryption;
 import com.jinxin.hospHealth.controller.protocol.PO.UserInfoPO;
 import com.jinxin.hospHealth.controller.protocol.VO.UserInfoVO;
 import com.jinxin.hospHealth.dao.models.HospUserInfo;
@@ -135,8 +136,10 @@ public class UserInfoController extends TransformController{
         UserInfoPO userInfoPO = new UserInfoPO();
         userInfoPO.setId(userId);
         userInfoPO.setPhone(phone);
+        userInfoPO.setName(phone);
+        userInfoPO.setPassword(MD5Encryption.getMD5(phone));
         userInfoService.update(userInfoPO);
-        return ResponseWrapperSuccess(null);
+        return ResponseWrapperSuccess(transform(userInfoService.selectOne(userId));
     }
 
     @ApiOperation(value = "登出")
