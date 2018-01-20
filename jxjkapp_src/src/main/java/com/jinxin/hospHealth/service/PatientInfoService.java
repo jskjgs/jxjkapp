@@ -118,6 +118,8 @@ public class PatientInfoService implements BaseService<HospPatientInfo,HospPatie
      * @return
      */
     public PageInfo<HospPatientInfo> select(HospPatientInfo hospPatientInfo) {
+        if(hospPatientInfo == null)
+            return  null;
         PageHelper.startPage(hospPatientInfo.getPageNum(), hospPatientInfo.getPageSize());
         if (StringUtil.isNotEmpty(hospPatientInfo.getField()))
             PageHelper.orderBy(hospPatientInfo.getField());

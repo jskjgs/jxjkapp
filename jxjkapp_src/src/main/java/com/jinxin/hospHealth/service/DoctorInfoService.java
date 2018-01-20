@@ -135,6 +135,8 @@ public class DoctorInfoService implements BaseService<HospDoctorInfo,DoctorInfoP
      */
     @Override
     public PageInfo<HospDoctorInfo> select(DoctorInfoPO doctorInfoPO) {
+        if(doctorInfoPO == null)
+            return null;
         PageHelper.startPage(doctorInfoPO.getPageNum(), doctorInfoPO.getPageSize());
         if (StringUtil.isNotEmpty(doctorInfoPO.getField()))
             PageHelper.orderBy(doctorInfoPO.getField());

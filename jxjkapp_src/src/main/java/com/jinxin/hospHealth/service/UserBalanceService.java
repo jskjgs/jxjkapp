@@ -141,7 +141,6 @@ public class UserBalanceService implements BaseService<HospUserBalance,HospUserB
         hospUserBalance.setBalance(BigDecimal.ZERO);
         hospUserBalance.setLockBalance(BigDecimal.ZERO);
         hospUserBalance.setChecksum(getChecksum(BigDecimal.ZERO, hospUserBalance.getUserId()));
-        hospUserBalance.setEnable(EnableEnum.ENABLE_NORMAL.getCode());
         hospUserBalance.setUpdateDate(new Date());
         hospUserBalance.setCreateDate(new Date());
         DPreconditions.checkState(hospUserBalanceMapper.insertReturnId(hospUserBalance) == 1,
@@ -226,19 +225,7 @@ public class UserBalanceService implements BaseService<HospUserBalance,HospUserB
      */
     @Override
     public void setStateAsInvalid(Long id) throws Exception {
-        //校验--传入用户ID为空
-        DPreconditions.checkNotNull(id != null,
-                Language.get("user.id-null"),
-                true);
-        //校验--该用户ID的数据是否存在
-        DPreconditions.checkNotNull(selectOne(id),
-                Language.get("user-balance.select-not-exist"),
-                true);
-        HospUserBalance invalid = new HospUserBalance();
-        invalid.setEnable(EnableEnum.ENABLE_DELETE.getCode());
-        DPreconditions.checkState(hospUserBalanceMapper.updateByPrimaryKeySelective(invalid) == 1,
-                "用户余额信息置为无效失败.",
-                true);
+
     }
 
     /**
@@ -254,7 +241,6 @@ public class UserBalanceService implements BaseService<HospUserBalance,HospUserB
                 true);
         HospUserBalance select = new HospUserBalance();
         select.setUserId(id);
-        select.setEnable(EnableEnum.ENABLE_NORMAL.getCode());
         return hospUserBalanceMapper.selectOne(select);
     }
 
@@ -266,13 +252,13 @@ public class UserBalanceService implements BaseService<HospUserBalance,HospUserB
      */
     @Override
     public PageInfo<HospUserBalance> select(HospUserBalance hospUserBalance) throws Exception {
+        if(hospUserBalance == null)
+            return null;
         PageHelper.startPage(hospUserBalance.getPageNum(), hospUserBalance.getPageSize());
         if (StringUtil.isNotEmpty(hospUserBalance.getField()))
             PageHelper.orderBy(hospUserBalance.getField());
         HospUserBalance select = new HospUserBalance();
         select.setUserId(hospUserBalance.getUserId());
-        select.setEnable(EnableEnum.ENABLE_NORMAL.getCode());
-        EnableEnum.getByCode(hospUserBalance.getEnable());
         return new PageInfo(hospUserBalanceMapper.select(select));
     }
 
@@ -290,7 +276,6 @@ public class UserBalanceService implements BaseService<HospUserBalance,HospUserB
         if (StringUtil.isNotEmpty(pageBean.getField()))
             PageHelper.orderBy(pageBean.getField());
         HospUserBalance select = new HospUserBalance();
-        select.setEnable(EnableEnum.ENABLE_NORMAL.getCode());
         return new PageInfo(hospUserBalanceMapper.select(select));
     }
 
@@ -316,6 +301,8 @@ public class UserBalanceService implements BaseService<HospUserBalance,HospUserB
      */
     @Override
     public PageInfo<HospUserBalance> selectAdmin(HospUserBalance hospUserBalance) throws Exception {
+        if(hospUserBalance == null)
+            return  null;
         PageHelper.startPage(hospUserBalance.getPageNum(), hospUserBalance.getPageSize());
         if (StringUtil.isNotEmpty(hospUserBalance.getField()))
             PageHelper.orderBy(hospUserBalance.getField());

@@ -228,6 +228,8 @@ public class OrderServiceDetailsService implements BaseService<HospOrderServiceD
 
     @Override
     public PageInfo<HospOrderServiceDetails> select(OrderServiceDetailsPO po) throws Exception {
+        if(po == null)
+            return  null;
         PageHelper.startPage(po.getPageNum(), po.getPageSize());
         if (StringUtil.isNotEmpty(po.getField()))
             PageHelper.orderBy(po.getField());

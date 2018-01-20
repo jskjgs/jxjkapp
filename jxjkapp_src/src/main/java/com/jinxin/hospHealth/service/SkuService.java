@@ -130,6 +130,8 @@ public class SkuService implements BaseService<HospProductSku,HospProductSku> {
      * @return
      */
     public PageInfo<HospProductSku> select(HospProductSku hospProductSku) {
+        if(hospProductSku == null)
+            return  null;
         PageHelper.startPage(hospProductSku.getPageNum(), hospProductSku.getPageSize());
         if (StringUtil.isNotEmpty(hospProductSku.getField()))
             PageHelper.orderBy(hospProductSku.getField());

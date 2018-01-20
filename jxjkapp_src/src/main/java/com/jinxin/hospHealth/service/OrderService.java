@@ -319,6 +319,8 @@ public class OrderService implements BaseService<HospOrder, OrderInfoPO> {
      */
     @Override
     public PageInfo<HospOrder> select(OrderInfoPO orderInfoPO) throws Exception {
+        if(orderInfoPO == null)
+            return  null;
         PageHelper.startPage(orderInfoPO.getPageNum(), orderInfoPO.getPageSize());
         if (StringUtil.isNotEmpty(orderInfoPO.getField())) {
             PageHelper.orderBy(orderInfoPO.getField());
@@ -370,6 +372,8 @@ public class OrderService implements BaseService<HospOrder, OrderInfoPO> {
      */
     @Override
     public PageInfo<HospOrder> selectAdmin(OrderInfoPO orderInfoPO) throws Exception {
+        if(orderInfoPO == null)
+            return null;
         PageHelper.startPage(orderInfoPO.getPageNum(), orderInfoPO.getPageSize());
         if (StringUtil.isNotEmpty(orderInfoPO.getField())) {
             PageHelper.orderBy(orderInfoPO.getField());

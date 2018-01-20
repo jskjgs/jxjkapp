@@ -128,6 +128,8 @@ public class OrderGradeService implements BaseService<HospOrderGrade,HospOrderGr
      */
     @Override
     public PageInfo<HospOrderGrade> select(HospOrderGrade hospOrderGrade) throws Exception {
+        if(hospOrderGrade == null)
+            return null;
         PageHelper.startPage(hospOrderGrade.getPageNum(), hospOrderGrade.getPageSize());
         if (StringUtil.isNotEmpty(hospOrderGrade.getField()))
             PageHelper.orderBy(hospOrderGrade.getField());

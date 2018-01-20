@@ -185,6 +185,8 @@ public class OrderProductService implements BaseService<HospOrderProduct, OrderP
      */
     @Override
     public PageInfo<HospOrderProduct> select(OrderProductPO orderProductPO) throws Exception {
+        if(orderProductPO == null)
+            return null;
         PageHelper.startPage(orderProductPO.getPageNum(), orderProductPO.getPageSize());
         if (StringUtil.isNotEmpty(orderProductPO.getField())) {
             PageHelper.orderBy(orderProductPO.getField());
