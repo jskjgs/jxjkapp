@@ -204,6 +204,18 @@ public class OrderService implements BaseService<HospOrder, OrderInfoPO> {
     }
 
     /**
+     * 查询order详情,通过服务订单详情ID
+     * @param orderProductServiceDetailsId
+     * @return
+     */
+    public HospOrder selectOneByOrderProductServiceDetailsId(Long orderProductServiceDetailsId){
+        DPreconditions.checkNotNull(
+                orderProductServiceDetailsId,
+                "服务订单详情ID不能为空.",
+                true);
+        return hospOrderMapper.selectByOrderProductServiceId(orderProductServiceDetailsId);
+    }
+    /**
      * 不显示 订单
      *
      * @param id

@@ -48,4 +48,15 @@ public interface HospOrderMapper extends MyMapper<HospOrder> {
             " </script>"})
     List<HospOrder> selectByExampleByCustom(@Param("order") OrderInfoPO orderInfoPO);
 
+
+    @Select({"select ho.* from " +
+            " hosp_order_service_details hosd," +
+            " hosp_order_product hop," +
+            " hosp_order ho " +
+            " where " +
+            " hosd.order_product_id = hop.id " +
+            " and hop.order_id = ho.id " +
+            " and hosd.id = #{osdId}"})
+    HospOrder selectByOrderProductServiceId(@Param("osdId") Long orderServiceDetailsId);
+
 }

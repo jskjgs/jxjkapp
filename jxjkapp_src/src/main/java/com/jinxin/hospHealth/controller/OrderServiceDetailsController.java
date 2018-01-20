@@ -116,8 +116,8 @@ public class OrderServiceDetailsController extends TransformController{
     @RequestMapping(value = "/applyCancellation", method = RequestMethod.POST)
     @ResponseBody
     public JSONObject applyCancellation(
-            @ApiParam(value = "订单服务详情 ID", required = true) @RequestParam(value = "id", required = true) Long id) throws Exception {
-        orderServiceDetailsService.applyCancellation(id,getCurrentUserId());
+            @ApiParam(value = "订单服务详情 信息", required = true) @RequestBody(required = true) OrderServiceDetailsPO orderServiceDetailsPO) throws Exception {
+        orderServiceDetailsService.applyCancellation(orderServiceDetailsPO,getCurrentUserId());
         return ResponseWrapperSuccess(null);
     }
 

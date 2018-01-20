@@ -30,6 +30,8 @@ public class OrderServiceDetailsVO {
     private String doctorComment;
     @ApiModelProperty("订单评价")
     private HospOrderGrade grade;
+    @ApiModelProperty("申请作废的理由")
+    private String account;
     @ApiModelProperty("状态")
     private String state;
     @ApiModelProperty("创建时间")
