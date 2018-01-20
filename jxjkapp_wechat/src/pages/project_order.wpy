@@ -19,7 +19,7 @@
   }
 
   .order-btn-wrap {
-    position: absolute;
+    position: fixed;
     left: 0;
     right: 0;
     bottom: 0;
@@ -55,7 +55,7 @@
         <text>{{ description }}</text>
       </view>
     </view>
-    <view class="order-btn-wrap flex">
+    <view class="order-btn-wrap flex main-bg">
       <view class="disabled-tip flex-item flex--vcenter">
         <view
           wx:if="{{ !userInfo.isVip }}"

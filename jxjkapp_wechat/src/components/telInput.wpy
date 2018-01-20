@@ -127,5 +127,11 @@
       console.log(111, this)
       clearInterval(this.timer)
     }
+
+    onHide () {
+      if (this.timer) {
+        clearInterval(this.timer)
+      }
+    }
   }
 </script>

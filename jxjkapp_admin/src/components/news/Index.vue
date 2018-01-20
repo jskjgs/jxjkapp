@@ -4,25 +4,16 @@
  * Date: 2017/8/29
  */
 import placeholderImg from '@/assets/images/placeholder.png'
-
 import SearchTable from '@/components/_common/searchTable/SearchTable'
-
 import {
-  getListApi,
-  deleteBannerBatchApi,
+  deleteNewsApi,
   modifyNewsApi,
   addNewsApi,
   switchVisibleApi
 } from './api'
-
-// import { Loading } from 'element-ui'
+import tableCfgMaker from './_consts/tableCfgMaker'
 import EditDialog from './_thumbs/EditDialog.vue'
 import ImgZoom from '@/components/_common/imgZoom/ImgZoom.vue'
-
-import {
-  convertDate
-} from '@/utils/index'
-
 let adding = false
 export default {
   name: 'Banner',
@@ -32,122 +23,13 @@ export default {
     SearchTable
   },
   data () {
-    this.tableAttrs = {
-      'props': {
-        'tooltip-effect': 'dark',
-        'style': 'width: 100%',
-        'align': 'center'
-      },
-      'on': {
-        'selection-change': this.handleSelectionChange.bind(this)
-      }
-    }
-    this.columnData = [{
-      attrs: {
-        'type': 'selection',
-        'width': '90',
-        'align': 'left'
-      }
-    }, {
-      attrs: {
-        'prop': 'title',
-        'label': '新闻标题',
-        'min-width': '140',
-        'show-overflow-tooltip': true
-      }
-    }, {
-      attrs: {
-        'prop': 'cover',
-        'min-width': '120',
-        'label': '封面图'
-      },
-      scopedSlots: {
-        default: (scope) => {
-          return (
-            <img-zoom
-              src={scope.row.cover}
-              style="width: 80px;height: 60px;">
-            </img-zoom>
-          )
-        }
-      }
-    }, {
-      attrs: {
-        'prop': 'createDate',
-        'label': '创建时间',
-        'min-width': '160',
-        'show-overflow-tooltip': true,
-        'formatter' (row, col) {
-          return convertDate(row.createDate) || '--'
-        }
-      }
-    }, {
-      attrs: {
-        'prop': 'jumpUrl',
-        'min-width': '120',
-        'label': '新闻链接'
-      },
-      scopedSlots: {
-        default: (scope) => {
-          const jumpUrl = scope.row.jumpUrl
-          if (jumpUrl) {
-            return (
-              <a href={jumpUrl} target="_blank">{jumpUrl}</a>
-            )
-          } else {
-            return '--'
-          }
-        }
-      }
-    }, {
-      attrs: {
-        'min-width': '200',
-        'label': '操作'
-      },
-      scopedSlots: {
-        default: (scope) => {
-          return (
-            <div class="flex--center operations">
-              <span
-                class="operate-item el-icon-edit"
-                onClick={() => this.openEditDialog(scope.row)}>
-              </span>
-              <span
-                class="operate-item el-icon-delete"
-                onClick={() => this.delRow(scope.row)}>
-              </span>
-              <span class="operate-item top-switch flex--vcenter">
-                <el-switch
-                  value={scope.row.top}
-                  onInput={(top) => (scope.row.top = top)}
-                  onChange={() => this.switchTop(scope.row)}
-                  {...{props: { 'on-text': '', 'off-text': '' }}}>
-                </el-switch>
-                { scope.row.top ? '置顶' : '取消置顶' }
-              </span>
-            </div>
-          )
-        }
-      }
-    }]
-    this.listApi = {
-      requestFn: getListApi,
-      responseFn (data) {
-        let content = data.content || {}
-        this.tableData = (content.list || []).map((item) => ({
-          id: item.id,
-          title: item.title, // 标题
-          cover: item.images, // 封面图
-          createDate: item.createDate, // 创建日期
-          sortNumber: item.sortNumber,
-          content: item.content
-        }))
-        this.total = content.total || 0
-      }
-    }
+    // searchTable配置
+    const tableCfg = tableCfgMaker.call(this)
+    this.tableAttrs = tableCfg.tableAttrs
+    this.columnData = tableCfg.columnData
+    this.listApi = tableCfg.listApi
     return {
       searchKeyword: '',
-      currentPage: 1,
       pageSize: 10,
       total: 0,
       multipleSelection: [],
@@ -167,6 +49,11 @@ export default {
         },
         currentPage: 'pageNum'
       }
+    }
+  },
+  computed: {
+    currentPage () {
+      return this.$refs.searchTable.currentPage
     }
   },
   created () {
@@ -218,9 +105,7 @@ export default {
         type: 'warning',
         beforeClose: (action, instance, done) => {
           if (action === 'confirm') {
-            deleteBannerBatchApi({
-              bannerIdList: row.id
-            }).then(res => {
+            deleteNewsApi(row.id).then(res => {
               done()
               this.$message({
                 type: 'success',
@@ -236,9 +121,7 @@ export default {
     },
     // 批量删除
     batchRemove () {
-      deleteBannerBatchApi({
-        bannerIdList: this.multipleSelection.map(item => item.id).join(',')
-      }).then(res => {
+      deleteNewsApi(this.multipleSelection.map(item => item.id).join(',')).then(res => {
         this.$message({
           type: 'success',
           message: '删除成功'
@@ -364,6 +247,51 @@ export default {
           </el-button>
         </div>
       </div>
+      <el-table-column
+        slot="column-cover"
+        align="center"
+        prop="cover"
+        label="封面图"
+        width="180">
+        <template scope="scope">
+          <img-zoom
+            :src="scope.row.cover"
+            style="width: 80px;height: 60px;">
+          </img-zoom>
+        </template>
+      </el-table-column>
+      <el-table-column
+        slot="column-jumpUrl"
+        align="center"
+        label="新闻链接"
+        min-width="120">
+        <template scope="scope">
+          <a v-if="scope.row.jumpUrl" :href="scope.row.jumpUrl" target="_blank">{{ scope.row.jumpUrl }}</a>
+          <template v-else>--</template>
+        </template>
+      </el-table-column>
+      <el-table-column
+        slot="column-operate"
+        align="center"
+        label="操作"
+        width="200">
+        <template scope="scope">
+          <div class="flex--center operate-items">
+            <span
+              class="operate-item el-icon-edit"
+              @click="openEditDialog(scope.row)">
+            </span>
+            <span
+              class="operate-item el-icon-delete"
+              @click="delRow(scope.row)">
+            </span>
+            <span
+              class="operate-item">
+              <el-button type="text" :disabled="currentPage === 1 && scope.$index === 0">置顶</el-button>
+            </span>
+          </div>     
+        </template>
+      </el-table-column>
     </search-table>
     <edit-dialog
       v-model="editDialogVisible"
@@ -376,20 +304,17 @@ export default {
 
 <style lang="scss">
   @import "~@/assets/style/variables/index";
-
   #banner {
     .display-num-control {
       margin-left: 60px;
       .label {
         color: $color3;
       }
-
       .el-icon-edit {
         color: #adb9ca;
         cursor: pointer;
       }
     }
-
     .table-tools {
       margin-top: 30px;
       justify-content: space-between;
@@ -406,7 +331,6 @@ export default {
         border-color: transparent;
       }
     }
-
     .el-table {
       margin-top: 20px;
       td {
@@ -432,7 +356,6 @@ export default {
       background: $bg6 url('~@/assets/images/placeholder.png') center no-repeat;
       background-size: 40px 30px;
     }
-
     .operate-item {
       .el-switch {
         margin-right: 10px;
@@ -442,7 +365,6 @@ export default {
       color: $color3;
       font-size: 14px;
     }
-
     .pagination-wrap {
       margin-top: 30px;
       text-align: right;
