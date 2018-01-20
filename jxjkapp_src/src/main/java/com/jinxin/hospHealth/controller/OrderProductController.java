@@ -60,10 +60,10 @@ public class OrderProductController extends TransformController{
     @ResponseBody
     public JSONObject refundment(
             @ApiParam(value = "订单商品ID", required = true) @RequestParam(value = "id", required = true) Long id,
-            @ApiParam(value = "退款金额", required = true) @RequestParam(value = "amount", required = true) double amount,
+            @ApiParam(value = "退款金额", required = true) @RequestParam(value = "amount", required = true) Double amount,
             @ApiParam(value = "退款原因", required = true) @RequestParam(value = "comment", required = true) String comment) throws Exception {
         Long adminUserId = getAdminUserId();
-        orderProductService.cancellation(id,new BigDecimal(amount),comment,adminUserId);
+        orderProductService.refundment(id,new BigDecimal(amount),comment,adminUserId);
         return ResponseWrapperSuccess(null);
     }
 

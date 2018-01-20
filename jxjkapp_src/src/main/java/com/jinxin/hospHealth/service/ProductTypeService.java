@@ -13,6 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /**
  * Created by zbs on 2017/12/25.
  */
@@ -126,6 +128,10 @@ public class ProductTypeService implements BaseService<HospProductType,HospProdu
         if (StringUtil.isNotEmpty(pageBean.getField()))
             PageHelper.orderBy(pageBean.getField());
         return new PageInfo(hospProductTypeMapper.selectAll());
+    }
+
+    public List<HospProductType> selectAll() {
+        return hospProductTypeMapper.selectAll();
     }
 
     @Override

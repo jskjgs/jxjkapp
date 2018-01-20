@@ -96,7 +96,7 @@ public class OrderProductService implements BaseService<HospOrderProduct, OrderP
      * @throws Exception
      */
     @Transactional
-    public void cancellation(Long id, BigDecimal money, String comment, Long adminUserId) throws Exception {
+    public void refundment(Long id, BigDecimal money, String comment, Long adminUserId) throws Exception {
         HospOrderProduct hospOrderProduct = DPreconditions.checkNotNull(
                 selectOne(id),
                 Language.get("order-product.select-not-exist"),

@@ -56,6 +56,29 @@ public class OrderService implements BaseService<HospOrder, OrderInfoPO> {
     @Override
     @Transactional
     public HospOrder add(OrderInfoPO orderInfoPO) throws Exception {
+        HospOrder add = checkOutOrder(orderInfoPO);
+        List<OrderProductPO> orderProductPOList = orderInfoPO.getOrderProductPOList();
+        replenish(
+                orderProductPOList,
+                orderInfoPO.getType().equals(OrderTypeEnum.SERVICE.getCode())
+                        ? true
+                        : false);
+        //开始保存
+        DPreconditions.checkState(hospOrderMapper.insertReturnId(add) == 1,
+                Language.get("service.save-failure"),
+                true);
+        for (OrderProductPO orderProductPO : orderProductPOList) {
+            orderProductPO.setOrderId(add.getId());
+            orderProductService.add(orderProductPO);
+        }
+        return add;
+    }
+
+    /**
+     * 检查订单,计算价格
+     * @param orderInfoPO
+     */
+    public HospOrder checkOutOrder(OrderInfoPO orderInfoPO){
         //校验数据
         DPreconditions.checkNotNull(userInfoService.selectOne(orderInfoPO.getUserId()),
                 Language.get("user.select-not-exist"),
@@ -88,14 +111,6 @@ public class OrderService implements BaseService<HospOrder, OrderInfoPO> {
         add.setCreateDate(new Date());
         add.setUpdateDate(new Date());
         add.setOperationName(orderInfoPO.getOperationName());
-        //开始保存
-        DPreconditions.checkState(hospOrderMapper.insertReturnId(add) == 1,
-                Language.get("service.save-failure"),
-                true);
-        for (OrderProductPO orderProductPO : orderProductPOList) {
-            orderProductPO.setOrderId(add.getId());
-            orderProductService.add(orderProductPO);
-        }
         return add;
     }
 
