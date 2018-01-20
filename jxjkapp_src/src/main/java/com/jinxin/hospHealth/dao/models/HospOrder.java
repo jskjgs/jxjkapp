@@ -72,7 +72,7 @@ public class HospOrder {
         orderVO.setPayState(this.payState != null
                 ? OrderPayStateEnum.getByCode(this.payState).getDesc()
                 : null);
-        orderVO.setRefundState(this.refundState == null
+        orderVO.setRefundState(this.refundState != null
                 ? OrderRefundStateEnum.getByCode(this.refundState).getDesc()
                 : null);
         orderVO.setType(this.type);
