@@ -76,7 +76,7 @@
     <view id="health-page">
       <view class="order-list">
         <repeat for="{{ listData }}" key="index" index="index" item="item">
-          <navigator url="{{ '/pages/health_detail?productSkuId=' + item.productSkuId }}">
+          <navigator url="{{ '/pages/health_detail?orderProductId=' + item.orderProductId }}">
             <view class="order-item">
               <view class="row flex--vcenter--sb">
                 <text class="order-date">订单生成时间: {{ item.date }}</text>
@@ -173,6 +173,7 @@
         const hospOrderProduct = (hospOrderProductList[0] || {})
         const skuData = hospOrderProduct.productSku || {}
         return {
+          orderProductId: hospOrderProduct.id,
           productSkuId: skuData.id,
           id: listItem.id,
           image: skuData.images,
