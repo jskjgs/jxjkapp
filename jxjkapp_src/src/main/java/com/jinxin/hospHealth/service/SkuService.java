@@ -21,7 +21,7 @@ import java.util.Date;
  * Created by zbs on 2017/12/25.
  */
 @Service
-public class SkuService implements BaseService<HospProductSku,HospProductSku> {
+public class SkuService implements BaseService<HospProductSku, HospProductSku> {
 
     @Autowired
     HospProductSkuMapper hospProductSkuMapper;
@@ -38,27 +38,38 @@ public class SkuService implements BaseService<HospProductSku,HospProductSku> {
      * @param hospProductSku
      */
     public HospProductSku add(HospProductSku hospProductSku) {
-        DPreconditions.checkState(hospProductSku.getId() == null,
+        DPreconditions.checkState(
+                hospProductSku.getId() == null,
                 "商品SKU的id不能填写.",
                 true);
-        DPreconditions.checkNotNull(hospProductSku.getProductId(),
+        DPreconditions.checkNotNull(
+                hospProductSku.getProductId(),
                 "商品的ID不能为空.",
                 true);
-        DPreconditions.checkNotNullAndEmpty(hospProductSku.getName(),
+        DPreconditions.checkNotNullAndEmpty(
+                hospProductSku.getName(),
                 "商品SKU的名称不能为空.",
                 true);
-        DPreconditions.checkNotNullAndEmpty(hospProductSku.getDescription(),
+        DPreconditions.checkNotNullAndEmpty(
+                hospProductSku.getDescription(),
                 "商品SKU的描述不能为空.",
                 true);
-        DPreconditions.checkNotNull(hospProductSku.getSalesPrice(),
+        DPreconditions.checkNotNull(
+                hospProductSku.getSalesPrice(),
                 "商品SKU的销售价格不能为空.",
                 true);
-        DPreconditions.checkNotNull(hospProductSku.getShowPrice(),
+        DPreconditions.checkNotNull(
+                hospProductSku.getShowPrice(),
                 "商品SKU的显示价格不能为空.",
                 true);
         //判断商品存在
-        DPreconditions.checkNotNull(productService.selectOne(hospProductSku.getProductId()),
+        DPreconditions.checkNotNull(
+                productService.selectOne(hospProductSku.getProductId()),
                 "商品SKU挂载的商品不存在.",
+                true);
+        DPreconditions.checkNotNull(
+                hospProductSku.getAreaId(),
+                "商品SKU的院区不能为空.",
                 true);
         Date date = new Date();
         if (hospProductSku.getServiceQuantity() == null)
@@ -72,7 +83,7 @@ public class SkuService implements BaseService<HospProductSku,HospProductSku> {
         DPreconditions.checkState(hospProductSkuMapper.insertSelectiveReturnId(hospProductSku) == 1,
                 Language.get("service.save-failure"),
                 true);
-        return  hospProductSku;
+        return hospProductSku;
     }
 
     /**
@@ -130,8 +141,8 @@ public class SkuService implements BaseService<HospProductSku,HospProductSku> {
      * @return
      */
     public PageInfo<HospProductSku> select(HospProductSku hospProductSku) {
-        if(hospProductSku == null)
-            return  null;
+        if (hospProductSku == null)
+            return null;
         PageHelper.startPage(hospProductSku.getPageNum(), hospProductSku.getPageSize());
         if (StringUtil.isNotEmpty(hospProductSku.getField()))
             PageHelper.orderBy(hospProductSku.getField());
@@ -148,7 +159,7 @@ public class SkuService implements BaseService<HospProductSku,HospProductSku> {
      * @return
      */
     public PageInfo<HospProductSku> selectAll(PageBean pageBean) {
-        if(pageBean == null)
+        if (pageBean == null)
             pageBean = new PageBean();
         PageHelper.startPage(pageBean.getPageNum(), pageBean.getPageSize());
         if (StringUtil.isNotEmpty(pageBean.getField()))
@@ -168,7 +179,7 @@ public class SkuService implements BaseService<HospProductSku,HospProductSku> {
 
     @Override
     public PageInfo<HospProductSku> selectAllAdmin(PageBean pageBean) throws Exception {
-        if(pageBean == null)
+        if (pageBean == null)
             pageBean = new PageBean();
         return selectAll(pageBean);
     }

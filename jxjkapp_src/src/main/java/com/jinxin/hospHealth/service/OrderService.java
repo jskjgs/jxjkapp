@@ -179,19 +179,6 @@ public class OrderService implements BaseService<HospOrder, OrderInfoPO> {
         DPreconditions.checkState(hospOrderMapper.updateByPrimaryKeySelective(update) == 1,
                 Language.get("service.update-failure"),
                 true);
-        //如果是服务订单,生成服务详情实体数据
-//        if (OrderTypeEnum.SERVICE.getCode() == order.getType()) {
-//            PageInfo<HospOrderProduct> pageInfo =
-//                    DPreconditions.checkNotNull(
-//                            orderProductService.selectByOrderId(order.getId()),
-//                            Language.get("order-product.select-not-exist"),
-//                            true);
-//            for(HospOrderProduct hospOrderProduct : pageInfo.getList()) {
-//                OrderServiceDetailsPO orderServiceDetailsPO = new OrderServiceDetailsPO();
-//                orderServiceDetailsPO.
-//                        orderServiceDetailsService.add();
-//            }
-//        }
     }
 
     /**

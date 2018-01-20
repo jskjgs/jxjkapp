@@ -28,8 +28,6 @@ public class OrderInfoPO extends PageBean {
     private Long adminUserId;
     @ApiModelProperty("用户ID")
     private Long userId;
-    @ApiModelProperty("院区ID")
-    private Long areaId;
     @ApiModelProperty("类型（0 服务订单 1 商品订单）")
     private Integer type;
     @ApiModelProperty("支付状态 (0 未支付订单/1 已支付订单/2 退款申请中/3 退款完毕 )")
@@ -76,7 +74,6 @@ public class OrderInfoPO extends PageBean {
         hospOrder.setCode(this.code);
         hospOrder.setAdminUserId(this.adminUserId);
         hospOrder.setUserId(this.userId);
-        hospOrder.setAreaId(this.areaId);
         hospOrder.setType(
                 this.type != null
                         ? OrderTypeEnum.getByCode(this.type).getCode()

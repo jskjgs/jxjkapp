@@ -132,7 +132,11 @@ public class TransformController extends MyBaseController {
                 hospProduct != null
                         ? transform(hospProduct)
                         : null;
-        return hospProductSku.transform(productVO);
+        HospArea hospArea =
+                hospProductSku.getAreaId() != null
+                        ? hospAreaService.selectOne(hospProductSku.getAreaId())
+                        : null;
+        return hospProductSku.transform(productVO,hospArea);
     }
 
     public DoctorUserInfoVO transform(HospDoctorUserInfo hospDoctorUserInfo) {
@@ -183,10 +187,6 @@ public class TransformController extends MyBaseController {
                 hospUserInfo != null
                         ? hospUserInfo.transform()
                         : null;
-        HospArea hospArea =
-                hospOrder.getAreaId() != null
-                        ? hospAreaService.selectOne(hospOrder.getAreaId())
-                        : null;
         HospAdminUserInfo hospAdminUserInfo =
                 hospOrder.getAdminUserId() != null
                         ? adminUserInfoService.selectOne(hospOrder.getAdminUserId())
@@ -199,7 +199,7 @@ public class TransformController extends MyBaseController {
         orderProductPO.setOrderId(hospOrder.getId());
         PageInfo<OrderProductVO> pageInfo =
                 transformByHospOrderProduct(orderProductService.select(orderProductPO));
-        return hospOrder.transform(userInfoVO, hospArea, pageInfo.getList(), adminInfoVO);
+        return hospOrder.transform(userInfoVO, pageInfo.getList(), adminInfoVO);
     }
 
     public UserInfoVO transform(HospUserInfo hospUserInfo) {

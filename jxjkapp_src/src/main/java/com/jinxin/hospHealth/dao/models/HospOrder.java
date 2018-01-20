@@ -28,8 +28,6 @@ public class HospOrder {
     private Long adminUserId;
     @ApiModelProperty("用户ID")
     private Long userId;
-    @ApiModelProperty("院区ID")
-    private Long areaId;
     @ApiModelProperty("类型（0 服务订单 1 商品订单）")
     private Integer type;
     @ApiModelProperty("支付状态 (0 未支付订单/1 已支付订单/2 退款申请中/3 退款完毕)")
@@ -53,7 +51,6 @@ public class HospOrder {
 
     public OrderVO transform(
             UserInfoVO userInfoVO,
-            HospArea hospArea,
             List<OrderProductVO> orderProductVOList,
             AdminInfoVO adminInfoVO) {
         OrderVO orderVO = new OrderVO();
@@ -72,7 +69,6 @@ public class HospOrder {
         orderVO.setType(this.type);
         orderVO.setUpdateDate(this.updateDate);
         orderVO.setUser(userInfoVO);
-        orderVO.setArea(hospArea);
         orderVO.setOrderProductList(orderProductVOList);
         return orderVO;
     }
