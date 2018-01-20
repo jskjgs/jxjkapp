@@ -25,13 +25,7 @@ public class HospOrderGrade extends PageBean {
     private Date createDate;
     @ApiModelProperty("更新时间")
     private Date updateDate;
-<<<<<<< HEAD
     @ApiModelProperty("评论内容")
-=======
-
-    private Integer enable = EnableEnum.ENABLE_DELETE.getCode();;
-
->>>>>>> 81490d29699307c63a52b01d4f06416bc4d0543f
     private String comment;
 
     @Transient
