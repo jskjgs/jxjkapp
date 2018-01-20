@@ -88,7 +88,7 @@ public class OrderController extends TransformController {
     }
 
     @ApiOperation(value = "本用户申请订单退款")
-    @RequestMapping(value = "/refund", method = RequestMethod.DELETE)
+    @RequestMapping(value = "/refund", method = RequestMethod.POST)
     @ResponseBody
     public JSONObject refund(
             @ApiParam(value = "订单ID", required = true) @RequestParam(value = "id", required = true) Long id) throws Exception {
@@ -159,6 +159,15 @@ public class OrderController extends TransformController {
             @ApiParam(value = "订单ID", required = true) @RequestParam(value = "id", required = true) Long id) throws Exception {
         orderService.setStateAsInvalid(id);
         return ResponseWrapperSuccess(null);
+    }
+
+    @ApiOperation(value = "计算订单的价格 ---admin")
+    @RequestMapping(value = "/countPayPrice", method = RequestMethod.DELETE)
+    @ResponseBody
+    public JSONObject countPayPrice(
+            @ApiParam(value = "订单信息", required = true) @RequestBody OrderInfoPO orderInfoPO) throws Exception {
+        BigDecimal payPrice = orderService.orderPayPrice(orderInfoPO);
+        return ResponseWrapperSuccess(payPrice);
     }
 
     @ApiOperation(value = "余额支付接口")
