@@ -133,6 +133,12 @@ public class UserInfoController extends TransformController{
                 code.equals(dynamicCode),
                 Language.get("login.dynamic-code-error"),
                 true);
+        UserInfoPO select = new UserInfoPO();
+        select.setPassword(phone);
+        DPreconditions.checkState(
+                userInfoService.selectOne(select) == null,
+                Language.get("user.id-repeat"),
+                true);
         UserInfoPO userInfoPO = new UserInfoPO();
         userInfoPO.setId(userId);
         userInfoPO.setPhone(phone);
