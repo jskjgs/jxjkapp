@@ -139,7 +139,7 @@ public class DoctorInfoService implements BaseService<HospDoctorInfo,DoctorInfoP
         if (StringUtil.isNotEmpty(doctorInfoPO.getField()))
             PageHelper.orderBy(doctorInfoPO.getField());
         HospDoctorInfo select = doctorInfoPO.transform();
-        return new PageInfo(hospDoctorInfoMapper.select(select));
+        return new PageInfo(hospDoctorInfoMapper.selectByExampleByFuzzy(select));
     }
 
     /**
@@ -148,13 +148,13 @@ public class DoctorInfoService implements BaseService<HospDoctorInfo,DoctorInfoP
      * @param doctorInfoPO
      * @return
      */
-    public PageInfo<HospDoctorInfo> selectByFuzzy(DoctorInfoPO doctorInfoPO) {
-        PageHelper.startPage(doctorInfoPO.getPageNum(), doctorInfoPO.getPageSize());
-        if (StringUtil.isNotEmpty(doctorInfoPO.getField()))
-            PageHelper.orderBy(doctorInfoPO.getField());
-        HospDoctorInfo select = doctorInfoPO.transform();
-        return new PageInfo(hospDoctorInfoMapper.selectByExampleByFuzzy(select));
-    }
+//    public PageInfo<HospDoctorInfo> selectByFuzzy(DoctorInfoPO doctorInfoPO) {
+//        PageHelper.startPage(doctorInfoPO.getPageNum(), doctorInfoPO.getPageSize());
+//        if (StringUtil.isNotEmpty(doctorInfoPO.getField()))
+//            PageHelper.orderBy(doctorInfoPO.getField());
+//        HospDoctorInfo select = doctorInfoPO.transform();
+//        return new PageInfo(hospDoctorInfoMapper.selectByExampleByFuzzy(select));
+//    }
 
     /**
      * 查询全部医生信息
