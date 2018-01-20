@@ -83,7 +83,7 @@ public class OrderService implements BaseService<HospOrder, OrderInfoPO> {
         add.setUserId(orderInfoPO.getUserId());
         add.setType(OrderTypeEnum.getByCode(orderInfoPO.getType()).getCode());
         add.setPayState(OrderPayStateEnum.NON_PAYMENT.getCode());
-        add.setOrderPayPrice(orderPayPrice(orderProductPOList, orderInfoPO));
+        add.setOrderPayPrice(orderPayPrice(orderInfoPO));
         add.setOrderSalesPrice(orderSalesPrice(orderProductPOList));
         add.setCreateDate(new Date());
         add.setUpdateDate(new Date());
@@ -204,6 +204,18 @@ public class OrderService implements BaseService<HospOrder, OrderInfoPO> {
         throw new ShowExceptions(Language.get("service.invalid-method"));
     }
 
+    /**
+     * 查询order详情,通过服务订单详情ID
+     * @param orderProductServiceDetailsId
+     * @return
+     */
+    public HospOrder selectOneByOrderProductServiceDetailsId(Long orderProductServiceDetailsId){
+        DPreconditions.checkNotNull(
+                orderProductServiceDetailsId,
+                "服务订单详情ID不能为空.",
+                true);
+        return hospOrderMapper.selectByOrderProductServiceId(orderProductServiceDetailsId);
+    }
     /**
      * 不显示 订单
      *
@@ -373,10 +385,10 @@ public class OrderService implements BaseService<HospOrder, OrderInfoPO> {
     /**
      * 计算订单支付价格
      *
-     * @param list
+     * @param orderInfoPO
      * @return
      */
-    public BigDecimal orderPayPrice(List<OrderProductPO> list, OrderInfoPO orderInfoPO) {
+    public BigDecimal orderPayPrice(OrderInfoPO orderInfoPO) {
         //如果是服务订单,并且是手工录入的价格,支持这样的直接录入价格模式
         if (OrderTypeEnum.SERVICE.equals(orderInfoPO.getType())
                 && orderInfoPO.getAmount() != null
@@ -384,7 +396,7 @@ public class OrderService implements BaseService<HospOrder, OrderInfoPO> {
             return orderInfoPO.getAmount();
         }
         BigDecimal payPrice = BigDecimal.ZERO;
-        for (OrderProductPO orderProductPO : list)
+        for (OrderProductPO orderProductPO : orderInfoPO.getOrderProductPOList())
             payPrice = payPrice.add(orderProductPO.getProductPayPrice());
         return payPrice;
     }

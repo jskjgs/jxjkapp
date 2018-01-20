@@ -1,6 +1,7 @@
 package com.jinxin.hospHealth.dao.models;
 
 import com.jinxin.hospHealth.controller.protocol.VO.DoctorUserInfoVO;
+import com.jinxin.hospHealth.controller.protocol.VO.OrderProductVO;
 import com.jinxin.hospHealth.controller.protocol.VO.OrderServiceDetailsVO;
 import com.jinxin.hospHealth.controller.protocol.VO.ProductSkuVO;
 import com.jinxin.hospHealth.dao.modelsEnum.OrderServiceDetailsStateEnum;
@@ -33,6 +34,8 @@ public class HospOrderServiceDetails {
     private String doctorComment;
     @ApiModelProperty("订单评价ID")
     private Long gradeId;
+    @ApiModelProperty("申请作废的理由")
+    private String account;
     @ApiModelProperty("状态")
     private Integer state;
     @ApiModelProperty("创建时间")
@@ -43,18 +46,20 @@ public class HospOrderServiceDetails {
     private String address;
 
     public OrderServiceDetailsVO transform(
-            ProductSkuVO productSku,
+            OrderProductVO orderProduct,
             DoctorUserInfoVO doctorUserInfoVO,
             HospOrderGrade grade,
             HospArea area) {
         OrderServiceDetailsVO vo = new OrderServiceDetailsVO();
+        vo.setAccount(this.account);
         vo.setId(this.id);
         vo.setCode(this.code);
-        vo.setProductSku(productSku);
+        vo.setOrderProduct(orderProduct);
         vo.setQty(qty);
         vo.setArea(area);
         vo.setDoctorUserInfo(doctorUserInfoVO);
         vo.setDoctorComment(this.doctorComment);
+        vo.setGrade(grade);
         vo.setState(
                 this.state != null
                         ? OrderServiceDetailsStateEnum.getByCode(this.state).getDesc()

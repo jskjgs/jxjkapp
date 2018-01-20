@@ -32,6 +32,7 @@ export default {
       },
       totalPrice: 0.00,
       unitPrice: 0.00,
+      skuPrice: null,
       paymentPrice: null,
       selectProduct: null,
       selectCategroy: null,
@@ -51,6 +52,7 @@ export default {
       this.unitPrice = 0
       this.orderFrom.qty = 0
       if (val == null) { return }
+      console.log(val)
       this.orderFrom.productId = val.id
       this.unitPrice = val.price
     },
@@ -104,7 +106,21 @@ export default {
       getOrderInfoApi({
         id: this.orderId
       }).then((res) => {
-        console.log(res)
+        let data = res.content.list[0]
+        this.orderFrom.userId = data.user.id
+
+        let product = data.orderProductList[0]
+        this.orderFrom.productId = product.id
+        this.orderFrom.qty = product.quantity
+        // this.orderFrom.discontPrice: null,
+        // this.orderFrom.comments: null,
+        // this.orderFrom.paymentNumber: null
+        // this.selectCategroy: null,
+        this.selectProduct = product.productSkuName
+        this.skuPrice = product.productSku.salesPrice
+        this.totalPrice = data.orderSalesPrice
+        this.paymentPrice = data.orderPayPrice
+        console.log(data)
       }).catch((err) => {
         console.log(err)
       })
@@ -166,7 +182,7 @@ export default {
     <div class="flex--vcenter" style="margin-top: 20px; justify-content: space-between;">
       <div class="tool-item">
         服务单价
-        {{unitPrice}}
+        {{unitPrice}}{{skuPrice}}
       </div>
       <div class="tool-item">
         *购买数量
@@ -178,9 +194,9 @@ export default {
           style="width: 200px;">
         </el-input>
       </div>
-      <div class="tool-item" v-show="orderId!=null">
+      <!-- <div class="tool-item" v-show="orderId!=null">
         剩余次数  {{orderFrom.unUseNum}}
-      </div>
+      </div> -->
       <div class="tool-item">
         折扣金额
         <el-input

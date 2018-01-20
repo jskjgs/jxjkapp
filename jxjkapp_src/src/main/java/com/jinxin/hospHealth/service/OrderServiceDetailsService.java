@@ -150,14 +150,22 @@ public class OrderServiceDetailsService implements BaseService<HospOrderServiceD
     /**
      * 申请作废
      *
-     * @param id
+     * @param orderServiceDetailsPO
      * @param userId
      * @throws Exception
      */
-    public void applyCancellation(Long id, Long userId) throws Exception {
-        DPreconditions.checkState(
-                id != null && userId != null,
-                "传入的参数不能为空.",
+    public void applyCancellation(OrderServiceDetailsPO orderServiceDetailsPO, Long userId) throws Exception {
+        Long id = DPreconditions.checkNotNull(
+                orderServiceDetailsPO.getId(),
+                "传入的订单服务详情ID不能为空",
+                true);
+        String account = DPreconditions.checkNotNullAndEmpty(
+                orderServiceDetailsPO.getAccount(),
+                "申请作废的理由不能为空.",
+                true);
+        DPreconditions.checkNotNull(
+                userId,
+                "用户ID不能为空.",
                 true);
         HospOrderServiceDetails hospOrderServiceDetails = DPreconditions.checkNotNull(
                 selectOne(id),
@@ -187,6 +195,7 @@ public class OrderServiceDetailsService implements BaseService<HospOrderServiceD
                 true);
         OrderServiceDetailsPO update = new OrderServiceDetailsPO();
         update.setId(id);
+        update.setAccount(account);
         update.setState(OrderServiceDetailsStateEnum.APPLY_CANCELLATION.getCode());
         update(update);
     }

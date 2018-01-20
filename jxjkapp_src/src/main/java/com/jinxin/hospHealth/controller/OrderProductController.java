@@ -56,10 +56,10 @@ public class OrderProductController extends TransformController{
     }
 
     @ApiOperation(value = "订单商品退款 -- admin")
-    @RequestMapping(value = "/cancellation", method = RequestMethod.PUT)
+    @RequestMapping(value = "/refundment", method = RequestMethod.POST)
     @ResponseBody
-    public JSONObject cancellation(
-            @ApiParam(value = "订单ID", required = true) @RequestParam(value = "id", required = true) Long id,
+    public JSONObject refundment(
+            @ApiParam(value = "订单商品ID", required = true) @RequestParam(value = "id", required = true) Long id,
             @ApiParam(value = "退款金额", required = true) @RequestParam(value = "amount", required = true) double amount,
             @ApiParam(value = "退款原因", required = true) @RequestParam(value = "comment", required = true) String comment) throws Exception {
         Long adminUserId = getAdminUserId();

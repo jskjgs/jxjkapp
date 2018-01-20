@@ -74,7 +74,7 @@ public class OtherController extends MyBaseController {
         HospUserInfo respUserInfo = userInfoService.selectOne(userInfoPO);
         boolean isEmpty = true;
         //用户是否存在
-        if (respUserInfo == null) {
+        if (respUserInfo == null || respUserInfo.getId() == null) {
             respUserInfo = userInfoService.add(userInfoPO);
             isEmpty = false;
         }

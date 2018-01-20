@@ -38,6 +38,8 @@ public class TransformController extends MyBaseController {
     @Autowired
     HospAreaService hospAreaService;
     @Autowired
+    OrderGradeService orderGradeService;
+    @Autowired
     DoctorUserInfoService doctorUserInfoService;
 
     public PrecontractVO transform(HospPrecontract precontract) {
@@ -133,20 +135,24 @@ public class TransformController extends MyBaseController {
                 hospDoctorUserInfo != null
                         ? transform(hospDoctorUserInfo)
                         : null;
-        HospProductSku hospProductSku =
+        HospOrderProduct hospOrderProduct =
                 hospOrderServiceDetails.getOrderProductId() != null
-                        ? skuService.selectOne(hospOrderServiceDetails.getOrderProductId())
+                        ? orderProductService.selectOne(hospOrderServiceDetails.getOrderProductId())
                         : null;
-        ProductSkuVO productSkuVO =
-                hospProductSku != null
-                        ? transform(hospProductSku)
+        OrderProductVO orderProductVO =
+                hospOrderProduct != null
+                        ? transform(hospOrderProduct)
                         : null;
         HospArea hospArea =
                 hospOrderServiceDetails.getDoctorAreaId() != null
                         ? doctorAreaService.selectOne(hospOrderServiceDetails.getDoctorAreaId())
                         : null;
         //todo : grade 待做
-        return hospOrderServiceDetails.transform(productSkuVO, doctorUserInfoVO, null, hospArea);
+        HospOrderGrade hospOrderGrade =
+                hospOrderServiceDetails.getGradeId() != null
+                        ? orderGradeService.selectOne(hospOrderServiceDetails.getGradeId())
+                        : null;
+        return hospOrderServiceDetails.transform(orderProductVO, doctorUserInfoVO, hospOrderGrade, hospArea);
     }
 
     public OrderVO transform(HospOrder hospOrder) throws Exception {
