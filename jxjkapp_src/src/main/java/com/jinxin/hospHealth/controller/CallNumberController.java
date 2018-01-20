@@ -13,6 +13,7 @@ import com.jinxin.hospHealth.controller.protocol.PO.DoctorInfoPO;
 import com.jinxin.hospHealth.controller.protocol.PO.OrderInfoPO;
 import com.jinxin.hospHealth.controller.protocol.VO.CallNumberVO;
 import com.jinxin.hospHealth.dao.models.*;
+import com.jinxin.hospHealth.dao.modelsEnum.OrderPayStateEnum;
 import com.jinxin.hospHealth.dao.modelsEnum.OrderPayTypeEnum;
 import com.jinxin.hospHealth.service.CallNumberService;
 import com.jinxin.hospHealth.service.PatientInfoService;
@@ -111,14 +112,12 @@ public class CallNumberController extends TransformController{
                 true);
         OrderInfoPO selectOrder = new OrderInfoPO();
         selectOrder.setUserId(hospUserInfo.getId());
-        selectOrder.setPayState(OrderPayTypeEnum.ALIPAY.getCode());
+        selectOrder.setPayState(OrderPayStateEnum.PAY.getCode());
         PageInfo<HospOrder> pageInfoOrder = orderService.select(selectOrder);
         if(pageInfoOrder == null || pageInfoOrder.getList() == null || pageInfoOrder.getList().size()<1)
             throw new ShowExceptions("该用户没有有效的订单.");
         boolean boo = false;
         for(HospOrder order : pageInfoOrder.getList()){
-            if(order.getRefundState() != null)
-                continue;
             PageInfo<HospOrderProduct> pageInfoOrderProduct =  orderProductService.selectByOrderId(order.getId());
             if(pageInfoOrderProduct == null || pageInfoOrderProduct.getList() == null || pageInfoOrderProduct.getList().size()<1)
                 continue;

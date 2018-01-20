@@ -117,6 +117,7 @@ public class OrderController extends TransformController {
                 getAdminUserId(),
                 Language.get(""),
                 true);
+        orderService.refundOver(id);
         return ResponseWrapperSuccess(null);
     }
 
@@ -207,7 +208,6 @@ public class OrderController extends TransformController {
     public String alipayCallback() {
         return null;
     }
-
 
 
 }

@@ -164,13 +164,14 @@ public class OrderService implements BaseService<HospOrder, OrderInfoPO> {
             userBalance.setBalance(DBigDecimal.upsideDown(orderInfoPO.getAmount()));
             userBalanceService.update(userBalance);
         }
-        if (orderInfoPO.getPaymentType().equals(OrderPayTypeEnum.HIS.getCode())){
+        if (orderInfoPO.getPaymentType().equals(OrderPayTypeEnum.HIS.getCode())) {
             DPreconditions.checkNotNullAndEmpty(
                     orderInfoPO.getPaymentCode(),
                     "订单回执不能为空.",
                     true);
-
+            //todo : 去his中验证回执
         }
+        update.setPaymentCode(orderInfoPO.getPaymentCode());
         update.setId(order.getId());
         update.setPayState(OrderPayStateEnum.PAY.getCode());
         update.setPaymentType(orderInfoPO.getPaymentType());
@@ -213,7 +214,35 @@ public class OrderService implements BaseService<HospOrder, OrderInfoPO> {
                 true);
         HospOrder update = new HospOrder();
         update.setId(id);
-        update.setRefundState(OrderRefundStateEnum.APPLY.getCode());
+        update.setPayState(OrderPayStateEnum.APPLY.getCode());
+        DPreconditions.checkState(
+                hospOrderMapper.updateByPrimaryKeySelective(update) == 1,
+                Language.get("service.update-failure"),
+                true);
+    }
+
+    /**
+     * 退款完毕接口
+     *
+     * @param id
+     * @throws Exception
+     */
+    public void refundOver(Long id) throws Exception {
+        DPreconditions.checkNotNull(id,
+                Language.get("order.id-null"),
+                true);
+        HospOrder order = DPreconditions.checkNotNull(
+                selectOne(id),
+                Language.get("order.select-not-exist"),
+                true);
+        DPreconditions.checkState(
+                order.getPayState().equals(OrderPayStateEnum.PAY.getCode())
+                        || order.getPayState().equals(OrderPayStateEnum.APPLY.getCode()),
+                Language.get("order.have-to-pay-state"),
+                true);
+        HospOrder update = new HospOrder();
+        update.setId(id);
+        update.setPayState(OrderPayStateEnum.FINISH.getCode());
         DPreconditions.checkState(
                 hospOrderMapper.updateByPrimaryKeySelective(update) == 1,
                 Language.get("service.update-failure"),
@@ -467,7 +496,7 @@ public class OrderService implements BaseService<HospOrder, OrderInfoPO> {
                     Language.get("order-product.quantity-null"),
                     true);
             salesPrice = salesPrice.add(
-                    DBigDecimal.multiply(sku.getSalesPrice(),orderProductPO.getQuantity()));
+                    DBigDecimal.multiply(sku.getSalesPrice(), orderProductPO.getQuantity()));
         }
         return salesPrice;
     }

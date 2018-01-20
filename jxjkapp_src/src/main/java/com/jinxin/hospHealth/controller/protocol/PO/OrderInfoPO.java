@@ -2,16 +2,13 @@ package com.jinxin.hospHealth.controller.protocol.PO;
 
 import com.doraemon.base.controller.bean.PageBean;
 import com.jinxin.hospHealth.dao.models.HospOrder;
-import com.jinxin.hospHealth.dao.models.HospOrderServiceDetails;
 import com.jinxin.hospHealth.dao.modelsEnum.OrderPayTypeEnum;
-import com.jinxin.hospHealth.dao.modelsEnum.OrderRefundStateEnum;
 import com.jinxin.hospHealth.dao.modelsEnum.OrderTypeEnum;
 import com.jinxin.hospHealth.dao.modelsEnum.ShowEnum;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
-import javax.persistence.Transient;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
@@ -35,10 +32,8 @@ public class OrderInfoPO extends PageBean {
     private Long areaId;
     @ApiModelProperty("类型（0 服务订单 1 商品订单）")
     private Integer type;
-    @ApiModelProperty("支付状态 (0 已支付订单 1 未支付 )")
+    @ApiModelProperty("支付状态 (0 未支付订单/1 已支付订单/2 退款申请中/3 退款完毕 )")
     private Integer payState;
-    @ApiModelProperty("退款状态 (0 退款申请中 1 退款完毕 )")
-    private Integer refundState;
     @ApiModelProperty("购买的商品些")
     private List<OrderProductPO> orderProductPOList;
     @ApiModelProperty("支付方式（0 微信 1 支付宝 2 余额支付 3 HIS线下支付）")
@@ -89,10 +84,6 @@ public class OrderInfoPO extends PageBean {
         hospOrder.setPayState(
                 this.payState != null
                         ? OrderPayTypeEnum.getByCode(this.payState).getCode()
-                        : null);
-        hospOrder.setRefundState(
-                this.refundState != null
-                        ? OrderRefundStateEnum.getByCode(this.refundState).getCode()
                         : null);
         hospOrder.setOrderPayPrice(orderPayPrice);
         hospOrder.setOrderSalesPrice(orderSalesPrice);
