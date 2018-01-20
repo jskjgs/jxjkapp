@@ -59,11 +59,13 @@ public class OrderProductController extends TransformController{
     @RequestMapping(value = "/refundment", method = RequestMethod.POST)
     @ResponseBody
     public JSONObject refundment(
-            @ApiParam(value = "订单商品ID", required = true) @RequestParam(value = "id", required = true) Long id,
-            @ApiParam(value = "退款金额", required = true) @RequestParam(value = "amount", required = true) Double amount,
-            @ApiParam(value = "退款原因", required = true) @RequestParam(value = "comment", required = true) String comment) throws Exception {
+            @ApiParam(value = "订单服务详情 信息", required = true) @RequestBody OrderProductPO orderProductPO) throws Exception {
         Long adminUserId = getAdminUserId();
-        orderProductService.refundment(id,new BigDecimal(amount),comment,adminUserId);
+        orderProductService.refundment(
+                orderProductPO.getId(),
+                orderProductPO.getProductPayPrice(),
+                orderProductPO.getComment(),
+                adminUserId);
         return ResponseWrapperSuccess(null);
     }
 

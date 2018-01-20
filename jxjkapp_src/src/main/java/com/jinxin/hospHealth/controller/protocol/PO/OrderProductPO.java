@@ -42,6 +42,8 @@ public class OrderProductPO extends PageBean{
     private Date stopDate;
     @ApiModelProperty("订单评价ID")
     private Long gradeId;
+    @ApiModelProperty("回退申请理由")
+    private String comment;
     @ApiModelProperty("状态 0 正常 1 申请作废 2 已作废")
     private Integer state;
 
