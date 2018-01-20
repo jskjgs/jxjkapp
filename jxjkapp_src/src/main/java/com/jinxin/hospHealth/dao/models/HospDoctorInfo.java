@@ -47,7 +47,7 @@ public class HospDoctorInfo {
         doctorInfoVO.setHeadPortrait(this.getHeadPortrait());
         doctorInfoVO.setSex(
                 this.sex != null
-                        ? SexEnum.getSexEnumByCode(this.sex).getDesc()
+                        ? SexEnum.getByCode(this.sex).getDesc()
                         : null);
         doctorInfoVO.setPhone(this.getPhone());
         doctorInfoVO.setEmail( this.getEmail());

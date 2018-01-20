@@ -50,7 +50,7 @@ public class DoctorInfoPO extends PageBean {
         hospDoctorInfo.setHeadPortrait(this.getHeadPortrait());
         hospDoctorInfo.setSex(
                 this.sex != null
-                        ? SexEnum.getSexEnumByCode(this.getSex()).getCode()
+                        ? SexEnum.getByCode(this.getSex()).getCode()
                         : null);
         hospDoctorInfo.setPhone(this.getPhone());
         hospDoctorInfo.setEmail(this.email);
