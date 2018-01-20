@@ -3,6 +3,8 @@ package com.jinxin.hospHealth.controller;
 import com.alibaba.fastjson.JSONObject;
 import com.doraemon.base.controller.BaseController;
 import com.doraemon.base.controller.bean.PageBean;
+import com.doraemon.base.guava.DPreconditions;
+import com.doraemon.base.language.Language;
 import com.github.pagehelper.PageInfo;
 import com.jinxin.hospHealth.controller.protocol.PO.OrderProductPO;
 import com.jinxin.hospHealth.controller.protocol.PO.OrderServiceDetailsPO;
@@ -62,6 +64,18 @@ public class OrderProductController extends TransformController{
     public JSONObject refundment(
             @ApiParam(value = "订单服务详情 信息", required = true) @RequestBody OrderProductPO orderProductPO) throws Exception {
         Long adminUserId = getAdminUserId();
+        if(orderProductPO.getOrderId() != null) {
+            HospOrder hospOrder = DPreconditions.checkNotNull(
+                    orderService.selectOne(orderProductPO.getOrderId()),
+                    Language.get("order.select-not-exist"),
+                    true);
+            PageInfo<HospOrderProduct> pageInfo = orderProductService.selectByOrderId(hospOrder.getId());
+            List<HospOrderProduct> list = pageInfo.getList();
+            orderProductPO.setId(
+                    list != null && list.size()>0
+                            ? list.get(0).getId()
+                            : orderProductPO.getId());
+        }
         orderProductService.refundment(
                 orderProductPO.getId(),
                 orderProductPO.getProductPayPrice(),

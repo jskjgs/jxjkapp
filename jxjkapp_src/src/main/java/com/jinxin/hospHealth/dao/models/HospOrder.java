@@ -70,10 +70,10 @@ public class HospOrder {
         orderVO.setPaymentType(this.paymentType);
         orderVO.setPromotionIds(this.promotionIds);
         orderVO.setPayState(this.payState != null
-                ? OrderPayStateEnum.getByCode(this.payState).getDesc()
+                ? OrderPayStateEnum.getByCode(this.payState).getCode()
                 : null);
         orderVO.setRefundState(this.refundState != null
-                ? OrderRefundStateEnum.getByCode(this.refundState).getDesc()
+                ? OrderRefundStateEnum.getByCode(this.refundState).getCode()
                 : null);
         orderVO.setType(this.type);
         orderVO.setUpdateDate(this.updateDate);

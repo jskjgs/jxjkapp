@@ -30,10 +30,10 @@ public class OrderVO {
     private HospArea area;
     @ApiModelProperty("类型（0 服务订单 1 商品订单）")
     private Integer type;
-    @ApiModelProperty("支付状态 (已支付订单/未支付订单 )")
-    private String payState;
-    @ApiModelProperty("退款状态 (退款申请中/退款完毕)")
-    private String refundState;
+    @ApiModelProperty("支付状态 (0 已支付订单/1 未支付订单 )")
+    private Integer payState;
+    @ApiModelProperty("退款状态 (null 代表正常  0 退款申请中/1 退款完毕)")
+    private Integer refundState;
     @ApiModelProperty("订单支付总价格（促销优惠后的支付总价格）")
     private BigDecimal orderPayPrice;
     @ApiModelProperty("订单销售总价格（没参加促销的价格）")

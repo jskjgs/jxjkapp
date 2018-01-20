@@ -20,18 +20,12 @@ public class OrderProductVO {
     private Long id;
     @ApiModelProperty("订单商品code")
     private String code;
-//    @ApiModelProperty("订单")
-//    private OrderVO order;
     @ApiModelProperty("商品SKU")
     private ProductSkuVO productSku;
     @ApiModelProperty("商品SKU名称")
     private String productSkuName;
     @ApiModelProperty("商品支付价格（促销优惠后的支付价格）")
     private BigDecimal productPayPrice;
-    @ApiModelProperty("商品销售价格（商品没参加促销的价格）")
-    private BigDecimal productSalesPrice;
-    @ApiModelProperty("商品显示价格")
-    private BigDecimal productShowPrice;
     @ApiModelProperty("购买的数量")
     private Integer quantity;
     @ApiModelProperty("如果是服务订单，服务的总次数")

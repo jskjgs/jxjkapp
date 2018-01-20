@@ -76,9 +76,6 @@ public class OrderProductService implements BaseService<HospOrderProduct, OrderP
                 true);
         orderProductPO.setCode(UUidGenerate.create());
         orderProductPO.setProductSkuName(sku.getName());
-        orderProductPO.setProductSalesPrice(sku.getSalesPrice());
-        orderProductPO.setProductSalesPrice(sku.getSalesPrice());
-        orderProductPO.setProductShowPrice(sku.getShowPrice());
         orderProductPO.setState(OrderProductStateEnum.NORMAL.getCode());
         HospOrderProduct add = orderProductPO.transform(new Date(), new Date());
         DPreconditions.checkNotNull(hospOrderProductMapper.insertReturnId(add),

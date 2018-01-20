@@ -41,8 +41,10 @@ public class OrderInfoPO extends PageBean {
     private Integer refundState;
     @ApiModelProperty("购买的商品些")
     private List<OrderProductPO> orderProductPOList;
-    @ApiModelProperty("支付方式（0 微信 1 支付宝）")
+    @ApiModelProperty("支付方式（0 微信 1 支付宝 2 余额支付 3 HIS线下支付）")
     private Integer paymentType;
+    @ApiModelProperty("支付成功回执编号")
+    private String paymentCode;
     @ApiModelProperty("支付金额")
     private BigDecimal amount;
     @ApiModelProperty("是否显示 0:显示 1:隐藏")

@@ -60,17 +60,11 @@ public class OrderService implements BaseService<HospOrder, OrderInfoPO> {
     @Transactional
     public HospOrder add(OrderInfoPO orderInfoPO) throws Exception {
         HospOrder add = checkOutOrder(orderInfoPO);
-        List<OrderProductPO> orderProductPOList = orderInfoPO.getOrderProductPOList();
-        replenish(
-                orderProductPOList,
-                orderInfoPO.getType().equals(OrderTypeEnum.SERVICE.getCode())
-                        ? true
-                        : false);
         //开始保存
-        DPreconditions.checkState(hospOrderMapper.insertReturnId(add) == 1,
+        DPreconditions.checkState(hospOrderMapper.insertSelectiveReturnId(add) == 1,
                 Language.get("service.save-failure"),
                 true);
-        for (OrderProductPO orderProductPO : orderProductPOList) {
+        for (OrderProductPO orderProductPO : orderInfoPO.getOrderProductPOList()) {
             orderProductPO.setOrderId(add.getId());
             orderProductService.add(orderProductPO);
         }
@@ -84,17 +78,25 @@ public class OrderService implements BaseService<HospOrder, OrderInfoPO> {
      */
     public HospOrder checkOutOrder(OrderInfoPO orderInfoPO) {
         //校验数据
-        DPreconditions.checkNotNull(userInfoService.selectOne(orderInfoPO.getUserId()),
+        DPreconditions.checkState(
+                orderInfoPO.getId() == null,
+                "新增订单,id不能填写.",
+                true);
+        DPreconditions.checkNotNull(
+                userInfoService.selectOne(orderInfoPO.getUserId()),
                 Language.get("user.select-not-exist"),
                 true);
-        DPreconditions.checkNotNull(orderInfoPO.getType(),
+        DPreconditions.checkNotNull(
+                orderInfoPO.getType(),
                 Language.get("order.type-null"),
                 true);
-        DPreconditions.checkState(orderInfoPO.getOrderProductPOList() != null
+        DPreconditions.checkState(
+                orderInfoPO.getOrderProductPOList() != null
                         && orderInfoPO.getOrderProductPOList().size() > 0,
                 Language.get("order.sku-null"),
                 true);
-        DPreconditions.checkNotNull(orderInfoPO.getAdminUserId(),
+        DPreconditions.checkNotNull(
+                orderInfoPO.getAdminUserId(),
                 Language.get("order.operation-name-null"),
                 true);
         //创建 order product list 对象
@@ -161,6 +163,13 @@ public class OrderService implements BaseService<HospOrder, OrderInfoPO> {
             userBalance.setUserId(orderInfoPO.getUserId());
             userBalance.setBalance(DBigDecimal.upsideDown(orderInfoPO.getAmount()));
             userBalanceService.update(userBalance);
+        }
+        if (orderInfoPO.getPaymentType().equals(OrderPayTypeEnum.HIS.getCode())){
+            DPreconditions.checkNotNullAndEmpty(
+                    orderInfoPO.getPaymentCode(),
+                    "订单回执不能为空.",
+                    true);
+
         }
         update.setId(order.getId());
         update.setPayState(OrderPayStateEnum.PAY.getCode());
@@ -449,7 +458,16 @@ public class OrderService implements BaseService<HospOrder, OrderInfoPO> {
     public BigDecimal orderSalesPrice(List<OrderProductPO> list) {
         BigDecimal salesPrice = BigDecimal.ZERO;
         for (OrderProductPO orderProductPO : list) {
-            salesPrice = salesPrice.add(orderProductPO.getProductSalesPrice());
+            HospProductSku sku = DPreconditions.checkNotNull(
+                    skuService.selectOne(orderProductPO.getProductSkuId()),
+                    Language.get("sku.select-not-exist"),
+                    true);
+            DPreconditions.checkNotNull(
+                    orderProductPO.getQuantity(),
+                    Language.get("order-product.quantity-null"),
+                    true);
+            salesPrice = salesPrice.add(
+                    DBigDecimal.multiply(sku.getSalesPrice(),orderProductPO.getQuantity()));
         }
         return salesPrice;
     }
@@ -482,13 +500,9 @@ public class OrderService implements BaseService<HospOrder, OrderInfoPO> {
                     DBigDecimal.multiply(
                             hospProductSku.getSalesPrice(),
                             orderProductPO.getQuantity()));
-            orderProductPO.setProductSalesPrice(hospProductSku.getSalesPrice());
-            orderProductPO.setProductShowPrice(hospProductSku.getShowPrice());
-            orderProductPO.setQuantity(orderProductPO.getQuantity());
             //如果是服务的话,计算出服务的次数
             if (serviceType)
                 orderProductPO.setServiceQuantity(orderProductPO.getQuantity() * hospProductSku.getServiceQuantity());
-           // orderProductPOList.add(orderProductPO);
         }
     }
 
