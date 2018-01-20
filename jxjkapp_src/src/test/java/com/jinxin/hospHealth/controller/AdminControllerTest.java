@@ -39,6 +39,15 @@ public class AdminControllerTest {
 
     @Test
     public void normalProcess() throws Exception {
-
+        //login
+        MvcResult result = mvc.perform(MockMvcRequestBuilders.post("/admin/login")
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .param("account", "13678113250")
+                .param("password", "222222")
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("code").value("200"))
+                .andDo(MockMvcResultHandlers.print())
+                .andReturn();
     }
 }

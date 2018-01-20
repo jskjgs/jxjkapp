@@ -6,11 +6,8 @@
 
 import placeholderImg from '@/assets/images/placeholder.png'
 
-import {
-  getOrderInfoApi
-} from './api'
 export default {
-  name: 'orderDetail',
+  name: 'prepareOrder',
   components: {
   },
   data () {
@@ -20,10 +17,8 @@ export default {
         userId: null,
         productId: null,
         qty: 0,
-        discontPrice: null,
         comments: null,
-        paymentNumber: null,
-        unUseNum: 0
+        paymentNumber: null
       },
       refundment: {
         amount: '',
@@ -41,7 +36,6 @@ export default {
   created () {
     this.placeholderImg = placeholderImg
     this.initProductInfo()
-    this.initOrderInfo()
   },
   watch: {
     selectCategroy (val) {
@@ -56,20 +50,11 @@ export default {
     },
     qty (newValue) {
       this.totalPrice = this.unitPrice * newValue
-    },
-    totalPrice (newValue) {
-      this.paymentPrice = null
-    },
-    discontPrice (newValue) {
-      this.paymentPrice = null
     }
   },
   computed: {
     qty () {
       return this.orderFrom.qty
-    },
-    discontPrice () {
-      return this.orderFrom.discontPrice
     }
   },
   methods: {
@@ -87,30 +72,6 @@ export default {
       this.paymentPrice = (pay < 0 ? 0 : pay)
     },
     handleCreateOrder () {
-    },
-    handleUpdateOrder () {},
-    handleRefundment () {
-      if (!this.refundment.isRefund) {
-        this.refundment.isRefund = true
-        return
-      }
-      // TODO 发起退款
-      console.log('退款成功')
-    },
-    initOrderInfo () {
-      if (!this.orderId) {
-        return
-      }
-      getOrderInfoApi({
-        id: this.orderId
-      }).then((res) => {
-        console.log(res)
-      }).catch((err) => {
-        console.log(err)
-      })
-      .finally(() => {
-        this.loginLoading = false
-      })
     },
     // 请求商品列表，含每个sku的价格
     initProductInfo () {
@@ -178,37 +139,12 @@ export default {
           style="width: 200px;">
         </el-input>
       </div>
-      <div class="tool-item" v-show="orderId!=null">
-        剩余次数  {{orderFrom.unUseNum}}
-      </div>
-      <div class="tool-item">
-        折扣金额
-        <el-input
-          v-model="orderFrom.discontPrice"
-          :disabled="!orderFrom.qty"
-          placeholder="打折请慎重"
-          type="number"
-          style="width: 200px;">
-        </el-input>
-      </div>
     </div>
 
     <div class="flex--vcenter" style="margin-top: 20px; justify-content: space-between;">
       <div class="tool-item">
         <b>总金额</b>
         <b>￥{{totalPrice}}</b>
-      </div>
-      <div class="tool-item">
-        <el-button
-          v-show="paymentPrice==null"
-          class="tool-item"
-          type="primary"
-          @click="handleGetPaymentPrice">计算支付金额
-        </el-button>
-        <span v-show="paymentPrice!=null">
-          <b>支付金额</b>
-          <b style="color:red">￥{{paymentPrice}}</b>
-        </span>
       </div>
     </div>
     <div class="flex--vcenter" style="margin-top: 20px;">
@@ -224,41 +160,17 @@ export default {
         <el-input
           v-model="orderFrom.paymentNumber"
           placeholder="用户如果是VIP可以不填"
-          :disabled="!orderId"
           style="width: 490px;">
         </el-input>
       </div>
     </div>
     
     <div class="flex--vcenter"  style="margin-top: 20px;">
-        <span v-show="refundment.isRefund" >
-          <p>注意:</p>
-          <p>VIP是退款会直接返回余额中</p>
-          <p>非VIP用户退款需要通知线下财务人员操作，本系统仅做退款记录</p>
-          <p>因本系统还无法与HIS的财务系统实时通讯，非VIP用户的退款操作请务必核对清楚，</p>
-          <el-input
-            v-model="refundment.amount"
-            type="number"
-            placeholder="请输入退款金额后再次点击退款按钮"
-            style="width: 490px;">
-          </el-input>
-        </span>
         <el-button
           v-show="orderId==null"
           class="tool-item"
           type="primary"
           @click="handleGetPaymentPrice">创建订单
-        </el-button>
-        <el-button
-          v-show="orderId!=null && !refundment.isRefund"
-          class="tool-item"
-          type="primary"
-          @click="handleGetPaymentPrice">保存
-        </el-button>
-        <el-button
-          v-show="orderId!=null"
-          type="primary"
-          @click="handleRefundment">退款
         </el-button>
     </div>
   </div>

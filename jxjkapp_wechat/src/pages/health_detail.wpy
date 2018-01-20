@@ -1,12 +1,18 @@
 <style lang="scss">
 @import '../assets/style/variables/theme.scss';
 #page-health-detail {
+  overflow: hidden;
+  $topBox_H: 300rpx;
   .top-box {
-    position: relative;
+    position: fixed;
+    left: 0;
+    top: 0;
     z-index: 1;
     padding: 0 30rpx;
-    height: 300rpx;
+    width: 100%;
+    height: $topBox_H;
     color: #fff;
+    box-shadow:0 4rpx 24rpx rgba(0,0,0,0.1);
 
     &__image, &__mask {
       position: absolute;
@@ -88,12 +94,17 @@
   }
 
   .project-describe {
+    position: fixed;
+    z-index: 1;
+    top: $topBox_H;
+    left: 0;
     overflow: hidden;
     box-sizing: content-box;
-    position: relative;
+    width: 100%;
     max-height: 0;
     transition: all 0.6s ease-out;
     background: #fff;
+    box-shadow:0 4rpx 24rpx rgba(0,0,0,0.1);
 
     &.spread {
       max-height: 500rpx;
@@ -122,7 +133,7 @@
   }
 
   .process-list {
-    margin-top: 20rpx;
+    margin-top: $topBox_H + 20rpx;
     background: #fff;
   }
   .process-item {
@@ -209,21 +220,21 @@
 </style>
 
 <template>
-  <!-- <CustomPage :isLastPage.sync="isLastPage"> -->
-    <view id="page-health-detail">
+  <CustomPage :isLastPage.sync="isLastPage">
+    <view id="page-health-detail" wx:if="{{ listData.length }}">
       <view class="top-box flex--hcenter flex--col">
         <view class="top-box__image">
           <image src="../assets/images/health-bg.png" mode="aspectFill"/>
         </view>
         <view class="top-box__mask"></view>
         <view class="top-box__inner">
-          <view class="title">Thermage 热玛吉</view>
+          <view class="title">{{ orderInfo.productName }}</view>
           <view class="process-wrap">
-            <text class="process-text">第 <text class="num">3/10</text> 次</text>
+            <text class="process-text">第 <text class="num">{{ orderInfo.usedQuantity }}/{{ orderInfo.serviceQuantity }}</text> 次</text>
             <progress 
               class="process-bar"
               stroke-width="10"
-              percent="30"
+              percent="{{ orderInfo.usedQuantity / orderInfo.serviceQuantity * 100 }}"
               backgroundColor="rgba(249, 249, 255, 0.4)"
               activeColor="#56F2F2">
             </progress>
@@ -240,14 +251,14 @@
           </view>
         </view>
       </view>
-      <view class="project-describe {{ projectDesVisible ? 'spread' : '' }}">
+      <view class="project-describe {{ projectDesVisible ? 'spread' : '' }} main-bg">
         <view class="project-describe__inner">
           <view 
             class="dropup-btn"
             @tap="dropup">
             收起 <view class="arrow-top"></view>
           </view>
-          <text>备注 ：本症为整个毛囊细菌感染发生化脓性炎症。初起为红色丘疹，逐渐演变成
+          <text>备注 ：{{ orderInfo.description }}
           </text>
         </view>
       </view>
@@ -255,18 +266,18 @@
         <repeat for="{{ listData }}" key="index" index="index" item="item">
           <view class="process-item">
             <view class="row item-top">
-              <text class="item-date">治疗时间：{{ item.date }}</text>
+              <text class="item-date">治疗时间：{{ item.createDate }}</text>
             </view>
             <view class="item-main" @tap="spreadSymptom({{ item._symptomSpread !== undefined }}, {{ index }})">
               <view class="row flex--vcenter">
-                <text>服务人员：赵雪晴</text>
+                <text>服务人员：{{ item.doctorName }}</text>
               </view>
               <repeat for="{{[0, 1]}}" key="index" index="_index" item="_item">
                 <view class="row flex {{ _index === 1 ? 'item-symptom--clone' : 'item-symptom' }}">
                   <text class="flex-item--none">当日症状：</text>
                   <view class="item-symptom-wrap flex-item ">
                     <text 
-                      class="{{ item._symptomSpread || _index === 1 ? '' : 'text-ellipsis--two' }} item-symptom__text">{{ item.symptom }}
+                      class="{{ item._symptomSpread || _index === 1 ? '' : 'text-ellipsis--two' }} item-symptom__text">{{ item.doctorComment }}
                     </text>
                     <view 
                       wx:if="{{ item._symptomSpread !== undefined }}"
@@ -280,24 +291,24 @@
               <button 
                 @tap="toCancel()" 
                 class="cancel-btn"
-                disabled="{{ item.status === 'processing' }}">{{ item.status === 'processing' ? '处理中' : '申请作废' }}</button>
+                disabled="{{ item.state === '申请作废' }}">{{ item.state === '申请作废' ? '处理中' : '申请作废' }}</button>
               <button 
                 @tap="toComment()" 
                 class="comment-btn"
-                disabled="{{ item.status === 'commented' || item.status === 'processing' }}">{{ item.status === 'commented' ? '已' : '' }}评价</button>
+                disabled="{{ !!item.grade }}">{{ !!item.grade ? '已' : '' }}评价</button>
             </view>
           </view>
         </repeat>
       </view>
     </view>
-  <!-- </CustomPage> -->
+  </CustomPage>
 </template>
 
 <script>
   import wepy from 'wepy'
 
   import CustomPage from '@/components/customPage'
-  // import pageMixin from '@/mixins/page'
+  import listPageMixin from '@/mixins/listPage'
 
 //   评价和申请作废状态说明：
 
@@ -318,11 +329,11 @@
       CustomPage
     }
 
-    // mixins = [pageMixin]
+    mixins = [listPageMixin]
 
     data = {
-      projectDesVisible: false,
-      listData: []
+      orderInfo: null, // 订单信息
+      projectDesVisible: false
     }
 
     computed = {
@@ -355,36 +366,15 @@
     events = {
     }
 
-    onLoad({id}) {
-      this.id = id
-      this.$_request({
-        url: `/order/?id=${this.id}`
-      })
+    onLoad({productSkuId}) {
+      this.productSkuId = productSkuId
+      this.initPageData()
     }
 
     onReady () {
     }
 
     onShow () {
-      this.listData = [{
-        _symptomSpread: undefined,
-        date: this.$_convertDate(new Date().getTime(), 'Y-M-D h:m:s'),
-        server: '赵雪晴',
-        symptom: Array.from({length: 120}).map(item => '字').join(''),
-        status: ''
-      }, {
-        _symptomSpread: undefined,
-        date: this.$_convertDate(new Date().getTime(), 'Y-M-D h:m:s'),
-        server: '赵雪晴',
-        symptom: Array.from({length: 40}).map(item => '字').join(''),
-        status: 'commented'
-      }, {
-        _symptomSpread: undefined,
-        date: this.$_convertDate(new Date().getTime(), 'Y-M-D h:m:s'),
-        server: '赵雪晴',
-        symptom: Array.from({length: 40}).map(item => '字').join(''),
-        status: 'processing'
-      }]
     }
 
     // 初始化症状文字
@@ -403,17 +393,51 @@
           reality.forEach(function (item, index) {
             if (item.height !== clone[index].height) {
               vm.listData[index]._symptomSpread = false
-              vm.$apply()
+            } else {
+              vm.listData[index]._symptomSpread = undefined
             }
+            vm.$apply()
           })
         })
     }
 
     // 固定方法
     initPageData () {
+      this.getList().then(() => {
+        this.initSymptom()
+      })
     }
+
     // 获取记录列表
     getList () {
+      return this.initData({
+        url: '/orderService/query',
+        method: 'POST',
+        data: {
+          orderProductId: this.productSkuId
+        }
+      }, (listItem, index, content) => {
+        const productSku = listItem.productSku || {}
+        const doctorUserInfo = listItem.doctorUserInfo || {}
+        if (this.pageNum + '' === '1' && index === 0) {
+          const list = content.list || []
+          this.orderInfo = {
+            serviceQuantity: productSku.serviceQuantity,
+            usedQuantity: list.length,
+            productName: productSku.name,
+            description: productSku.description
+          }
+        }
+        return {
+          _symptomSpread: undefined,
+          id: listItem.id,
+          createDate: this.$_convertDate(listItem.createDate, 'Y-M-D h:m:s'),
+          doctorName: doctorUserInfo.name || '',
+          doctorComment: listItem.doctorComment || '', // 症状 
+          grade: listItem.grade || '', // 用户评价
+          state: listItem.state || '' // 状态（申请作废中）
+        }
+      })
     }
   }
 </script>

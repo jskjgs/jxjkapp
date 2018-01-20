@@ -1,9 +1,6 @@
 import {
   getListApi
 } from '../api'
-import {
-  convertDate
-} from '@/utils/index'
 
 export default function () {
   return {
@@ -12,12 +9,10 @@ export default function () {
       responseFn (data) {
         let content = data.content || {}
         this.tableData = (content.list || []).map((item) => ({
+          no: item.orderNumber,
           id: item.id,
-          title: item.title, // 标题
-          cover: item.images, // 封面图
-          createDate: item.createDate, // 创建日期
-          sortNumber: item.sortNumber,
-          content: item.content
+          name: item.name,
+          cover: item.images
         }))
         this.total = content.total || 0
       }
@@ -40,8 +35,14 @@ export default function () {
       }
     }, {
       attrs: {
-        'prop': 'title',
-        'label': '新闻标题',
+        'prop': 'no',
+        'label': '排序',
+        'min-width': '80'
+      }
+    }, {
+      attrs: {
+        'prop': 'name',
+        'label': '分类名称',
         'min-width': '140',
         'show-overflow-tooltip': true
       }
@@ -49,26 +50,9 @@ export default function () {
       attrs: {
         'prop': 'cover',
         'min-width': '120',
-        'label': '封面图'
+        'label': '展示图片'
       },
       slotName: 'column-cover'
-    }, {
-      attrs: {
-        'prop': 'createDate',
-        'label': '创建时间',
-        'min-width': '160',
-        'show-overflow-tooltip': true,
-        'formatter' (row, col) {
-          return convertDate(row.createDate) || '--'
-        }
-      }
-    }, {
-      attrs: {
-        'prop': 'jumpUrl',
-        'min-width': '120',
-        'label': '新闻链接'
-      },
-      slotName: 'column-jumpUrl'
     }, {
       attrs: {
         'min-width': '200',

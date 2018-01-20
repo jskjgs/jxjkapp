@@ -76,7 +76,7 @@
     <view id="health-page">
       <view class="order-list">
         <repeat for="{{ listData }}" key="index" index="index" item="item">
-          <navigator url="{{ '/pages/health_detail?id=' + item.id }}">
+          <navigator url="{{ '/pages/health_detail?productSkuId=' + item.productSkuId }}">
             <view class="order-item">
               <view class="row flex--vcenter--sb">
                 <text class="order-date">订单生成时间: {{ item.date }}</text>
@@ -169,18 +169,19 @@
         }
       }, (listItem, res) => {
         const hospArea = listItem.area || {}
-        const orderProductList = listItem.orderProductList || []
-        const orderProduct = orderProductList[0] || {}
-        const productSku = orderProduct.productSku || {}
+        const hospOrderProductList = listItem.orderProductList || []
+        const hospOrderProduct = (hospOrderProductList[0] || {})
+        const skuData = hospOrderProduct.productSku || {}
         return {
+          productSkuId: skuData.id,
           id: listItem.id,
-          image: productSku.images,
+          image: skuData.images,
           date: this.$_convertDate(listItem.createDate),
           hospital: hospArea.name || '',
-          project: productSku.name,
-          usedNum: orderProduct.serviceQuantity - orderProduct.remainingServiceNumber,
-          total: orderProduct.serviceQuantity,
-          status: orderProduct.remainingServiceNumber ? 'inUse' : 'finish',
+          project: hospOrderProduct.productSkuName,
+          usedNum: hospOrderProduct.serviceQuantity - hospOrderProduct.remainingServiceNumber,
+          total: hospOrderProduct.serviceQuantity,
+          status: hospOrderProduct.serviceQuantity - hospOrderProduct.remainingServiceNumber ? 'finish' : 'inUse',
           isChild: false
         }
       }, 'navigateTo')

@@ -17,7 +17,7 @@
     <view class="page-title-wrap">换绑请使用新的手机号验证</view>
     <TelInput 
       submitBtnText="确认换绑" 
-      codeType="1"
+      codeType="2"
       :value.sync="formData"
       @submit.user="handleSumbit"/>
   </view>
@@ -50,7 +50,7 @@
     methods = {
       handleSumbit () {
         this.$_request({
-          url: `/userInfo/updatePhone?phone=${this.formData.phone}&code=${this.formData.code}`,
+          url: `/other/updatePhone?newPhone=${this.formData.phone}&newPhoneCode=${this.formData.code}`,
           method: 'POST'
         }).then(content => {
           content = content || {}

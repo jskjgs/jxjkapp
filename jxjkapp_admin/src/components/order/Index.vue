@@ -38,15 +38,15 @@ export default {
     }, {
       attrs: {
         'prop': 'orderAmount',
-        'label': '订单金额',
-        'min-width': '80',
+        'label': '金额',
+        'min-width': '50',
         'show-overflow-tooltip': true
       }
     }, {
       attrs: {
         'prop': 'createTime',
-        'label': '订单创建时间',
-        'min-width': '150',
+        'label': '创建时间',
+        'min-width': '120',
         'show-overflow-tooltip': true,
         'formatter' (row, col) {
           return row.createTime ? convertDate(row.createTime, 'Y-M-D h:m') : '--'
@@ -56,7 +56,7 @@ export default {
       attrs: {
         'prop': 'orderState',
         'label': '状态',
-        'min-width': '50'
+        'min-width': '80'
       }
     }, {
       attrs: {
@@ -78,7 +78,7 @@ export default {
       }
     }, {
       attrs: {
-        'min-width': '180',
+        'min-width': '120',
         'label': '操作'
       },
       scopedSlots: {
@@ -88,12 +88,12 @@ export default {
               <span
                 class="operate-item "
                 onClick={() => this.openDetail(scope.row)}>
-                  订单详情
+                  详情
               </span>
               <span v-show={ !scope.row.state }
                 class="operate-item "
                 onClick={() => this.openServiceRecord(scope.row)}>
-                  服务记录
+                  记录
               </span>
             </div>
           )
@@ -104,26 +104,29 @@ export default {
       requestFn: queryOrderApi,
       responseFn (data) {
         let content = data.content || {}
-        console.log(content)
+        console.log(content.list)
         this.tableData = (content.list || []).map((item) => ({
           orderId: item.id,
           orderCode: item.code,
           orderAmount: ('￥' + item.orderSalesPrice),
           createTime: item.createDate,
-          orderState: item.state,
-          userName: item.userName,
-          userLevel: item.userLevel,
-          areaId: item.areaId,
-          phoneNumber: item.phoneNumber
+          orderState: item.payState,
+          userName: item.user.name,
+          phoneNumber: item.user.phone,
+          userLevel: ((isVip) => {
+            if (isVip) {
+              return 'VIP'
+            }
+            return '普通用户'
+          })(item.user.isVip),
+          areaId: item.area.id,
+          areaName: item.area.name
         }))
         this.total = content.total || 0
       }
     }
     return {
-      orders: [],
       keyWords: '',
-      editDialogVisible: false,
-      editData: {},
       apiKeysMap: {
         pageSize: {
           value: 10,

@@ -8,6 +8,7 @@ import placeholderImg from '@/assets/images/placeholder.png'
 import SearchTable from '@/components/_common/searchTable/SearchTable'
 
 import {
+  getListApi,
   deleteBannerApi,
   deleteBannerBatchApi,
   addBanenrApi,
@@ -19,8 +20,6 @@ import { Loading } from 'element-ui'
 import EditDialog from './_thumbs/EditDialog.vue'
 import ImgZoom from '@/components/_common/imgZoom/ImgZoom.vue'
 
-import tableCfgMaker from './_consts/tableCfgMaker'
-
 let adding = false
 export default {
   name: 'Banner',
@@ -30,12 +29,115 @@ export default {
     SearchTable
   },
   data () {
-    // searchTable配置
-    const tableCfg = tableCfgMaker.call(this)
-    this.tableAttrs = tableCfg.tableAttrs
-    this.columnData = tableCfg.columnData
-    this.listApi = tableCfg.listApi
-
+    this.tableAttrs = {
+      'props': {
+        'tooltip-effect': 'dark',
+        'style': 'width: 100%',
+        'align': 'center'
+      },
+      'on': {
+        'selection-change': this.handleSelectionChange.bind(this)
+      }
+    }
+    this.columnData = [{
+      attrs: {
+        'type': 'selection',
+        'width': '90',
+        'align': 'left'
+      }
+    }, {
+      attrs: {
+        'prop': 'no',
+        'label': '排序',
+        'min-width': '80'
+      }
+    }, {
+      attrs: {
+        'prop': 'name',
+        'label': '名称',
+        'min-width': '140',
+        'show-overflow-tooltip': true
+      }
+    }, {
+      attrs: {
+        'prop': 'banner',
+        'min-width': '120',
+        'label': '封面图'
+      },
+      scopedSlots: {
+        default: (scope) => {
+          return (
+            <img-zoom
+              src={scope.row.cover}
+              style="width: 80px;height: 60px;">
+            </img-zoom>
+          )
+        }
+      }
+    }, {
+      attrs: {
+        'prop': 'jumpUrl',
+        'min-width': '120',
+        'label': '跳转链接'
+      },
+      scopedSlots: {
+        default: (scope) => {
+          const jumpUrl = scope.row.jumpUrl
+          if (jumpUrl) {
+            return (
+              <a href={jumpUrl} target="_blank">{jumpUrl}</a>
+            )
+          } else {
+            return '--'
+          }
+        }
+      }
+    }, {
+      attrs: {
+        'min-width': '200',
+        'label': '操作'
+      },
+      scopedSlots: {
+        default: (scope) => {
+          return (
+            <div class="flex--center operations">
+              <span
+                class="operate-item el-icon-edit"
+                onClick={() => this.openEditDialog(scope.row)}>
+              </span>
+              <span
+                class="operate-item el-icon-delete"
+                onClick={() => this.delRow(scope.row)}>
+              </span>
+              <span class="operate-item visible-switch flex--vcenter">
+                <el-switch
+                  {...{props: { 'on-text': '', 'off-text': '' }}}
+                  value={scope.row.visible}
+                  onInput={(visible) => (scope.row.visible = visible)}
+                  onChange={() => this.switchVisible(scope.row)}>
+                </el-switch>
+                { scope.row.visible ? '显示' : '隐藏' }
+              </span>
+            </div>
+          )
+        }
+      }
+    }]
+    this.listApi = {
+      requestFn: getListApi,
+      responseFn (data) {
+        let content = data.content || {}
+        this.tableData = (content.list || []).map((item) => ({
+          no: item.orderNumber,
+          id: item.id,
+          name: item.name,
+          cover: item.bannerUrl,
+          jumpUrl: item.jumpUrl,
+          visible: !item.display  // display: 0表示显示 1表示隐藏
+        }))
+        this.total = content.total || 0
+      }
+    }
     return {
       searchKeyword: '',
       currentPage: 1,
@@ -260,56 +362,6 @@ export default {
           </el-button>
         </div>
       </div>
-      <el-table-column
-        slot="column-cover"
-        align="center"
-        prop="cover"
-        label="封面图"
-        width="180">
-        <template scope="scope">
-          <img-zoom
-            :src="scope.row.cover"
-            style="width: 80px;height: 60px;">
-          </img-zoom>
-        </template>
-      </el-table-column>
-      <el-table-column
-        slot="column-jumpUrl"
-        align="center"
-        label="跳转链接"
-        min-width="120">
-        <template scope="scope">
-          <a v-if="scope.row.jumpUrl" :href="scope.row.jumpUrl" target="_blank">{{ scope.row.jumpUrl }}</a>
-          <template v-else>--</template>
-        </template>
-      </el-table-column>
-      <el-table-column
-        slot="column-operate"
-        align="center"
-        label="操作"
-        width="200">
-        <template scope="scope">
-          <div class="flex--center operate-items">
-            <span
-              class="operate-item el-icon-edit"
-              @click="openEditDialog(scope.row)">
-            </span>
-            <span
-              class="operate-item el-icon-delete"
-              @click="delRow(scope.row)">
-            </span>
-            <span class="operate-item visible-switch flex--vcenter">
-              <el-switch
-                on-text=""
-                off-text=""
-                v-model="scope.row.visible"
-                @change="switchVisible(scope.row)">
-              </el-switch>
-              {{ scope.row.visible ? '显示' : '隐藏' }}
-            </span>
-          </div>     
-        </template>
-      </el-table-column>
     </search-table>
     <edit-dialog
       v-model="editDialogVisible"

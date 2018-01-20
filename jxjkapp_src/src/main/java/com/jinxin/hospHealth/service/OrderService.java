@@ -71,27 +71,28 @@ public class OrderService implements BaseService<HospOrder, OrderInfoPO> {
                 Language.get("order.operation-name-null"),
                 true);
         //创建 order product list 对象
-        List<OrderProductPO> orderProductList = replenish(
-                orderInfoPO.getOrderProductPOList(),
+        List<OrderProductPO> orderProductPOList = orderInfoPO.getOrderProductPOList();
+        replenish(
+                orderProductPOList,
                 orderInfoPO.getType().equals(OrderTypeEnum.SERVICE.getCode())
                         ? true
                         : false);
         //创建 hospOrder object 对象
-        HospOrder add = orderInfoPO.transform(
-                orderPayPrice(orderProductList, orderInfoPO),
-                orderSalesPrice(orderProductList),
-                null,
-                new Date(),
-                new Date(),
-                null);
+        HospOrder add = new HospOrder();
         add.setCode(UUidGenerate.create());
+        add.setUserId(orderInfoPO.getUserId());
+        add.setType(OrderTypeEnum.getByCode(orderInfoPO.getType()).getCode());
         add.setPayState(OrderPayStateEnum.NON_PAYMENT.getCode());
-        add.setDisplay(ShowEnum.DISPLAY.getCode());
+        add.setOrderPayPrice(orderPayPrice(orderProductPOList, orderInfoPO));
+        add.setOrderSalesPrice(orderSalesPrice(orderProductPOList));
+        add.setCreateDate(new Date());
+        add.setUpdateDate(new Date());
+        add.setOperationName(orderInfoPO.getOperationName());
         //开始保存
         DPreconditions.checkState(hospOrderMapper.insertReturnId(add) == 1,
                 Language.get("service.save-failure"),
                 true);
-        for (OrderProductPO orderProductPO : orderProductList) {
+        for (OrderProductPO orderProductPO : orderProductPOList) {
             orderProductPO.setOrderId(add.getId());
             orderProductService.add(orderProductPO);
         }
@@ -423,11 +424,8 @@ public class OrderService implements BaseService<HospOrder, OrderInfoPO> {
      * @param serviceType  是否是服务订单
      * @return
      */
-    public List<OrderProductPO>  replenish(List<OrderProductPO> orderProductPOList,boolean serviceType) {
-        DPreconditions.checkState(
-                orderProductPOList != null && orderProductPOList.size()>0,
-                "orderProduct List为空");
-        List<OrderProductPO> list  = new ArrayList<>();
+    public void replenish(List<OrderProductPO> orderProductPOList,boolean serviceType) {
+        DPreconditions.checkNotNull(orderProductPOList, "orderProduct List为空");
         for (OrderProductPO orderProductPO : orderProductPOList) {
             HospProductSku hospProductSku = DPreconditions.checkNotNull(
                     skuService.selectOne(orderProductPO.getProductSkuId()),
@@ -449,9 +447,8 @@ public class OrderService implements BaseService<HospOrder, OrderInfoPO> {
             //如果是服务的话,计算出服务的次数
             if (serviceType)
                 orderProductPO.setServiceQuantity(orderProductPO.getQuantity() * hospProductSku.getServiceQuantity());
-            list.add(orderProductPO);
+            orderProductPOList.add(orderProductPO);
         }
-        return list;
     }
 
 }

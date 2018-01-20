@@ -30,9 +30,6 @@ public class HospNews extends PageBean {
     @ApiModelProperty("创建时间")
     private Date createDate;
     @ApiModelProperty("0:正常 1:禁用  99:删除")
-    private Integer enable;
+    private Integer enable = EnableEnum.ENABLE_NORMAL.getCode();
 
-    public String getField(){
-        return  this.field == null ? "sort_number DESC": null;
-    }
 }

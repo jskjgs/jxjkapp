@@ -22,10 +22,7 @@ import java.io.IOException;
         "/hospHealth/patientInfo/*",
         "/hospHealth/precontract/*",
         "/hospHealth/userBalance/*",
-        "/hospHealth/userInfo/admin/*",
-        "/hospHealth/admin/*",
-        "/hospHealth/banner/",
-        "/hospHealth/banner/admin/*"})
+        "/hospHealth/userInfo/admin/*"})
 @Log4j
 public class UserLoginFilter implements Filter {
 
@@ -72,6 +69,37 @@ public class UserLoginFilter implements Filter {
             return false;
         }
     }
+
+  //  private boolean user(HttpServletRequest request) {
+//        String token = request.getHeader(Constant.HEADER_PERMISSIONS);
+//        if (token == null)
+//            return false;
+//        try {
+//            String userId = redisOperation.get(token);
+//            if (userId == null || "".equals(userId))
+//                return false;
+//            return true;
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            return false;
+//        }
+
+//        String token = request.getHeader(Constant.HEADER_PERMISSIONS);
+//        if (token == null || "".equals(token))
+//            return false;
+//        try {
+//            String adminUserId = redisOperation.usePool().get(token);
+//            if (adminUserId == null || "".equals(adminUserId))
+//                return false;
+//            if (!token.equals(redisOperation.usePool().get(adminTokenPrefix + adminUserId)))
+//                return false;
+//            return true;
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            return false;
+//        }
+//    }
+
 
     @Override
     public void destroy() {

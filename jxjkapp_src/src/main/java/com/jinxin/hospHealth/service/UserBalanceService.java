@@ -235,7 +235,7 @@ public class UserBalanceService implements BaseService<HospUserBalance,HospUserB
                 Language.get("user-balance.select-not-exist"),
                 true);
         HospUserBalance invalid = new HospUserBalance();
-        invalid.setEnable(EnableEnum.ENABLE_NORMAL.getCode());
+        invalid.setEnable(EnableEnum.ENABLE_DELETE.getCode());
         DPreconditions.checkState(hospUserBalanceMapper.updateByPrimaryKeySelective(invalid) == 1,
                 "用户余额信息置为无效失败.",
                 true);

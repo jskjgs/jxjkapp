@@ -15,7 +15,6 @@
         <version>1.5.2.RELEASE</version>
     </parent>
 
-
     <repositories>
         <repository>
             <id>us project private nexus</id>
@@ -31,7 +30,6 @@
     </repositories>
 
     <dependencies>
-
         <dependency>
             <groupId>doraemon</groupId>
             <artifactId>doraemon-base</artifactId>

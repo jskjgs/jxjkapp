@@ -1,6 +1,6 @@
 import { fetchApi } from '@/utils/index'
 
-// 获取新闻列表
+// 获取banner列表
 export const GET_LIST_URL = '/news/admin/query'
 export const getListApi = (data) => {
   return fetchApi({
@@ -30,25 +30,23 @@ export const addNewsApi = (data) => {
   })
 }
 
-// // 删除banner (单个)
-// export const DELETE_BANNER_URL = '/home/deleteBanner'
-// export const deleteBannerApi = (params) => {
-//   return fetchApi({
-//     url: DELETE_BANNER_URL,
-//     type: 'delete',
-//     params
-//   })
-// }
+// 删除banner (单个)
+export const DELETE_BANNER_URL = '/home/deleteBanner'
+export const deleteBannerApi = (params) => {
+  return fetchApi({
+    url: DELETE_BANNER_URL,
+    type: 'delete',
+    params
+  })
+}
 
 // 删除banner (批量)
-export const DELETE_NEWS_URL = '/news/'
-export const deleteNewsApi = (id) => {
+export const DELETE_BANNER_BATCH_URL = '/home/deleteBannerBatch'
+export const deleteBannerBatchApi = (params) => {
   return fetchApi({
-    url: DELETE_NEWS_URL,
+    url: DELETE_BANNER_BATCH_URL,
     type: 'delete',
-    params: {
-      id
-    }
+    params
   })
 }
 

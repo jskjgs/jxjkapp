@@ -54,7 +54,7 @@ public class BannerController extends MyBaseController {
         return ResponseWrapperSuccess(bannerService.selectOne(id));
     }
 
-    @ApiOperation(value = "查询全部banner信息(未进行权限控制)",response = HospBanner.class)
+    @ApiOperation(value = "查询全部banner信息",response = HospBanner.class)
     @RequestMapping(value="/all", method = RequestMethod.GET)
     @ResponseBody
     public JSONObject selectAll(
@@ -62,7 +62,7 @@ public class BannerController extends MyBaseController {
         return ResponseWrapperSuccess(bannerService.selectAll(pageBean));
     }
 
-    @ApiOperation(value = "根据条件查询banner信息(未进行权限控制)",response = HospBanner.class)
+    @ApiOperation(value = "根据条件查询banner信息",response = HospBanner.class)
     @RequestMapping(value="/query", method = RequestMethod.POST)
     @ResponseBody
     public JSONObject select(

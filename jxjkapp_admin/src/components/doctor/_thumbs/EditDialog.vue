@@ -31,9 +31,7 @@ export default {
     return {
       form: {
         name: '',
-        hospAreaName: '',
-        avatar: '',
-        description: ''
+        describe: ''
       },
       submitLoading: false,
       fileInputValid: true
@@ -87,9 +85,7 @@ export default {
       this.$refs.ruleForm.resetFields()
       this.form = {
         name: '',
-        hospAreaName: '',
-        avatar: '',
-        description: ''
+        describe: ''
       }
       this.$refs.imgUploader.clearFileInput()
     },
@@ -104,7 +100,7 @@ export default {
   <div class="edit-dialog doctor__edit-dialog">
     <el-dialog
       class="dialog--center"
-      :title="`${data ? '修改' : '新增'}BANNER`"
+      title="编辑信息"
       :visible.sync="visible"
       @close="handleClose">
       <el-form
@@ -119,7 +115,7 @@ export default {
           </el-col>
           <el-col :span="8">
             <el-form-item class="doctor-name" label="院区：">
-              {{ form.hospAreaName }}
+              {{ form.name }}
             </el-form-item>
           </el-col>
         </el-row>
@@ -127,14 +123,14 @@ export default {
           <el-col :span="16">
             <el-form-item
               label="描述信息"
-              prop="description"
+              prop="describe"
               required
               :rules="[
                 { required: true, message: '描述不能为空'},
                 { pattern: /^\s*.{0,30}\s*$/, message: '字数不能超30', trigger: 'blur'}
               ]">
               <rich-text 
-                v-model="form.description"
+                v-model="form.describe"
                 upload-img-server="/upload">
               </rich-text>
             </el-form-item>

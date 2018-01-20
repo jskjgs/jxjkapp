@@ -84,9 +84,9 @@ export default class extends wepy.app {
     wx.setEnableDebug({
       enableDebug: true
     })
-    // wx.reLaunch({
-    //   url: '/pages/my_relations'
-    // })
+    wx.reLaunch({
+      url: '/pages/health'
+    })
   }
 }
 </script>

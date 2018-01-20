@@ -69,12 +69,12 @@
       },
       handleLogin (formData) {
         this.$_request({
-          url: `/other/doctorLogin?account=${formData.account}&password=${formData.password}`,
+          url: `/doctorUser/login?account=${formData.account}&password=${formData.password}`,
           method: 'POST'
         }, true).then(content => {
           this.$_syncUserData({
-            token: content.token,
-            userInfo: content.userInfo || {}
+            token: content,
+            userInfo: {}
           })
           wx.showToast({
             title: '登录成功'

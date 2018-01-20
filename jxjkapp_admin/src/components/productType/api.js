@@ -1,11 +1,11 @@
 import { fetchApi } from '@/utils/index'
 
-// 获取banner列表
-export const GET_LIST_URL = '/home/queryAllBanner'
+// 获取服务分类列表
+export const GET_LIST_URL = '/productType/admin/all'
 export const getListApi = (params) => {
   return fetchApi({
     url: GET_LIST_URL,
-    type: 'get',
+    type: 'post',
     params
   })
 }

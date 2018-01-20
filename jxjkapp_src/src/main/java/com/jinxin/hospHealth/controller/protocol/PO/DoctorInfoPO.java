@@ -16,7 +16,7 @@ import java.util.Date;
  */
 @Data
 @ApiModel("医生信息_传入的参数")
-public class DoctorInfoPO extends PageBean {
+public class DoctorInfoPO extends PageBean{
 
     @ApiModelProperty("医生的ID")
     private Long id;
@@ -41,17 +41,14 @@ public class DoctorInfoPO extends PageBean {
     @ApiModelProperty("医生的描述")
     private String description;
 
-    public HospDoctorInfo transform() {
+    public HospDoctorInfo transform(){
         HospDoctorInfo hospDoctorInfo = new HospDoctorInfo();
         hospDoctorInfo.setId(this.getId());
         hospDoctorInfo.setName(this.getName());
         hospDoctorInfo.setHospAreaId(this.getHospAreaId());
         hospDoctorInfo.setDoctorTypeId(this.getDoctorTypeId());
         hospDoctorInfo.setHeadPortrait(this.getHeadPortrait());
-        hospDoctorInfo.setSex(
-                this.sex != null
-                ? SexEnum.getSexEnumByCode(this.getSex()).getCode()
-                : null);
+        hospDoctorInfo.setSex(SexEnum.getSexEnumByCode(this.getSex()).getCode());
         hospDoctorInfo.setPhone(this.getPhone());
         hospDoctorInfo.setEmail(this.email);
         hospDoctorInfo.setAge(this.getAge());

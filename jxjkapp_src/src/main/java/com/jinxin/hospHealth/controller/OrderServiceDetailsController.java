@@ -44,12 +44,12 @@ public class OrderServiceDetailsController extends TransformController{
     ProductTypeService productTypeService;
 
 
-    @ApiOperation(value = "新增订单服务详情信息 ---必须医生端登陆")
+    @ApiOperation(value = "新增订单服务详情信息 ---admin")
     @RequestMapping(value = "/", method = RequestMethod.POST)
     @ResponseBody
     public JSONObject add(
             @ApiParam(value = "订单服务详情信息", required = true) @RequestBody OrderServiceDetailsPO orderServiceDetailsPO) throws Exception {
-        orderServiceDetailsPO.setDoctorUserId(getDoctorUserId());
+        orderServiceDetailsPO.setDoctorUserId(getCurrentUserId());
         Map<String, Long> map = new HashMap<>();
         HospOrderServiceDetails hospOrderServiceDetails = orderServiceDetailsService.add(orderServiceDetailsPO);
         map.put("id", hospOrderServiceDetails.getId());
