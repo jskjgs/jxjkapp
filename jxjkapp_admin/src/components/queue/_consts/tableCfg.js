@@ -16,7 +16,7 @@ export default function () {
     }, {
       attrs: {
         'prop': 'type',
-        'label': '操作类型',
+        'label': '状态',
         'min-width': '160'
       }
     }, {
@@ -57,14 +57,8 @@ export default function () {
               <el-button
                   type="text"
                   class="operate-item"
-                  onClick={() => this.cancelQueue(scope.row)}>
-                  取消排队
-              </el-button>
-              <el-button
-                  type="text"
-                  class="operate-item"
                   onClick={() => this.skipQueue(scope.row)}>
-                  排队过号
+                  插队
               </el-button>
             </div>
           )

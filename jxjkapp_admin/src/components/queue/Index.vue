@@ -6,6 +6,7 @@
 import SearchTable from '@/components/_common/searchTable/SearchTable'
 
 import tableCfgMaker from './_consts/tableCfg'
+import { fetchApi } from '@/utils/index'
 
 export default {
   name: 'Queue',
@@ -52,10 +53,12 @@ export default {
     }
 
     return {
-      queueForm: {
-        user: '', // 用户
-        type: '', // 操作类型
-        remark: '' // 备注
+      currentInfo: {
+        userName: '',
+        userId: '',
+        userPhone: '',
+        serviceName: '',
+        number: ''
       },
       apiKeysMap: {
         pageSize: {
@@ -79,14 +82,8 @@ export default {
     }
   },
   created () {
-    console.log('$uploadFile', this.$uploadFile)
   },
   watch: {
-    editDialogVisible (val) {
-      if (!val) {
-        this.editData = null
-      }
-    },
     currentPage (newPageNum) {
       this.getList({
         pageNum: newPageNum
@@ -94,36 +91,6 @@ export default {
     }
   },
   methods: {
-    searchProject () {
-    },
-    handleProjectSelect () {},
-    handleSearch () {
-      this.apiKeysMap = Object.assign({}, this.apiKeysMap, {
-        departmentId: {
-          value: this.departmentId || undefined
-        }
-      })
-    },
-    openEditDialog (rowData, isAdd) {
-      this.editDialogVisible = true
-      this.editData = rowData
-    },
-    handleEditCancel () {
-    },
-    // 取消排队
-    cancelQueue (rowData) {
-      this.$confirm('确定取消排队？', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning',
-        beforeClose: (action, instance, done) => {
-          if (action === 'confirm') {
-          } else {
-            done()
-          }
-        }
-      })
-    },
     // 跳过排队
     skipQueue (rowData) {
       this.$confirm('确定执行过号操作？', '提示', {
@@ -137,6 +104,17 @@ export default {
           }
         }
       })
+    },
+    next () {
+      fetchApi({
+        url: '',
+        type: 'post',
+        data: null
+      }).then((res) => {
+        console.log(res)
+      }).catch((err) => {
+        console.log(err)
+      })
     }
   }
 }
@@ -149,30 +127,21 @@ export default {
         排队管理
       </div>
     </div>
+    <div class="top-box flex--vcenter" style="margin-top: 20px;">
+      <div class="btn-wrap flex-item--none">
+        <el-button type="primary" style="margin-left: 20px;width: 120px;border-radius: 4px;">用户排号</el-button>
+      </div>
+    </div>
     <div class="top-box flex--vcenter">
-      <div class="input-items flex-item">
-        <el-form ref="form" :model="queueForm" label-width="100px">
-          <el-row :gutter="20">
-            <el-col :span="12">
-              <el-form-item label="添加用户">
-                <el-input v-model="queueForm.user"></el-input>
-              </el-form-item>
-            </el-col>
-            <el-col :span="12">
-              <el-form-item label="操作类型">
-                <el-input v-model="queueForm.type"></el-input>
-              </el-form-item>
-            </el-col>
-          </el-row>
-          <el-row>
-            <el-form-item label="备注" style="margin-bottom: 0;">
-                <el-input v-model="queueForm.remark"></el-input>
-              </el-form-item>
-          </el-row>
-        </el-form>
+      <div class="btn-wrap flex-item--none">
+        <h3>当前号码</h3> {{currentInfo.number}}
+        <h3>用户姓名</h3> {{currentInfo.userName}}
+        <h3>用户ID</h3> {{currentInfo.userId}}
+        <h3>用户电话</h3> {{currentInfo.userPhone}}
+        <h3>项目名称</h3> {{currentInfo.serviceName}}
       </div>
       <div class="btn-wrap flex-item--none">
-        <el-button type="primary" style="margin-left: 20px;width: 120px;border-radius: 4px;">排号</el-button>
+        <el-button type="primary" @click="next">下一位</el-button>
       </div>
     </div>
     <search-table

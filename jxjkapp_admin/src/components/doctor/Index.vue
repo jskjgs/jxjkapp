@@ -3,7 +3,7 @@
  * Created by zhengji
  * Date: 2017/8/29
  */
-// import placeholderImg from '@/assets/images/placeholder.png'
+import placeholderImg from '@/assets/images/placeholder.png'
 
 import EditDialog from './_thumbs/EditDialog.vue'
 import ImgZoom from '@/components/_common/imgZoom/ImgZoom.vue'
@@ -13,15 +13,9 @@ import SearchTable from '@/components/_common/searchTable/SearchTable'
 import {
   getListApi,
   modifyDoctorApi,
-  addDoctorApi,
-  topDoctorApi
+  topDoctorApi,
+  queryDepartmentApi
 } from './api'
-
-import {
-  getHospAreaApi
-} from '@/globalApi'
-
-let adding = false
 
 export default {
   name: 'Doctor',
@@ -63,7 +57,14 @@ export default {
       }
     }, {
       attrs: {
-        'prop': 'hospAreaName',
+        'prop': 'ksmc',
+        'label': '医生分类',
+        'min-width': '160',
+        'show-overflow-tooltip': true
+      }
+    }, {
+      attrs: {
+        'prop': 'ksmc',
         'label': '院区',
         'min-width': '160',
         'show-overflow-tooltip': true
@@ -77,18 +78,22 @@ export default {
         default: (scope) => {
           return (
             <div class="flex--center operations">
-              <span class="operate-item flex--vcenter" style="color: inherit; font-size: inherit;">
-                <el-button type="text">置顶</el-button>
+              <span class="operate-item top-switch flex--vcenter">
+                <el-switch
+                  value={scope.row.top}
+                  onInput={(top) => (scope.row.top = top)}
+                  onChange={() => this.switchTop(scope.row)}
+                  {...{props: { 'on-text': '', 'off-text': '' }}}>
+                </el-switch>
+                { scope.row.top ? '置顶' : '取消置顶' }
               </span>
-              <span class="operate-item flex--vcenter" style="color: inherit; font-size: inherit;">
-                <el-button
-                  type="text"
-                  onClick={() => this.openEditDialog(scope.row)}>查看详情</el-button>
+              <span
+                  class="operate-item el-icon-edit"
+                  onClick={() => this.openEditDialog(scope.row)}>
               </span>
-              <span class="operate-item flex--vcenter" style="color: inherit; font-size: inherit;">
-                <el-button
-                  type="text"
-                  onClick={() => this.openEditDialog(scope.row)}>编辑</el-button>
+              <span
+                class="operate-item el-icon-view"
+                onClick={() => this.openEditDialog(scope.row)}>
               </span>
             </div>
           )
@@ -100,13 +105,15 @@ export default {
       responseFn (data) {
         let content = data.content || {}
         this.tableData = (content.list || []).map((item) => {
+          let doctor = item.doctor || {}
           return {
-            id: item.id,
-            doctorTypeId: (item.doctorType || {}).id,
-            name: item.name,
-            avatar: item.headPortrait,
-            hospAreaName: (item.hospArea || {}).name,
-            description: item.description
+            no: doctor.orderNumber,
+            name: doctor.name,
+            avatar: doctor.headPortrait,
+            ksmc: doctor.ksmc,
+            describe: doctor.goodDescribe,
+            top: !!doctor.isTop,
+            id: doctor.id
           }
         })
         this.total = content.total || 0
@@ -114,8 +121,10 @@ export default {
     }
 
     return {
-      hospAreaList: [], // 院区列表
-      pickedHospAreaId: '', // 选择的院区id
+      departments: [],
+      // project: '',
+      department: '',
+      departmentId: '',
       doctorName: '',
       editDialogVisible: false,
       editData: {},
@@ -124,24 +133,32 @@ export default {
           value: 10,
           innerKey: 'pageSize' // searchTable组件内部映射的key
         },
-        hospAreaId: {
+        departmentId: {
           value: undefined
         },
-        name: {
-          value: undefined
+        doctorName: {
+          value: ''
         },
-        currentPage: 'pageNum'
+        currentPage: 'pageNum',
+        orderBy: {
+          value: 'order_number'
+        },
+        desc: {
+          value: true
+        }
       }
     }
   },
   created () {
-    this.getHospAreaList()
+    this.placeholderImg = placeholderImg
+    this.searchDepartment().then(departments => {
+      this.departments = departments
+    })
   },
   watch: {
     editDialogVisible (val) {
       if (!val) {
         this.editData = null
-        adding = false
       }
     },
     currentPage (newPageNum) {
@@ -151,66 +168,62 @@ export default {
     }
   },
   methods: {
-    // 获取院区列表
-    getHospAreaList () {
-      return getHospAreaApi().then(res => {
-        const content = res.content || {}
-        const list = content.list || []
-        this.hospAreaList = list.map(item => {
+    searchProject () {
+    },
+    searchDepartment () {
+      // console.log(queryString)
+      return queryDepartmentApi({
+        pageNum: 1,
+        pageSize: this.pageSize
+      }).then(res => {
+        let content = res.content || []
+        let departments = content.map(item => {
           return {
-            label: item.name,
-            value: item.id
+            value: item.id,
+            label: item.name
           }
         })
+        return departments
       })
     },
+    handleProjectSelect () {},
+    // handleDepartmentSelect (item) {
+    //   this.departmentId = item.id
+    // },
     handleSearch () {
       this.apiKeysMap = Object.assign({}, this.apiKeysMap, {
-        hospAreaId: {
-          value: this.pickedHospAreaId || undefined
-        },
-        name: {
-          value: this.doctorName || undefined
+        departmentId: {
+          value: this.departmentId || undefined
         }
       })
     },
     openEditDialog (rowData, isAdd) {
       this.editDialogVisible = true
-      adding = !!isAdd
       this.editData = rowData
     },
     handleEditCancel () {
     },
     handleEditSubmit (data, respondCb) {
-      const uploadForm = (imageUrl) => {
-        const sendData = {
-          headPortrait: imageUrl || data.avatar,
-          id: data.id,
-          doctorTypeId: data.doctorTypeId,
-          description: data.description
-        }
-        const requestFn = adding ? addDoctorApi : modifyDoctorApi
-        requestFn(sendData).then(res => {
-          this.$message({
-            type: 'success',
-            message: '修改成功'
-          })
-          this.editDialogVisible = false
-          this.$refs.searchTable.getList()
-          respondCb(true)
-        }).catch(() => {
-          respondCb()
-        })
-      }
+      let formData
       if (data.file) {
-        const formData = new FormData()
+        formData = new FormData()
         formData.append('file', data.file)
-        this.$uploadFile(formData).then(res => {
-          uploadForm(res.content)
-        })
-      } else {
-        uploadForm()
       }
+      let sendData = {
+        goodDescribe: data.describe,
+        doctorId: data.id
+      }
+      modifyDoctorApi(sendData, formData).then(res => {
+        this.$message({
+          type: 'success',
+          message: '修改成功'
+        })
+        this.editDialogVisible = false
+        this.$refs.searchTable.getList()
+        respondCb(true)
+      }).catch(() => {
+        respondCb()
+      })
     },
     // 切换置顶状态
     switchTop (rowData) {
@@ -246,9 +259,9 @@ export default {
         <div class="search-wrap flex--vcenter">
           <div class="tool-item">
             院区：
-            <el-select v-model="pickedHospAreaId" placeholder="选择院区">
+            <el-select v-model="departmentId" placeholder="选择分类">
               <el-option
-                v-for="item in hospAreaList"
+                v-for="item in departments"
                 :key="item.value"
                 :label="item.label"
                 :value="item.value">

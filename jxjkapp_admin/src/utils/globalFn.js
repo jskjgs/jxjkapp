@@ -7,17 +7,12 @@ import {
 // 上传文件（图片）
 Object.defineProperties(Vue.prototype, {
   '$uploadFile': {
-    value: function (data) {
+    value: function (formData) {
       return new Promise(function (resolve, reject) {
-        if (!(data instanceof FormData)) {
-          const formData = new FormData()
-          formData.append('file', data)
-          data = formData
-        }
         fetchApi({
           url: '/fileUpload/image',
           type: 'post',
-          data: data
+          data: formData
         }).then(res => {
           resolve(res)
         }).catch(error => {
