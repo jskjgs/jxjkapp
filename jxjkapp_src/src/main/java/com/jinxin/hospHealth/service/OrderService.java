@@ -464,7 +464,9 @@ public class OrderService implements BaseService<HospOrder, OrderInfoPO> {
      * @return
      */
     public void replenish(List<OrderProductPO> orderProductPOList, boolean serviceType) {
-        DPreconditions.checkNotNull(orderProductPOList, "orderProduct List为空");
+        DPreconditions.checkNotNull(
+                orderProductPOList,
+                "orderProduct List为空");
         for (OrderProductPO orderProductPO : orderProductPOList) {
             HospProductSku hospProductSku = DPreconditions.checkNotNull(
                     skuService.selectOne(orderProductPO.getProductSkuId()),
@@ -486,7 +488,7 @@ public class OrderService implements BaseService<HospOrder, OrderInfoPO> {
             //如果是服务的话,计算出服务的次数
             if (serviceType)
                 orderProductPO.setServiceQuantity(orderProductPO.getQuantity() * hospProductSku.getServiceQuantity());
-            orderProductPOList.add(orderProductPO);
+           // orderProductPOList.add(orderProductPO);
         }
     }
 
