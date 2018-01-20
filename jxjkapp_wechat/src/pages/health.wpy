@@ -151,9 +151,7 @@
         this.toLogined = false
       } else {
         if (this.$_checkLogin('navigateTo')) {
-          if (!(this.listData && this.listData.length)) {
-            this.initPageData()
-          }
+          this.initPageData()
         } else {
           this.toLogined = true
         }
@@ -161,6 +159,7 @@
     }
 
     initPageData () {
+      this.pageNum = 1
       this.initData({
         url: '/order/all',
         method: 'POST',

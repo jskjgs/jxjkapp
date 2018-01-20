@@ -152,6 +152,7 @@
     }
     // 固定方法
     initPageData () {
+      this.pageNum = 1
       this.getBalance()
       this.getList()
     }

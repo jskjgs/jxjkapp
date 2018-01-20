@@ -125,6 +125,7 @@
       this.initPageData()
     }
     initPageData () {
+      this.pageNum = 1
       this.initData({
         url: '/product/',
         data: {

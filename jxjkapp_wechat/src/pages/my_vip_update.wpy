@@ -105,6 +105,7 @@
     }
 
     initPageData () {
+      this.pageNum = 1
       this.initData({
         url: `/precontract/?id=${this.id}`
       }).then(content => {

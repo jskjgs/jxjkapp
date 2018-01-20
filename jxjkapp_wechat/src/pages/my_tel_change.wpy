@@ -53,15 +53,26 @@
           url: `/userInfo/updatePhone?phone=${this.formData.phone}&code=${this.formData.code}`,
           method: 'POST'
         }).then(content => {
-          content = content || {}
-          this.$_syncUserData({
-            token: content.token,
-            userInfo: content.userInfo
-          })
-          wx.showToast({
-            title: '手机换绑成功'
-          })
-          wx.navigateBack()
+          if (content) {
+            wx.showToast({
+              title: '手机换绑成功'
+            })
+            this.$_syncUserData({
+              token: content.token,
+              userInfo: content.userInfo
+            })
+            wx.navigateBack({
+              delta: 2
+            })
+          } else {
+            this.$_syncUserData({
+              token: null,
+              userInfo: null
+            })
+            wx.redirectTo({
+              url: '/pages/login'
+            })
+          }
         })
       }
     }

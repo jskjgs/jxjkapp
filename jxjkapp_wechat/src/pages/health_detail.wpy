@@ -400,8 +400,31 @@
 
     // 固定方法
     initPageData () {
+      this.pageNum = 1
+      this.getOrderProductInfo()
       this.getList().then(() => {
         this.initSymptom()
+      })
+    }
+
+    // 获取订单商品的基本信息
+    getOrderProductInfo () {
+      return this.$_request({
+        url: `/orderProduct/?id=${this.orderProductId}`
+      }).then(content => {
+        if (!content) {
+          throw new Error()
+        } else {
+          const productSku = content.productSku || {}
+          this.orderInfo = {
+            serviceQuantity: content.serviceQuantity,
+            usedQuantity: content.serviceQuantity - content.remainingServiceNumber,
+            productName: productSku.name,
+            productImage: productSku.images,
+            description: productSku.description
+          }
+          this.$apply()
+        }
       })
     }
 
@@ -414,19 +437,9 @@
           orderProductId: this.orderProductId
         }
       }, (listItem, index, content) => {
-        const orderProduct = listItem.orderProductVO || {}
+        const orderProduct = listItem.orderProduct || {}
         const productSku = orderProduct.productSku || {}
         const doctorUserInfo = listItem.doctorUserInfo || {}
-        if (this.pageNum + '' === '1' && index === 0) {
-          // const list = content.list || []
-          this.orderInfo = {
-            serviceQuantity: orderProduct.serviceQuantity,
-            // usedQuantity: list.length,
-            productName: orderProduct.productSkuName,
-            productImage: productSku.images,
-            description: productSku.description
-          }
-        }
         return {
           _symptomSpread: undefined,
           id: listItem.id,
