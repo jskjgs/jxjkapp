@@ -125,6 +125,11 @@ public class OrderController extends TransformController {
     @ResponseBody
     public JSONObject add(
             @ApiParam(value = "订单信息", required = true) @RequestBody OrderInfoPO orderInfoPO) throws Exception {
+        Long adminUserId = DPreconditions.checkNotNull(
+                getAdminUserId(),
+                "admin账号ID不能为空",
+                true);
+        orderInfoPO.setAdminUserId(adminUserId);
         return ResponseWrapperSuccess(transform(orderService.add(orderInfoPO)));
     }
 
@@ -166,6 +171,11 @@ public class OrderController extends TransformController {
     @ResponseBody
     public JSONObject checkout(
             @ApiParam(value = "订单信息", required = true) @RequestBody OrderInfoPO orderInfoPO) throws Exception {
+        Long adminUserId = DPreconditions.checkNotNull(
+                getAdminUserId(),
+                "admin账号ID不能为空",
+                true);
+        orderInfoPO.setAdminUserId(adminUserId);
         HospOrder hospOrder = orderService.checkOutOrder(orderInfoPO);
         return ResponseWrapperSuccess(hospOrder);
     }

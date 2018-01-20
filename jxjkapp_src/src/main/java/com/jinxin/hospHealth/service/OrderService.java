@@ -12,6 +12,7 @@ import com.github.pagehelper.PageInfo;
 import com.github.pagehelper.util.StringUtil;
 import com.jinxin.hospHealth.controller.protocol.PO.OrderInfoPO;
 import com.jinxin.hospHealth.controller.protocol.PO.OrderProductPO;
+import com.jinxin.hospHealth.controller.protocol.PO.OrderServiceDetailsPO;
 import com.jinxin.hospHealth.dao.mapper.HospOrderMapper;
 import com.jinxin.hospHealth.dao.models.*;
 import com.jinxin.hospHealth.dao.modelsEnum.*;
@@ -44,6 +45,8 @@ public class OrderService implements BaseService<HospOrder, OrderInfoPO> {
     RedisOperation redisOperation;
     @Autowired
     UserBalanceService userBalanceService;
+    @Autowired
+    OrderServiceDetailsService orderServiceDetailsService;
 
 
     /**
@@ -76,9 +79,10 @@ public class OrderService implements BaseService<HospOrder, OrderInfoPO> {
 
     /**
      * 检查订单,计算价格
+     *
      * @param orderInfoPO
      */
-    public HospOrder checkOutOrder(OrderInfoPO orderInfoPO){
+    public HospOrder checkOutOrder(OrderInfoPO orderInfoPO) {
         //校验数据
         DPreconditions.checkNotNull(userInfoService.selectOne(orderInfoPO.getUserId()),
                 Language.get("user.select-not-exist"),
@@ -90,7 +94,7 @@ public class OrderService implements BaseService<HospOrder, OrderInfoPO> {
                         && orderInfoPO.getOrderProductPOList().size() > 0,
                 Language.get("order.sku-null"),
                 true);
-        DPreconditions.checkNotNullAndEmpty(orderInfoPO.getOperationName(),
+        DPreconditions.checkNotNull(orderInfoPO.getAdminUserId(),
                 Language.get("order.operation-name-null"),
                 true);
         //创建 order product list 对象
@@ -101,16 +105,17 @@ public class OrderService implements BaseService<HospOrder, OrderInfoPO> {
                         ? true
                         : false);
         //创建 hospOrder object 对象
-        HospOrder add = new HospOrder();
-        add.setCode(UUidGenerate.create());
-        add.setUserId(orderInfoPO.getUserId());
-        add.setType(OrderTypeEnum.getByCode(orderInfoPO.getType()).getCode());
-        add.setPayState(OrderPayStateEnum.NON_PAYMENT.getCode());
-        add.setOrderPayPrice(orderPayPrice(orderInfoPO));
-        add.setOrderSalesPrice(orderSalesPrice(orderProductPOList));
-        add.setCreateDate(new Date());
-        add.setUpdateDate(new Date());
-        add.setOperationName(orderInfoPO.getOperationName());
+        orderInfoPO.setCode(UUidGenerate.create());
+        orderInfoPO.setPayState(OrderPayStateEnum.NON_PAYMENT.getCode());
+        HospOrder add = orderInfoPO.transform(
+                orderPayPrice(orderInfoPO),
+                orderSalesPrice(orderProductPOList),
+                null,
+                new Date(),
+                new Date(),
+                null,
+                ShowEnum.DISPLAY.getCode());
+        add.setAdminUserId(orderInfoPO.getAdminUserId());
         return add;
     }
 
@@ -164,6 +169,19 @@ public class OrderService implements BaseService<HospOrder, OrderInfoPO> {
         DPreconditions.checkState(hospOrderMapper.updateByPrimaryKeySelective(update) == 1,
                 Language.get("service.update-failure"),
                 true);
+        //如果是服务订单,生成服务详情实体数据
+//        if (OrderTypeEnum.SERVICE.getCode() == order.getType()) {
+//            PageInfo<HospOrderProduct> pageInfo =
+//                    DPreconditions.checkNotNull(
+//                            orderProductService.selectByOrderId(order.getId()),
+//                            Language.get("order-product.select-not-exist"),
+//                            true);
+//            for(HospOrderProduct hospOrderProduct : pageInfo.getList()) {
+//                OrderServiceDetailsPO orderServiceDetailsPO = new OrderServiceDetailsPO();
+//                orderServiceDetailsPO.
+//                        orderServiceDetailsService.add();
+//            }
+//        }
     }
 
     /**
@@ -221,16 +239,18 @@ public class OrderService implements BaseService<HospOrder, OrderInfoPO> {
 
     /**
      * 查询order详情,通过服务订单详情ID
+     *
      * @param orderProductServiceDetailsId
      * @return
      */
-    public HospOrder selectOneByOrderProductServiceDetailsId(Long orderProductServiceDetailsId){
+    public HospOrder selectOneByOrderProductServiceDetailsId(Long orderProductServiceDetailsId) {
         DPreconditions.checkNotNull(
                 orderProductServiceDetailsId,
                 "服务订单详情ID不能为空.",
                 true);
         return hospOrderMapper.selectByOrderProductServiceId(orderProductServiceDetailsId);
     }
+
     /**
      * 不显示 订单
      *
@@ -319,8 +339,8 @@ public class OrderService implements BaseService<HospOrder, OrderInfoPO> {
      */
     @Override
     public PageInfo<HospOrder> select(OrderInfoPO orderInfoPO) throws Exception {
-        if(orderInfoPO == null)
-            return  null;
+        if (orderInfoPO == null)
+            return null;
         PageHelper.startPage(orderInfoPO.getPageNum(), orderInfoPO.getPageSize());
         if (StringUtil.isNotEmpty(orderInfoPO.getField())) {
             PageHelper.orderBy(orderInfoPO.getField());
@@ -372,7 +392,7 @@ public class OrderService implements BaseService<HospOrder, OrderInfoPO> {
      */
     @Override
     public PageInfo<HospOrder> selectAdmin(OrderInfoPO orderInfoPO) throws Exception {
-        if(orderInfoPO == null)
+        if (orderInfoPO == null)
             return null;
         PageHelper.startPage(orderInfoPO.getPageNum(), orderInfoPO.getPageSize());
         if (StringUtil.isNotEmpty(orderInfoPO.getField())) {
@@ -440,10 +460,10 @@ public class OrderService implements BaseService<HospOrder, OrderInfoPO> {
      * 注意 :  List<HospOrderProduct> 对象没有orderId 等信息
      *
      * @param orderProductPOList 订单商品list
-     * @param serviceType  是否是服务订单
+     * @param serviceType        是否是服务订单
      * @return
      */
-    public void replenish(List<OrderProductPO> orderProductPOList,boolean serviceType) {
+    public void replenish(List<OrderProductPO> orderProductPOList, boolean serviceType) {
         DPreconditions.checkNotNull(orderProductPOList, "orderProduct List为空");
         for (OrderProductPO orderProductPO : orderProductPOList) {
             HospProductSku hospProductSku = DPreconditions.checkNotNull(

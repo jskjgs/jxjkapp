@@ -24,8 +24,7 @@ import java.util.Date;
 public class CallNumberService {
 
     @Autowired
-    UserInfoService userInfoService;
-    @Autowired
     RedisOperation redisOperation;
+
 
 }

@@ -22,8 +22,8 @@ public class OrderVO {
     private Long id;
     @ApiModelProperty("订单编号")
     private String code;
-    @ApiModelProperty("操作人员名称")
-    private String operationName;
+    @ApiModelProperty("Admin操作人员信息")
+    private AdminInfoVO adminInfo;
     @ApiModelProperty("用户信息")
     private UserInfoVO user;
     @ApiModelProperty("院区信息")

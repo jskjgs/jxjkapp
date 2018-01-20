@@ -27,8 +27,8 @@ public class OrderInfoPO extends PageBean {
     private Long id;
     @ApiModelProperty("订单code")
     private String code;
-    @ApiModelProperty("操作人员名称")
-    private String operationName;
+    @ApiModelProperty("Admin操作人员ID")
+    private Long adminUserId;
     @ApiModelProperty("用户ID")
     private Long userId;
     @ApiModelProperty("院区ID")
@@ -77,7 +77,7 @@ public class OrderInfoPO extends PageBean {
         HospOrder hospOrder = new HospOrder();
         hospOrder.setId(this.id);
         hospOrder.setCode(this.code);
-        hospOrder.setOperationName(this.operationName);
+        hospOrder.setAdminUserId(this.adminUserId);
         hospOrder.setUserId(this.userId);
         hospOrder.setAreaId(this.areaId);
         hospOrder.setType(

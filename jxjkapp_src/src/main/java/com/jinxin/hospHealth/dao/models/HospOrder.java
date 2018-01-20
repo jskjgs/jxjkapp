@@ -1,5 +1,6 @@
 package com.jinxin.hospHealth.dao.models;
 
+import com.jinxin.hospHealth.controller.protocol.VO.AdminInfoVO;
 import com.jinxin.hospHealth.controller.protocol.VO.OrderProductVO;
 import com.jinxin.hospHealth.controller.protocol.VO.OrderVO;
 import com.jinxin.hospHealth.controller.protocol.VO.UserInfoVO;
@@ -8,6 +9,7 @@ import com.jinxin.hospHealth.dao.modelsEnum.OrderRefundStateEnum;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+
 import javax.persistence.Id;
 import javax.persistence.Table;
 import java.math.BigDecimal;
@@ -16,15 +18,15 @@ import java.util.List;
 
 @Data
 @ApiModel("订单")
-@Table(name="hosp_order")
+@Table(name = "hosp_order")
 public class HospOrder {
     @Id
     @ApiModelProperty("订单ID")
     private Long id;
     @ApiModelProperty("订单编号")
     private String code;
-    @ApiModelProperty("操作人员名称")
-    private String operationName;
+    @ApiModelProperty("Admin操作人员ID")
+    private Long adminUserId;
     @ApiModelProperty("用户ID")
     private Long userId;
     @ApiModelProperty("院区ID")
@@ -52,10 +54,14 @@ public class HospOrder {
     @ApiModelProperty("是否显示 0:显示 1:隐藏")
     private Integer display;
 
-    public OrderVO transform(UserInfoVO userInfoVO, HospArea hospArea, List<OrderProductVO> orderProductVOList){
+    public OrderVO transform(
+            UserInfoVO userInfoVO,
+            HospArea hospArea,
+            List<OrderProductVO> orderProductVOList,
+            AdminInfoVO adminInfoVO) {
         OrderVO orderVO = new OrderVO();
         orderVO.setId(this.id);
-        orderVO.setOperationName(this.operationName);
+        orderVO.setAdminInfo(adminInfoVO);
         orderVO.setCode(this.code);
         orderVO.setCreateDate(this.createDate);
         orderVO.setOrderPayPrice(this.orderPayPrice);

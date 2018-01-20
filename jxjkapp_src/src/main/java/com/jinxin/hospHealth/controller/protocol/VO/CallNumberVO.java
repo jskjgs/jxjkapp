@@ -1,0 +1,18 @@
+package com.jinxin.hospHealth.controller.protocol.VO;
+
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
+
+/**
+ * Created by zbs on 2018/1/21.
+ */
+@Data
+@ApiModel("排队叫号信息")
+public class CallNumberVO {
+
+    @ApiModelProperty("用户信息")
+    UserInfoVO userInfo;
+    @ApiModelProperty("商品SKU信息")
+    ProductSkuVO productSkuVO;
+}

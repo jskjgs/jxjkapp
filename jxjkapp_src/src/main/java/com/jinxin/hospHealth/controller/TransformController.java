@@ -1,7 +1,9 @@
 package com.jinxin.hospHealth.controller;
 
 import com.github.pagehelper.PageInfo;
+import com.jinxin.hospHealth.controller.protocol.PO.CallNumberPO;
 import com.jinxin.hospHealth.controller.protocol.PO.OrderProductPO;
+import com.jinxin.hospHealth.controller.protocol.PO.UserInfoPO;
 import com.jinxin.hospHealth.controller.protocol.VO.*;
 import com.jinxin.hospHealth.dao.models.*;
 import com.jinxin.hospHealth.service.*;
@@ -41,6 +43,25 @@ public class TransformController extends MyBaseController {
     OrderGradeService orderGradeService;
     @Autowired
     DoctorUserInfoService doctorUserInfoService;
+    @Autowired
+    AdminUserInfoService adminUserInfoService;
+
+    public CallNumberVO transform(CallNumberPO callNumberPO) {
+        if (callNumberPO == null)
+            return null;
+        UserInfoVO userInfoVO =
+                callNumberPO.getPhone() != null
+                        ? transform(userInfoService.selectOneByPhone(callNumberPO.getPhone()))
+                        : null;
+        ProductSkuVO productSkuVO =
+                callNumberPO.getProductSkuId() != null
+                        ? transform(skuService.selectOne(callNumberPO.getProductSkuId()))
+                        : null;
+        CallNumberVO vo = new CallNumberVO();
+        vo.setUserInfo(userInfoVO);
+        vo.setProductSkuVO(productSkuVO);
+        return vo;
+    }
 
     public PrecontractVO transform(HospPrecontract precontract) {
         if (precontract == null)
@@ -63,10 +84,6 @@ public class TransformController extends MyBaseController {
     public OrderProductVO transform(HospOrderProduct hospOrderProduct) throws Exception {
         if (hospOrderProduct == null)
             return null;
-//        OrderVO orderVO =
-//                hospOrderProduct.getOrderId() != null
-//                        ? transform(orderService.selectOne(hospOrderProduct.getOrderId()))
-//                        : null;
         ProductSkuVO productSkuVO =
                 hospOrderProduct.getProductSkuId() != null
                         ? transform(skuService.selectOne(hospOrderProduct.getProductSkuId()))
@@ -170,11 +187,19 @@ public class TransformController extends MyBaseController {
                 hospOrder.getAreaId() != null
                         ? hospAreaService.selectOne(hospOrder.getAreaId())
                         : null;
+        HospAdminUserInfo hospAdminUserInfo =
+                hospOrder.getAdminUserId() != null
+                        ? adminUserInfoService.selectOne(hospOrder.getAdminUserId())
+                        : null;
+        AdminInfoVO adminInfoVO =
+                hospAdminUserInfo != null
+                        ? transform(hospAdminUserInfo)
+                        : null;
         OrderProductPO orderProductPO = new OrderProductPO();
         orderProductPO.setOrderId(hospOrder.getId());
         PageInfo<OrderProductVO> pageInfo =
                 transformByHospOrderProduct(orderProductService.select(orderProductPO));
-        return hospOrder.transform(userInfoVO, hospArea, pageInfo.getList());
+        return hospOrder.transform(userInfoVO, hospArea, pageInfo.getList(), adminInfoVO);
     }
 
     public UserInfoVO transform(HospUserInfo hospUserInfo) {
