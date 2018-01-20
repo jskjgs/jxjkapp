@@ -40,7 +40,7 @@
 
 <template>
   <view id="page-health-comment">
-    <CustomCard title="Thermage 热玛吉">
+    <CustomCard :title.sync="productName" :imageUrl.sync="productImage">
       <view 
         class="comment-content-wrap"
         slot="content">
@@ -103,9 +103,12 @@
     mixins = []
 
     data = {
-      textareaValue: '地方实弹射击',
+      // readonly: true,
+      productName: '',
+      productImage: '',
+      textareaValue: '',
       textareaMaxLen: 40,
-      canComment: true,
+      canComment: false,
       commentStar: 0,
       commentDate: ''
     }
@@ -131,8 +134,18 @@
             image: '../assets/images/demo.png'
           })
         } else {
-          this.canComment = false
-          this.commentDate = convertDate(new Date().getTime(), 'Y-M-D h:m:s')
+          this.$_request({
+            url: '/orderServiceGrade/',
+            method: 'POST',
+            data: {
+              orderServiceDetailsId: this.id,
+              comment: this.textareaValue,
+              level: this.commentStar
+            }
+          }).then(() => {
+            this.canComment = false
+            this.commentDate = convertDate(new Date().getTime(), 'Y-M-D h:m:s')
+          }) 
         }
       }
     }
@@ -140,8 +153,20 @@
     events = {
     }
 
-    onLoad() {
-      console.log('commentStar', this.commentStar)
+    onLoad({id, orderProductId, orderInfo, grade}) {
+      this.id = id
+      this.orderProductId = orderProductId
+      orderInfo = JSON.parse(orderInfo)
+      this.productName = orderInfo.productName
+      this.productImage = orderInfo.productImage
+      if (grade) {
+        this.canComment = false
+        grade = JSON.parse(grade)
+        this.textareaValue = grade.comment
+        this.commentStar = +grade.level
+      } else {
+        this.canComment = true
+      }
     }
   }
 </script>

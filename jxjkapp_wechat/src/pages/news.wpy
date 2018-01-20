@@ -92,6 +92,7 @@
     }
 
     initPageData () {
+      this.pageNum = 1
       this.initData({
         url: '/news/all',
         method: 'POST',

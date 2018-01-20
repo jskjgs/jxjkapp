@@ -29,29 +29,21 @@
         })
       }
     }, {
-      label: '清除缓存',
-      handlerTap () {
-        wx.clearStorage()
-        wx.showToast({
-          icon: 'success',
-          title: '缓存清除成功'
-        })
-      }
-    }, {
       label: '退出登录',
       visible: !!this.userInfo,
       handlerTap () {
         this.$_request({
-          url: '/other/logout',
+          url: '/userInfo/logout',
           method: 'POST'
         }, {showLoading: false}).then(() => {
-          this.showToast({
+          wx.showToast({
             title: '退出登录成功'
           })
-        })
-        this.$_syncUserData({
-          token: null,
-          userInfo: null
+          this.$_syncUserData({
+            token: null,
+            userInfo: null
+          })
+          wx.navigateBack()
         })
       }
     }]

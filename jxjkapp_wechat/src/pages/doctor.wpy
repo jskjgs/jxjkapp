@@ -347,6 +347,7 @@ $search_h: 88rpx;
     }
     // 固定方法
     initPageData () {
+      this.pageNum = 1
       this.getList()
       this.getHospAreaList()
       this.getDoctorTypeList()

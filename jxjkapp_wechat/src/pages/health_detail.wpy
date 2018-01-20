@@ -107,7 +107,8 @@
     box-shadow:0 4rpx 24rpx rgba(0,0,0,0.1);
 
     &.spread {
-      max-height: 500rpx;
+      max-height: 400rpx;
+      overflow: auto;
       // transition-timing-function: ease-in;
     }
 
@@ -195,22 +196,19 @@
       }
 
       &.cancel-btn {
-        &:not([disabled]) {
-          color: $primaryColor;
-        }
-        &[disabled] {
+        color: $primaryColor;
+        &.canceling {
           &::after {
             border-color: #FFB400;
           }
           background: #FFB400;
+          color: #fff;
         }
       }
       &.comment-btn {
-        &:not([disabled]) {
-          background: $primaryColor;
-          color: #fff;
-        }
-        &[disabled] {
+        background: $primaryColor;
+        color: #fff;
+        &.commented {
           background: $color1;
         }
       }
@@ -289,12 +287,11 @@
             </view>
             <view class="item-btn-wrap flex">
               <button 
-                @tap="toCancel()" 
-                class="cancel-btn"
-                disabled="{{ item.state === '申请作废' }}">{{ item.state === '申请作废' ? '处理中' : '申请作废' }}</button>
+                @tap="toCancel({{ item.id }}, {{ item }})" 
+                class="cancel-btn {{ item.state === '申请作废' ? 'canceling' : '' }}">{{ item.state === '申请作废' ? '处理中' : '申请作废' }}</button>
               <button 
-                @tap="toComment()" 
-                class="comment-btn"
+                @tap="toComment({{ item.id }}, {{ item }})" 
+                class="comment-btn {{ !!item.grade ? 'commented' : '' }}"
                 disabled="{{ !!item.grade }}">{{ !!item.grade ? '已' : '' }}评价</button>
             </view>
           </view>
@@ -351,14 +348,14 @@
           this.listData[index]._symptomSpread = !this.listData[index]._symptomSpread
         }
       },
-      toComment () {
+      toComment (id, item) {
         wx.navigateTo({
-          url: '/pages/health_comment'
+          url: `/pages/health_comment?id=${id}&orderProductId=${this.orderProductId}&orderInfo=${JSON.stringify(this.orderInfo)}` + (item.grade ? `&grade=${JSON.stringify(item.grade)}` : '') 
         })
       },
-      toCancel () {
+      toCancel (id, item) {
         wx.navigateTo({
-          url: '/pages/health_cancel'
+          url: `/pages/health_cancel?id=${id}&orderInfo=${JSON.stringify(this.orderInfo)}` + (item.state === '申请作废' ? `&cancelData=${JSON.stringify({account: item.account})}` : '')
         })
       }
     }
@@ -366,15 +363,15 @@
     events = {
     }
 
-    onLoad({productSkuId}) {
-      this.productSkuId = productSkuId
-      this.initPageData()
+    onLoad({orderProductId}) {
+      this.orderProductId = orderProductId
     }
 
     onReady () {
     }
 
     onShow () {
+      this.initPageData()
     }
 
     // 初始化症状文字
@@ -403,8 +400,31 @@
 
     // 固定方法
     initPageData () {
+      this.pageNum = 1
+      this.getOrderProductInfo()
       this.getList().then(() => {
         this.initSymptom()
+      })
+    }
+
+    // 获取订单商品的基本信息
+    getOrderProductInfo () {
+      return this.$_request({
+        url: `/orderProduct/?id=${this.orderProductId}`
+      }).then(content => {
+        if (!content) {
+          throw new Error()
+        } else {
+          const productSku = content.productSku || {}
+          this.orderInfo = {
+            serviceQuantity: content.serviceQuantity,
+            usedQuantity: content.serviceQuantity - content.remainingServiceNumber,
+            productName: productSku.name,
+            productImage: productSku.images,
+            description: productSku.description
+          }
+          this.$apply()
+        }
       })
     }
 
@@ -414,20 +434,12 @@
         url: '/orderService/query',
         method: 'POST',
         data: {
-          orderProductId: this.productSkuId
+          orderProductId: this.orderProductId
         }
       }, (listItem, index, content) => {
-        const productSku = listItem.productSku || {}
+        const orderProduct = listItem.orderProduct || {}
+        const productSku = orderProduct.productSku || {}
         const doctorUserInfo = listItem.doctorUserInfo || {}
-        if (this.pageNum + '' === '1' && index === 0) {
-          const list = content.list || []
-          this.orderInfo = {
-            serviceQuantity: productSku.serviceQuantity,
-            usedQuantity: list.length,
-            productName: productSku.name,
-            description: productSku.description
-          }
-        }
         return {
           _symptomSpread: undefined,
           id: listItem.id,
@@ -435,7 +447,8 @@
           doctorName: doctorUserInfo.name || '',
           doctorComment: listItem.doctorComment || '', // 症状 
           grade: listItem.grade || '', // 用户评价
-          state: listItem.state || '' // 状态（申请作废中）
+          state: listItem.state || '', // 状态（申请作废中）
+          account: listItem.account // 作废理由
         }
       })
     }

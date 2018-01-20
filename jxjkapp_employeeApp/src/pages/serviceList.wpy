@@ -101,6 +101,7 @@
     }
 
     initPageData () {
+      this.pageNum = 1
       this.getList()
     }
 

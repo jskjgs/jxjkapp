@@ -4,15 +4,12 @@
  * Date: 2017/8/30
  */
 let fileObj = ''
-
 import ImgUploader from '@/components/_common/imgUploader/ImgUploader.vue'
 import RichText from '@/components/_common/richText/RichText'
-
 const initData = {
   submitLoading: false,
   fileInputValid: true
 }
-
 export default {
   name: 'EditDialog',
   components: {
@@ -31,7 +28,9 @@ export default {
     return {
       form: {
         name: '',
-        describe: ''
+        hospAreaName: '',
+        avatar: '',
+        description: ''
       },
       submitLoading: false,
       fileInputValid: true
@@ -85,7 +84,9 @@ export default {
       this.$refs.ruleForm.resetFields()
       this.form = {
         name: '',
-        describe: ''
+        hospAreaName: '',
+        avatar: '',
+        description: ''
       }
       this.$refs.imgUploader.clearFileInput()
     },
@@ -100,7 +101,7 @@ export default {
   <div class="edit-dialog doctor__edit-dialog">
     <el-dialog
       class="dialog--center"
-      title="编辑信息"
+      :title="`${data ? '修改' : '新增'}BANNER`"
       :visible.sync="visible"
       @close="handleClose">
       <el-form
@@ -115,7 +116,7 @@ export default {
           </el-col>
           <el-col :span="8">
             <el-form-item class="doctor-name" label="院区：">
-              {{ form.name }}
+              {{ form.hospAreaName }}
             </el-form-item>
           </el-col>
         </el-row>
@@ -123,14 +124,14 @@ export default {
           <el-col :span="16">
             <el-form-item
               label="描述信息"
-              prop="describe"
+              prop="description"
               required
               :rules="[
                 { required: true, message: '描述不能为空'},
                 { pattern: /^\s*.{0,30}\s*$/, message: '字数不能超30', trigger: 'blur'}
               ]">
               <rich-text 
-                v-model="form.describe"
+                v-model="form.description"
                 upload-img-server="/upload">
               </rich-text>
             </el-form-item>
@@ -176,7 +177,6 @@ export default {
         color: $color5;
       }
     }
-
     .banner-name {
       .el-input__inner {
         padding-right: 50px;

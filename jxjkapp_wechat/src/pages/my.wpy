@@ -84,7 +84,7 @@
         class="avatar-box-bg" 
         mode="aspectFill"
         src="../assets/images/my-bg.png" />
-      <view class="avatar-wrap">
+      <view class="avatar-wrap" @tap="toLogin">
         <view class="flex--hcenter">
           <image 
             src="../assets/images/avatar.png" 
@@ -96,14 +96,13 @@
             class="username">{{ userInfo.name }}</text>
           <text
             wx:else
-            @tap="toLogin"
             class="text-btn">请登录账号</text>
         </view>
       </view>
     </view>
     <view class="menu--icon">
       <repeat for="{{ myItems }}" key="text" item="item" index="index">
-        <view class="menu--icon__item flex--vcenter" @tap="itemClick({{ index }})">
+        <view wx:if="{{ item.visible !== false }}" class="menu--icon__item flex--vcenter" @tap="itemClick({{ index }})">
           <view class="menu--icon__item__icon">
             <image 
               mode="aspectFit"
@@ -123,69 +122,72 @@
 <script>
   import wepy from 'wepy'
 
-  const MY_ITEMS = [{
-    icon: '../assets/images/icon-qrcode.png',
-    label: '我的二维码',
-    handlerTap () {
-      wx.navigateTo({
-        url: '/pages/my_qrcode'
-      })
-    }
-  }, {
-    icon: '../assets/images/icon-relation.png',
-    label: '绑定就诊人',
-    handlerTap () {
-      wx.navigateTo({
-        url: '/pages/my_relations'
-      })
-    }
-  }, {
-    icon: '../assets/images/icon-consent.png',
-    label: '知情通知书',
-    handlerTap () {
-      wx.navigateTo({
-        url: '/pages/my_consent'
-      })
-    }
-  }, {
-    icon: '../assets/images/icon-vip.png',
-    label: 'VIP用户管理',
-    handlerTap () {
-      wx.navigateTo({
-        url: '/pages/my_vip'
-      })
-    }
-  }, {
-    icon: '../assets/images/icon-concat.png',
-    label: '联系我们',
-    handlerTap () {
-      wx.showModal({
-        title: '客服电话',
-        content: '8400561',
-        confirmText: '拨打',
-        confirmColor: '#9190ff',
-        success (data) {
-          if (data.confirm) {
-            wx.makePhoneCall({
-              phoneNumber: '44323423432'
-            })
+  const MY_ITEMS = function () {
+    return [{
+      icon: '../assets/images/icon-qrcode.png',
+      label: '我的二维码',
+      handlerTap () {
+        wx.navigateTo({
+          url: '/pages/my_qrcode'
+        })
+      }
+    }, {
+      icon: '../assets/images/icon-relation.png',
+      label: '绑定就诊人',
+      handlerTap () {
+        wx.navigateTo({
+          url: '/pages/my_relations'
+        })
+      }
+    }, {
+      icon: '../assets/images/icon-consent.png',
+      label: '知情通知书',
+      handlerTap () {
+        wx.navigateTo({
+          url: '/pages/my_consent'
+        })
+      }
+    }, {
+      icon: '../assets/images/icon-vip.png',
+      label: 'VIP用户管理',
+      handlerTap () {
+        wx.navigateTo({
+          url: '/pages/my_vip'
+        })
+      }
+    }, {
+      icon: '../assets/images/icon-concat.png',
+      label: '联系我们',
+      handlerTap () {
+        wx.showModal({
+          title: '客服电话',
+          content: '8400561',
+          confirmText: '拨打',
+          confirmColor: '#9190ff',
+          success (data) {
+            if (data.confirm) {
+              wx.makePhoneCall({
+                phoneNumber: '44323423432'
+              })
+            }
+            console.log('success', arguments)
+          },
+          fail () {
+            console.log('fail', arguments)
           }
-          console.log('success', arguments)
-        },
-        fail () {
-          console.log('fail', arguments)
-        }
-      })
-    }
-  }, {
-    icon: '../assets/images/icon-setting.png',
-    label: '系统设置',
-    handlerTap () {
-      wx.navigateTo({
-        url: '/pages/my_setting'
-      })
-    }
-  }]
+        })
+      }
+    }, {
+      icon: '../assets/images/icon-setting.png',
+      label: '系统设置',
+      visible: !!this.userInfo,
+      handlerTap () {
+        wx.navigateTo({
+          url: '/pages/my_setting'
+        })
+      }
+    }]
+  }
 
   export default class Index extends wepy.page {
     config = {
@@ -197,23 +199,27 @@
     mixins = []
 
     data = {
-      myItems: MY_ITEMS
     }
 
     computed = {
       userInfo () {
         return this.$parent.globalData.userInfo
+      },
+      myItems () {
+        return MY_ITEMS.call(this)
       }
     }
 
     methods = {
       toLogin () {
-        wx.navigateTo({
-          url: '/pages/login'
-        })
+        if (!this.userInfo) {
+          wx.navigateTo({
+            url: '/pages/login'
+          })
+        }
       },
       itemClick (index) {
-        const handlerTap = MY_ITEMS[index].handlerTap
+        const handlerTap = this.myItems[index].handlerTap
         handlerTap.call(this)
       },
       callPhone () {

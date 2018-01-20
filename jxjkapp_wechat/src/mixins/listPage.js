@@ -41,6 +41,13 @@ export default class ListPageMixin extends wepy.mixin {
     const pageNum = this.pageNum || 1
     reqParams.data.pageNum = pageNum
     console.log('reqParams', reqParams, 'toLoginFn', toLoginFn)
+    if (pageNum === 1) {
+      this.$invoke('CustomPage', 'initPage', {
+        noData: false,
+        dataInited: false,
+        noServer: false
+      })
+    }
     return this.$_request(reqParams, {toLoginFn}).then(content => {
       content = content || {}
       this.isLastPage = !!content.isLastPage

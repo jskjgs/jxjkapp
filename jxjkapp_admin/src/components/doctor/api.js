@@ -1,34 +1,31 @@
 import { fetchApi } from '@/utils/index'
 
-// 获取项目列表
-
-// 获取科室列表
-export const QUERY_DEPARTMENT_URL = '/department/queryAllDepartment'
-export const queryDepartmentApi = (params) => {
-  return fetchApi({
-    url: QUERY_DEPARTMENT_URL,
-    type: 'get',
-    params
-  })
-}
-
 // 获取医生列表
-export const GET_LIST_URL = '/doctor_i/queryAllDoctor'
-export const getListApi = (params) => {
+export const GET_LIST_URL = '/doctorInfo/admin/query'
+export const getListApi = (data) => {
   return fetchApi({
     url: GET_LIST_URL,
-    type: 'get',
-    params
+    type: 'post',
+    data
   })
 }
 
 // 修改医生信息
-export const MODIFY_DOCTOR_URL = '/doctor_i/modifyDoctor'
-export const modifyDoctorApi = (params, data) => {
+export const MODIFY_DOCTOR_URL = '/doctorInfo/'
+export const modifyDoctorApi = (data) => {
   return fetchApi({
     url: MODIFY_DOCTOR_URL,
+    type: 'put',
+    data
+  })
+}
+
+// 新增医生信息
+export const ADD_DOCTOR_URL = '/doctorInfo/'
+export const addDoctorApi = (data) => {
+  return fetchApi({
+    url: ADD_DOCTOR_URL,
     type: 'post',
-    params,
     data
   })
 }

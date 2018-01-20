@@ -44,12 +44,12 @@
 
 <template>
   <view id="page-health-cancel">
-    <CustomCard title="Thermage 热玛吉">
+    <CustomCard :title.sync="productName" :imageUrl.sync="productImage">
       <view 
         class="cancel-content-wrap"
         slot="content">
         <view class="textarea-wrap">
-          <block wx:if="{{ canCancel }}">
+          <block wx:if="{{ !readonly }}">
             <textarea 
               placeholder="请输入您的作废理由"
               value="{{ textareaValue }}"
@@ -66,13 +66,13 @@
               <text>{{ textareaValue }}</text>
             </view>
             <view class="cancel-date flex">
-              <text>{{ cancelDate }}</text>
+              <text>{{ creatDate }}</text>
             </view>
           </block>
         </view>
       </view>
       <button 
-        wx:if="{{ canCancel }}" slot="button"
+        wx:if="{{ !readonly }}" slot="button"
         class="primary-btn"
         disabled="{{ !textareaValue }}"
         @tap="submit">
@@ -97,10 +97,12 @@
     }
 
     data = {
+      readonly: true,
+      productName: '',
+      productImage: '',
       textareaValue: '',
       textareaMaxLen: 40,
-      canCancel: true,
-      cancelDate: ''
+      creatDate: ''
     }
 
     computed = {
@@ -112,15 +114,32 @@
         this.textareaValue = value && value.trim()
       },
       submit () {
-        this.canCancel = false
-        this.cancelDate = convertDate(new Date().getTime(), 'Y-M-D h:m:s')
+        this.$_request({
+          url: `/orderService/applyCancellation`,
+          method: 'POST',
+          data: {
+            id: this.id,
+            account: this.textareaValue
+          }
+        }).then(res => {
+          this.readonly = true
+          this.creatDate = convertDate(new Date().getTime(), 'Y-M-D h:m:s')
+        })
       }
     }
 
-    events = {
-    }
-
-    onLoad() {
+    onLoad({id, orderInfo, cancelData}) {
+      this.id = id
+      orderInfo = JSON.parse(orderInfo)
+      this.productName = orderInfo.productName
+      this.productImage = orderInfo.productImage
+      if (cancelData) {
+        cancelData = JSON.parse(cancelData)
+        this.readonly = true
+        this.textareaValue = cancelData.account
+      } else {
+        this.readonly = false
+      }
     }
   }
 </script>

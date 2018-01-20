@@ -17,7 +17,7 @@
     <view class="page-title-wrap">换绑请使用新的手机号验证</view>
     <TelInput 
       submitBtnText="确认换绑" 
-      codeType="2"
+      codeType="1"
       :value.sync="formData"
       @submit.user="handleSumbit"/>
   </view>
@@ -50,18 +50,29 @@
     methods = {
       handleSumbit () {
         this.$_request({
-          url: `/other/updatePhone?newPhone=${this.formData.phone}&newPhoneCode=${this.formData.code}`,
+          url: `/userInfo/updatePhone?phone=${this.formData.phone}&code=${this.formData.code}`,
           method: 'POST'
         }).then(content => {
-          content = content || {}
-          this.$_syncUserData({
-            token: content.token,
-            userInfo: content.userInfo
-          })
-          wx.showToast({
-            title: '手机换绑成功'
-          })
-          wx.navigateBack()
+          if (content) {
+            wx.showToast({
+              title: '手机换绑成功'
+            })
+            this.$_syncUserData({
+              token: content.token,
+              userInfo: content.userInfo
+            })
+            wx.navigateBack({
+              delta: 2
+            })
+          } else {
+            this.$_syncUserData({
+              token: null,
+              userInfo: null
+            })
+            wx.redirectTo({
+              url: '/pages/login'
+            })
+          }
         })
       }
     }
