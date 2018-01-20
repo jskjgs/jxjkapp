@@ -7,7 +7,7 @@
   <view id="page-signup-info">
     <PersonInfo 
       submitBtnText="完成注册"
-      @pickedsChange.user="handlePickedsChange"
+      @formDataChange.user="handleFormDataChange"
       @submit.user="handleSubmit">
     </PersonInfo>
   </view>
@@ -39,7 +39,8 @@
     }
 
     methods = {
-      handlePickedsChange (formData) {
+      // 编辑表单数据变化
+      handleFormDataChange (formData) {
         this.formData = formData
       },
       handleSubmit (formData) {
@@ -47,8 +48,6 @@
           url: '/patientInfo/',
           method: 'POST',
           data: {
-            type: 0,
-            userId: this.userId,
             ...this.formData
           }
         }).then(() => {

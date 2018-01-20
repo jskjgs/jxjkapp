@@ -99,6 +99,7 @@
     <view wx:if="{{ canEdit }}" class="flex--vcenter--sb edit-btn-wrap">
       <button 
         class="edit-btn"
+        disabled="{{ isMaster }}"
         @tap="unbindPatient">解绑</button>
       <button 
         class="edit-btn"
@@ -125,7 +126,7 @@
             :value.sync="cardId" />
           <view 
             wx:if="{{ !readonly }}"
-            class="item-input__tip flex--vcenter"><icon type="warn" size="14" color="#B8B8B8"/>只能绑定18岁以{{ isMaster ? '上' : '下' }}的未成年人</view>
+            class="item-input__tip flex--vcenter"><icon type="warn" size="14" color="#B8B8B8"/>只能绑定18岁以{{ isMaster ? '上的' : '下的未' }}成年人</view>
         </view>
       </view>
     </view>
@@ -284,6 +285,7 @@
     computed = {
       formData () {
         return {
+          type: this.isMaster ? 0 : 1,
           patientCard: this.patientCard,
           cardId: this.cardId,
           allergies: this.allergies,

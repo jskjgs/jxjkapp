@@ -58,8 +58,8 @@
               title: '手机换绑成功'
             })
             this.$_syncUserData({
-              token: content.token,
-              userInfo: content.userInfo
+              token: wx.getStorageSync('token'),
+              userInfo: content
             })
             wx.navigateBack({
               delta: 2
