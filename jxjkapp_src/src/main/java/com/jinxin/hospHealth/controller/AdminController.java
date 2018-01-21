@@ -67,7 +67,7 @@ public class AdminController extends TransformController {
                 getAdminUserId(),
                 "没有查询到用户的登陆信息.",
                 true);
-        HospAdminUserInfo hospAdminUserInfo = adminUserInfoService.selectOne(id);
+        HospAdminUserInfo hospAdminUserInfo = adminUserInfoService.selectOneAdmin(id);
         return ResponseWrapperSuccess(transform(hospAdminUserInfo));
     }
 
