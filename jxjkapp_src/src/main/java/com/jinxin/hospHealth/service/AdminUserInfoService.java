@@ -45,11 +45,11 @@ public class AdminUserInfoService implements BaseService<HospAdminUserInfo, Admi
                 Language.get("admin-user.id-exist"),
                 true);
         DPreconditions.checkNotNullAndEmpty(
-                po.getName(),
+                po.getAccount(),
                 "admin账号不能为空.",
                 true);
         DPreconditions.checkState(
-                selectOneByAccount(po.getName()) == null,
+                selectOneByAccount(po.getAccount()) == null,
                 "admin账号名称重复",
                 true);
         DPreconditions.checkState(
@@ -57,7 +57,7 @@ public class AdminUserInfoService implements BaseService<HospAdminUserInfo, Admi
                 Language.get("user.password-null"),
                 true);
         DPreconditions.checkState(
-                po.getPermissions() != null,
+                po.getAuthor() != null,
                 Language.get("user.permissions-null"),
                 true);
         DPreconditions.checkNotNull(
@@ -92,7 +92,7 @@ public class AdminUserInfoService implements BaseService<HospAdminUserInfo, Admi
                 "admin账号不能为空",
                 true);
         HospAdminUserInfo select = new HospAdminUserInfo();
-        select.setName(account);
+        select.setAccount(account);
         select.setEnable(EnableEnum.ENABLE_NORMAL.getCode());
         return hospAdminUserInfoMapper.selectOne(select);
     }

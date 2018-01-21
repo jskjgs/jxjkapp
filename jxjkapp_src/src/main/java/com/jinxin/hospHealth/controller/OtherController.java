@@ -103,7 +103,7 @@ public class OtherController extends MyBaseController {
             @ApiParam(value = "账号名称", required = true) @RequestParam(value = "account", required = true) String account,
             @ApiParam(value = "密码", required = true) @RequestParam(value = "password", required = true) String password) throws Exception {
         AdminInfoPO select = new AdminInfoPO();
-        select.setName(account);
+        select.setAccount(account);
         select.setPassword(password);
         HospAdminUserInfo hospAdminUserInfo =
                 DPreconditions.checkNotNull(

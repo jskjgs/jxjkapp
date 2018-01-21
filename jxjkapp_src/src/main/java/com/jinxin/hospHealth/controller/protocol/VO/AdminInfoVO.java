@@ -15,10 +15,14 @@ import java.util.Date;
 public class AdminInfoVO {
     @ApiModelProperty("用户ID")
     private Long id;
-    @ApiModelProperty("姓名")
-    private String name;
+    @ApiModelProperty("账号")
+    private String account;
+    @ApiModelProperty("昵称")
+    private String nickname;
     @ApiModelProperty("院区信息")
     private HospArea area;
+    @ApiModelProperty("职位")
+    private String title;
     @ApiModelProperty("头像")
     private String headPortrait;
     @ApiModelProperty("性别 0 女/1 男")
@@ -31,8 +35,10 @@ public class AdminInfoVO {
     private Integer age;
     @ApiModelProperty("生日")
     private Date birthday;
-    @ApiModelProperty("权限")
-    private String permission;
+    @ApiModelProperty("权限ID")
+    private Integer authorId;
+    @ApiModelProperty("权限值")
+    private String author;
     @ApiModelProperty("创建时间")
     private Date createDate;
     @ApiModelProperty("更新时间")

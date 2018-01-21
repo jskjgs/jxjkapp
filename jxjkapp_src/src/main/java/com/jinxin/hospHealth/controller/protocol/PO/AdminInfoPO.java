@@ -3,6 +3,7 @@ package com.jinxin.hospHealth.controller.protocol.PO;
 import com.doraemon.base.controller.bean.PageBean;
 import com.doraemon.base.util.MD5Encryption;
 import com.jinxin.hospHealth.dao.models.HospAdminUserInfo;
+import com.jinxin.hospHealth.dao.modelsEnum.AuthorEnum;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -15,14 +16,18 @@ import java.util.Date;
  */
 @Data
 @ApiModel("admin账号信息")
-public class AdminInfoPO extends PageBean{
+public class AdminInfoPO extends PageBean {
 
     @ApiModelProperty("用户ID")
     private Long id;
-    @ApiModelProperty("登陆名")
-    private String name;
+    @ApiModelProperty("账号")
+    private String account;
+    @ApiModelProperty("昵称")
+    private String nickname;
     @ApiModelProperty("院区ID")
     private Long areaId;
+    @ApiModelProperty("职位")
+    private String title;
     @ApiModelProperty("密码")
     private String password;
     @ApiModelProperty("头像")
@@ -35,16 +40,18 @@ public class AdminInfoPO extends PageBean{
     private String email;
     @ApiModelProperty("年龄")
     private Integer age;
+    @ApiModelProperty("权限标识 0 医生 1 主管 2 集团领导")
+    private Integer author;
     @ApiModelProperty("生日")
     private Date birthday;
-    @ApiModelProperty("权限 ,分割")
-    private String permissions;
 
-    public HospAdminUserInfo transform(Date createDate,Date updateDate) throws Exception {
+    public HospAdminUserInfo transform(Date createDate, Date updateDate) throws Exception {
         HospAdminUserInfo hospAdminUserInfo = new HospAdminUserInfo();
         hospAdminUserInfo.setId(this.id);
-        hospAdminUserInfo.setName(this.name);
+        hospAdminUserInfo.setAccount(this.account);
+        hospAdminUserInfo.setNickname(this.nickname);
         hospAdminUserInfo.setAreaId(this.areaId);
+        hospAdminUserInfo.setTitle(this.title);
         hospAdminUserInfo.setPassword(
                 this.password != null
                         ? MD5Encryption.getMD5(this.password)
@@ -55,7 +62,10 @@ public class AdminInfoPO extends PageBean{
         hospAdminUserInfo.setEmail(this.email);
         hospAdminUserInfo.setAge(this.age);
         hospAdminUserInfo.setBirthday(this.birthday);
-        hospAdminUserInfo.setPermissions(this.permissions);
+        hospAdminUserInfo.setAuthor(
+                this.author != null
+                        ? AuthorEnum.getByCode(this.author).getCode() :
+                        null);
         hospAdminUserInfo.setCreateDate(createDate);
         hospAdminUserInfo.setUpdateDate(updateDate);
         return hospAdminUserInfo;

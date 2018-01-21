@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/doctorUser")
 @Slf4j
-@Api(description = "医生端用户相关接口")
+@Api(description = "医生端用户相关接口 ---勿用废弃")
 public class DoctorUserController extends TransformController {
 
     @Autowired

@@ -2,6 +2,7 @@ package com.jinxin.hospHealth.dao.models;
 
 import com.jinxin.hospHealth.controller.protocol.VO.AdminInfoVO;
 import com.jinxin.hospHealth.controller.protocol.VO.OrderVO;
+import com.jinxin.hospHealth.dao.modelsEnum.AuthorEnum;
 import com.jinxin.hospHealth.dao.modelsEnum.SexEnum;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -18,10 +19,14 @@ public class HospAdminUserInfo {
     @Id
     @ApiModelProperty("用户ID")
     private Long id;
-    @ApiModelProperty("姓名")
-    private String name;
+    @ApiModelProperty("账号")
+    private String account;
+    @ApiModelProperty("昵称")
+    private String nickname;
     @ApiModelProperty("院区ID")
     private Long areaId;
+    @ApiModelProperty("职位")
+    private String title;
     @ApiModelProperty("密码")
     private String password;
     @ApiModelProperty("头像")
@@ -37,7 +42,7 @@ public class HospAdminUserInfo {
     @ApiModelProperty("生日")
     private Date birthday;
     @ApiModelProperty("权限")
-    private String permissions;
+    private Integer author;
     @ApiModelProperty("创建时间")
     private Date createDate;
     @ApiModelProperty("更新时间")
@@ -52,14 +57,23 @@ public class HospAdminUserInfo {
         adminInfoVO.setArea(hospArea);
         adminInfoVO.setUpdateDate(this.updateDate);
         adminInfoVO.setAge(this.age);
+        adminInfoVO.setTitle(this.title);
         adminInfoVO.setBirthday(this.birthday);
         adminInfoVO.setCreateDate(this.createDate);
         adminInfoVO.setEmail(this.email);
         adminInfoVO.setHeadPortrait(this.headPortrait);
-        adminInfoVO.setPermission(this.permissions);
+        adminInfoVO.setAuthor(
+                this.author != null
+                        ? AuthorEnum.getByCode(this.author).getDesc()
+                        : null);
+        adminInfoVO.setAuthorId(
+                this.author != null
+                        ? AuthorEnum.getByCode(this.author).getCode()
+                        : null);
         adminInfoVO.setPhone(this.phone);
         adminInfoVO.setSex(this.sex);
-        adminInfoVO.setName(this.name);
+        adminInfoVO.setAccount(this.account);
+        adminInfoVO.setNickname(this.nickname);
         return adminInfoVO;
     }
 
