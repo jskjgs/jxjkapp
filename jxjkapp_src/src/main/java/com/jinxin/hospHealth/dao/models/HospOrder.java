@@ -63,9 +63,7 @@ public class HospOrder {
         orderVO.setPaymentCode(this.paymentCode);
         orderVO.setPaymentType(this.paymentType);
         orderVO.setPromotionIds(this.promotionIds);
-        orderVO.setPayState(this.payState != null
-                ? OrderPayStateEnum.getByCode(this.payState).getCode()
-                : null);
+        orderVO.setPayState(this.payState);
         orderVO.setType(this.type);
         orderVO.setUpdateDate(this.updateDate);
         orderVO.setUser(userInfoVO);

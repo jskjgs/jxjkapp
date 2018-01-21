@@ -30,6 +30,16 @@ public class HospOrderServiceDetails {
     private Long doctorAreaId;
     @ApiModelProperty("医生用户ID")
     private Long doctorUserId;
+    @ApiModelProperty("合作的医生用户ID")
+    private Long associatesId;
+    @ApiModelProperty("医生签字")
+    private String doctorSign;
+    @ApiModelProperty("用户签字")
+    private String userSign;
+    @ApiModelProperty("消费备注")
+    private String consumptionNote;
+    @ApiModelProperty("购买备注")
+    private String buyNote;
     @ApiModelProperty("医生评价")
     private String doctorComment;
     @ApiModelProperty("订单评价ID")
@@ -48,6 +58,7 @@ public class HospOrderServiceDetails {
     public OrderServiceDetailsVO transform(
             OrderProductVO orderProduct,
             DoctorUserInfoVO doctorUserInfoVO,
+            DoctorUserInfoVO associates,
             HospOrderGrade grade,
             HospArea area) {
         OrderServiceDetailsVO vo = new OrderServiceDetailsVO();
@@ -56,10 +67,15 @@ public class HospOrderServiceDetails {
         vo.setCode(this.code);
         vo.setOrderProduct(orderProduct);
         vo.setQty(qty);
+        vo.setAssociates(associates);
         vo.setArea(area);
         vo.setDoctorUserInfo(doctorUserInfoVO);
         vo.setDoctorComment(this.doctorComment);
         vo.setGrade(grade);
+        vo.setBuyNote(this.buyNote);
+        vo.setConsumptionNote(this.consumptionNote);
+        vo.setDoctorSign(this.doctorSign);
+        vo.setUserSign(this.userSign);
         vo.setState(
                 this.state != null
                         ? OrderServiceDetailsStateEnum.getByCode(this.state).getDesc()
