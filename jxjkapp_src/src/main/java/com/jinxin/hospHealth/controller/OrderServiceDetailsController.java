@@ -5,20 +5,15 @@ import com.doraemon.base.controller.bean.PageBean;
 import com.doraemon.base.guava.DPreconditions;
 import com.github.pagehelper.PageInfo;
 import com.jinxin.hospHealth.controller.protocol.PO.OrderServiceDetailsPO;
-import com.jinxin.hospHealth.controller.protocol.VO.DoctorUserInfoVO;
 import com.jinxin.hospHealth.controller.protocol.VO.OrderServiceDetailsVO;
 import com.jinxin.hospHealth.dao.models.*;
-import com.jinxin.hospHealth.dao.modelsEnum.OrderServiceDetailsStateEnum;
 import com.jinxin.hospHealth.service.*;
-import com.sun.deploy.net.proxy.pac.PACFunctions;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
