@@ -126,11 +126,11 @@ public class AdminController extends TransformController {
                 "toker不能为空.",
                 true);
         DPreconditions.checkNotNull(
-                userInfoService.selectOne(id),
+                adminUserInfoService.selectOne(id),
                 "用户没有查询到.",
                 true);
-        redisOperation.usePool().del(userTokenPrefix+toker);
-        redisOperation.usePool().del(userTokenPrefix+id);
+        redisOperation.usePool().del(adminTokenPrefix+toker);
+        redisOperation.usePool().del(adminTokenPrefix+id);
         return ResponseWrapperSuccess(null);
     }
 }
