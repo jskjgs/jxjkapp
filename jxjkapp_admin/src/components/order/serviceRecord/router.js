@@ -7,6 +7,7 @@ const permissionId = INDEX.meta.permissionId
 
 export default injectPermissionId([
   Object.assign({}, INDEX, {
-    component: resolve => require(['./Index'], resolve)
+    component: resolve => require(['./index'], resolve)
   })
 ], permissionId)
+

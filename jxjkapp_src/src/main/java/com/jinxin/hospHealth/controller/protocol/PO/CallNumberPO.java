@@ -15,5 +15,7 @@ public class CallNumberPO {
     String phone;
     @ApiModelProperty("预约订单商品ID")
     Long orderProductId;
+    @ApiModelProperty("排号")
+    Long number;
 
 }

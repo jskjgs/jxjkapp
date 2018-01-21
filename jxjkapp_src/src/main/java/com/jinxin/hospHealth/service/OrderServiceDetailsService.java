@@ -145,7 +145,6 @@ public class OrderServiceDetailsService implements BaseService<HospOrderServiceD
      */
     public void confirm(OrderServiceDetailsPO po, Long doctorUserId) throws Exception {
         OrderServiceDetailsPO select = new OrderServiceDetailsPO();
-        select.setDoctorUserId(doctorUserId);
         select.setId(po.getId());
         select.setState(OrderServiceDetailsStateEnum.NORMAL.getCode());
         DPreconditions.checkNotNull(

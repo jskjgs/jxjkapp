@@ -39,6 +39,12 @@ public class HospProductSku extends PageBean{
     @ApiModelProperty("更新时间")
     private Date updateDate;
 
+    public String getField(){
+        return this.field == null
+                ? " update_date DESC "
+                : this.field;
+    }
+
     public ProductSkuVO transform(ProductVO product,HospArea area){
         ProductSkuVO productSkuVO = new ProductSkuVO();
         productSkuVO.setId(this.id);

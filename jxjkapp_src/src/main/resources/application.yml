@@ -40,6 +40,8 @@ nginx:
 call-number:
     #排队叫号系统等待的队列
     waiting-que-name: call-number-waiting-que
+    #排队叫号系统等待的队列 --- 计数器
+    waiting-que-number: call-number-waiting-number
     #排队叫号系统呼叫过的号码队列
     after-call-que-name: after-call-que
 

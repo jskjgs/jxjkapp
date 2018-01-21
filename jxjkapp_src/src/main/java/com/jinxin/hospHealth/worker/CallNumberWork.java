@@ -23,6 +23,8 @@ public class CallNumberWork {
 
     @Value("${call-number.waiting-que-name}")
     String waitingQueName;
+    @Value("${call-number.waiting-que-number}")
+    String waitingQueNumber;
 
     /**
      * 每天晚上清理当天的排队叫号队列
@@ -33,6 +35,7 @@ public class CallNumberWork {
         PageInfo<HospArea> pageInfo = hospAreaService.selectAll(null);
         for(HospArea hospArea : pageInfo.getList()){
             redisOperation.usePool().del(waitingQueName+hospArea.getId());
+            redisOperation.usePool().del(waitingQueNumber+hospArea.getId());
         }
     }
 }
