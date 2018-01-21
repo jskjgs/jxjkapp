@@ -288,7 +288,7 @@
             <view class="item-btn-wrap flex">
               <button 
                 @tap="toCancel({{ item.id }}, {{ item }})" 
-                class="cancel-btn {{ item.state === '申请作废' ? 'canceling' : '' }}">{{ item.state === '申请作废' ? '处理中' : '申请作废' }}</button>
+                class="cancel-btn {{ item.state + '' === '98' ? 'canceling' : '' }}">{{ item.state + '' === '98' ? '处理中' : '申请作废' }}</button>
               <button 
                 @tap="toComment({{ item.id }}, {{ item }})" 
                 class="comment-btn {{ !!item.grade ? 'commented' : '' }}"
@@ -306,6 +306,11 @@
 
   import CustomPage from '@/components/customPage'
   import listPageMixin from '@/mixins/listPage'
+    // NORMAL(0,"指派中"),
+  //   IN_SERVICE(1,"服务中"),
+  //   COMPLETE(2,"已完成"),
+  //   APPLY_CANCELLATION(98,"申请作废"),
+  //   CANCELLATION(99,"已作废");
 
 //   评价和申请作废状态说明：
 
@@ -355,7 +360,7 @@
       },
       toCancel (id, item) {
         wx.navigateTo({
-          url: `/pages/health_cancel?id=${id}&orderInfo=${JSON.stringify(this.orderInfo)}` + (item.state === '申请作废' ? `&cancelData=${JSON.stringify({account: item.account})}` : '')
+          url: `/pages/health_cancel?id=${id}&orderInfo=${JSON.stringify(this.orderInfo)}` + (item.state + '' === '98' ? `&cancelData=${JSON.stringify({account: item.account})}` : '')
         })
       }
     }

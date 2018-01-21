@@ -53,18 +53,30 @@ Promise.prototype.finally = function (callback) {
     },
     // 核对是否登陆
     '$_checkLogin': {
-      value (routeFn = 'redirectTo', toLogin = true) {
+      value (routeFn = 'switchTab', toLogin = true) {
         const userInfo = wx.getStorageSync('userInfo')
         const token = wx.getStorageSync('token')
         if (!(userInfo && token)) {
           if (toLogin) {
             wx[routeFn]({
-              url: '/pages/login'
+              url: '/pages/account'
             })
           }
           return false
         }
         return true
+      }
+    },
+    // 处理页面进入的逻辑（判断是否登陆）
+    '$_onPageShow': {
+      value (vm, next) {
+        if (vm.$_checkLogin()) {
+          const token = vm.$parent.globalData.token
+          if (vm.$$token !== token) {
+            vm.$$token = token
+            next()
+          }
+        }
       }
     },
     // api请求

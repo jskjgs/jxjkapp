@@ -113,6 +113,8 @@
       },
       // 提交签名
       handleSubmitDraw () {
+        this.visible = false
+        this.$apply()
       }
     }
 

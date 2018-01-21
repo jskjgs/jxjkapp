@@ -67,6 +67,18 @@ Promise.prototype.finally = function (callback) {
         return true
       }
     },
+    // 处理页面进入的逻辑（判断是否登陆）
+    '$_onPageShow': {
+      value (vm, next) {
+        if (vm.$_checkLogin()) {
+          const token = vm.$parent.globalData.token
+          if (vm.$$token !== token) {
+            vm.$$token = token
+            next()
+          }
+        }
+      }
+    },
     // api请求
     '$_request': {
       value (cfg, {showLoading = true, toLoginFn = 'redirectTo'} = {}) {
