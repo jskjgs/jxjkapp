@@ -45,7 +45,7 @@ public class OrderServiceDetailsPO extends PageBean{
     private String doctorComment;
     @ApiModelProperty("订单评价ID")
     private Long gradeId;
-    @ApiModelProperty("状态")
+    @ApiModelProperty("状态 0 指派中/1 服务中/2 已完成 /98 申请作废 99 已作废")
     private Integer state;
     @ApiModelProperty("使用的地址")
     private String address;
