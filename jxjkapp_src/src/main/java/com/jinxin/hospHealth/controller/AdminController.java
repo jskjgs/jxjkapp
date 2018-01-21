@@ -108,9 +108,17 @@ public class AdminController extends TransformController {
     @ResponseBody
     public JSONObject setStateAsInvalid(
             @ApiParam(value = "admin用户Id", required = true) @RequestParam(value = "id", required = true) Long id) throws Exception {
-        DPreconditions.checkNotNull(
+        Long adminUserId = DPreconditions.checkNotNull(
                 getAdminUserId(),
-                "adminId 为空",
+                "没有查询到用户的登陆信息.",
+                true);
+        DPreconditions.checkNotNull(
+                id,
+                "传入的ID不能为空.",
+                true);
+        DPreconditions.checkState(
+                !adminUserId.equals(id),
+                "不能删除自己的账户.",
                 true);
         adminUserInfoService.setStateAsInvalid(id);
         return ResponseWrapperSuccess(null);
@@ -129,8 +137,8 @@ public class AdminController extends TransformController {
                 adminUserInfoService.selectOne(id),
                 "用户没有查询到.",
                 true);
-        redisOperation.usePool().del(adminTokenPrefix+toker);
-        redisOperation.usePool().del(adminTokenPrefix+id);
+        redisOperation.usePool().del(adminTokenPrefix + toker);
+        redisOperation.usePool().del(adminTokenPrefix + id);
         return ResponseWrapperSuccess(null);
     }
 }
