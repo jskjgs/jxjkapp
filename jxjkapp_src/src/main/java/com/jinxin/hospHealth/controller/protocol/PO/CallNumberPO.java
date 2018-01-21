@@ -13,7 +13,7 @@ public class CallNumberPO {
 
     @ApiModelProperty("手机号码")
     String phone;
-    @ApiModelProperty("预约商品ID")
-    Long productSkuId;
+    @ApiModelProperty("预约订单商品ID")
+    Long orderProductId;
 
 }

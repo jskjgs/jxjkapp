@@ -47,6 +47,8 @@ public class TransformController extends MyBaseController {
     DoctorUserInfoService doctorUserInfoService;
     @Autowired
     AdminUserInfoService adminUserInfoService;
+    @Autowired
+    PatientInfoService patientInfoService;
 
     public OrderServiceRollbackVO transform(HospOrderServiceRollback hospOrderServiceRollback) throws Exception {
         if (hospOrderServiceRollback == null)
@@ -62,20 +64,19 @@ public class TransformController extends MyBaseController {
         return hospOrderServiceRollback.transform(orderServiceDetailsVO, adminInfoVO);
     }
 
-    public CallNumberVO transform(CallNumberPO callNumberPO) {
+    public CallNumberVO transform(CallNumberPO callNumberPO) throws Exception {
         if (callNumberPO == null)
             return null;
         UserInfoVO userInfoVO =
                 callNumberPO.getPhone() != null
                         ? transform(userInfoService.selectOneByPhone(callNumberPO.getPhone()))
                         : null;
-        ProductSkuVO productSkuVO =
-                callNumberPO.getProductSkuId() != null
-                        ? transform(skuService.selectOne(callNumberPO.getProductSkuId()))
-                        : null;
+        OrderProductVO orderProductVO = callNumberPO.getOrderProductId() != null
+                ? transform(orderProductService.selectOne(callNumberPO.getOrderProductId()))
+                : null;
         CallNumberVO vo = new CallNumberVO();
         vo.setUserInfo(userInfoVO);
-        vo.setProductSkuVO(productSkuVO);
+        vo.setOrderProduct(orderProductVO);
         return vo;
     }
 
@@ -237,7 +238,11 @@ public class TransformController extends MyBaseController {
         orderProductPO.setOrderId(hospOrder.getId());
         PageInfo<OrderProductVO> pageInfo =
                 transformByHospOrderProduct(orderProductService.select(orderProductPO));
-        return hospOrder.transform(userInfoVO, pageInfo.getList(), adminInfoVO);
+        HospPatientInfo hospPatientInfo =
+                hospOrder.getPatientInfoId() != null
+                        ? patientInfoService.selectOne(hospOrder.getPatientInfoId())
+                        : null;
+        return hospOrder.transform(userInfoVO,pageInfo.getList(),adminInfoVO,hospPatientInfo);
     }
 
     public UserInfoVO transform(HospUserInfo hospUserInfo) {

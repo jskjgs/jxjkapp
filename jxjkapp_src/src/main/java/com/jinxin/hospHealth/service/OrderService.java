@@ -47,6 +47,8 @@ public class OrderService implements BaseService<HospOrder, OrderInfoPO> {
     UserBalanceService userBalanceService;
     @Autowired
     OrderServiceDetailsService orderServiceDetailsService;
+    @Autowired
+    PatientInfoService patientInfoService;
 
 
     /**
@@ -81,6 +83,10 @@ public class OrderService implements BaseService<HospOrder, OrderInfoPO> {
         DPreconditions.checkState(
                 orderInfoPO.getId() == null,
                 "新增订单,id不能填写.",
+                true);
+        HospPatientInfo hospPatientInfo = DPreconditions.checkNotNull(
+                patientInfoService.selectOneByIdCard(orderInfoPO.getIdCard()),
+                "没有查询到就诊人信息",
                 true);
         DPreconditions.checkNotNull(
                 userInfoService.selectOne(orderInfoPO.getUserId()),
@@ -117,6 +123,7 @@ public class OrderService implements BaseService<HospOrder, OrderInfoPO> {
                 new Date(),
                 null,
                 ShowEnum.DISPLAY.getCode());
+        add.setPatientInfoId(hospPatientInfo.getId());
         add.setAdminUserId(orderInfoPO.getAdminUserId());
         return add;
     }

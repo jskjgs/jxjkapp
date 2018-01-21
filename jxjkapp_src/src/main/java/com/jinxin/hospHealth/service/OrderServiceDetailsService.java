@@ -58,7 +58,7 @@ public class OrderServiceDetailsService implements BaseService<HospOrderServiceD
                 true);
         DPreconditions.checkNotNull(
                 po.getQty(),
-                Language.get("docker.id-null"),
+                "次数不能为空",
                 true);
         DPreconditions.checkNotNull(
                 po.getDoctorAreaId(),

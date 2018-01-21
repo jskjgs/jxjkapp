@@ -13,6 +13,6 @@ public class CallNumberVO {
 
     @ApiModelProperty("用户信息")
     UserInfoVO userInfo;
-    @ApiModelProperty("商品SKU信息")
-    ProductSkuVO productSkuVO;
+    @ApiModelProperty("订单商品信息")
+    OrderProductVO orderProduct;
 }
