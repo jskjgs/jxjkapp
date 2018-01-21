@@ -22,7 +22,6 @@
       <view class="btn-wrap flex--hcenter">
         <button 
           class="primary-btn"
-          disabled="{{!isLogin}}"
           @tap="submit">{{ submitBtnText }}</button>
       </view>
     </view>
@@ -36,9 +35,6 @@
     }
 
     props = {
-      title: {
-        type: String
-      },
       submitBtnText: {
         type: String
       }
@@ -47,8 +43,6 @@
     mixins = []
 
     data = {
-      isLogin: true,
-      userId: 0
     }
 
     watch = {

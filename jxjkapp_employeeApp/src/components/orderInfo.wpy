@@ -41,27 +41,32 @@
     </view>
     <view class="service-item main-bg">
       <view class="input-item flex--vcenter--sb">
-        <text class="item-label">诊断模版：</text>
+        <text class="item-label">当日症状：</text>
         <view wx:if="{{ readonly }}">
           {{ storageData.templateName != undefined && storageData.templateName !== '' ? storageData.templateName : '未选择' }}
         </view>
-        <picker 
+        <!-- <picker 
           wx:else
           bindchange="handleTemplatePickerChange" 
           value="{{ templatePickerIndex }}" 
           range="{{ templatePickerRange }}"
           range-key="label">
           {{ storageData.templateName != undefined && storageData.templateName !== '' ? storageData.templateName : '请选择' }}<text class="arrow-rt"></text>
-        </picker>
+        </picker> -->
       </view>
       <block wx:if="{{ readonly }}">
         <view wx:if="{{ templateContent }}">{{ templateContent }}</view>
       </block>
-      <view wx:else class="input-item">
-        <DiagnoseInput 
+      <view wx:else class="input-item" style="padding-top: 0;">
+        <!-- <DiagnoseInput 
           type="textarea" 
           class="diagnose-input"
           :disabled.sync="diagnoseInputDisabled"
+          :value.sync="templateContent"/> -->
+        <DiagnoseInput 
+          type="textarea" 
+          class="diagnose-input"
+          placeholder="请输入当日症状"
           :value.sync="templateContent"/>
       </view>
     </view>
@@ -101,7 +106,10 @@
       </view>
     </view>
     <view wx:if="{{ !readonly }}" class="btn-wrap flex--center">
-      <button class="primary-btn" @tap="submit">确认提交</button>
+      <button 
+        class="primary-btn" 
+        disabled="{{ !(formData.doctorSignTouchList.length && formData.userSignTouchList.length) }}"
+        @tap="submit">确认提交</button>
     </view>
   </view>
 </template>
@@ -123,6 +131,9 @@
     }
 
     props = {
+      initData: {
+        type: Object
+      },
       readonly: {
         type: Boolean,
         default: false
@@ -138,7 +149,7 @@
       partnerPickerIndex: 0, // 合伙人类型选择
       partnerPickerRange: [{ // 合伙人类型列表
         label: '单独完成',
-        value: 0
+        value: -1
       }, {
         label: '合作完成',
         value: 1
@@ -152,9 +163,9 @@
         value: 2
       }],
       storageData: {
-        serviceName: '服务项目的名称', // 服务名称
-        userName: '王晓璐', // 用户姓名
-        userTel: '12321232222', // 用户电话
+        serviceName: '', // 服务名称
+        userName: '', // 用户姓名
+        userTel: '', // 用户电话
         partner: '', // 合伙人
         partnerId: '', // 合伙人id
         templateId: '', // 诊断模板id
@@ -179,6 +190,16 @@
     }
 
     watch = {
+      initData (newVal) {
+        if (newVal) {
+          const { templateContent, consumeInfo, purchaseInfo, ...rest } = newVal
+          this.templateContent = templateContent || ''
+          this.consumeInfo = consumeInfo || ''
+          this.purchaseInfo = purchaseInfo || ''
+          Object.assign(this.storageData, rest)
+          this.$apply()
+        }
+      },
       formData (newVal) {
         if (newVal.templateName === '') {
           this.diagnoseInputDisabled = true
@@ -206,7 +227,7 @@
       handlePartnerPickerChange ({ detail }) {
         const index = detail.value
         const picked = this.partnerPickerRange[index]
-        if (picked.value === 0) {
+        if (picked.value === -1) {
           this.storageData.partner = picked.label
           this.storageData.partnerId = picked.value
         } else {
@@ -217,6 +238,7 @@
       handlePartnerPicked (partner) {
         console.log('partner', partner)
         this.storageData.partner = partner.name
+        this.storageData.partnerId = partner.id
       },
       // 模板选择
       handleTemplatePickerChange ({ detail }) {

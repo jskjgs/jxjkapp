@@ -1,7 +1,7 @@
 <template>
   <CustomPage :isLastPage.sync="isLastPage">
     <view id="page-service-history">
-      <view class="flex--vcenter--sb list-top-tools">
+      <view class="flex--vcenter--sb list-top-tools" hidden>
         <ServiceTypePicker :value.sync="serviceType"/>
         <picker mode="date">
           <view class="date-flex flex--vcenter">
@@ -15,7 +15,7 @@
         <repeat for="{{ listData }}" key="index" item="item" index="index">
           <view class="history-box" @tap="serviceDetail">
             <view class="history-head">
-              <text class="history-name">服务项目的名称</text>
+              <text class="history-name">{{ item.orderProductName }}</text>
             </view>
             <view class="history-msg">
               <view class="history-user">
@@ -24,7 +24,7 @@
               </view>
               <view class="history-user">
                 <text class="history-user-title">：{{ item.userName }}</text>
-                <text class="history-user-title">：{{ item.phoneNumber }}</text>
+                <text class="history-user-title">：{{ item.userTel }}</text>
               </view>
             </view>
           </view>
@@ -40,6 +40,12 @@
   import CustomPage from '@/components/customPage'
 
   import listPageMixin from '@/mixins/listPage'
+
+  // NORMAL(0,"指派中"),
+  //   IN_SERVICE(1,"服务中"),
+  //   COMPLETE(2,"已完成"),
+  //   APPLY_CANCELLATION(98,"申请作废"),
+  //   CANCELLATION(99,"已作废");
 
   export default class serviceHistory extends wepy.page {
     config = {
@@ -65,9 +71,9 @@
     }
 
     computed = {
-    }
-
-    watch = {
+      userInfo () {
+        return this.$parent.globalData.userInfo
+      }
     }
 
     methods = {
@@ -83,9 +89,12 @@
     events = {
     }
     onShow () {
+      this.$_onPageShow(this, () => {
+        this.initPageData()
+      })
     }
+
     onLoad () {
-      this.initPageData()
     }
 
     initPageData () {
@@ -94,11 +103,24 @@
     }
 
     getList () {
-      this.initData({
-        url: '/news/all',
+      return this.initData({
+        url: '/orderService/query',
         method: 'POST',
-        data: {}
-      }, function () {})
+        data: {
+          doctorUserId: this.userInfo.id,
+          state: 2
+        }
+      }, function (listItem) {
+        const orderProduct = listItem.orderProduct || {}
+        const userInfo = listItem.userInfo || {}
+        return {
+          id: listItem.id,
+          userName: userInfo.name,
+          userTel: userInfo.phone,
+          updateDate: this.$_convertDate(listItem.updateDate, 'Y-M-D h:m:s'),
+          orderProductName: orderProduct.productSkuName
+        }
+      })
     }
   }
 </script>
@@ -108,7 +130,7 @@
 @import '../assets/style/variables/size.scss';
 
 #page-service-history {
-  padding-top: $topTools_H;
+  // padding-top: $topTools_H;
 
   .list-top-tools {
     .date {

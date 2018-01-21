@@ -72,6 +72,7 @@ export default class ListPageMixin extends wepy.mixin {
     }).catch(() => {
       if (pageNum > 1) {
         wx.showToast({
+          image: '../assets/images/error.png',
           title: '加载失败'
         })
       } else {

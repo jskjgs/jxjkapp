@@ -84,7 +84,8 @@
 
   export default class Index extends wepy.page {
     config = {
-      navigationBarTitleText: '项目预约'
+      navigationBarTitleText: '项目预约',
+      enablePullDownRefresh: true
     }
     components = {
       CustomPage
@@ -124,9 +125,10 @@
       this.id = id
       this.initPageData()
     }
+
     initPageData () {
       this.pageNum = 1
-      this.initData({
+      return this.initData({
         url: '/product/',
         data: {
           id: this.id

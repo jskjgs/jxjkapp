@@ -2,6 +2,7 @@
   <view id="page-serviceDetail">
     <OrderInfo 
       @submit.user="handleSubmit"
+      :initData.sync="initData"
       :readonly.sync="readonly">
     </OrderInfo>
   </view>
@@ -23,7 +24,8 @@
     mixins = []
 
     data = {
-      readonly: false
+      readonly: false,
+      initData: {}
     }
 
     computed = {
@@ -33,13 +35,34 @@
     }
 
     methods = {
-      handleSumbit () {
+      handleSubmit (formData) {
+        const sendData = {
+          id: this.id,
+          associatesId: formData.partnerId === -1 ? undefined : formData.partnerId,
+          doctorSign: formData.doctorSignTouchList,
+          doctorComment: formData.templateContent,
+          consumptionNote: formData.consumeInfo,
+          userSign: formData.userSignTouchList,
+          buyNote: formData.purchaseInfo
+        }
+        this.$_request({
+          url: '/orderService/doctor/confirm',
+          method: 'POST',
+          data: sendData
+        })
       }
     }
 
     events = {
     }
-    onLoad () {
+    onLoad ({id, userInfo, orderProductName}) {
+      this.id = id
+      userInfo = JSON.parse(userInfo)
+      this.initData = Object.assign({}, this.initData, {
+        serviceName: orderProductName,
+        userName: userInfo.name,
+        userTel: userInfo.phone
+      })
     }
     onUnload () {
     }

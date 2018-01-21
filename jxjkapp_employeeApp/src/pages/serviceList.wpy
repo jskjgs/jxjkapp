@@ -1,7 +1,7 @@
 <template>
   <CustomPage :isLastPage.sync="isLastPage">
     <view id="page-service-list">
-      <view class="list-top-tools flex--vcenter--sb">
+      <view class="list-top-tools flex--vcenter--sb" hidden>
         <ServiceTypePicker :value.sync="serviceType"/>
         <view class="scan-flex flex--vcenter">
           <image class="scan-img" src="../assets/images/scan.png" mode="aspectFit"></image>
@@ -12,8 +12,8 @@
         <repeat for="{{ listData }}" key="index" item="item" index="index">
           <view class="service-box">
             <view class="service-head">
-              <text class="service-name">服务项目名称</text>
-              <text class="service-time">派单时间：{{ item.orderAssignTime }}</text>
+              <text class="service-name">{{ item.orderProductName }}</text>
+              <text class="service-time">派单时间：{{ item.createDate }}</text>
             </view>
             <view class="service-msg">
               <view class="service-user">
@@ -22,11 +22,11 @@
               </view>
               <view class="service-user">
                 <text class="service-user-title">：{{ item.userName }}</text>
-                <text class="service-user-title">：{{ item.phoneNumber }}</text>
+                <text class="service-user-title">：{{ item.userTel }}</text>
               </view>
             </view>
             <view class="service-bto">
-              <view class="service-btn" @tap="acceptOrder">接单</view>
+              <view class="service-btn" @tap="acceptOrder({{item.id}}, {{ item }})">接单</view>
             </view>
           </view>
         </repeat>
@@ -56,19 +56,13 @@
     mixins = [listPageMixin]
 
     data = {
-      serviceType: '',
-      searchLoading: false, //"上拉加载"的变量，默认false，隐藏
-      searchLoadingComplete: false,  //“没有数据”的变量，默认false，隐藏
-      list: [
-      {'orderAssignTime': '2017-10-21', 'userName': '王晓路', 'phoneNumber': '15928113204'},
-      {'orderAssignTime': '2017-10-21', 'userName': '王晓路', 'phoneNumber': '15928113204'},
-      {'orderAssignTime': '2017-10-21', 'userName': '王晓路', 'phoneNumber': '15928113204'}]
+      serviceType: ''
     }
 
     computed = {
-    }
-
-    watch = {
+      userInfo () {
+        return this.$parent.globalData.userInfo
+      }
     }
 
     methods = {
@@ -84,9 +78,9 @@
           }
         })
       },
-      acceptOrder () {
+      acceptOrder (id, item) {
         wx.navigateTo({
-          url: '/pages/serviceRecord'
+          url: `/pages/serviceRecord?id=${id}&userInfo=${JSON.stringify(item.userInfo)}&orderProductName=${item.orderProductName}`
         })
       }
     }
@@ -94,10 +88,10 @@
     }
 
     onShow () {
-      //isLogin(true)
-    }
-    onLoad () {
-      this.initPageData()
+      console.log('this.getCurrentPages()', this.getCurrentPages())
+      this.$_onPageShow(this, () => {
+        this.initPageData()
+      })
     }
 
     initPageData () {
@@ -106,11 +100,24 @@
     }
 
     getList () {
-      this.initData({
-        url: '/news/all',
+      return this.initData({
+        url: '/orderService/doctor/all?state=0',
         method: 'POST',
-        data: {}
-      }, function () {})
+        data: {
+          pageSize: 5
+        }
+      }, (listItem) => {
+        const orderProduct = listItem.orderProduct || {}
+        const userInfo = listItem.userInfo || {}
+        return {
+          id: listItem.id,
+          userInfo: userInfo,
+          userName: userInfo.name,
+          userTel: userInfo.phone,
+          createDate: this.$_convertDate(listItem.createDate, 'Y-M-D h:m:s'),
+          orderProductName: orderProduct.productSkuName
+        }
+      })
     }
   }
 </script>
@@ -120,7 +127,7 @@
 @import '../assets/style/variables/size.scss';
 
 #page-service-list {
-  padding-top: $topTools_H;
+  // padding-top: $topTools_H;
 
   .list-top-tools {
     .scan {

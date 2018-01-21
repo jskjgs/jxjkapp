@@ -2,6 +2,11 @@ import wepy from 'wepy'
 
 export default class PageMixin extends wepy.mixin {
   initData (reqParams, toLoginFn = 'redirectTo') {
+    this.$invoke('CustomPage', 'initPage', {
+      noData: false,
+      dataInited: false,
+      noServer: false
+    })
     if (reqParams) {
       this.reqParams = reqParams
     } else {
