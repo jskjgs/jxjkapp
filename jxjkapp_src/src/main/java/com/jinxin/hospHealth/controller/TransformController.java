@@ -46,6 +46,20 @@ public class TransformController extends MyBaseController {
     @Autowired
     AdminUserInfoService adminUserInfoService;
 
+    public OrderServiceRollbackVO transform(HospOrderServiceRollback hospOrderServiceRollback) throws Exception {
+        if (hospOrderServiceRollback == null)
+            return null;
+        AdminInfoVO adminInfoVO =
+                hospOrderServiceRollback.getAdminUserId() != null
+                        ? transform(adminUserInfoService.selectOne(hospOrderServiceRollback.getAdminUserId()))
+                        : null;
+        OrderServiceDetailsVO orderServiceDetailsVO =
+                hospOrderServiceRollback.getOrderServiceDetailsId() != null
+                        ? transform(orderServiceDetailsService.selectOne(hospOrderServiceRollback.getOrderServiceDetailsId()))
+                        : null;
+        return hospOrderServiceRollback.transform(orderServiceDetailsVO,adminInfoVO);
+    }
+
     public CallNumberVO transform(CallNumberPO callNumberPO) {
         if (callNumberPO == null)
             return null;
@@ -176,7 +190,7 @@ public class TransformController extends MyBaseController {
         DoctorUserInfoVO associates =
                 hospOrderServiceDetails.getAssociatesId() != null
                         ? transform(doctorUserInfoService.selectOne(
-                                hospOrderServiceDetails.getAssociatesId()))
+                        hospOrderServiceDetails.getAssociatesId()))
                         : null;
         return hospOrderServiceDetails.transform(orderProductVO, doctorUserInfoVO, associates, hospOrderGrade, hospArea);
     }
@@ -336,6 +350,18 @@ public class TransformController extends MyBaseController {
             doctorUserInfoVOList.add(transform(hospDoctorUserInfo));
         }
         pageInfo.setList(doctorUserInfoVOList);
+        return pageInfo;
+    }
+
+    public PageInfo<OrderServiceRollbackVO> transformByHospOrderServiceRollback(PageInfo pageInfo) throws Exception {
+        if (pageInfo == null || pageInfo.getList() == null || pageInfo.getList().size() < 1)
+            return pageInfo;
+        List<OrderServiceRollbackVO> orderServiceRollbackVOList = new ArrayList<>();
+        for (Object object : pageInfo.getList()) {
+            HospOrderServiceRollback hospOrderServiceRollback = (HospOrderServiceRollback) object;
+            orderServiceRollbackVOList.add(transform(hospOrderServiceRollback));
+        }
+        pageInfo.setList(orderServiceRollbackVOList);
         return pageInfo;
     }
 }

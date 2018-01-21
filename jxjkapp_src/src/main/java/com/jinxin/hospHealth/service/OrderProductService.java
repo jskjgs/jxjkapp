@@ -85,7 +85,8 @@ public class OrderProductService implements BaseService<HospOrderProduct, OrderP
     }
 
     /**
-     *  退款,由admin端发起
+     * 退款,由admin端发起
+     *
      * @param id
      * @param money
      * @param comment
@@ -98,7 +99,9 @@ public class OrderProductService implements BaseService<HospOrderProduct, OrderP
                 selectOne(id),
                 Language.get("order-product.select-not-exist"),
                 true);
-        DPreconditions.checkState(hospOrderProduct.getProductPayPrice().compareTo(money) >= 0,
+        DPreconditions.checkState(
+                money != null
+                        && hospOrderProduct.getProductPayPrice().compareTo(money) >= 0,
                 "退款金额不能大于支付金额.",
                 true);
         DPreconditions.checkState(
@@ -182,7 +185,7 @@ public class OrderProductService implements BaseService<HospOrderProduct, OrderP
      */
     @Override
     public PageInfo<HospOrderProduct> select(OrderProductPO orderProductPO) throws Exception {
-        if(orderProductPO == null)
+        if (orderProductPO == null)
             return null;
         PageHelper.startPage(orderProductPO.getPageNum(), orderProductPO.getPageSize());
         if (StringUtil.isNotEmpty(orderProductPO.getField())) {

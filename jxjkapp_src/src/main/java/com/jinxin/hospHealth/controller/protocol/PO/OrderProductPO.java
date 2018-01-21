@@ -40,6 +40,8 @@ public class OrderProductPO extends PageBean{
     private Long gradeId;
     @ApiModelProperty("回退申请理由")
     private String comment;
+    @ApiModelProperty("退款金额")
+    private BigDecimal rollbackMoney;
     @ApiModelProperty("状态 0 正常 1 申请作废 2 已作废")
     private Integer state;
 

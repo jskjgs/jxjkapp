@@ -40,8 +40,6 @@ public class OrderServiceDetailsVO {
     private String consumptionNote;
     @ApiModelProperty("购买备注")
     private String buyNote;
-    @ApiModelProperty("申请作废的理由")
-    private String account;
     @ApiModelProperty("状态")
     private String state;
     @ApiModelProperty("创建时间")

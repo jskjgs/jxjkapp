@@ -44,8 +44,6 @@ public class HospOrderServiceDetails {
     private String doctorComment;
     @ApiModelProperty("订单评价ID")
     private Long gradeId;
-    @ApiModelProperty("申请作废的理由")
-    private String account;
     @ApiModelProperty("状态")
     private Integer state;
     @ApiModelProperty("创建时间")
@@ -62,7 +60,6 @@ public class HospOrderServiceDetails {
             HospOrderGrade grade,
             HospArea area) {
         OrderServiceDetailsVO vo = new OrderServiceDetailsVO();
-        vo.setAccount(this.account);
         vo.setId(this.id);
         vo.setCode(this.code);
         vo.setOrderProduct(orderProduct);

@@ -7,17 +7,10 @@ import com.doraemon.base.util.UUidGenerate;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.github.pagehelper.util.StringUtil;
-import com.jinxin.hospHealth.controller.protocol.PO.OrderInfoPO;
 import com.jinxin.hospHealth.controller.protocol.PO.OrderServiceDetailsPO;
 import com.jinxin.hospHealth.dao.mapper.HospOrderServiceDetailsMapper;
-import com.jinxin.hospHealth.dao.models.HospDoctorInfo;
-import com.jinxin.hospHealth.dao.models.HospOrder;
-import com.jinxin.hospHealth.dao.models.HospOrderProduct;
-import com.jinxin.hospHealth.dao.models.HospOrderServiceDetails;
-import com.jinxin.hospHealth.dao.modelsEnum.OrderPayStateEnum;
-import com.jinxin.hospHealth.dao.modelsEnum.OrderProductStateEnum;
-import com.jinxin.hospHealth.dao.modelsEnum.OrderServiceDetailsStateEnum;
-import com.jinxin.hospHealth.dao.modelsEnum.OrderTypeEnum;
+import com.jinxin.hospHealth.dao.models.*;
+import com.jinxin.hospHealth.dao.modelsEnum.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -42,6 +35,8 @@ public class OrderServiceDetailsService implements BaseService<HospOrderServiceD
     OrderService orderService;
     @Autowired
     DoctorUserInfoService doctorUserInfoService;
+    @Autowired
+    OrderServiceRollbackService hospOrderServiceRollbackService;
 
     /**
      * 新增订单商品服务信息
@@ -85,10 +80,6 @@ public class OrderServiceDetailsService implements BaseService<HospOrderServiceD
                 hospOrder.getPayState().equals(OrderPayStateEnum.PAY.getCode()),
                 Language.get("order.have-to-pay-state"),
                 true);
-        DPreconditions.checkNotNull(
-                doctorUserInfoService.selectOne(po.getDoctorUserId()),
-                "医生用户ID不存在",
-                true);
         DPreconditions.checkState(
                 OrderTypeEnum.SERVICE.getCode() == hospOrder.getType(),
                 "订单必须是服务订单.",
@@ -96,14 +87,6 @@ public class OrderServiceDetailsService implements BaseService<HospOrderServiceD
         DPreconditions.checkState(
                 OrderPayStateEnum.PAY.getCode() == hospOrder.getPayState(),
                 "订单必须是支付的订单.",
-                true);
-        DPreconditions.checkNotNullAndEmpty(
-                po.getDoctorSign(),
-                "医生签字不能为空.",
-                true);
-        DPreconditions.checkNotNullAndEmpty(
-                po.getUserSign(),
-                "用户签字不能为空.",
                 true);
         DPreconditions.checkState(
                 remainingServiceNumber(po.getOrderProductId()) > 0,
@@ -156,6 +139,45 @@ public class OrderServiceDetailsService implements BaseService<HospOrderServiceD
     }
 
     /**
+     * 确认服务订单
+     *
+     * @param po
+     */
+    public void confirm(OrderServiceDetailsPO po, Long doctorUserId) throws Exception {
+        OrderServiceDetailsPO select = new OrderServiceDetailsPO();
+        select.setDoctorUserId(doctorUserId);
+        select.setId(po.getId());
+        select.setState(OrderServiceDetailsStateEnum.NORMAL.getCode());
+        DPreconditions.checkNotNull(
+                selectOne(select),
+                "服务订单未查询到.",
+                true);
+        DPreconditions.checkNotNullAndEmpty(
+                po.getDoctorSign(),
+                "医生签字不能为空.",
+                true);
+        DPreconditions.checkNotNullAndEmpty(
+                po.getUserSign(),
+                "用户签字不能为空.",
+                true);
+        DPreconditions.checkNotNull(
+                doctorUserInfoService.selectOne(doctorUserId),
+                "医生用户ID不存在",
+                true);
+        OrderServiceDetailsPO update = new OrderServiceDetailsPO();
+        update.setId(po.getId());
+        update.setDoctorUserId(doctorUserId);
+        update.setAssociatesId(po.getAssociatesId());
+        update.setConsumptionNote(po.getConsumptionNote());
+        update.setBuyNote(po.getBuyNote());
+        update.setUserSign(po.getUserSign());
+        update.setDoctorSign(po.getDoctorSign());
+        update.setDoctorComment(po.getDoctorComment());
+        update.setState(OrderServiceDetailsStateEnum.IN_SERVICE.getCode());
+        update(update);
+    }
+
+    /**
      * 申请作废
      *
      * @param orderServiceDetailsPO
@@ -167,8 +189,8 @@ public class OrderServiceDetailsService implements BaseService<HospOrderServiceD
                 orderServiceDetailsPO.getId(),
                 "传入的订单服务详情ID不能为空",
                 true);
-        String account = DPreconditions.checkNotNullAndEmpty(
-                orderServiceDetailsPO.getAccount(),
+        String comment = DPreconditions.checkNotNullAndEmpty(
+                orderServiceDetailsPO.getComment(),
                 "申请作废的理由不能为空.",
                 true);
         DPreconditions.checkNotNull(
@@ -203,9 +225,37 @@ public class OrderServiceDetailsService implements BaseService<HospOrderServiceD
                 true);
         OrderServiceDetailsPO update = new OrderServiceDetailsPO();
         update.setId(id);
-        update.setAccount(account);
         update.setState(OrderServiceDetailsStateEnum.APPLY_CANCELLATION.getCode());
         update(update);
+        HospOrderServiceRollback rollback = new HospOrderServiceRollback();
+        rollback.setOrderServiceDetailsId(orderServiceDetailsPO.getId());
+        rollback.setComment(comment);
+        hospOrderServiceRollbackService.add(rollback);
+    }
+
+    /**
+     * 进行作废操作
+     * @param id
+     * @param adminUserId
+     */
+    public void cancellation(Long id,Long adminUserId) throws Exception {
+        HospOrderServiceDetails hospOrderServiceDetails = DPreconditions.checkNotNull(
+                selectOne(id),
+                "服务订单未查询到.",
+                true);
+        DPreconditions.checkState(
+                hospOrderServiceDetails.getState() == OrderServiceDetailsStateEnum.APPLY_CANCELLATION.getCode(),
+                "该服务不是申请状态订单,不能被作废",
+                true);
+        OrderServiceDetailsPO update = new OrderServiceDetailsPO();
+        update.setId(id);
+        update.setState(OrderServiceDetailsStateEnum.CANCELLATION.getCode());
+        update(update);
+        HospOrderServiceRollback rollback = new HospOrderServiceRollback();
+        rollback.setOrderServiceDetailsId(id);
+        rollback.setAdminUserId(adminUserId);
+        rollback.setState(OrderServiceRollbackStateEnum.CANCELLATION.getCode());
+        hospOrderServiceRollbackService.update(rollback);
     }
 
     @Override
@@ -236,8 +286,8 @@ public class OrderServiceDetailsService implements BaseService<HospOrderServiceD
 
     @Override
     public PageInfo<HospOrderServiceDetails> select(OrderServiceDetailsPO po) throws Exception {
-        if(po == null)
-            return  null;
+        if (po == null)
+            return null;
         PageHelper.startPage(po.getPageNum(), po.getPageSize());
         if (StringUtil.isNotEmpty(po.getField()))
             PageHelper.orderBy(po.getField());

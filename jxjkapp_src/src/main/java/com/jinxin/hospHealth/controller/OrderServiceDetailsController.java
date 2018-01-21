@@ -15,6 +15,8 @@ import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -57,62 +59,42 @@ public class OrderServiceDetailsController extends TransformController{
     }
 
     @ApiOperation(value = "确认订单服务详情 ---doctor")
-    @RequestMapping(value = "/confirm", method = RequestMethod.POST)
+    @RequestMapping(value = "/doctor/confirm", method = RequestMethod.POST)
     @ResponseBody
     public JSONObject confirm(
-            @ApiParam(value = "订单服务详情 ID", required = true) @RequestParam(value = "id", required = true) Long id) throws Exception {
-        Long doctorUserId = getCurrentUserId();
-        OrderServiceDetailsPO select = new OrderServiceDetailsPO();
-        select.setDoctorUserId(doctorUserId);
-        select.setId(id);
-        DPreconditions.checkNotNull(
-                orderServiceDetailsService.selectOne(select),
-                "服务订单未查询到.",
-                true);
-        OrderServiceDetailsPO update = new OrderServiceDetailsPO();
-        update.setId(id);
-        update.setState(OrderServiceDetailsStateEnum.IN_SERVICE.getCode());
-        orderServiceDetailsService.update(update);
+            @ApiParam(value = "订单服务详情信息", required = true) @RequestBody OrderServiceDetailsPO orderServiceDetailsPO) throws Exception {
+        Long doctorUserId = getDoctorUserId();
+        orderServiceDetailsService.confirm(orderServiceDetailsPO,doctorUserId);
         return ResponseWrapperSuccess(null);
     }
 
-    @ApiOperation(value = "完成服务订单 ---admin")
-    @RequestMapping(value = "/complete", method = RequestMethod.POST)
-    @ResponseBody
-    public JSONObject complete(
-            @ApiParam(value = "订单服务详情 ID", required = true) @RequestParam(value = "id", required = true) Long id) throws Exception {
-        Long adminUserId = DPreconditions.checkNotNull(
-                getAdminUserId(),
-                "请先登陆.",
-                true);
-        OrderServiceDetailsPO update = new OrderServiceDetailsPO();
-        update.setId(id);
-        update.setState(OrderServiceDetailsStateEnum.COMPLETE.getCode());
-        orderServiceDetailsService.update(update);
-        return ResponseWrapperSuccess(null);
-    }
+//    @ApiOperation(value = "完成服务订单 ---admin")
+//    @RequestMapping(value = "/complete", method = RequestMethod.POST)
+//    @ResponseBody
+//    public JSONObject complete(
+//            @ApiParam(value = "订单服务详情 ID", required = true) @RequestParam(value = "id", required = true) Long id) throws Exception {
+//        Long adminUserId = DPreconditions.checkNotNull(
+//                getAdminUserId(),
+//                "请先登陆.",
+//                true);
+//        OrderServiceDetailsPO update = new OrderServiceDetailsPO();
+//        update.setId(id);
+//        update.setState(OrderServiceDetailsStateEnum.COMPLETE.getCode());
+//        orderServiceDetailsService.update(update);
+//        return ResponseWrapperSuccess(null);
+//    }
 
-    @ApiOperation(value = "作废服务订单 ---docker")
-    @RequestMapping(value = "/cancellation", method = RequestMethod.POST)
+    @ApiOperation(value = "作废服务订单 --- admin")
+    @RequestMapping(value = "/admin/cancellation", method = RequestMethod.POST)
     @ResponseBody
     public JSONObject cancellation(
             @ApiParam(value = "订单服务详情 ID", required = true) @RequestParam(value = "id", required = true) Long id) throws Exception {
         Long adminUserId = getAdminUserId();
-        OrderServiceDetailsPO select = new OrderServiceDetailsPO();
-        select.setDoctorUserId(adminUserId);
-        select.setId(id);
-        DPreconditions.checkNotNull(
-                orderServiceDetailsService.selectOne(select),
-                "服务订单未查询到.",
-                true);
-        OrderServiceDetailsPO update = new OrderServiceDetailsPO();
-        update.setId(id);
-        update.setState(OrderServiceDetailsStateEnum.CANCELLATION.getCode());
-        orderServiceDetailsService.update(update);
+        orderServiceDetailsService.cancellation(id,adminUserId);
         return ResponseWrapperSuccess(null);
     }
 
-    @ApiOperation(value = "申请作废服务订单")
+    @ApiOperation(value = "申请作废服务订单 --- 用户端")
     @RequestMapping(value = "/applyCancellation", method = RequestMethod.POST)
     @ResponseBody
     public JSONObject applyCancellation(
