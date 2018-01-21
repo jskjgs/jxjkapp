@@ -56,10 +56,10 @@ public class CallNumberController extends TransformController{
     OrderServiceDetailsService orderServiceDetailsService;
 
     @ApiOperation(value = "排号")
-    @RequestMapping(value = "/add", method = RequestMethod.POST)
+    @RequestMapping(value = "/admin/add", method = RequestMethod.POST)
     @ResponseBody
     public JSONObject push(
-            @ApiParam(value = "排队叫号", required = true) @RequestBody CallNumberPO callNumber) throws Exception {
+            @ApiParam(value = "排队叫号 ---admin", required = true) @RequestBody CallNumberPO callNumber) throws Exception {
         HospAdminUserInfo  hospAdminUserInfo = DPreconditions.checkNotNull(
                 adminUserInfoService.selectOne(getAdminUserId()),
                 "admin用户信息为空.",
@@ -76,8 +76,8 @@ public class CallNumberController extends TransformController{
         return ResponseWrapperSuccess(null);
     }
 
-    @ApiOperation(value = "叫号",response = CallNumberVO.class)
-    @RequestMapping(value = "/call", method = RequestMethod.POST)
+    @ApiOperation(value = "叫号 ---admin",response = CallNumberVO.class)
+    @RequestMapping(value = "/admin/call", method = RequestMethod.POST)
     @ResponseBody
     public JSONObject pop() throws Exception {
         HospAdminUserInfo  hospAdminUserInfo = DPreconditions.checkNotNull(
@@ -89,8 +89,8 @@ public class CallNumberController extends TransformController{
         return ResponseWrapperSuccess(transform(callNumberPO));
     }
 
-    @ApiOperation(value = "插号")
-    @RequestMapping(value = "/put", method = RequestMethod.POST)
+    @ApiOperation(value = "插号 ---admin")
+    @RequestMapping(value = "/admin/put", method = RequestMethod.POST)
     @ResponseBody
     public JSONObject put(
             @ApiParam(value = "排队叫号", required = true) @RequestBody CallNumberPO callNumber) throws Exception {
