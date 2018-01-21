@@ -46,7 +46,8 @@ public class CallNumberController extends TransformController{
 
     @Value("${call-number.waiting-que-name}")
     String waitingQueName;
-
+    @Value("${call-number.waiting-que-number}")
+    String waitingQueNumber;
     @Autowired
     CallNumberService callNumberService;
     @Autowired
@@ -69,6 +70,8 @@ public class CallNumberController extends TransformController{
         po.setQty(1);
         po.setDoctorAreaId(hospAdminUserInfo.getAreaId());
         orderServiceDetailsService.add(po);
+        //计数
+        callNumber.setNumber(redisOperation.usePool().incrBy(waitingQueNumber,1));
         redisOperation.usePool().push(waitingQueName+hospAdminUserInfo.getAreaId(), JSON.toJSONString(callNumber));
         return ResponseWrapperSuccess(null);
     }
@@ -101,12 +104,13 @@ public class CallNumberController extends TransformController{
         po.setQty(1);
         po.setDoctorAreaId(hospAdminUserInfo.getAreaId());
         orderServiceDetailsService.add(po);
-        redisOperation.usePool().put(waitingQueName+hospAdminUserInfo,JSON.toJSONString(callNumber));
+        callNumber.setNumber(redisOperation.usePool().incrBy(waitingQueNumber,1));
+        redisOperation.usePool().put(waitingQueName+hospAdminUserInfo.getAreaId(),JSON.toJSONString(callNumber));
         return ResponseWrapperSuccess(null);
     }
 
-    @ApiOperation(value = "查询等待列表",response = CallNumberVO.class)
-    @RequestMapping(value = "/selectAll", method = RequestMethod.POST)
+    @ApiOperation(value = "查询等待列表 ---admin",response = CallNumberVO.class)
+    @RequestMapping(value = "/admin/selectAll", method = RequestMethod.POST)
     @ResponseBody
     public JSONObject selectAll() throws Exception {
         HospAdminUserInfo  hospAdminUserInfo = DPreconditions.checkNotNull(
@@ -122,6 +126,27 @@ public class CallNumberController extends TransformController{
             callNumberVOList.add(transform(po));
         }
         return ResponseWrapperSuccess(callNumberVOList);
+    }
+
+    @ApiOperation(value = "查询排号详情",response = CallNumberVO.class)
+    @RequestMapping(value = "/select", method = RequestMethod.POST)
+    @ResponseBody
+    public JSONObject select(
+            @ApiParam(value = "院区ID", required = true) @RequestParam(value = "areaId", required = true) Long areaId) throws Exception {
+        HospUserInfo userInfo = DPreconditions.checkNotNull(
+                userInfoService.selectOne(getCurrentUserId()),
+                "用户信息为空.",
+                true);
+        List<String> values = redisOperation.usePool().lrange(waitingQueName+areaId,0,-1);
+        CallNumberVO vo = null;
+        for (int i = 0;i<values.size();i++){
+            CallNumberPO po = JSON.parseObject(values.get(i),CallNumberPO.class);
+            if(userInfo.getPhone() == po.getPhone()) {
+                vo = transform(po);
+                vo.setBeforeNumber(i);
+            }
+        }
+        return ResponseWrapperSuccess(vo);
     }
 
 
