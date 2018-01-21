@@ -132,18 +132,34 @@ public class CallNumberController extends TransformController{
     @RequestMapping(value = "/select", method = RequestMethod.POST)
     @ResponseBody
     public JSONObject select(
-            @ApiParam(value = "院区ID", required = true) @RequestParam(value = "areaId", required = true) Long areaId) throws Exception {
+            @ApiParam(value = "院区ID", required = false) @RequestParam(value = "areaId", required = false) Long areaId) throws Exception {
         HospUserInfo userInfo = DPreconditions.checkNotNull(
                 userInfoService.selectOne(getCurrentUserId()),
                 "用户信息为空.",
                 true);
-        List<String> values = redisOperation.usePool().lrange(waitingQueName+areaId,0,-1);
-        CallNumberVO vo = null;
-        for (int i = 0;i<values.size();i++){
-            CallNumberPO po = JSON.parseObject(values.get(i),CallNumberPO.class);
-            if(userInfo.getPhone() == po.getPhone()) {
-                vo = transform(po);
-                vo.setBeforeNumber(i);
+        //查询院区
+        List<Long> areaIds = new ArrayList<>();
+        if(areaId == null){
+            PageInfo<HospArea> pageInfo = hospAreaService.selectAll(null);
+            if(pageInfo == null || pageInfo.getList() == null || pageInfo.getList().size()<1)
+                throw new ShowExceptions("没有院区信息,不能排号");
+            for(HospArea hospArea : pageInfo.getList()){
+                areaIds.add(hospArea.getId());
+            }
+        }else{
+            areaIds.add(areaId);
+        }
+        //根据院区ID,循环院区que列表,进行查找
+        CallNumberVO vo = new CallNumberVO();
+        for(Long areaIdTemp : areaIds) {
+            List<String> values = redisOperation.usePool().lrange(waitingQueName + areaIdTemp, 0, -1);
+            for (int i = 0; i < values.size(); i++) {
+                CallNumberPO po = JSON.parseObject(values.get(i), CallNumberPO.class);
+                if (userInfo.getPhone() == po.getPhone()) {
+                    vo = transform(po);
+                    vo.setBeforeNumber(i);
+                    break;
+                }
             }
         }
         return ResponseWrapperSuccess(vo);
