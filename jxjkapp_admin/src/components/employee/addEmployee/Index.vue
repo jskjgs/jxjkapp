@@ -3,182 +3,32 @@
  * Created by zhengji
  * Date: 2017/8/29
  */
-import SearchTable from '@/components/_common/searchTable/SearchTable'
-import EditDialog from './_thumbs/EditDialog.vue'
 import {
-  getListApi,
-  modifyDoctorApi
 } from './api'
 
 export default {
-  name: 'Doctor',
+  name: 'addEmployee',
   components: {
-    EditDialog,
-    SearchTable
   },
   data () {
-    this.tableAttrs = {
-      'props': {
-        'tooltip-effect': 'dark',
-        'style': 'width: 100%',
-        'align': 'center'
-      }
-    }
-    this.columnData = [{
-      attrs: {
-        'prop': 'no',
-        'label': '员工编号',
-        'min-width': '100',
-        'show-overflow-tooltip': true
-      }
-    }, {
-      attrs: {
-        'prop': 'name',
-        'label': '姓名',
-        'min-width': '100',
-        'show-overflow-tooltip': true
-      }
-    }, {
-      attrs: {
-        'prop': 'area',
-        'label': '院区',
-        'min-width': '100',
-        'show-overflow-tooltip': true
-      }
-    }, {
-      attrs: {
-        'prop': 'title',
-        'label': '职位',
-        'min-width': '160',
-        'show-overflow-tooltip': true
-      }
-    }, {
-      attrs: {
-        'prop': 'sex',
-        'label': '性别',
-        'min-width': '160',
-        'show-overflow-tooltip': true
-      }
-    }, {
-      attrs: {
-        'prop': 'author',
-        'label': '账号等级',
-        'min-width': '160',
-        'show-overflow-tooltip': true
-      }
-    }, {
-      attrs: {
-        'min-width': '140',
-        'label': '操作'
-      },
-      scopedSlots: {
-        default: (scope) => {
-          return (
-            <div class="flex--center operations">
-              <span
-                  class="operate-item el-icon-edit"
-                  onClick={() => this.openEditDialog(scope.row)}>
-              </span>
-            </div>
-          )
-        }
-      }
-    }]
-    this.listApi = {
-      requestFn: getListApi,
-      responseFn (data) {
-        let content = data.content || {}
-        console.log(content.list)
-        this.tableData = (content.list || []).map((item) => {
-          return {
-            no: item.id,
-            name: item.name,
-            area: item.hospArea.name,
-            phone: item.phone,
-            title: item.title,
-            author: item.author,
-            sex: ((sex) => { sex === 0 ? '男' : '女' })(item.sex)
-          }
-        })
-        this.total = content.total || 0
-      }
-    }
-
     return {
-      editDialogVisible: false,
-      editData: {},
-      keyWords: null,
-      apiKeysMap: {
-        pageSize: {
-          value: 10,
-          innerKey: 'pageSize' // searchTable组件内部映射的key
-        },
-        departmentId: {
-          value: undefined
-        },
-        keyWords: {
-          value: ''
-        },
-        currentPage: 'pageNum',
-        orderBy: {
-          value: 'order_number'
-        },
-        desc: {
-          value: true
-        }
-      }
+      fromData: {
+        account: null,
+        password: null,
+        hospital: null,
+        author: null,
+        sex: null,
+        name: null
+      },
+      hospitalList: [],
+      authorList: []
     }
   },
   created () {
   },
   watch: {
-    editDialogVisible (val) {
-      if (!val) {
-        this.editData = null
-      }
-    },
-    currentPage (newPageNum) {
-      this.getList({
-        pageNum: newPageNum
-      })
-    }
   },
   methods: {
-    handleSearch () {
-      this.apiKeysMap = Object.assign({}, this.apiKeysMap, {
-        departmentId: {
-          value: this.departmentId || undefined
-        }
-      })
-    },
-    handleEditCancel () {
-    },
-    addEmployee () {
-      console.log(123)
-      this.editDialogVisible = true
-    },
-    handleEditSubmit (data, respondCb) {
-      let formData
-      if (data.file) {
-        formData = new FormData()
-        formData.append('file', data.file)
-      }
-      let sendData = {
-        goodDescribe: data.describe,
-        doctorId: data.id
-      }
-      modifyDoctorApi(sendData, formData).then(res => {
-        this.$message({
-          type: 'success',
-          message: '修改成功'
-        })
-        this.editDialogVisible = false
-        this.$refs.searchTable.getList()
-        respondCb(true)
-      }).catch(() => {
-        respondCb()
-      })
-    }
   }
 }
 </script>
@@ -187,37 +37,84 @@ export default {
   <div id="doctor">
     <div class="flex--vcenter page-top">
       <div class="page-title">
-        员工管理
+        添加新员工
       </div>
     </div>
-    <search-table
-      ref="searchTable"
-      :table-attrs="tableAttrs"
-      :column-data="columnData"
-      :list-api="listApi"
-      :api-keys-map="apiKeysMap">
-      <div class="table-tools flex--vcenter"  style="justify-content: space-between;" slot="table-tools">
-        <div class="search-wrap flex--vcenter">
-          <div class="tool-item">
-            搜索关键字：
-            <el-input v-model="keyWords" style="width: auto;" placeholder="请填入关键字"></el-input>
-          </div>
-          <el-button
-            class="tool-item"
-            type="primary"
-            @click="handleSearch">搜索
-          </el-button>
-        </div>
-        <div class="btn-wrap">
-          <el-button
-            class="btn--add"
-            type="primary"
-            @click="addEmployee()">
-            新增 <i class="el-icon-plus"></i>
-          </el-button>
-        </div>
+    <div class="flex--vcenter" style="margin-top: 20px; justify-content: space-between;">
+      <div class="tool-item">
+        登录账号
+        <el-input
+          v-model.trim="fromData.account"
+          placeholder="请输就员工姓名"
+          style="width: 230px;">
+        </el-input>
       </div>
-    </search-table>
+      <div class="tool-item">
+        登录密码
+        <el-input
+          v-model.trim="fromData.password"
+          type="password"
+          placeholder="请输初始密码"
+          style="width: 230px;">
+        </el-input>
+      </div>
+      <div class="tool-item">
+        员工姓名
+        <el-input
+          v-model.trim="fromData.name"
+          placeholder="请输就员工姓名"
+          style="width: 230px;">
+        </el-input>
+      </div>
+    </div>
+    <div class="flex--vcenter" style="margin-top: 20px; justify-content: space-between;">
+      <div class="tool-item">
+        所在院区
+        <el-select v-model="fromData.hospital" placeholder="请选择" style="width: 230px;">
+          <el-option
+            v-for="item in area"
+            :key="item.id"
+            :label="item.name"
+            :value="item.name">
+          </el-option>
+        </el-select>
+      </div>
+      <div class="tool-item">
+        账号权限
+        <el-select v-model="fromData.author" placeholder="请选择" style="width: 230px;">
+          <el-option
+            v-for="(item, key, value) in {'医生': 0, '医院主管': 1, '集团主管': 2}"
+            :key="key"
+            :label="key"
+            :value="value">
+          </el-option>
+        </el-select>
+      </div>
+      <div class="tool-item">
+        员工性别
+        <el-select v-model="fromData.sex" placeholder="请选择" style="width: 230px;">
+          <el-option
+            v-for="(item, key, value) in {'男': 1, '女': 0}"
+            :key="key"
+            :label="key"
+            :value="value">
+          </el-option>
+        </el-select>
+      </div>
+    </div>
+    <div class="flex--vcenter"  style="margin-top: 20px;">
+        <el-button
+          class="tool-item"
+          @click="handleCancel">取消
+        </el-button>
+    </div>
+    <div class="flex--vcenter"  style="margin-top: 20px;">
+        <el-button
+          class="tool-item"
+          type="primary"
+          @click="handleCreate">保存
+        </el-button>
+    </div>
   </div>
 </template>
 

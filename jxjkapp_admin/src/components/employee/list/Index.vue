@@ -154,8 +154,7 @@ export default {
     handleEditCancel () {
     },
     addEmployee () {
-      console.log(123)
-      this.editDialogVisible = true
+      this.$router.push({path: 'employee/add'})
     },
     handleEditSubmit (data, respondCb) {
       let formData
