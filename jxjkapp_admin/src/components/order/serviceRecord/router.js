@@ -10,3 +10,4 @@ export default injectPermissionId([
     component: resolve => require(['./Index'], resolve)
   })
 ], permissionId)
+
