@@ -23,6 +23,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.actuate.metrics.export.MetricExportProperties;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -41,7 +42,8 @@ import java.util.Map;
 @Api(description = "排队叫号")
 public class CallNumberController extends TransformController{
 
-    String callQueName = "aaaa";
+    @Value("${call-number.waiting-que-name}")
+    String waitingQueName;
 
     @Autowired
     CallNumberService callNumberService;
@@ -53,11 +55,15 @@ public class CallNumberController extends TransformController{
     @ResponseBody
     public JSONObject push(
             @ApiParam(value = "排队叫号", required = true) @RequestBody CallNumberPO callNumber) throws Exception {
+        HospAdminUserInfo  hospAdminUserInfo = DPreconditions.checkNotNull(
+                adminUserInfoService.selectOne(getAdminUserId()),
+                "admin用户信息为空.",
+                true);
         DPreconditions.checkState(
                 check(callNumber),
                 "该用户没有有效的订单,不能进行排号.",
                 true);
-        redisOperation.usePool().push(callQueName, JSON.toJSONString(callNumber));
+        redisOperation.usePool().push(waitingQueName+hospAdminUserInfo.getAreaId(), JSON.toJSONString(callNumber));
         return ResponseWrapperSuccess(null);
     }
 
@@ -65,7 +71,11 @@ public class CallNumberController extends TransformController{
     @RequestMapping(value = "/call", method = RequestMethod.POST)
     @ResponseBody
     public JSONObject pop() throws Exception {
-        String callNumber = redisOperation.usePool().pop(callQueName);
+        HospAdminUserInfo  hospAdminUserInfo = DPreconditions.checkNotNull(
+                adminUserInfoService.selectOne(getAdminUserId()),
+                "admin用户信息为空.",
+                true);
+        String callNumber = redisOperation.usePool().pop(waitingQueName+hospAdminUserInfo.getAreaId());
         CallNumberPO callNumberPO = JSON.parseObject(callNumber,CallNumberPO.class);
         return ResponseWrapperSuccess(transform(callNumberPO));
     }
@@ -75,11 +85,15 @@ public class CallNumberController extends TransformController{
     @ResponseBody
     public JSONObject put(
             @ApiParam(value = "排队叫号", required = true) @RequestBody CallNumberPO callNumber) throws Exception {
+        HospAdminUserInfo  hospAdminUserInfo = DPreconditions.checkNotNull(
+                adminUserInfoService.selectOne(getAdminUserId()),
+                "admin用户信息为空.",
+                true);
         DPreconditions.checkState(
                 check(callNumber),
                 "该用户没有有效的订单,不能进行排号.",
                 true);
-        redisOperation.usePool().put(callQueName,JSON.toJSONString(callNumber));
+        redisOperation.usePool().put(waitingQueName+hospAdminUserInfo,JSON.toJSONString(callNumber));
         return ResponseWrapperSuccess(null);
     }
 
@@ -87,7 +101,11 @@ public class CallNumberController extends TransformController{
     @RequestMapping(value = "/selectAll", method = RequestMethod.POST)
     @ResponseBody
     public JSONObject selectAll() throws Exception {
-        List<String> values = redisOperation.usePool().lrange(callQueName,0,-1);
+        HospAdminUserInfo  hospAdminUserInfo = DPreconditions.checkNotNull(
+                adminUserInfoService.selectOne(getAdminUserId()),
+                "admin用户信息为空.",
+                true);
+        List<String> values = redisOperation.usePool().lrange(waitingQueName+hospAdminUserInfo,0,-1);
         if(values == null || values.size()<1)
             return ResponseWrapperSuccess(null);
         List<CallNumberVO> callNumberVOList = new ArrayList<>();

@@ -118,7 +118,8 @@ public class OtherController extends MyBaseController {
         loginInfoVO.setToken(
                 createToken(hospAdminUserInfo.getId(),
                         adminTokenPrefix));
-        loginInfoVO.setAdminInfoVO(hospAdminUserInfo.transform());
+        HospArea hospArea = hospAreaService.selectOne(hospAdminUserInfo.getAreaId());
+        loginInfoVO.setAdminInfoVO(hospAdminUserInfo.transform(hospArea));
         return ResponseWrapperSuccess(loginInfoVO);
     }
 

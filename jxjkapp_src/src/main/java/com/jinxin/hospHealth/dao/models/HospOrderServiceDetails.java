@@ -1,9 +1,6 @@
 package com.jinxin.hospHealth.dao.models;
 
-import com.jinxin.hospHealth.controller.protocol.VO.DoctorUserInfoVO;
-import com.jinxin.hospHealth.controller.protocol.VO.OrderProductVO;
-import com.jinxin.hospHealth.controller.protocol.VO.OrderServiceDetailsVO;
-import com.jinxin.hospHealth.controller.protocol.VO.ProductSkuVO;
+import com.jinxin.hospHealth.controller.protocol.VO.*;
 import com.jinxin.hospHealth.dao.modelsEnum.OrderServiceDetailsStateEnum;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -58,7 +55,8 @@ public class HospOrderServiceDetails {
             DoctorUserInfoVO doctorUserInfoVO,
             DoctorUserInfoVO associates,
             HospOrderGrade grade,
-            HospArea area) {
+            HospArea area,
+            UserInfoVO userInfoVO) {
         OrderServiceDetailsVO vo = new OrderServiceDetailsVO();
         vo.setId(this.id);
         vo.setCode(this.code);
@@ -66,6 +64,7 @@ public class HospOrderServiceDetails {
         vo.setQty(qty);
         vo.setAssociates(associates);
         vo.setArea(area);
+        vo.setUserInfo(userInfoVO);
         vo.setDoctorUserInfo(doctorUserInfoVO);
         vo.setDoctorComment(this.doctorComment);
         vo.setGrade(grade);

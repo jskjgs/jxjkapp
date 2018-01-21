@@ -1,6 +1,7 @@
 package com.jinxin.hospHealth.controller.protocol.VO;
 
 import com.jinxin.hospHealth.dao.models.*;
+import com.sun.tools.internal.xjc.reader.xmlschema.bindinfo.BIConversion;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -48,4 +49,6 @@ public class OrderServiceDetailsVO {
     private Date updateDate;
     @ApiModelProperty("使用的地址")
     private String address;
+    @ApiModelProperty("用户信息")
+    private UserInfoVO userInfo;
 }

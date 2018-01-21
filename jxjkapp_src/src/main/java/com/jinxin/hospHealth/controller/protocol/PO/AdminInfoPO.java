@@ -21,6 +21,8 @@ public class AdminInfoPO extends PageBean{
     private Long id;
     @ApiModelProperty("登陆名")
     private String name;
+    @ApiModelProperty("院区ID")
+    private Long areaId;
     @ApiModelProperty("密码")
     private String password;
     @ApiModelProperty("头像")
@@ -42,6 +44,7 @@ public class AdminInfoPO extends PageBean{
         HospAdminUserInfo hospAdminUserInfo = new HospAdminUserInfo();
         hospAdminUserInfo.setId(this.id);
         hospAdminUserInfo.setName(this.name);
+        hospAdminUserInfo.setAreaId(this.areaId);
         hospAdminUserInfo.setPassword(
                 this.password != null
                         ? MD5Encryption.getMD5(this.password)

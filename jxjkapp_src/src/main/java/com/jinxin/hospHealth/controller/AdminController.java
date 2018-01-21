@@ -46,7 +46,7 @@ public class AdminController extends TransformController {
         HospAdminUserInfo hospAdminUserInfo = adminUserInfoService.add(adminInfo);
         return ResponseWrapperSuccess(
                 hospAdminUserInfo != null
-                        ? hospAdminUserInfo.transform()
+                        ? hospAdminUserInfo
                         : null);
     }
 
@@ -55,10 +55,7 @@ public class AdminController extends TransformController {
     @ResponseBody
     public JSONObject selectOne() throws Exception {
         HospAdminUserInfo hospAdminUserInfo = adminUserInfoService.selectOne(getAdminUserId());
-        return ResponseWrapperSuccess(
-                hospAdminUserInfo != null
-                        ? hospAdminUserInfo.transform()
-                        : null);
+        return ResponseWrapperSuccess(transform(hospAdminUserInfo));
     }
 
     @ApiOperation(value = "查询全部用户信息", response = AdminInfoVO.class)

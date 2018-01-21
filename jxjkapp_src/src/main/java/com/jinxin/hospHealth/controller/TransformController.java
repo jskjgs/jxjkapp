@@ -3,6 +3,7 @@ package com.jinxin.hospHealth.controller;
 import com.doraemon.base.guava.DPreconditions;
 import com.github.pagehelper.PageInfo;
 import com.jinxin.hospHealth.controller.protocol.PO.CallNumberPO;
+import com.jinxin.hospHealth.controller.protocol.PO.OrderInfoPO;
 import com.jinxin.hospHealth.controller.protocol.PO.OrderProductPO;
 import com.jinxin.hospHealth.controller.protocol.PO.UserInfoPO;
 import com.jinxin.hospHealth.controller.protocol.VO.*;
@@ -183,11 +184,18 @@ public class TransformController extends MyBaseController {
                 hospOrderProduct != null
                         ? transform(hospOrderProduct)
                         : null;
+        HospOrder hospOrder =
+                hospOrderProduct.getOrderId() != null
+                        ? orderService.selectOne(hospOrderProduct.getOrderId())
+                        : null;
+        UserInfoVO userInfoVO =
+                hospOrder != null && hospOrder.getUserId() != null
+                        ? transform(userInfoService.selectOne(hospOrder.getUserId()))
+                        : null;
         HospArea hospArea =
                 hospOrderServiceDetails.getDoctorAreaId() != null
                         ? doctorAreaService.selectOne(hospOrderServiceDetails.getDoctorAreaId())
                         : null;
-        //todo : grade 待做
         HospOrderGrade hospOrderGrade =
                 hospOrderServiceDetails.getGradeId() != null
                         ? orderGradeService.selectOne(hospOrderServiceDetails.getGradeId())
@@ -197,7 +205,13 @@ public class TransformController extends MyBaseController {
                         ? transform(doctorUserInfoService.selectOne(
                         hospOrderServiceDetails.getAssociatesId()))
                         : null;
-        return hospOrderServiceDetails.transform(orderProductVO, doctorUserInfoVO, associates, hospOrderGrade, hospArea);
+        return hospOrderServiceDetails.transform(
+                orderProductVO,
+                doctorUserInfoVO,
+                associates,
+                hospOrderGrade,
+                hospArea,
+                userInfoVO);
     }
 
     public OrderVO transform(HospOrder hospOrder) throws Exception {
@@ -235,7 +249,11 @@ public class TransformController extends MyBaseController {
     public AdminInfoVO transform(HospAdminUserInfo hospAdminUserInfo) {
         if (hospAdminUserInfo == null)
             return null;
-        return hospAdminUserInfo.transform();
+        HospArea hospArea =
+                hospAdminUserInfo.getAreaId() != null
+                        ? hospAreaService.selectOne(hospAdminUserInfo.getAreaId())
+                        : null;
+        return hospAdminUserInfo.transform(hospArea);
     }
 
     public PageInfo<DoctorInfoVO> transformByHospDoctorInfo(PageInfo pageInfo) {
