@@ -80,17 +80,11 @@ public class AdminController extends TransformController {
         return ResponseWrapperSuccess(transformByHospAdminUserInfo(pageInfo));
     }
 
-    @ApiOperation(value = "更新本登陆账号信息(包含权限)", response = AdminInfoVO.class)
+    @ApiOperation(value = "更新账号信息(包含权限)", response = AdminInfoVO.class)
     @RequestMapping(value = "/update", method = RequestMethod.POST)
     @ResponseBody
     public JSONObject update(
             @ApiParam(value = "管理员用户信息", required = true) @RequestBody AdminInfoPO adminInfo) throws Exception {
-        //不能用更新方法更新用户的密码
-        DPreconditions.checkState(
-                adminInfo.getPassword() != null,
-                Language.get("admin-user.change-password-wrong"),
-                true);
-        adminInfo.setId(getAdminUserId());
         adminUserInfoService.update(adminInfo);
         return ResponseWrapperSuccess(null);
     }

@@ -109,8 +109,7 @@ public class AdminUserInfoService implements BaseService<HospAdminUserInfo, Admi
         //如果密码不为空的话,代表修改密码,需要做修改密码前提校验,id不能为空 或者 phone不能为空.
         if (hospAdminUserInfo.getPassword() != null) {
             DPreconditions.checkState(
-                    hospAdminUserInfo.getId() != null
-                            || hospAdminUserInfo.getPhone() != null);
+                    hospAdminUserInfo.getId() != null);
         }
         DPreconditions.checkState(
                 hospAdminUserInfoMapper.updateByPrimaryKeySelective(hospAdminUserInfo) == 1,
