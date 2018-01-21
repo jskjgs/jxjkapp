@@ -85,6 +85,10 @@ public class AdminController extends TransformController {
     @ResponseBody
     public JSONObject update(
             @ApiParam(value = "管理员用户信息", required = true) @RequestBody AdminInfoPO adminInfo) throws Exception {
+        DPreconditions.checkNotNull(
+                getAdminUserId(),
+                "没有查询到用户的登陆信息.",
+                true);
         adminUserInfoService.update(adminInfo);
         return ResponseWrapperSuccess(null);
     }
