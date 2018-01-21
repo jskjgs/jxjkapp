@@ -44,7 +44,7 @@ public class UserInfoPO extends PageBean {
         hospUserInfo.setHeadPortrait(this.headPortrait);
         hospUserInfo.setSex(
                 this.sex != null
-                        ? SexEnum.getSexEnumByCode(this.sex).getCode()
+                        ? SexEnum.getByCode(this.sex).getCode()
                         : null);
         hospUserInfo.setPhone(this.phone);
         hospUserInfo.setEmail(this.email);

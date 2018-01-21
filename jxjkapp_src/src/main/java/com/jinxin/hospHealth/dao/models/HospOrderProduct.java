@@ -2,7 +2,6 @@ package com.jinxin.hospHealth.dao.models;
 
 import com.doraemon.base.controller.bean.PageBean;
 import com.jinxin.hospHealth.controller.protocol.VO.OrderProductVO;
-import com.jinxin.hospHealth.controller.protocol.VO.OrderVO;
 import com.jinxin.hospHealth.controller.protocol.VO.ProductSkuVO;
 import com.jinxin.hospHealth.dao.modelsEnum.OrderProductStateEnum;
 import io.swagger.annotations.ApiModel;
@@ -11,7 +10,6 @@ import lombok.Data;
 
 import javax.persistence.Id;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 import java.math.BigDecimal;
 import java.util.Date;
 
@@ -32,10 +30,6 @@ public class HospOrderProduct extends PageBean {
     private String productSkuName;
     @ApiModelProperty("商品支付价格（促销优惠后的支付价格）")
     private BigDecimal productPayPrice;
-    @ApiModelProperty("商品销售价格（商品没参加促销的价格）")
-    private BigDecimal productSalesPrice;
-    @ApiModelProperty("商品显示价格")
-    private BigDecimal productShowPrice;
     @ApiModelProperty("购买的数量")
     private Integer quantity;
     @ApiModelProperty("如果是服务订单，服务的总次数")
@@ -57,11 +51,9 @@ public class HospOrderProduct extends PageBean {
         OrderProductVO orderProductVO = new OrderProductVO();
         orderProductVO.setId(this.id);
         orderProductVO.setCode(this.code);
-        //orderProductVO.setOrder(orderVO);
         orderProductVO.setProductSku(productSku);
         orderProductVO.setProductSkuName(this.productSkuName);
         orderProductVO.setProductPayPrice(this.productPayPrice);
-        orderProductVO.setProductShowPrice(this.productShowPrice);
         orderProductVO.setQuantity(this.quantity);
         orderProductVO.setServiceQuantity(this.serviceQuantity);
         orderProductVO.setStartDate(this.startDate);

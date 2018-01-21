@@ -97,6 +97,8 @@ public class HospAreaService implements BaseService<HospArea,HospArea>{
      * @return
      */
     public PageInfo<HospArea> select(HospArea hospAddress) {
+        if(hospAddress == null)
+            return  null;
         PageHelper.startPage(hospAddress.getPageNum(), hospAddress.getPageSize());
         if (StringUtil.isNotEmpty(hospAddress.getField()))
             PageHelper.orderBy(hospAddress.getField());

@@ -6,8 +6,10 @@ package com.jinxin.hospHealth.dao.modelsEnum;
  */
 public enum OrderPayStateEnum {
 
-    PAY(0,"已支付订单"),
-    NON_PAYMENT(1,"未支付订单");
+    NON_PAYMENT(0,"未支付订单"),
+    PAY(1,"已支付订单"),
+    APPLY(2,"申请退款"),
+    FINISH(3,"退款完毕");
 
     private int code;
     private String desc;

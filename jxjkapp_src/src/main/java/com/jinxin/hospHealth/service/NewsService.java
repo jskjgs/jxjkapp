@@ -19,7 +19,7 @@ import java.util.Date;
  * Created by zbs on 2017/12/24.
  */
 @Service
-public class NewsService implements BaseService<HospNews,HospNews>{
+public class NewsService implements BaseService<HospNews, HospNews> {
 
     @Autowired
     HospNewsMapper hospNewsMapper;
@@ -43,11 +43,10 @@ public class NewsService implements BaseService<HospNews,HospNews>{
             hospNews.setSortNumber(1);
         if (hospNews.getCreateDate() == null)
             hospNews.setCreateDate(new Date());
-        if (hospNews.getEnable() == null)
-            hospNews.setEnable(0);
-       DPreconditions.checkState(hospNewsMapper.insertSelectiveReturnId(hospNews) == 1,
-               Language.get("service.save-failure"),
-               true);
+        hospNews.setEnable(EnableEnum.ENABLE_NORMAL.getCode());
+        DPreconditions.checkState(hospNewsMapper.insertSelectiveReturnId(hospNews) == 1,
+                Language.get("service.save-failure"),
+                true);
         return hospNews;
     }
 
@@ -64,7 +63,6 @@ public class NewsService implements BaseService<HospNews,HospNews>{
         DPreconditions.checkNotNull(selectNews,
                 "该ID的新闻未查询到.",
                 true);
-        hospNews.setEnable(null);
         DPreconditions.checkState(hospNewsMapper.updateByPrimaryKeySelective(hospNews) == 1,
                 "更新新闻信息失败.",
                 true);
@@ -80,13 +78,14 @@ public class NewsService implements BaseService<HospNews,HospNews>{
         DPreconditions.checkNotNull(hospNews,
                 "该ID的新闻未查询到.",
                 true);
-        DPreconditions.checkState(hospNewsMapper.deleteByPrimaryKey(id) == 1,
-                "删除该新闻信息失败.",
-                true);
+        HospNews update = new HospNews();
+        update.setEnable(EnableEnum.ENABLE_DELETE.getCode());
+        update(update);
     }
 
     /**
      * 把新闻置为无效
+     *
      * @param id
      * @throws Exception
      */
@@ -98,12 +97,10 @@ public class NewsService implements BaseService<HospNews,HospNews>{
         DPreconditions.checkNotNull(selectOne(id),
                 Language.get("new.select-not-exist"),
                 true);
-        HospNews invalid = new HospNews();
-        invalid.setId(id);
-        invalid.setEnable(EnableEnum.ENABLE_DISABLED.getCode());
-        DPreconditions.checkState(hospNewsMapper.updateByPrimaryKeySelective(invalid) == 1,
-                "新闻置为无效失败.",
-                true);
+        HospNews update = new HospNews();
+        update.setId(id);
+        update.setEnable(EnableEnum.ENABLE_DISABLED.getCode());
+        update(update);
     }
 
     /**
@@ -115,7 +112,10 @@ public class NewsService implements BaseService<HospNews,HospNews>{
         DPreconditions.checkNotNull(id,
                 "新闻的id不能为空",
                 true);
-        return hospNewsMapper.selectByPrimaryKey(id);
+        HospNews select = new HospNews();
+        select.setEnable(EnableEnum.ENABLE_NORMAL.getCode());
+        select.setId(id);
+        return hospNewsMapper.selectOne(select);
     }
 
     /**
@@ -125,12 +125,15 @@ public class NewsService implements BaseService<HospNews,HospNews>{
      * @return
      */
     public PageInfo<HospNews> select(HospNews hospNews) {
+        if(hospNews == null)
+            return null;
         PageHelper.startPage(hospNews.getPageNum(), hospNews.getPageSize());
         if (StringUtil.isNotEmpty(hospNews.getField()))
             PageHelper.orderBy(hospNews.getField());
         HospNews select = new HospNews();
         select.setSource(hospNews.getSource());
         select.setTitle(hospNews.getTitle());
+        select.setEnable(EnableEnum.ENABLE_NORMAL.getCode());
         return new PageInfo(hospNewsMapper.select(select));
     }
 
@@ -141,16 +144,19 @@ public class NewsService implements BaseService<HospNews,HospNews>{
      * @return
      */
     public PageInfo<HospNews> selectAll(PageBean pageBean) {
-        if(pageBean == null)
+        if (pageBean == null)
             pageBean = new PageBean();
         PageHelper.startPage(pageBean.getPageNum(), pageBean.getPageSize());
         if (StringUtil.isNotEmpty(pageBean.getField()))
             PageHelper.orderBy(pageBean.getField());
-        return new PageInfo(hospNewsMapper.selectAll());
+        HospNews select = new HospNews();
+        select.setEnable(EnableEnum.ENABLE_NORMAL.getCode());
+        return select(select);
     }
 
     /**
      * 查询一条新闻---admin
+     *
      * @param id
      * @return
      * @throws Exception
@@ -160,46 +166,41 @@ public class NewsService implements BaseService<HospNews,HospNews>{
         DPreconditions.checkNotNull(id,
                 Language.get("new.select-not-exist"),
                 true);
-        HospNews select = new HospNews();
-        select.setId(id);
-        select.setEnable(null);
-        return hospNewsMapper.selectOne(select);
+        return hospNewsMapper.selectByPrimaryKey(id);
     }
 
 
     /**
      * 查询新闻---admin
+     *
      * @param hospNews
      * @return
      * @throws Exception
      */
     @Override
     public PageInfo<HospNews> selectAdmin(HospNews hospNews) throws Exception {
+        if(hospNews == null)
+            return null;
         PageHelper.startPage(hospNews.getPageNum(), hospNews.getPageSize());
         if (StringUtil.isNotEmpty(hospNews.getField()))
             PageHelper.orderBy(hospNews.getField());
-        HospNews select = new HospNews();
-        select.setSource(hospNews.getSource());
-        select.setTitle(hospNews.getTitle());
-        select.setEnable(hospNews.getEnable());
-        return new PageInfo(hospNewsMapper.select(select));
+        return new PageInfo(hospNewsMapper.select(hospNews));
     }
 
     /**
      * 查询全部新闻---admin
+     *
      * @param pageBean
      * @return
      * @throws Exception
      */
     @Override
     public PageInfo<HospNews> selectAllAdmin(PageBean pageBean) throws Exception {
-        if(pageBean == null)
+        if (pageBean == null)
             pageBean = new PageBean();
         PageHelper.startPage(pageBean.getPageNum(), pageBean.getPageSize());
         if (StringUtil.isNotEmpty(pageBean.getField()))
             PageHelper.orderBy(pageBean.getField());
-        HospNews select = new HospNews();
-        select.setEnable(null);
-        return new PageInfo(hospNewsMapper.select(select));
+        return new PageInfo(hospNewsMapper.selectAll());
     }
 }

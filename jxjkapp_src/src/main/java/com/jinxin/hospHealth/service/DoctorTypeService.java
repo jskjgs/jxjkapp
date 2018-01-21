@@ -97,6 +97,8 @@ public class DoctorTypeService implements BaseService<HospDoctorType,HospDoctorT
      * @return
      */
     public PageInfo<HospDoctorType> select(HospDoctorType hospDoctorType) {
+        if(hospDoctorType == null)
+            return  null;
         PageHelper.startPage(hospDoctorType.getPageNum(), hospDoctorType.getPageSize());
         if (StringUtil.isNotEmpty(hospDoctorType.getField()))
             PageHelper.orderBy(hospDoctorType.getField());

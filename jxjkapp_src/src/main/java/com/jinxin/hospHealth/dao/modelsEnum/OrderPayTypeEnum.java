@@ -11,7 +11,8 @@ public enum OrderPayTypeEnum {
 
     WECHAT(0,"微信"),
     ALIPAY(1,"支付宝"),
-    BALANCE(2,"余额支付");
+    BALANCE(2,"余额支付"),
+    HIS(3,"HIS线下支付");
 
     private int code;
     private String desc;

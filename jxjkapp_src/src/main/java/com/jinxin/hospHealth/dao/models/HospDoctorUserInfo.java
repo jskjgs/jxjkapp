@@ -52,7 +52,7 @@ public class HospDoctorUserInfo {
         doctorUserInfoVO.setPhone(this.phone);
         doctorUserInfoVO.setSex(
                 this.sex != null
-                        ? SexEnum.getSexEnumByCode(this.sex).getDesc()
+                        ? SexEnum.getByCode(this.sex).getDesc()
                         : null);
         doctorUserInfoVO.setName(this.name);
         return doctorUserInfoVO;

@@ -49,7 +49,7 @@ public class HospUserInfo extends PageBean{
         userInfoVO.setHeadPortrait(this.headPortrait);
         userInfoVO.setSex(
                 this.sex != null
-                        ? SexEnum.getSexEnumByCode(this.sex).getDesc()
+                        ? SexEnum.getByCode(this.sex).getDesc()
                         : null);
         userInfoVO.setPhone(this.phone);
         userInfoVO.setEmail(this.email);

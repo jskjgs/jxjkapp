@@ -7,13 +7,11 @@ import placeholderImg from '@/assets/images/placeholder.png'
 
 import SearchTable from '@/components/_common/searchTable/SearchTable'
 
+import { convertDate, payStateFormat, userStateFormat } from '@/utils/index'
+
 import {
   queryOrderApi
 } from './api'
-
-import {
-  convertDate
-} from '@/utils/index'
 
 export default {
   name: 'order',
@@ -110,17 +108,10 @@ export default {
           orderCode: item.code,
           orderAmount: ('￥' + item.orderSalesPrice),
           createTime: item.createDate,
-          orderState: item.payState,
+          orderState: payStateFormat(item.payState),
           userName: item.user.name,
           phoneNumber: item.user.phone,
-          userLevel: ((isVip) => {
-            if (isVip) {
-              return 'VIP'
-            }
-            return '普通用户'
-          })(item.user.isVip),
-          areaId: item.area.id,
-          areaName: item.area.name
+          userLevel: userStateFormat(item.user.isVip)
         }))
         this.total = content.total || 0
       }
@@ -165,6 +156,10 @@ export default {
         }
       })
     },
+    newOrder (rowData) {
+      rowData = !rowData ? {} : rowData
+      this.$router.push({name: 'order/add_root'})
+    },
     openDetail (rowData) {
       rowData = !rowData ? {} : rowData
       this.$router.push({name: 'order/detail_root', params: { orderId: rowData.orderId }})
@@ -206,7 +201,7 @@ export default {
           <el-button
             class="btn--add"
             type="primary"
-            @click="openDetail()">
+            @click="newOrder()">
             新增 <i class="el-icon-plus"></i>
           </el-button>
         </div>

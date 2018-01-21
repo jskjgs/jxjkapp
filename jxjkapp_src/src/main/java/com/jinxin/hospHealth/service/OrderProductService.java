@@ -76,9 +76,6 @@ public class OrderProductService implements BaseService<HospOrderProduct, OrderP
                 true);
         orderProductPO.setCode(UUidGenerate.create());
         orderProductPO.setProductSkuName(sku.getName());
-        orderProductPO.setProductSalesPrice(sku.getSalesPrice());
-        orderProductPO.setProductSalesPrice(sku.getSalesPrice());
-        orderProductPO.setProductShowPrice(sku.getShowPrice());
         orderProductPO.setState(OrderProductStateEnum.NORMAL.getCode());
         HospOrderProduct add = orderProductPO.transform(new Date(), new Date());
         DPreconditions.checkNotNull(hospOrderProductMapper.insertReturnId(add),
@@ -185,6 +182,8 @@ public class OrderProductService implements BaseService<HospOrderProduct, OrderP
      */
     @Override
     public PageInfo<HospOrderProduct> select(OrderProductPO orderProductPO) throws Exception {
+        if(orderProductPO == null)
+            return null;
         PageHelper.startPage(orderProductPO.getPageNum(), orderProductPO.getPageSize());
         if (StringUtil.isNotEmpty(orderProductPO.getField())) {
             PageHelper.orderBy(orderProductPO.getField());

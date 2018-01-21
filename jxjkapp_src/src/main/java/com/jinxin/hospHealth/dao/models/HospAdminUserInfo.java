@@ -55,9 +55,9 @@ public class HospAdminUserInfo {
                 ? null
                 : this.permissions.split(","));
         adminInfoVO.setPhone(this.phone);
-        adminInfoVO.setSex(SexEnum.getSexEnumByCode(this.sex) == null
+        adminInfoVO.setSex(this.sex == null
                 ? null
-                : SexEnum.getSexEnumByCode(this.sex).getDesc());
+                : SexEnum.getByCode(this.sex).getDesc());
         adminInfoVO.setName(this.name);
         return adminInfoVO;
     }

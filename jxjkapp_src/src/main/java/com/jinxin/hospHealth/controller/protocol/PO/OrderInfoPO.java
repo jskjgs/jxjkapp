@@ -2,16 +2,13 @@ package com.jinxin.hospHealth.controller.protocol.PO;
 
 import com.doraemon.base.controller.bean.PageBean;
 import com.jinxin.hospHealth.dao.models.HospOrder;
-import com.jinxin.hospHealth.dao.models.HospOrderServiceDetails;
 import com.jinxin.hospHealth.dao.modelsEnum.OrderPayTypeEnum;
-import com.jinxin.hospHealth.dao.modelsEnum.OrderRefundStateEnum;
 import com.jinxin.hospHealth.dao.modelsEnum.OrderTypeEnum;
 import com.jinxin.hospHealth.dao.modelsEnum.ShowEnum;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
-import javax.persistence.Transient;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
@@ -27,22 +24,20 @@ public class OrderInfoPO extends PageBean {
     private Long id;
     @ApiModelProperty("订单code")
     private String code;
-    @ApiModelProperty("操作人员名称")
-    private String operationName;
+    @ApiModelProperty("Admin操作人员ID")
+    private Long adminUserId;
     @ApiModelProperty("用户ID")
     private Long userId;
-    @ApiModelProperty("院区ID")
-    private Long areaId;
     @ApiModelProperty("类型（0 服务订单 1 商品订单）")
     private Integer type;
-    @ApiModelProperty("支付状态 (0 已支付订单 1 未支付 )")
+    @ApiModelProperty("支付状态 (0 未支付订单/1 已支付订单/2 退款申请中/3 退款完毕 )")
     private Integer payState;
-    @ApiModelProperty("退款状态 (0 退款申请中 1 退款完毕 )")
-    private Integer refundState;
     @ApiModelProperty("购买的商品些")
     private List<OrderProductPO> orderProductPOList;
-    @ApiModelProperty("支付方式（0 微信 1 支付宝）")
+    @ApiModelProperty("支付方式（0 微信 1 支付宝 2 余额支付 3 HIS线下支付）")
     private Integer paymentType;
+    @ApiModelProperty("支付成功回执编号")
+    private String paymentCode;
     @ApiModelProperty("支付金额")
     private BigDecimal amount;
     @ApiModelProperty("是否显示 0:显示 1:隐藏")
@@ -57,6 +52,7 @@ public class OrderInfoPO extends PageBean {
 
     /**
      * 默认排序,如果没有传入排序的话
+     *
      * @return
      */
     public String getField() {
@@ -76,20 +72,30 @@ public class OrderInfoPO extends PageBean {
         HospOrder hospOrder = new HospOrder();
         hospOrder.setId(this.id);
         hospOrder.setCode(this.code);
-        hospOrder.setOperationName(this.operationName);
+        hospOrder.setAdminUserId(this.adminUserId);
         hospOrder.setUserId(this.userId);
-        hospOrder.setAreaId(this.areaId);
-        hospOrder.setType(OrderTypeEnum.getByCode(this.type).getCode());
-        hospOrder.setPayState(OrderPayTypeEnum.getByCode(this.payState).getCode());
-        hospOrder.setRefundState(OrderRefundStateEnum.getByCode(this.refundState).getCode());
+        hospOrder.setType(
+                this.type != null
+                        ? OrderTypeEnum.getByCode(this.type).getCode()
+                        : null);
+        hospOrder.setPayState(
+                this.payState != null
+                        ? OrderPayTypeEnum.getByCode(this.payState).getCode()
+                        : null);
         hospOrder.setOrderPayPrice(orderPayPrice);
         hospOrder.setOrderSalesPrice(orderSalesPrice);
-        hospOrder.setPaymentType(OrderPayTypeEnum.getByCode(this.paymentType).getCode());
+        hospOrder.setPaymentType(
+                this.paymentType != null
+                        ? OrderPayTypeEnum.getByCode(this.paymentType).getCode()
+                        : null);
         hospOrder.setPaymentCode(paymentCode);
         hospOrder.setCreateDate(createDate);
         hospOrder.setUpdateDate(updateDate);
         hospOrder.setPromotionIds(promotionIds);
-        hospOrder.setDisplay(ShowEnum.getByCode(display).getCode());
+        hospOrder.setDisplay(
+                display != null
+                        ? ShowEnum.getByCode(display).getCode()
+                        : null);
         return hospOrder;
     }
 

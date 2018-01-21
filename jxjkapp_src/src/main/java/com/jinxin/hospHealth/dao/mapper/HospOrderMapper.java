@@ -30,9 +30,6 @@ public interface HospOrderMapper extends MyMapper<HospOrder> {
             " <if test = 'order.payState != null and order.payState != \"\"'> " +
             "   and pay_state = #{order.payState}" +
             " </if>  " +
-            " <if test = 'order.refundState != null and order.refundState != \"\"'> " +
-            "   and refund_state = #{order.refundState}" +
-            " </if>  " +
             " <if test = 'order.paymentType != null and order.paymentType != \"\"'> " +
             "   and payment_type = #{order.paymentType}" +
             " </if>  " +

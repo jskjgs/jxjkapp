@@ -6,7 +6,7 @@ user:
     select-not-exist: 该用户不存在.
     phone-null: 电话信息不能为空.
     id-null: 用户唯一标识不能为空.
-    id-repeat: 该用户信息已经存在,不能重复增加.
+    id-repeat: 该用户信息已经存在.
     select-object-null: 用户查询信息不能为空.
     phone-repeat: 手机号码已经被注册.
     password-null: 密码不能为空.

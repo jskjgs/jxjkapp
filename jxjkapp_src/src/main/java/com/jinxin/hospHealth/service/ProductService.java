@@ -159,6 +159,8 @@ public class ProductService implements BaseService<HospProduct,HospProduct>{
      * @return
      */
     public PageInfo<HospProduct> select(HospProduct hospProduct) {
+        if(hospProduct == null)
+            return null;
         PageHelper.startPage(hospProduct.getPageNum(), hospProduct.getPageSize());
         if (StringUtil.isNotEmpty(hospProduct.getField()))
             PageHelper.orderBy(hospProduct.getField());
@@ -206,6 +208,8 @@ public class ProductService implements BaseService<HospProduct,HospProduct>{
      */
     @Override
     public PageInfo<HospProduct> selectAdmin(HospProduct hospProduct) throws Exception {
+        if(hospProduct == null)
+            return null;
         PageHelper.startPage(hospProduct.getPageNum(), hospProduct.getPageSize());
         if (StringUtil.isNotEmpty(hospProduct.getField()))
             PageHelper.orderBy(hospProduct.getField());
@@ -231,6 +235,6 @@ public class ProductService implements BaseService<HospProduct,HospProduct>{
             PageHelper.orderBy(pageBean.getField());
         HospProduct select = new HospProduct();
         select.setEnable(null);
-        return new PageInfo(hospProductMapper.selectByExample(select));
+        return new PageInfo(hospProductMapper.select(select));
     }
 }

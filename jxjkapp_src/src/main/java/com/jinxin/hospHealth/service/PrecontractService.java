@@ -20,7 +20,7 @@ import org.springframework.stereotype.Service;
  * Created by zbs on 2018/1/2.
  */
 @Service
-public class PrecontractService implements BaseService<HospPrecontract,HospPrecontract>{
+public class PrecontractService implements BaseService<HospPrecontract, HospPrecontract> {
 
     @Autowired
     HospPrecontractMapper hospPrecontractMapper;
@@ -31,6 +31,7 @@ public class PrecontractService implements BaseService<HospPrecontract,HospPreco
 
     /**
      * 增加预约
+     *
      * @param hospPrecontract
      * @throws Exception
      */
@@ -63,7 +64,7 @@ public class PrecontractService implements BaseService<HospPrecontract,HospPreco
         precontract.setProductSkuId(hospPrecontract.getProductSkuId());
         precontract.setUserId(hospPrecontract.getUserId());
         precontract.setStatus(PrecontractEnum.NORMAL.getCode());
-        DPreconditions.checkState(hospPrecontractMapper.insertSelectiveReturnId(precontract)==1,
+        DPreconditions.checkState(hospPrecontractMapper.insertSelectiveReturnId(precontract) == 1,
                 Language.get("service.save-failure"),
                 true);
         return precontract;
@@ -71,6 +72,7 @@ public class PrecontractService implements BaseService<HospPrecontract,HospPreco
 
     /**
      * 更新预约
+     *
      * @param hospPrecontract
      * @throws Exception
      */
@@ -92,6 +94,7 @@ public class PrecontractService implements BaseService<HospPrecontract,HospPreco
 
     /**
      * 删除预约
+     *
      * @param id
      * @throws Exception
      */
@@ -108,6 +111,7 @@ public class PrecontractService implements BaseService<HospPrecontract,HospPreco
 
     /**
      * 失效预约信息
+     *
      * @param id
      * @throws Exception
      */
@@ -118,6 +122,7 @@ public class PrecontractService implements BaseService<HospPrecontract,HospPreco
 
     /**
      * 查询一条预约信息
+     *
      * @param id
      * @return
      * @throws Exception
@@ -136,36 +141,41 @@ public class PrecontractService implements BaseService<HospPrecontract,HospPreco
 
     /**
      * 查询预约信息
+     *
      * @param hospPrecontract
      * @return
      * @throws Exception
      */
     @Override
     public PageInfo<HospPrecontract> select(HospPrecontract hospPrecontract) throws Exception {
+        if (hospPrecontract == null)
+            return null;
         PageHelper.startPage(hospPrecontract.getPageNum(), hospPrecontract.getPageSize());
         if (StringUtil.isNotEmpty(hospPrecontract.getField()))
             PageHelper.orderBy(hospPrecontract.getField());
-        return  new PageInfo(hospPrecontractMapper.selectByExampleByCustom(hospPrecontract));
+        return new PageInfo(hospPrecontractMapper.selectByExampleByCustom(hospPrecontract));
     }
 
     /**
      * 查询全部预约信息
+     *
      * @param pageBean
      * @return
      * @throws Exception
      */
     @Override
     public PageInfo<HospPrecontract> selectAll(PageBean pageBean) throws Exception {
-        if(pageBean == null)
+        if (pageBean == null)
             pageBean = new PageBean();
         PageHelper.startPage(pageBean.getPageNum(), pageBean.getPageSize());
         if (StringUtil.isNotEmpty(pageBean.getField()))
             PageHelper.orderBy(pageBean.getField());
-        return  new PageInfo(hospPrecontractMapper.selectAll());
+        return new PageInfo(hospPrecontractMapper.selectAll());
     }
 
     /**
      * 查询一个信息---admin
+     *
      * @param id
      * @return
      * @throws Exception
@@ -177,6 +187,7 @@ public class PrecontractService implements BaseService<HospPrecontract,HospPreco
 
     /**
      * 查询信息---admin
+     *
      * @param hospPrecontract
      * @return
      * @throws Exception
@@ -188,13 +199,14 @@ public class PrecontractService implements BaseService<HospPrecontract,HospPreco
 
     /**
      * 查询全部信息---admin
+     *
      * @param pageBean
      * @return
      * @throws Exception
      */
     @Override
     public PageInfo<HospPrecontract> selectAllAdmin(PageBean pageBean) throws Exception {
-        if(pageBean == null)
+        if (pageBean == null)
             pageBean = new PageBean();
         return selectAll(pageBean);
     }

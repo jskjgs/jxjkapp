@@ -22,18 +22,14 @@ public class OrderVO {
     private Long id;
     @ApiModelProperty("订单编号")
     private String code;
-    @ApiModelProperty("操作人员名称")
-    private String operationName;
+    @ApiModelProperty("Admin操作人员信息")
+    private AdminInfoVO adminInfo;
     @ApiModelProperty("用户信息")
     private UserInfoVO user;
-    @ApiModelProperty("院区信息")
-    private HospArea area;
     @ApiModelProperty("类型（0 服务订单 1 商品订单）")
     private Integer type;
-    @ApiModelProperty("支付状态 (已支付订单/未支付订单 )")
-    private String payState;
-    @ApiModelProperty("退款状态 (退款申请中/退款完毕)")
-    private String refundState;
+    @ApiModelProperty("支付状态 (0 未支付订单/1 已支付订单/2 退款申请中/3 退款完毕)")
+    private Integer payState;
     @ApiModelProperty("订单支付总价格（促销优惠后的支付总价格）")
     private BigDecimal orderPayPrice;
     @ApiModelProperty("订单销售总价格（没参加促销的价格）")

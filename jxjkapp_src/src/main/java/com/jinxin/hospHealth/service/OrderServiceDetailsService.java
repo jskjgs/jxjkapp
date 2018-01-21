@@ -97,6 +97,14 @@ public class OrderServiceDetailsService implements BaseService<HospOrderServiceD
                 OrderPayStateEnum.PAY.getCode() == hospOrder.getPayState(),
                 "订单必须是支付的订单.",
                 true);
+        DPreconditions.checkNotNullAndEmpty(
+                po.getDoctorSign(),
+                "医生签字不能为空.",
+                true);
+        DPreconditions.checkNotNullAndEmpty(
+                po.getUserSign(),
+                "用户签字不能为空.",
+                true);
         DPreconditions.checkState(
                 remainingServiceNumber(po.getOrderProductId()) > 0,
                 Language.get("order-product-service.number-null"),
@@ -228,6 +236,8 @@ public class OrderServiceDetailsService implements BaseService<HospOrderServiceD
 
     @Override
     public PageInfo<HospOrderServiceDetails> select(OrderServiceDetailsPO po) throws Exception {
+        if(po == null)
+            return  null;
         PageHelper.startPage(po.getPageNum(), po.getPageSize());
         if (StringUtil.isNotEmpty(po.getField()))
             PageHelper.orderBy(po.getField());

@@ -1,35 +1,18 @@
 package com.jinxin.hospHealth.controller.protocol.VO;
 
-import com.jinxin.hospHealth.dao.models.HospPatientInfo;
-import com.jinxin.hospHealth.dao.models.HospUserInfo;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
-import java.util.Date;
 
 /**
- * Created by zbs on 2018/1/10.
+ * Created by zbs on 2018/1/21.
  */
 @Data
 @ApiModel("排队叫号信息")
 public class CallNumberVO {
 
-    @ApiModelProperty("id")
-    private Long id;
     @ApiModelProperty("用户信息")
-    private HospUserInfo hospUserInfo;
-    @ApiModelProperty("就诊人信息")
-    private HospPatientInfo hospPatientInfo;
-    @ApiModelProperty("状态(0 : 等待  1 : 使用  2 : 过号)")
-    private Integer state;
-    @ApiModelProperty("排队序号")
-    private Integer orderNumber;
-    @ApiModelProperty("前面等待人数")
-    private Integer waitNumber;
-    @ApiModelProperty("创建时间")
-    private Date createDate;
-    @ApiModelProperty("更新时间")
-    private Date updateDate;
-
-
+    UserInfoVO userInfo;
+    @ApiModelProperty("商品SKU信息")
+    ProductSkuVO productSkuVO;
 }

@@ -28,10 +28,6 @@ public class OrderProductPO extends PageBean{
     private String productSkuName;
     @ApiModelProperty("商品支付价格（促销优惠后的支付价格）")
     private BigDecimal productPayPrice;
-    @ApiModelProperty("商品销售价格（商品没参加促销的价格）")
-    private BigDecimal productSalesPrice;
-    @ApiModelProperty("商品显示价格")
-    private BigDecimal productShowPrice;
     @ApiModelProperty("购买的数量")
     private Integer quantity;
     @ApiModelProperty("如果是服务订单，服务的总次数")
@@ -55,8 +51,6 @@ public class OrderProductPO extends PageBean{
         hospOrderProduct.setProductSkuId(this.productSkuId);
         hospOrderProduct.setProductSkuName(this.productSkuName);
         hospOrderProduct.setProductPayPrice(this.productPayPrice);
-        hospOrderProduct.setProductSalesPrice(this.productSalesPrice);
-        hospOrderProduct.setProductShowPrice(this.productShowPrice);
         hospOrderProduct.setQuantity(this.quantity);
         hospOrderProduct.setServiceQuantity(this.serviceQuantity);
         hospOrderProduct.setStartDate(this.startDate);

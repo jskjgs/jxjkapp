@@ -105,6 +105,8 @@ public class ProductTypeService implements BaseService<HospProductType,HospProdu
      * @return
      */
     public PageInfo<HospProductType> select(HospProductType hospProductType) {
+        if(hospProductType == null)
+            return  null;
         PageHelper.startPage(hospProductType.getPageNum(), hospProductType.getPageSize());
         if (StringUtil.isNotEmpty(hospProductType.getField()))
             PageHelper.orderBy(hospProductType.getField());

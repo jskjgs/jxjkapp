@@ -31,8 +31,18 @@ public class OrderServiceDetailsPO extends PageBean{
     private Long doctorAreaId;
     @ApiModelProperty("医生ID")
     private Long doctorUserId;
+    @ApiModelProperty("合作的医生用户ID")
+    private Long associatesId;
     @ApiModelProperty("申请作废的理由")
     private String account;
+    @ApiModelProperty("医生签字")
+    private String doctorSign;
+    @ApiModelProperty("用户签字")
+    private String userSign;
+    @ApiModelProperty("消费备注")
+    private String consumptionNote;
+    @ApiModelProperty("购买备注")
+    private String buyNote;
     @ApiModelProperty("医生评价")
     private String doctorComment;
     @ApiModelProperty("订单评价ID")
@@ -53,9 +63,14 @@ public class OrderServiceDetailsPO extends PageBean{
         hospOrderServiceDetails.setDoctorComment(this.doctorComment);
         hospOrderServiceDetails.setGradeId(this.gradeId);
         hospOrderServiceDetails.setState(this.state);
+        hospOrderServiceDetails.setAssociatesId(this.associatesId);
         hospOrderServiceDetails.setAddress(this.address);
         hospOrderServiceDetails.setDoctorUserId(this.doctorUserId);
         hospOrderServiceDetails.setAccount(this.account);
+        hospOrderServiceDetails.setUserSign(this.userSign);
+        hospOrderServiceDetails.setDoctorSign(this.doctorSign);
+        hospOrderServiceDetails.setConsumptionNote(this.consumptionNote);
+        hospOrderServiceDetails.setBuyNote(this.buyNote);
         hospOrderServiceDetails.setCreateDate(createDate);
         hospOrderServiceDetails.setUpdateDate(updateDate);
         return hospOrderServiceDetails;

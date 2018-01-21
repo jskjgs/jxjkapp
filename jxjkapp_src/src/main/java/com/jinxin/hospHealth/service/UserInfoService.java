@@ -188,6 +188,8 @@ public class UserInfoService implements BaseService<HospUserInfo, UserInfoPO> {
      */
     @Override
     public PageInfo<HospUserInfo> select(UserInfoPO userInfoPO) {
+        if(userInfoPO == null)
+            return null;
         PageHelper.startPage(userInfoPO.getPageNum(), userInfoPO.getPageSize());
         if (StringUtil.isNotEmpty(userInfoPO.getField()))
             PageHelper.orderBy(userInfoPO.getField());

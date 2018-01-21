@@ -51,6 +51,15 @@ public class OtherController extends MyBaseController {
     public JSONObject sendCode(
             @ApiParam(value = "电话号码", required = true) @RequestParam(value = "phone", required = true) String phone,
             @ApiParam(value = "验证码类型(0-登陆/注册 1-换绑手机号)", required = true) @RequestParam(value = "type", required = true) Integer type) throws Exception {
+        //如果是换绑手机号,判断手机号是否是已经注册的手机,如果是不能换绑
+        if(DynamicTypeEnum.UPDATE_PHONE.getCode() == type){
+            UserInfoPO select = new UserInfoPO();
+            select.setPassword(phone);
+            DPreconditions.checkState(
+                    userInfoService.selectOne(select) == null,
+                    Language.get("user.id-repeat"),
+                    true);
+        }
         String dynamicCode = RandomUtil.getRandomIntByLength(4);
         redisOperation.usePool().set(DynamicTypeEnum.getByCode(type).getDesc() + "_" + phone, dynamicCode);
         redisOperation.usePool().expire(DynamicTypeEnum.getByCode(type).getDesc() + "_" + phone, Integer.valueOf(effectiveTime));
@@ -105,6 +114,7 @@ public class OtherController extends MyBaseController {
         loginInfoVO.setToken(
                 createToken(hospAdminUserInfo.getId(),
                         adminTokenPrefix));
+        loginInfoVO.setAdminInfoVO(hospAdminUserInfo.transform());
         return ResponseWrapperSuccess(loginInfoVO);
     }
 
@@ -127,6 +137,7 @@ public class OtherController extends MyBaseController {
                 createToken(
                         hospDoctorUserInfo.getId(),
                         doctorTokenPrefix));
+        loginInfoVO.setDoctorUserInfoVO(hospDoctorUserInfo.transform());
         return ResponseWrapperSuccess(loginInfoVO);
     }
 }

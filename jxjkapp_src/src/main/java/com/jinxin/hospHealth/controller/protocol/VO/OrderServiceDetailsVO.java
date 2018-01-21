@@ -26,10 +26,20 @@ public class OrderServiceDetailsVO {
     private HospArea area;
     @ApiModelProperty("医生端用户信息")
     private DoctorUserInfoVO doctorUserInfo;
+    @ApiModelProperty("合作的医生用户")
+    private DoctorUserInfoVO associates;
     @ApiModelProperty("医生评价")
     private String doctorComment;
     @ApiModelProperty("订单评价")
     private HospOrderGrade grade;
+    @ApiModelProperty("医生签字")
+    private String doctorSign;
+    @ApiModelProperty("用户签字")
+    private String userSign;
+    @ApiModelProperty("消费备注")
+    private String consumptionNote;
+    @ApiModelProperty("购买备注")
+    private String buyNote;
     @ApiModelProperty("申请作废的理由")
     private String account;
     @ApiModelProperty("状态")
