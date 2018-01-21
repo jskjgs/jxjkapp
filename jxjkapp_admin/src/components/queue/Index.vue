@@ -4,11 +4,9 @@
  * Date: 2017/8/29
  */
 import SearchTable from '@/components/_common/searchTable/SearchTable'
-
 import tableCfgMaker from './_consts/tableCfg'
-import { fetchApi } from '@/utils/index'
 import {
-  getListApi
+  getListApi, callNext
 } from './api'
 
 export default {
@@ -93,11 +91,7 @@ export default {
       })
     },
     next () {
-      fetchApi({
-        url: '',
-        type: 'post',
-        data: null
-      }).then((res) => {
+      callNext().then((res) => {
         console.log(res)
       }).catch((err) => {
         console.log(err)

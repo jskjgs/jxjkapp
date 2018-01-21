@@ -201,3 +201,14 @@ export const userStateFormat = (isVip) => {
   return '普通用户'
 }
 
+/**
+ * 用户等级
+ */
+export const authorFormat = (author) => {
+  switch (author) {
+    case 0: { return '医生' }
+    case 1: { return '医院主管' }
+    case 2: { return '集团领导' }
+  }
+  return '无'
+}
