@@ -1,12 +1,12 @@
 import { fetchApi } from '@/utils/index'
 
 // 获取员工账号信息
-export const GET_EMPLOYEE_INFO = '/doctorUser/add'
-export const getEmployee = (data) => {
+export const GET_EMPLOYEE_INFO = '/admin/selectOne'
+export const getEmployee = (params) => {
   return fetchApi({
-    url: ADD_EMPLOYEE,
-    type: 'post',
-    data
+    url: GET_EMPLOYEE_INFO,
+    type: 'get',
+    params
   })
 }
 
@@ -21,12 +21,11 @@ export const addEmployee = (data) => {
 }
 
 // 修改医生信息
-export const UPDATE_DOCTOR_URL = '/doctor_i/modifyDoctor'
-export const updateEmployeeApi = (params, data) => {
+export const UPDATE_DOCTOR_URL = '/admin/update'
+export const updateEmployeeApi = (data) => {
   return fetchApi({
     url: UPDATE_DOCTOR_URL,
     type: 'post',
-    params,
     data
   })
 }

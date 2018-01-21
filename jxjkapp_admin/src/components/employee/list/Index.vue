@@ -94,7 +94,7 @@ export default {
         this.tableData = (content.list || []).map((item) => {
           return {
             no: item.id,
-            name: item.name,
+            name: item.nickname,
             area: item.area.name,
             phone: item.phone,
             title: item.title,

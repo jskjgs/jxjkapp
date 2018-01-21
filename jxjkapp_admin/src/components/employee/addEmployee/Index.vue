@@ -14,14 +14,14 @@ export default {
   data () {
     return {
       fromData: {
-        userId: this.$route.params.id,
+        id: this.$route.params.id,
         phone: 123,
         account: null,
         password: null,
         areaId: null,
         author: null,
         sex: null,
-        nickName: null
+        nickname: null
       },
       hospitalList: []
     }
@@ -37,20 +37,28 @@ export default {
         this.hospitalList.push(data)
       })
     })
+    if (this.$route.params.id) {
+      console.log(1)
+      getEmployee({id: this.$route.params.id}).then((res) => {
+        let info = res.content
+        this.fromData.phone = info.phone
+        this.fromData.account = info.account
+        this.fromData.areaId = info.area.id
+        this.fromData.author = info.authorId
+        this.fromData.sex = info.sex
+        this.fromData.nickname = info.nickname
+        console.log(res)
+      })
+    }
   },
   watch: {
   },
   methods: {
-    getEmployeeInfo () {
-      getEmployee().then((res) => {
-        console.log(res)
-      })
-    },
     handleCancel () {
       this.$router.push({name: 'employee_root'})
     },
     handleUpdate () {
-      if (!this.fromData.userId) {
+      if (!this.fromData.id) {
         addEmployee(this.fromData).then((res) => {
           console.log(res)
           this.$message({
@@ -58,19 +66,15 @@ export default {
             message: '创建成功'
           })
           this.$router.push({name: 'employee_root'})
-        }).catch((err) => {
-          console.log(err)
         }).finally(() => {
           this.loginLoading = false
         })
       } else {
-        updateEmployeeApi().then((res) => {
+        updateEmployeeApi(this.fromData).then((res) => {
           this.$message({
             type: 'success',
             message: '更新成功'
           })
-        }).catch((err) => {
-          console.log(err)
         }).finally(() => {
           this.loginLoading = false
         })
@@ -101,14 +105,14 @@ export default {
         <el-input
           v-model.trim="fromData.password"
           type="password"
-          :placeholder="fromData.userId ? '请填入新密码' : '请输初始密码'"
+          :placeholder="fromData.id ? '请填入新密码' : '请输初始密码'"
           style="width: 230px;">
         </el-input>
       </div>
       <div class="tool-item">
         员工姓名
         <el-input
-          v-model.trim="fromData.nickName"
+          v-model.trim="fromData.nickname"
           placeholder="请输就员工姓名"
           style="width: 230px;">
         </el-input>

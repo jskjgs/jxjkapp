@@ -12,11 +12,10 @@ export const getListApi = (data) => {
 
 // 删除员工账号
 export const DELETE_EMPLOYEE_URL = '/admin/setStateAsInvalid'
-export const delEmployee = (params, data) => {
+export const delEmployee = (params) => {
   return fetchApi({
     url: DELETE_EMPLOYEE_URL,
-    type: 'post',
-    params,
-    data
+    type: 'delete',
+    params
   })
 }
