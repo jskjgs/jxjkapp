@@ -114,6 +114,7 @@ public class OtherController extends MyBaseController {
         loginInfoVO.setToken(
                 createToken(hospAdminUserInfo.getId(),
                         adminTokenPrefix));
+        loginInfoVO.setAdminInfoVO(hospAdminUserInfo.transform());
         return ResponseWrapperSuccess(loginInfoVO);
     }
 
@@ -136,6 +137,7 @@ public class OtherController extends MyBaseController {
                 createToken(
                         hospDoctorUserInfo.getId(),
                         doctorTokenPrefix));
+        loginInfoVO.setDoctorUserInfoVO(hospDoctorUserInfo.transform());
         return ResponseWrapperSuccess(loginInfoVO);
     }
 }

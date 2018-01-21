@@ -351,7 +351,7 @@ public class OrderService implements BaseService<HospOrder, OrderInfoPO> {
      * @throws Exception
      */
     public HospOrder selectOne(HospOrder hospOrder) throws Exception {
-        hospOrder.setDisplay(ShowEnum.NOT_DISPLAY.getCode());
+        hospOrder.setDisplay(ShowEnum.DISPLAY.getCode());
         return hospOrderMapper.selectOne(hospOrder);
     }
 
@@ -389,7 +389,7 @@ public class OrderService implements BaseService<HospOrder, OrderInfoPO> {
             PageHelper.orderBy(pageBean.getField());
         }
         HospOrder select = new HospOrder();
-        select.setDisplay(ShowEnum.NOT_DISPLAY.getCode());
+        select.setDisplay(ShowEnum.DISPLAY.getCode());
         return new PageInfo(hospOrderMapper.select(select));
     }
 

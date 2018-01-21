@@ -15,6 +15,10 @@ public class LoginInfoVO {
     boolean isEmpty;
     @ApiModelProperty("用户信息")
     UserInfoVO userInfo;
+    @ApiModelProperty("医生用户信息")
+    DoctorUserInfoVO doctorUserInfoVO;
+    @ApiModelProperty("admin用户信息")
+    AdminInfoVO adminInfoVO;
     @ApiModelProperty("token")
     String token;
     @ApiModelProperty("验证码---本手机")
