@@ -49,20 +49,20 @@ public class OrderServiceDetailsController extends TransformController{
     @ResponseBody
     public JSONObject add(
             @ApiParam(value = "订单服务详情信息", required = true) @RequestBody OrderServiceDetailsPO orderServiceDetailsPO) throws Exception {
-        orderServiceDetailsPO.setDoctorUserId(getCurrentUserId());
+        orderServiceDetailsPO.setAdminUserId(getAdminUserId());
         Map<String, Long> map = new HashMap<>();
         HospOrderServiceDetails hospOrderServiceDetails = orderServiceDetailsService.add(orderServiceDetailsPO);
         map.put("id", hospOrderServiceDetails.getId());
         return ResponseWrapperSuccess(map);
     }
 
-    @ApiOperation(value = "确认订单服务详情 ---doctor")
-    @RequestMapping(value = "/doctor/confirm", method = RequestMethod.POST)
+    @ApiOperation(value = "确认订单服务详情 ---admin")
+    @RequestMapping(value = "/admin/confirm", method = RequestMethod.POST)
     @ResponseBody
     public JSONObject confirm(
             @ApiParam(value = "订单服务详情信息", required = true) @RequestBody OrderServiceDetailsPO orderServiceDetailsPO) throws Exception {
-        Long doctorUserId = getDoctorUserId();
-        orderServiceDetailsService.confirm(orderServiceDetailsPO,doctorUserId);
+        Long adminUserId = getAdminUserId();
+        orderServiceDetailsService.confirm(orderServiceDetailsPO,adminUserId);
         return ResponseWrapperSuccess(null);
     }
 
@@ -129,18 +129,18 @@ public class OrderServiceDetailsController extends TransformController{
         return ResponseWrapperSuccess(transformByHospOrderServiceDetails(pageInfo));
     }
 
-    @ApiOperation(value = "查询全部订单服务详情信息---doctor", response = OrderServiceDetailsVO.class)
+    @ApiOperation(value = "在医生端查询全部订单服务详情信息---doctor", response = OrderServiceDetailsVO.class)
     @RequestMapping(value = "/doctor/all", method = RequestMethod.POST)
     @ResponseBody
     public JSONObject selectAllDoctor(
             @ApiParam(value = "状态", required = true) @RequestParam(value = "state", required = true) Integer state,
             @ApiParam(value = "分页信息", required = false) @RequestBody(required = false) PageBean pageBean) throws Exception {
-        HospDoctorUserInfo hospDoctorUserInfo = DPreconditions.checkNotNull(
-                doctorUserInfoService.selectOne(getDoctorUserId()),
-                "医生端用户信息为空",
+        HospAdminUserInfo adminUserInfo = DPreconditions.checkNotNull(
+                adminUserInfoService.selectOne(getAdminUserId()),
+                "admin端用户信息为空",
                 true);
         OrderServiceDetailsPO orderServiceDetailsPO = new OrderServiceDetailsPO();
-        orderServiceDetailsPO.setDoctorAreaId(hospDoctorUserInfo.getAreaId());
+        orderServiceDetailsPO.setDoctorAreaId(adminUserInfo.getAreaId());
         orderServiceDetailsPO.setState(OrderServiceDetailsStateEnum.getByCode(state).getCode());
         if(pageBean != null){
             orderServiceDetailsPO.setPageNum(pageBean.getPageNum());

@@ -102,4 +102,19 @@ public class AdminController extends TransformController {
         return ResponseWrapperSuccess(null);
     }
 
+
+    @ApiOperation(value = "软删除Doctor用户")
+    @RequestMapping(value = "/setStateAsInvalid", method = RequestMethod.DELETE)
+    @ResponseBody
+    public JSONObject setStateAsInvalid(
+            @ApiParam(value = "admin用户Id", required = true) @RequestParam(value = "id", required = true) Long id) throws Exception {
+        DPreconditions.checkNotNull(
+                getAdminUserId(),
+                "adminId 为空",
+                true);
+        adminUserInfoService.setStateAsInvalid(id);
+        return ResponseWrapperSuccess(null);
+    }
+
+
 }

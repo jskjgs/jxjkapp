@@ -9,6 +9,7 @@ import com.github.pagehelper.util.StringUtil;
 import com.jinxin.hospHealth.controller.protocol.PO.DoctorUserInfoPO;
 import com.jinxin.hospHealth.dao.mapper.HospDoctorUserInfoMapper;
 import com.jinxin.hospHealth.dao.models.HospDoctorUserInfo;
+import com.jinxin.hospHealth.dao.modelsEnum.EnableEnum;
 import com.jinxin.hospHealth.dao.modelsEnum.SexEnum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -64,6 +65,7 @@ public class DoctorUserInfoService implements BaseService<HospDoctorUserInfo,Doc
                         ? po.getSex()
                         : SexEnum.MAN.getCode());
         HospDoctorUserInfo add = po.transform(new Date(),new Date());
+        add.setEnable(EnableEnum.ENABLE_NORMAL.getCode());
         DPreconditions.checkState(
                 hospDoctorUserInfoMapper.insertSelectiveReturnId(add) == 1,
                 Language.get("service.save-failure"),
@@ -83,6 +85,7 @@ public class DoctorUserInfoService implements BaseService<HospDoctorUserInfo,Doc
                 true);
         HospDoctorUserInfo select = new HospDoctorUserInfo();
         select.setPhone(phone);
+        select.setEnable(EnableEnum.ENABLE_NORMAL.getCode());
         return hospDoctorUserInfoMapper.selectOne(select);
     }
 
@@ -107,9 +110,24 @@ public class DoctorUserInfoService implements BaseService<HospDoctorUserInfo,Doc
 
     }
 
+    /**
+     * 把doctor user 信息置为软删除
+     * @param id
+     * @throws Exception
+     */
     @Override
     public void setStateAsInvalid(Long id) throws Exception {
-
+        DPreconditions.checkNotNull(
+                id,
+                Language.get("doctor-user.id-null"),
+                true);
+        HospDoctorUserInfo hospDoctorUserInfo = new HospDoctorUserInfo();
+        hospDoctorUserInfo.setId(id);
+        hospDoctorUserInfo.setEnable(EnableEnum.ENABLE_DELETE.getCode());
+        DPreconditions.checkState(
+                hospDoctorUserInfoMapper.updateByPrimaryKeySelective(hospDoctorUserInfo) == 1,
+                Language.get("service.update-failure"),
+                true);
     }
 
     @Override
@@ -118,7 +136,10 @@ public class DoctorUserInfoService implements BaseService<HospDoctorUserInfo,Doc
                 id,
                 Language.get("doctor-user.id-null"),
                 true);
-        return hospDoctorUserInfoMapper.selectByPrimaryKey(id);
+        HospDoctorUserInfo select = new HospDoctorUserInfo();
+        select.setId(id);
+        select.setEnable(EnableEnum.ENABLE_NORMAL.getCode());
+        return hospDoctorUserInfoMapper.selectOne(select);
     }
 
 
@@ -134,12 +155,21 @@ public class DoctorUserInfoService implements BaseService<HospDoctorUserInfo,Doc
                     po.getId() != null
                             || po.getPhone() != null);
         }
-        return hospDoctorUserInfoMapper.selectOne(po.transform(null,null));
+        HospDoctorUserInfo select = po.transform(null,null);
+        select.setEnable(EnableEnum.ENABLE_NORMAL.getCode());
+        return hospDoctorUserInfoMapper.selectOne(select);
     }
 
     @Override
     public PageInfo<HospDoctorUserInfo> select(DoctorUserInfoPO po) throws Exception {
-        return null;
+        if (po == null)
+            return null;
+        PageHelper.startPage(po.getPageNum(), po.getPageSize());
+        if (StringUtil.isNotEmpty(po.getField()))
+            PageHelper.orderBy(po.getField());
+        HospDoctorUserInfo select = po.transform(null,null);
+        select.setEnable(EnableEnum.ENABLE_NORMAL.getCode());
+        return new PageInfo<>(hospDoctorUserInfoMapper.select(select));
     }
 
     @Override
@@ -149,23 +179,23 @@ public class DoctorUserInfoService implements BaseService<HospDoctorUserInfo,Doc
         PageHelper.startPage(pageBean.getPageNum(), pageBean.getPageSize());
         if (StringUtil.isNotEmpty(pageBean.getField()))
             PageHelper.orderBy(pageBean.getField());
-        return new PageInfo(hospDoctorUserInfoMapper.selectAll());
+        HospDoctorUserInfo select = new HospDoctorUserInfo();
+        select.setEnable(EnableEnum.ENABLE_NORMAL.getCode());
+        return new PageInfo(hospDoctorUserInfoMapper.select(select));
     }
 
     @Override
     public HospDoctorUserInfo selectOneAdmin(Long id) throws Exception {
-        return null;
+        return selectOne(id);
     }
 
     @Override
     public PageInfo<HospDoctorUserInfo> selectAdmin(DoctorUserInfoPO po) throws Exception {
-        return null;
+        return select(po);
     }
 
     @Override
     public PageInfo<HospDoctorUserInfo> selectAllAdmin(PageBean pageBean) throws Exception {
-        if(pageBean == null)
-            pageBean = new PageBean();
-        return null;
+        return selectAll(pageBean);
     }
 }

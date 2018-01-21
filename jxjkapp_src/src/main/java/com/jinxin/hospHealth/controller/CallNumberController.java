@@ -155,7 +155,7 @@ public class CallNumberController extends TransformController{
             List<String> values = redisOperation.usePool().lrange(waitingQueName + areaIdTemp, 0, -1);
             for (int i = 0; i < values.size(); i++) {
                 CallNumberPO po = JSON.parseObject(values.get(i), CallNumberPO.class);
-                if (userInfo.getPhone() == po.getPhone()) {
+                if (userInfo.getPhone().equals(po.getPhone())) {
                     vo = transform(po);
                     vo.setBeforeNumber(i);
                     break;

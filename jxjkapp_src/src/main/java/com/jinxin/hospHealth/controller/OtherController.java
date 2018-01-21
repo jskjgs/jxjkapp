@@ -5,17 +5,14 @@ import com.doraemon.base.guava.DPreconditions;
 import com.doraemon.base.language.Language;
 import com.doraemon.base.util.RandomUtil;
 import com.jinxin.hospHealth.controller.protocol.PO.AdminInfoPO;
-import com.jinxin.hospHealth.controller.protocol.PO.DoctorUserInfoPO;
 import com.jinxin.hospHealth.controller.protocol.PO.UserInfoPO;
 import com.jinxin.hospHealth.controller.protocol.VO.AdminInfoVO;
 import com.jinxin.hospHealth.controller.protocol.VO.LoginInfoVO;
 import com.jinxin.hospHealth.dao.models.HospAdminUserInfo;
 import com.jinxin.hospHealth.dao.models.HospArea;
-import com.jinxin.hospHealth.dao.models.HospDoctorUserInfo;
 import com.jinxin.hospHealth.dao.models.HospUserInfo;
 import com.jinxin.hospHealth.dao.modelsEnum.DynamicTypeEnum;
 import com.jinxin.hospHealth.service.AdminUserInfoService;
-import com.jinxin.hospHealth.service.DoctorUserInfoService;
 import com.jinxin.hospHealth.service.HospAreaService;
 import com.jinxin.hospHealth.service.UserInfoService;
 import com.jinxin.hospHealth.utils.sms.AlidayuSms;
@@ -24,7 +21,6 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -42,8 +38,8 @@ public class OtherController extends MyBaseController {
     UserInfoService userInfoService;
     @Autowired
     AdminUserInfoService adminUserInfoService;
-    @Autowired
-    DoctorUserInfoService doctorUserInfoService;
+//    @Autowired
+//    DoctorUserInfoService doctorUserInfoService;
     @Autowired
     AlidayuSms alidayuSms;
     @Autowired
@@ -123,27 +119,27 @@ public class OtherController extends MyBaseController {
         return ResponseWrapperSuccess(loginInfoVO);
     }
 
-    @ApiOperation(value = "doctor用户登录")
-    @RequestMapping(value = "/doctorLogin", method = RequestMethod.POST)
-    @ResponseBody
-    public JSONObject doctorLogin(
-            @ApiParam(value = "手机号码", required = true) @RequestParam(value = "account", required = true) String account,
-            @ApiParam(value = "密码", required = true) @RequestParam(value = "password", required = true) String password) throws Exception {
-        DoctorUserInfoPO select = new DoctorUserInfoPO();
-        select.setPhone(account);
-        select.setPassword(password);
-        HospDoctorUserInfo hospDoctorUserInfo =
-                DPreconditions.checkNotNull(
-                        doctorUserInfoService.selectOne(select),
-                        Language.get("admin-user.login-failure"),
-                        true);
-        LoginInfoVO loginInfoVO = new LoginInfoVO();
-        loginInfoVO.setToken(
-                createToken(
-                        hospDoctorUserInfo.getId(),
-                        doctorTokenPrefix));
-        HospArea hospArea = hospAreaService.selectOne(hospDoctorUserInfo.getAreaId());
-        loginInfoVO.setDoctorUserInfoVO(hospDoctorUserInfo.transform(hospArea));
-        return ResponseWrapperSuccess(loginInfoVO);
-    }
+//    @ApiOperation(value = "doctor用户登录")
+//    @RequestMapping(value = "/doctorLogin", method = RequestMethod.POST)
+//    @ResponseBody
+//    public JSONObject doctorLogin(
+//            @ApiParam(value = "手机号码", required = true) @RequestParam(value = "account", required = true) String account,
+//            @ApiParam(value = "密码", required = true) @RequestParam(value = "password", required = true) String password) throws Exception {
+//        DoctorUserInfoPO select = new DoctorUserInfoPO();
+//        select.setPhone(account);
+//        select.setPassword(password);
+//        HospDoctorUserInfo hospDoctorUserInfo =
+//                DPreconditions.checkNotNull(
+//                        doctorUserInfoService.selectOne(select),
+//                        Language.get("admin-user.login-failure"),
+//                        true);
+//        LoginInfoVO loginInfoVO = new LoginInfoVO();
+//        loginInfoVO.setToken(
+//                createToken(
+//                        hospDoctorUserInfo.getId(),
+//                        doctorTokenPrefix));
+//        HospArea hospArea = hospAreaService.selectOne(hospDoctorUserInfo.getAreaId());
+//        loginInfoVO.setDoctorUserInfoVO(hospDoctorUserInfo.transform(hospArea));
+//        return ResponseWrapperSuccess(loginInfoVO);
+//    }
 }

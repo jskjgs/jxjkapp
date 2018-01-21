@@ -18,8 +18,6 @@ public class DoctorUserInfoVO {
     private Long id;
     @ApiModelProperty("姓名")
     private String name;
-    @ApiModelProperty("密码")
-    private String password;
     @ApiModelProperty("院区ID")
     private HospArea area;
     @ApiModelProperty("头像")

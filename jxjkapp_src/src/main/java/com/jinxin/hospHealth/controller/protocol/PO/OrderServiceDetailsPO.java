@@ -29,8 +29,8 @@ public class OrderServiceDetailsPO extends PageBean{
     private Integer qty;
     @ApiModelProperty("医院院区ID")
     private Long doctorAreaId;
-    @ApiModelProperty("医生ID")
-    private Long doctorUserId;
+    @ApiModelProperty("admin账号ID")
+    private Long adminUserId;
     @ApiModelProperty("合作的医生用户ID")
     private Long associatesId;
     @ApiModelProperty("医生签字")
@@ -70,7 +70,7 @@ public class OrderServiceDetailsPO extends PageBean{
         hospOrderServiceDetails.setState(this.state);
         hospOrderServiceDetails.setAssociatesId(this.associatesId);
         hospOrderServiceDetails.setAddress(this.address);
-        hospOrderServiceDetails.setDoctorUserId(this.doctorUserId);
+        hospOrderServiceDetails.setAdminUserId(this.adminUserId);
         hospOrderServiceDetails.setUserSign(this.userSign);
         hospOrderServiceDetails.setDoctorSign(this.doctorSign);
         hospOrderServiceDetails.setConsumptionNote(this.consumptionNote);

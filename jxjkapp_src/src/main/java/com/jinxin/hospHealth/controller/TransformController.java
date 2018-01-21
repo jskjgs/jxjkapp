@@ -43,8 +43,8 @@ public class TransformController extends MyBaseController {
     HospAreaService hospAreaService;
     @Autowired
     OrderGradeService orderGradeService;
-    @Autowired
-    DoctorUserInfoService doctorUserInfoService;
+    //    @Autowired
+//    DoctorUserInfoService doctorUserInfoService;
     @Autowired
     AdminUserInfoService adminUserInfoService;
     @Autowired
@@ -169,14 +169,6 @@ public class TransformController extends MyBaseController {
     public OrderServiceDetailsVO transform(HospOrderServiceDetails hospOrderServiceDetails) throws Exception {
         if (hospOrderServiceDetails == null)
             return null;
-        HospDoctorUserInfo hospDoctorUserInfo =
-                hospOrderServiceDetails.getDoctorUserId() != null
-                        ? doctorUserInfoService.selectOne(hospOrderServiceDetails.getDoctorUserId())
-                        : null;
-        DoctorUserInfoVO doctorUserInfoVO =
-                hospDoctorUserInfo != null
-                        ? transform(hospDoctorUserInfo)
-                        : null;
         HospOrderProduct hospOrderProduct =
                 hospOrderServiceDetails.getOrderProductId() != null
                         ? orderProductService.selectOne(hospOrderServiceDetails.getOrderProductId())
@@ -201,14 +193,18 @@ public class TransformController extends MyBaseController {
                 hospOrderServiceDetails.getGradeId() != null
                         ? orderGradeService.selectOne(hospOrderServiceDetails.getGradeId())
                         : null;
-        DoctorUserInfoVO associates =
+        AdminInfoVO associates =
                 hospOrderServiceDetails.getAssociatesId() != null
-                        ? transform(doctorUserInfoService.selectOne(
+                        ? transform(adminUserInfoService.selectOne(
                         hospOrderServiceDetails.getAssociatesId()))
+                        : null;
+        AdminInfoVO adminInfoVO =
+                hospOrderServiceDetails.getAdminUserId() != null
+                        ? transform(adminUserInfoService.selectOne(hospOrderServiceDetails.getAdminUserId()))
                         : null;
         return hospOrderServiceDetails.transform(
                 orderProductVO,
-                doctorUserInfoVO,
+                adminInfoVO,
                 associates,
                 hospOrderGrade,
                 hospArea,
@@ -242,7 +238,7 @@ public class TransformController extends MyBaseController {
                 hospOrder.getPatientInfoId() != null
                         ? patientInfoService.selectOne(hospOrder.getPatientInfoId())
                         : null;
-        return hospOrder.transform(userInfoVO,pageInfo.getList(),adminInfoVO,hospPatientInfo);
+        return hospOrder.transform(userInfoVO, pageInfo.getList(), adminInfoVO, hospPatientInfo);
     }
 
     public UserInfoVO transform(HospUserInfo hospUserInfo) {

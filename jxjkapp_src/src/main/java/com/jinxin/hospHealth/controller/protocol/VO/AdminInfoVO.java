@@ -32,7 +32,7 @@ public class AdminInfoVO {
     @ApiModelProperty("生日")
     private Date birthday;
     @ApiModelProperty("权限")
-    private String[] permissionList;
+    private String permission;
     @ApiModelProperty("创建时间")
     private Date createDate;
     @ApiModelProperty("更新时间")

@@ -44,6 +44,19 @@ public class DoctorUserController extends TransformController {
         return ResponseWrapperSuccess(transform(hospDoctorUserInfo));
     }
 
+    @ApiOperation(value = "软删除Doctor用户")
+    @RequestMapping(value = "/admin/setStateAsInvalid", method = RequestMethod.DELETE)
+    @ResponseBody
+    public JSONObject setStateAsInvalid(
+            @ApiParam(value = "Doctor用户Id", required = true) @RequestParam(value = "adminUserId", required = true) Long id) throws Exception {
+        DPreconditions.checkNotNull(
+                getAdminUserId(),
+                "adminId 为空",
+                true);
+        doctorUserInfoService.setStateAsInvalid(id);
+        return ResponseWrapperSuccess(null);
+    }
+
     @ApiOperation(value = "查询当前admin用户自己的信息", response = DoctorUserInfoVO.class)
     @RequestMapping(value = "/", method = RequestMethod.GET)
     @ResponseBody

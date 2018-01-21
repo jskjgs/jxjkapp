@@ -10,6 +10,7 @@ import com.github.pagehelper.util.StringUtil;
 import com.jinxin.hospHealth.controller.protocol.PO.AdminInfoPO;
 import com.jinxin.hospHealth.dao.mapper.HospAdminUserInfoMapper;
 import com.jinxin.hospHealth.dao.models.HospAdminUserInfo;
+import com.jinxin.hospHealth.dao.modelsEnum.EnableEnum;
 import com.jinxin.hospHealth.dao.modelsEnum.SexEnum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -76,6 +77,7 @@ public class AdminUserInfoService implements BaseService<HospAdminUserInfo, Admi
                         ? po.getSex()
                         : SexEnum.MAN.getCode());
         HospAdminUserInfo add = po.transform(new Date(),new Date());
+        add.setEnable(EnableEnum.ENABLE_NORMAL.getCode());
         DPreconditions.checkState(
                 hospAdminUserInfoMapper.insertSelectiveReturnId(add) == 1,
                 Language.get("service.save-failure"),
@@ -95,6 +97,7 @@ public class AdminUserInfoService implements BaseService<HospAdminUserInfo, Admi
                 true);
         HospAdminUserInfo select = new HospAdminUserInfo();
         select.setPhone(phone);
+        select.setEnable(EnableEnum.ENABLE_NORMAL.getCode());
         return hospAdminUserInfoMapper.selectOne(select);
     }
 
@@ -124,9 +127,24 @@ public class AdminUserInfoService implements BaseService<HospAdminUserInfo, Admi
 
     }
 
+    /**
+     * 软删除
+     * @param id
+     * @throws Exception
+     */
     @Override
     public void setStateAsInvalid(Long id) throws Exception {
-
+        DPreconditions.checkNotNull(
+                id,
+                Language.get("admin-user.id-null"),
+                true);
+        HospAdminUserInfo hospAdminUserInfo = new HospAdminUserInfo();
+        hospAdminUserInfo.setId(id);
+        hospAdminUserInfo.setEnable(EnableEnum.ENABLE_DELETE.getCode());
+        DPreconditions.checkState(
+                hospAdminUserInfoMapper.updateByPrimaryKeySelective(hospAdminUserInfo) == 1,
+                Language.get("service.update-failure"),
+                true);
     }
 
     /**
@@ -141,7 +159,10 @@ public class AdminUserInfoService implements BaseService<HospAdminUserInfo, Admi
                 id,
                 Language.get("admin-user.id-null"),
                 true);
-        return hospAdminUserInfoMapper.selectByPrimaryKey(id);
+        HospAdminUserInfo select = new HospAdminUserInfo();
+        select.setId(id);
+        select.setEnable(EnableEnum.ENABLE_NORMAL.getCode());
+        return hospAdminUserInfoMapper.selectOne(select);
     }
 
     /**
@@ -156,12 +177,21 @@ public class AdminUserInfoService implements BaseService<HospAdminUserInfo, Admi
                     adminInfoPO.getId() != null
                             || adminInfoPO.getPhone() != null);
         }
-        return hospAdminUserInfoMapper.selectOne(adminInfoPO.transform(null,null));
+        HospAdminUserInfo select = adminInfoPO.transform(null,null);
+        select.setEnable(EnableEnum.ENABLE_NORMAL.getCode());
+        return hospAdminUserInfoMapper.selectOne(select);
     }
 
     @Override
     public PageInfo<HospAdminUserInfo> select(AdminInfoPO adminInfoPO) throws Exception {
-        return null;
+        if (adminInfoPO == null)
+             return null;
+        PageHelper.startPage(adminInfoPO.getPageNum(), adminInfoPO.getPageSize());
+        if (StringUtil.isNotEmpty(adminInfoPO.getField()))
+            PageHelper.orderBy(adminInfoPO.getField());
+        HospAdminUserInfo select = adminInfoPO.transform(null,null);
+        select.setEnable(EnableEnum.ENABLE_NORMAL.getCode());
+        return new PageInfo(hospAdminUserInfoMapper.select(select));
     }
 
     @Override
@@ -171,21 +201,23 @@ public class AdminUserInfoService implements BaseService<HospAdminUserInfo, Admi
         PageHelper.startPage(pageBean.getPageNum(), pageBean.getPageSize());
         if (StringUtil.isNotEmpty(pageBean.getField()))
             PageHelper.orderBy(pageBean.getField());
-        return new PageInfo(hospAdminUserInfoMapper.selectAll());
+        HospAdminUserInfo select = new HospAdminUserInfo();
+        select.setEnable(EnableEnum.ENABLE_NORMAL.getCode());
+        return new PageInfo(hospAdminUserInfoMapper.select(select));
     }
 
     @Override
     public HospAdminUserInfo selectOneAdmin(Long id) throws Exception {
-        return null;
+        return selectOne(id);
     }
 
     @Override
     public PageInfo<HospAdminUserInfo> selectAdmin(AdminInfoPO adminInfoPO) throws Exception {
-        return null;
+        return select(adminInfoPO);
     }
 
     @Override
     public PageInfo<HospAdminUserInfo> selectAllAdmin(PageBean pageBean) throws Exception {
-        return null;
+        return selectAll(pageBean);
     }
 }

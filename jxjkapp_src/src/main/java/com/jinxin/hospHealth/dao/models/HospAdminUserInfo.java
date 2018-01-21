@@ -42,6 +42,8 @@ public class HospAdminUserInfo {
     private Date createDate;
     @ApiModelProperty("更新时间")
     private Date updateDate;
+    @ApiModelProperty("删除标识 0:正常 1:禁用  99:删除")
+    private Integer enable;
 
 
     public AdminInfoVO transform(HospArea hospArea){
@@ -54,9 +56,7 @@ public class HospAdminUserInfo {
         adminInfoVO.setCreateDate(this.createDate);
         adminInfoVO.setEmail(this.email);
         adminInfoVO.setHeadPortrait(this.headPortrait);
-        adminInfoVO.setPermissionList(this.permissions == null
-                ? null
-                : this.permissions.split(","));
+        adminInfoVO.setPermission(this.permissions);
         adminInfoVO.setPhone(this.phone);
         adminInfoVO.setSex(this.sex);
         adminInfoVO.setName(this.name);

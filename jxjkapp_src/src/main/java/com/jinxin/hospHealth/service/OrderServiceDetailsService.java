@@ -33,8 +33,10 @@ public class OrderServiceDetailsService implements BaseService<HospOrderServiceD
     OrderProductService orderProductService;
     @Autowired
     OrderService orderService;
+//    @Autowired
+//    DoctorUserInfoService doctorUserInfoService;
     @Autowired
-    DoctorUserInfoService doctorUserInfoService;
+    AdminUserInfoService adminUserInfoService;
     @Autowired
     OrderServiceRollbackService hospOrderServiceRollbackService;
 
@@ -143,7 +145,7 @@ public class OrderServiceDetailsService implements BaseService<HospOrderServiceD
      *
      * @param po
      */
-    public void confirm(OrderServiceDetailsPO po, Long doctorUserId) throws Exception {
+    public void confirm(OrderServiceDetailsPO po, Long adminUserId) throws Exception {
         OrderServiceDetailsPO select = new OrderServiceDetailsPO();
         select.setId(po.getId());
         select.setState(OrderServiceDetailsStateEnum.NORMAL.getCode());
@@ -160,12 +162,12 @@ public class OrderServiceDetailsService implements BaseService<HospOrderServiceD
                 "用户签字不能为空.",
                 true);
         DPreconditions.checkNotNull(
-                doctorUserInfoService.selectOne(doctorUserId),
+                adminUserInfoService.selectOne(adminUserId),
                 "医生用户ID不存在",
                 true);
         OrderServiceDetailsPO update = new OrderServiceDetailsPO();
         update.setId(po.getId());
-        update.setDoctorUserId(doctorUserId);
+        update.setAdminUserId(adminUserId);
         update.setAssociatesId(po.getAssociatesId());
         update.setConsumptionNote(po.getConsumptionNote());
         update.setBuyNote(po.getBuyNote());

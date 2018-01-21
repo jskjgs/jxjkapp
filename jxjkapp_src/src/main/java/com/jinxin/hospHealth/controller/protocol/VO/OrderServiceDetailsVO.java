@@ -25,10 +25,10 @@ public class OrderServiceDetailsVO {
     private Integer qty;
     @ApiModelProperty("医院院区")
     private HospArea area;
-    @ApiModelProperty("医生端用户信息")
-    private DoctorUserInfoVO doctorUserInfo;
+    @ApiModelProperty("admin端用户信息")
+    private AdminInfoVO adminInfo;
     @ApiModelProperty("合作的医生用户")
-    private DoctorUserInfoVO associates;
+    private AdminInfoVO associates;
     @ApiModelProperty("医生评价")
     private String doctorComment;
     @ApiModelProperty("订单评价")
