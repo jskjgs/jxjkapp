@@ -3,7 +3,7 @@
  * Date: 2017/7/31
  */
 // 当前模块名（路由名前缀）
-export const MOUDLE_PREDIX = 'doctorType'
+export const MOUDLE_PREDIX = 'employee/add'
 const MOUDLE_ROOT = `/${MOUDLE_PREDIX}`
 
 // 当前模块首页：模块入口
@@ -12,6 +12,6 @@ export const INDEX = {
   name: `${MOUDLE_PREDIX}_root`,
   meta: {
     permissionId: 'm_04',
-    label: '医生类别管理'
+    label: '新增员工'
   }
 }

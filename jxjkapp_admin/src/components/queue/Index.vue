@@ -7,6 +7,9 @@ import SearchTable from '@/components/_common/searchTable/SearchTable'
 
 import tableCfgMaker from './_consts/tableCfg'
 import { fetchApi } from '@/utils/index'
+import {
+  getListApi
+} from './api'
 
 export default {
   name: 'Queue',
@@ -18,23 +21,7 @@ export default {
     this.tableAttrs = tableCfg.tableAttrs
     this.columnData = tableCfg.columnData
     this.listApi = {
-      requestFn: () => {
-        return this.$api({
-          res: {
-            content: {
-              list: [{
-                id: 1,
-                queueNum: '867367',
-                type: '书法',
-                userName: '王小明',
-                phone: '14343242424',
-                status: '排队中',
-                remark: '备注。。。'
-              }]
-            }
-          }
-        })
-      },
+      requestFn: getListApi,
       responseFn (data) {
         let content = data.content || {}
         this.tableData = (content.list || []).map((item) => {

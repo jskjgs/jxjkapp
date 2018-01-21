@@ -3,7 +3,7 @@ import {
 } from '@/components/banner/_consts/routers'
 import {
   INDEX as doctorTypeCfg
-} from '@/components/doctorType/_consts/routers'
+} from '@/components/employee/list/_consts/routers'
 import {
   INDEX as doctorCfg
 } from '@/components/doctor/_consts/routers'
@@ -27,7 +27,7 @@ import {
 } from '@/components/reserve/_consts/routers'
 import {
   INDEX as orderCfg
-} from '@/components/order/_consts/routers'
+} from '@/components/order/list/_consts/routers'
 import {
   INDEX as queueCfg
 } from '@/components/queue/_consts/routers'

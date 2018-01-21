@@ -10,6 +10,15 @@ export const getOrderInfoApi = (data) => {
   })
 }
 
+export const GET_ORDER_PAY = '/orderProduct/refundment'
+export const payOrderApi = (data) => {
+  return fetchApi({
+    url: GET_ORDER_PAY,
+    type: 'post',
+    data
+  })
+}
+
 // 订单退款
 export const GET_ORDER_REFUNDMENT = '/orderProduct/refundment'
 export const orderRefundmentApi = (data) => {

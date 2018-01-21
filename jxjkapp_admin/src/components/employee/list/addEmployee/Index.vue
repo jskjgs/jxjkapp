@@ -4,17 +4,16 @@
  * Date: 2017/8/29
  */
 import SearchTable from '@/components/_common/searchTable/SearchTable'
-
+import EditDialog from './_thumbs/EditDialog.vue'
 import {
   getListApi,
-  modifyDoctorApi,
-  topDoctorApi,
-  queryDepartmentApi
+  modifyDoctorApi
 } from './api'
 
 export default {
   name: 'Doctor',
   components: {
+    EditDialog,
     SearchTable
   },
   data () {
@@ -27,15 +26,43 @@ export default {
     }
     this.columnData = [{
       attrs: {
-        'prop': 'name',
-        'label': '类别',
+        'prop': 'no',
+        'label': '员工编号',
         'min-width': '100',
         'show-overflow-tooltip': true
       }
     }, {
       attrs: {
-        'prop': 'describe',
-        'label': '描述',
+        'prop': 'name',
+        'label': '姓名',
+        'min-width': '100',
+        'show-overflow-tooltip': true
+      }
+    }, {
+      attrs: {
+        'prop': 'area',
+        'label': '院区',
+        'min-width': '100',
+        'show-overflow-tooltip': true
+      }
+    }, {
+      attrs: {
+        'prop': 'title',
+        'label': '职位',
+        'min-width': '160',
+        'show-overflow-tooltip': true
+      }
+    }, {
+      attrs: {
+        'prop': 'sex',
+        'label': '性别',
+        'min-width': '160',
+        'show-overflow-tooltip': true
+      }
+    }, {
+      attrs: {
+        'prop': 'author',
+        'label': '账号等级',
         'min-width': '160',
         'show-overflow-tooltip': true
       }
@@ -61,16 +88,16 @@ export default {
       requestFn: getListApi,
       responseFn (data) {
         let content = data.content || {}
+        console.log(content.list)
         this.tableData = (content.list || []).map((item) => {
-          let doctor = item.doctor || {}
           return {
-            no: doctor.orderNumber,
-            name: doctor.name,
-            avatar: doctor.headPortrait,
-            ksmc: doctor.ksmc,
-            describe: doctor.goodDescribe,
-            top: !!doctor.isTop,
-            id: doctor.id
+            no: item.id,
+            name: item.name,
+            area: item.hospArea.name,
+            phone: item.phone,
+            title: item.title,
+            author: item.author,
+            sex: ((sex) => { sex === 0 ? '男' : '女' })(item.sex)
           }
         })
         this.total = content.total || 0
@@ -78,13 +105,9 @@ export default {
     }
 
     return {
-      departments: [],
-      // project: '',
-      department: '',
-      departmentId: '',
-      doctorName: '',
       editDialogVisible: false,
       editData: {},
+      keyWords: null,
       apiKeysMap: {
         pageSize: {
           value: 10,
@@ -93,7 +116,7 @@ export default {
         departmentId: {
           value: undefined
         },
-        doctorName: {
+        keyWords: {
           value: ''
         },
         currentPage: 'pageNum',
@@ -107,9 +130,6 @@ export default {
     }
   },
   created () {
-    this.searchDepartment().then(departments => {
-      this.departments = departments
-    })
   },
   watch: {
     editDialogVisible (val) {
@@ -124,25 +144,6 @@ export default {
     }
   },
   methods: {
-    searchProject () {
-    },
-    searchDepartment () {
-      // console.log(queryString)
-      return queryDepartmentApi({
-        pageNum: 1,
-        pageSize: this.pageSize
-      }).then(res => {
-        let content = res.content || []
-        let departments = content.map(item => {
-          return {
-            value: item.id,
-            label: item.name
-          }
-        })
-        return departments
-      })
-    },
-    handleProjectSelect () {},
     handleSearch () {
       this.apiKeysMap = Object.assign({}, this.apiKeysMap, {
         departmentId: {
@@ -150,11 +151,11 @@ export default {
         }
       })
     },
-    openEditDialog (rowData, isAdd) {
-      this.editDialogVisible = true
-      this.editData = rowData
-    },
     handleEditCancel () {
+    },
+    addEmployee () {
+      console.log(123)
+      this.editDialogVisible = true
     },
     handleEditSubmit (data, respondCb) {
       let formData
@@ -177,19 +178,6 @@ export default {
       }).catch(() => {
         respondCb()
       })
-    },
-    // 切换置顶状态
-    switchTop (rowData) {
-      topDoctorApi({
-        doctorId: rowData.id
-      }).then(res => {
-        this.$message({
-          type: 'success',
-          message: rowData.top ? '置顶成功' : '取消置顶成功'
-        })
-      }).finally(() => {
-        this.$refs.searchTable.init()
-      })
     }
   }
 }
@@ -199,7 +187,7 @@ export default {
   <div id="doctor">
     <div class="flex--vcenter page-top">
       <div class="page-title">
-        医护类别管理
+        员工管理
       </div>
     </div>
     <search-table
@@ -208,6 +196,27 @@ export default {
       :column-data="columnData"
       :list-api="listApi"
       :api-keys-map="apiKeysMap">
+      <div class="table-tools flex--vcenter"  style="justify-content: space-between;" slot="table-tools">
+        <div class="search-wrap flex--vcenter">
+          <div class="tool-item">
+            搜索关键字：
+            <el-input v-model="keyWords" style="width: auto;" placeholder="请填入关键字"></el-input>
+          </div>
+          <el-button
+            class="tool-item"
+            type="primary"
+            @click="handleSearch">搜索
+          </el-button>
+        </div>
+        <div class="btn-wrap">
+          <el-button
+            class="btn--add"
+            type="primary"
+            @click="addEmployee()">
+            新增 <i class="el-icon-plus"></i>
+          </el-button>
+        </div>
+      </div>
     </search-table>
   </div>
 </template>
