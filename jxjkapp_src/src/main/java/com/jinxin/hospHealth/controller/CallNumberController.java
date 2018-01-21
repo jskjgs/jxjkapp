@@ -77,7 +77,7 @@ public class CallNumberController extends TransformController{
     }
 
     @ApiOperation(value = "叫号 ---admin",response = CallNumberVO.class)
-    @RequestMapping(value = "/admin/call", method = RequestMethod.POST)
+    @RequestMapping(value = "/admin/next", method = RequestMethod.POST)
     @ResponseBody
     public JSONObject pop() throws Exception {
         HospAdminUserInfo  hospAdminUserInfo = DPreconditions.checkNotNull(
