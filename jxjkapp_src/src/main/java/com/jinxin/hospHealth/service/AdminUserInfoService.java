@@ -109,8 +109,7 @@ public class AdminUserInfoService implements BaseService<HospAdminUserInfo, Admi
         //如果密码不为空的话,代表修改密码,需要做修改密码前提校验,id不能为空 或者 phone不能为空.
         if (hospAdminUserInfo.getPassword() != null) {
             DPreconditions.checkState(
-                    hospAdminUserInfo.getId() != null
-                            || hospAdminUserInfo.getPhone() != null);
+                    hospAdminUserInfo.getId() != null);
         }
         DPreconditions.checkState(
                 hospAdminUserInfoMapper.updateByPrimaryKeySelective(hospAdminUserInfo) == 1,
@@ -201,16 +200,31 @@ public class AdminUserInfoService implements BaseService<HospAdminUserInfo, Admi
 
     @Override
     public HospAdminUserInfo selectOneAdmin(Long id) throws Exception {
-        return selectOne(id);
+        DPreconditions.checkNotNull(
+                id,
+                Language.get("admin-user.id-null"),
+                true);
+        return hospAdminUserInfoMapper.selectByPrimaryKey(id);
     }
 
     @Override
     public PageInfo<HospAdminUserInfo> selectAdmin(AdminInfoPO adminInfoPO) throws Exception {
-        return select(adminInfoPO);
+        if (adminInfoPO == null)
+            return null;
+        PageHelper.startPage(adminInfoPO.getPageNum(), adminInfoPO.getPageSize());
+        if (StringUtil.isNotEmpty(adminInfoPO.getField()))
+            PageHelper.orderBy(adminInfoPO.getField());
+        HospAdminUserInfo select = adminInfoPO.transform(null,null);
+        return new PageInfo<>(hospAdminUserInfoMapper.select(select));
     }
 
     @Override
     public PageInfo<HospAdminUserInfo> selectAllAdmin(PageBean pageBean) throws Exception {
-        return selectAll(pageBean);
+        if (pageBean == null)
+            pageBean = new PageBean();
+        PageHelper.startPage(pageBean.getPageNum(), pageBean.getPageSize());
+        if (StringUtil.isNotEmpty(pageBean.getField()))
+            PageHelper.orderBy(pageBean.getField());
+        return new PageInfo(hospAdminUserInfoMapper.selectAll());
     }
 }

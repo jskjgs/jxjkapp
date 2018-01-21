@@ -117,7 +117,7 @@ public class CallNumberController extends TransformController{
                 adminUserInfoService.selectOne(getAdminUserId()),
                 "admin用户信息为空.",
                 true);
-        List<String> values = redisOperation.usePool().lrange(waitingQueName+hospAdminUserInfo,0,-1);
+        List<String> values = redisOperation.usePool().lrange(waitingQueName+hospAdminUserInfo.getAreaId(),0,-1);
         if(values == null || values.size()<1)
             return ResponseWrapperSuccess(null);
         List<CallNumberVO> callNumberVOList = new ArrayList<>();

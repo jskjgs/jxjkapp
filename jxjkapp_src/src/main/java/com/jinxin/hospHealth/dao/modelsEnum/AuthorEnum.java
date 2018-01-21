@@ -13,7 +13,7 @@ public enum AuthorEnum {
     //主管
     DIRECTOR(1,"m_01,m_02,m_03,m_04,m_05,m_06,m_07,m_08"),
     //集团领导
-    GROUP_LEADER(1,"m_01,m_02,m_03,m_04,m_05,m_06,m_07,m_08");
+    GROUP_LEADER(2,"m_01,m_02,m_03,m_04,m_05,m_06,m_07,m_08");
 
     private int code;
     private String desc;
