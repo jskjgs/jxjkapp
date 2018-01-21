@@ -1,5 +1,6 @@
 package com.jinxin.hospHealth.controller;
 
+import com.doraemon.base.guava.DPreconditions;
 import com.github.pagehelper.PageInfo;
 import com.jinxin.hospHealth.controller.protocol.PO.CallNumberPO;
 import com.jinxin.hospHealth.controller.protocol.PO.OrderProductPO;
@@ -57,7 +58,7 @@ public class TransformController extends MyBaseController {
                 hospOrderServiceRollback.getOrderServiceDetailsId() != null
                         ? transform(orderServiceDetailsService.selectOne(hospOrderServiceRollback.getOrderServiceDetailsId()))
                         : null;
-        return hospOrderServiceRollback.transform(orderServiceDetailsVO,adminInfoVO);
+        return hospOrderServiceRollback.transform(orderServiceDetailsVO, adminInfoVO);
     }
 
     public CallNumberVO transform(CallNumberPO callNumberPO) {
@@ -156,7 +157,11 @@ public class TransformController extends MyBaseController {
     public DoctorUserInfoVO transform(HospDoctorUserInfo hospDoctorUserInfo) {
         if (hospDoctorUserInfo == null)
             return null;
-        return hospDoctorUserInfo.transform();
+        HospArea hospArea = DPreconditions.checkNotNull(
+                hospDoctorUserInfo.getAreaId() != null
+                        ? hospAreaService.selectOne(hospDoctorUserInfo.getAreaId())
+                        : null);
+        return hospDoctorUserInfo.transform(hospArea);
     }
 
     public OrderServiceDetailsVO transform(HospOrderServiceDetails hospOrderServiceDetails) throws Exception {

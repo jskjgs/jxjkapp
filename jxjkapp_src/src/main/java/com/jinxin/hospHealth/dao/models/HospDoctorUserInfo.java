@@ -20,6 +20,8 @@ public class HospDoctorUserInfo {
     private Long id;
     @ApiModelProperty("姓名")
     private String name;
+    @ApiModelProperty("院区ID")
+    private Long areaId;
     @ApiModelProperty("密码")
     private String password;
     @ApiModelProperty("头像")
@@ -40,7 +42,7 @@ public class HospDoctorUserInfo {
     private Date updateDate;
 
 
-    public DoctorUserInfoVO transform() {
+    public DoctorUserInfoVO transform(HospArea area) {
         DoctorUserInfoVO doctorUserInfoVO = new DoctorUserInfoVO();
         doctorUserInfoVO.setId(this.id);
         doctorUserInfoVO.setUpdateDate(this.updateDate);
@@ -51,6 +53,7 @@ public class HospDoctorUserInfo {
         doctorUserInfoVO.setHeadPortrait(this.headPortrait);
         doctorUserInfoVO.setPhone(this.phone);
         doctorUserInfoVO.setSex(this.sex);
+        doctorUserInfoVO.setArea(area);
         doctorUserInfoVO.setName(this.name);
         return doctorUserInfoVO;
     }

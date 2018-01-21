@@ -10,11 +10,13 @@ import com.jinxin.hospHealth.controller.protocol.PO.UserInfoPO;
 import com.jinxin.hospHealth.controller.protocol.VO.AdminInfoVO;
 import com.jinxin.hospHealth.controller.protocol.VO.LoginInfoVO;
 import com.jinxin.hospHealth.dao.models.HospAdminUserInfo;
+import com.jinxin.hospHealth.dao.models.HospArea;
 import com.jinxin.hospHealth.dao.models.HospDoctorUserInfo;
 import com.jinxin.hospHealth.dao.models.HospUserInfo;
 import com.jinxin.hospHealth.dao.modelsEnum.DynamicTypeEnum;
 import com.jinxin.hospHealth.service.AdminUserInfoService;
 import com.jinxin.hospHealth.service.DoctorUserInfoService;
+import com.jinxin.hospHealth.service.HospAreaService;
 import com.jinxin.hospHealth.service.UserInfoService;
 import com.jinxin.hospHealth.utils.sms.AlidayuSms;
 import io.swagger.annotations.Api;
@@ -44,6 +46,8 @@ public class OtherController extends MyBaseController {
     DoctorUserInfoService doctorUserInfoService;
     @Autowired
     AlidayuSms alidayuSms;
+    @Autowired
+    HospAreaService hospAreaService;
 
     @ApiOperation(value = "发送验证码", response = LoginInfoVO.class)
     @RequestMapping(value = "/sendCode", method = RequestMethod.POST)
@@ -137,7 +141,8 @@ public class OtherController extends MyBaseController {
                 createToken(
                         hospDoctorUserInfo.getId(),
                         doctorTokenPrefix));
-        loginInfoVO.setDoctorUserInfoVO(hospDoctorUserInfo.transform());
+        HospArea hospArea = hospAreaService.selectOne(hospDoctorUserInfo.getAreaId());
+        loginInfoVO.setDoctorUserInfoVO(hospDoctorUserInfo.transform(hospArea));
         return ResponseWrapperSuccess(loginInfoVO);
     }
 }

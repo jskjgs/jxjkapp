@@ -133,12 +133,12 @@ public class OrderServiceDetailsController extends TransformController{
     @ResponseBody
     public JSONObject selectAllDoctor(
             @ApiParam(value = "分页信息", required = false) @RequestBody(required = false) PageBean pageBean) throws Exception {
-        HospDoctorInfo hospDoctorInfo = DPreconditions.checkNotNull(
-                doctorInfoService.selectOne(getDoctorUserId()),
+        HospDoctorUserInfo hospDoctorUserInfo = DPreconditions.checkNotNull(
+                doctorUserInfoService.selectOne(getDoctorUserId()),
                 "医生端用户信息为空",
                 true);
         OrderServiceDetailsPO orderServiceDetailsPO = new OrderServiceDetailsPO();
-        orderServiceDetailsPO.setDoctorAreaId(hospDoctorInfo.getHospAreaId());
+        orderServiceDetailsPO.setDoctorAreaId(hospDoctorUserInfo.getAreaId());
         if(pageBean != null){
             orderServiceDetailsPO.setPageNum(pageBean.getPageNum());
             orderServiceDetailsPO.setPageSize(pageBean.getPageSize());
