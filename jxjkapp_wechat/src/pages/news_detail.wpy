@@ -37,16 +37,18 @@
   import wepy from 'wepy'
 
   import CustomPage from '@/components/customPage'
+  import pageMixin from '@/mixins/page'
 
   export default class Index extends wepy.page {
     config = {
-      navigationBarTitleText: '文章详情'
+      navigationBarTitleText: '文章详情',
+      enablePullDownRefresh: true
     }
     components = {
       CustomPage
     }
 
-    mixins = []
+    mixins = [pageMixin]
 
     data = {
       title: '',
@@ -65,14 +67,12 @@
 
     onLoad({ id }) {
       this.id = id
-      setTimeout(() => {
-        this.initPageData()
-      })
+      this.initPageData()
     }
 
     initPageData () {
       this.pageNum = 1
-      this.$_request({
+      return this.$_request({
         url: `/news/`,
         data: {
           id: this.id

@@ -4,7 +4,11 @@
 $search_h: 88rpx;
 #page-doctor {
   .search-bar {
+    position: fixed;
+    z-index: 1;
+    left: 0;
     padding: 0 30rpx;
+    width: 100%;
     height: $search_h;
     font-size: 15px;
     box-shadow: 0 2rpx 10rpx 0 #E3E3E3;
@@ -108,7 +112,7 @@ $search_h: 88rpx;
   }
 
   .doctor-list-wrap {
-    padding: 0 40rpx;
+    padding: $search_h 40rpx 0;
   }
   .doctor-list {
     margin-left: -30rpx;
@@ -143,7 +147,7 @@ $search_h: 88rpx;
 <template>
   <CustomPage :isLastPage.sync="isLastPage">
     <view id="page-doctor">
-      <view class="search-bar flex--vcenter--sb">
+      <view class="search-bar flex--vcenter--sb main-bg">
         <view 
           wx:if="{{ !onSearch }}" 
           class="filter-btn flex-item--none flex--vcenter"
@@ -204,8 +208,8 @@ $search_h: 88rpx;
           </view>
         </view>
       </view>
-      <scroll-view
-        scroll-y="true">
+      <!-- <scroll-view
+        scroll-y="true"> -->
         <view class="doctor-list-wrap">
           <view class="doctor-list flex">
             <repeat 
@@ -227,7 +231,7 @@ $search_h: 88rpx;
             </repeat>
           </view>
         </view>
-      </scroll-view>
+      <!-- </scroll-view> -->
     </view>
   </CustomPage>
 </template>

@@ -1,6 +1,13 @@
 import wepy from 'wepy'
 
 export default class PageMixin extends wepy.mixin {
+  // 下拉刷新
+  onPullDownRefresh () {
+    this.initPageData().then(() => {
+      wx.stopPullDownRefresh()
+    })
+  }
+
   initData (reqParams, toLoginFn = 'redirectTo') {
     this.$invoke('CustomPage', 'initPage', {
       noData: false,

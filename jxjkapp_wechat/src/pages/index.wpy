@@ -247,7 +247,8 @@
 
   export default class Index extends wepy.page {
     config = {
-      navigationBarTitleText: '首页'
+      navigationBarTitleText: '首页',
+      enablePullDownRefresh: true
     }
     components = {
     }
@@ -288,12 +289,18 @@
       }
     }
 
-    events = {
+    onLoad() {
+      this.initPageData()
     }
 
-    onLoad() {
-      this.getBanner()
-      this.getProjectType()
+    onPullDownRefresh () {
+      this.initPageData().then(() => {
+        wx.stopPullDownRefresh()
+      })
+    }
+
+    initPageData () {
+      return Promise.all([this.getBanner(), this.getProjectType()])
     }
 
     // 获取banner数据
@@ -340,8 +347,8 @@
     getQueueInfo () {
       if (this.$_checkLogin(null, false)) {
         this.$_request({
-          url: '/call/',
-          method: 'GET'
+          url: '/call/selectAll',
+          method: 'POST'
         }).then(content => {
           content = content || {}
           this.queueNotice = {
