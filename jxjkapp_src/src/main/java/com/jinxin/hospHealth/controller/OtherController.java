@@ -100,10 +100,10 @@ public class OtherController extends MyBaseController {
     @RequestMapping(value = "/adminLogin", method = RequestMethod.POST)
     @ResponseBody
     public JSONObject adminLogin(
-            @ApiParam(value = "手机号码", required = true) @RequestParam(value = "account", required = true) String account,
+            @ApiParam(value = "账号名称", required = true) @RequestParam(value = "account", required = true) String account,
             @ApiParam(value = "密码", required = true) @RequestParam(value = "password", required = true) String password) throws Exception {
         AdminInfoPO select = new AdminInfoPO();
-        select.setPhone(account);
+        select.setName(account);
         select.setPassword(password);
         HospAdminUserInfo hospAdminUserInfo =
                 DPreconditions.checkNotNull(

@@ -45,12 +45,12 @@ public class AdminUserInfoService implements BaseService<HospAdminUserInfo, Admi
                 Language.get("admin-user.id-exist"),
                 true);
         DPreconditions.checkNotNullAndEmpty(
-                po.getPhone(),
-                Language.get("user.phone-null"),
+                po.getName(),
+                "admin账号不能为空.",
                 true);
-        DPreconditions.checkState(selectOneByPhone(
-                po.getPhone()) == null,
-                Language.get("user.phone-repeat"),
+        DPreconditions.checkState(
+                selectOneByAccount(po.getName()) == null,
+                "admin账号名称重复",
                 true);
         DPreconditions.checkState(
                 po.getPassword() != null,
@@ -68,10 +68,6 @@ public class AdminUserInfoService implements BaseService<HospAdminUserInfo, Admi
                 po.getHeadPortrait() != null
                         ? po.getHeadPortrait()
                         : defaultUserHeadPortrait);
-        po.setName(
-                po.getName() != null
-                        ? po.getName()
-                        : po.getPhone());
         po.setSex(
                 po.getSex() != null
                         ? po.getSex()
@@ -86,17 +82,17 @@ public class AdminUserInfoService implements BaseService<HospAdminUserInfo, Admi
     }
 
     /**
-     * 根据手机号查询信息
+     * 根据账号查询信息
      *
-     * @param phone
+     * @param account
      * @return
      */
-    public HospAdminUserInfo selectOneByPhone(String phone) {
-        DPreconditions.checkNotNullAndEmpty(phone,
-                Language.get("user.phone-null"),
+    public HospAdminUserInfo selectOneByAccount(String account) {
+        DPreconditions.checkNotNullAndEmpty(account,
+                "admin账号不能为空",
                 true);
         HospAdminUserInfo select = new HospAdminUserInfo();
-        select.setPhone(phone);
+        select.setName(account);
         select.setEnable(EnableEnum.ENABLE_NORMAL.getCode());
         return hospAdminUserInfoMapper.selectOne(select);
     }
