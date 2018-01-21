@@ -13,7 +13,7 @@
       </view>
       <view class="list-wrap">
         <repeat for="{{ listData }}" key="index" item="item" index="index">
-          <view class="history-box" @tap="serviceDetail">
+          <view class="history-box" @tap="serviceDetail({{ item.id }})">
             <view class="history-head">
               <text class="history-name">{{ item.orderProductName }}</text>
             </view>
@@ -79,9 +79,9 @@
     methods = {
       handleSumbit () {
       },
-      serviceDetail () {
+      serviceDetail (id) {
         wx.navigateTo({
-          url: '/pages/serviceDetail'
+          url: `/pages/serviceDetail?id=${id}`
         })
       }
     }
@@ -110,7 +110,7 @@
           doctorUserId: this.userInfo.id,
           state: 2
         }
-      }, function (listItem) {
+      }, (listItem) => {
         const orderProduct = listItem.orderProduct || {}
         const userInfo = listItem.userInfo || {}
         return {

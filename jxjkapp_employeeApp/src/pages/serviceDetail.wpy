@@ -58,12 +58,13 @@
             userName: userInfo.name,
             userTel: userInfo.phone,
             partnerId: data.associates,
-            doctorSignTouchList: data.doctorSign,
+            doctorSignTouchList: JSON.parse(data.doctorSign) || [],
             templateContent: data.doctorComment,
             consumeInfo: data.consumptionNote,
-            userSignTouchList: data.userSign,
+            userSignTouchList: JSON.parse(data.userSign) || [],
             purchaseInfo: data.buyNote
           })
+          console.log(this.initData, 'this.initData')
           this.$apply()
         } catch (e) {
           throw new Error(e)

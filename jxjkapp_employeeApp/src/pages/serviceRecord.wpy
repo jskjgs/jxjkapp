@@ -39,16 +39,23 @@
         const sendData = {
           id: this.id,
           associatesId: formData.partnerId === -1 ? undefined : formData.partnerId,
-          doctorSign: formData.doctorSignTouchList,
+          doctorSign: JSON.stringify(formData.doctorSignTouchList),
           doctorComment: formData.templateContent,
           consumptionNote: formData.consumeInfo,
-          userSign: formData.userSignTouchList,
+          userSign: JSON.stringify(formData.userSignTouchList),
           buyNote: formData.purchaseInfo
         }
         this.$_request({
           url: '/orderService/doctor/confirm',
           method: 'POST',
           data: sendData
+        }).then(res => {
+          wx.showToast({
+            title: '提交成功'
+          })
+          setTimeout(() => {
+            wx.navigateBack()
+          }, 400)
         })
       }
     }

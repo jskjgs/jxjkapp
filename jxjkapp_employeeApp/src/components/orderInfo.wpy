@@ -42,9 +42,9 @@
     <view class="service-item main-bg">
       <view class="input-item flex--vcenter--sb">
         <text class="item-label">当日症状：</text>
-        <view wx:if="{{ readonly }}">
+        <!-- <view wx:if="{{ readonly }}">
           {{ storageData.templateName != undefined && storageData.templateName !== '' ? storageData.templateName : '未选择' }}
-        </view>
+        </view> -->
         <!-- <picker 
           wx:else
           bindchange="handleTemplatePickerChange" 
@@ -54,16 +54,17 @@
           {{ storageData.templateName != undefined && storageData.templateName !== '' ? storageData.templateName : '请选择' }}<text class="arrow-rt"></text>
         </picker> -->
       </view>
-      <block wx:if="{{ readonly }}">
-        <view wx:if="{{ templateContent }}">{{ templateContent }}</view>
-      </block>
-      <view wx:else class="input-item" style="padding-top: 0;">
+      <view class="input-item" style="padding-top: 0;">
         <!-- <DiagnoseInput 
           type="textarea" 
           class="diagnose-input"
           :disabled.sync="diagnoseInputDisabled"
           :value.sync="templateContent"/> -->
+        <block wx:if="{{ readonly }}">
+          <view>{{ templateContent || '未填写' }}</view>
+        </block>
         <DiagnoseInput 
+          wx:else
           type="textarea" 
           class="diagnose-input"
           placeholder="请输入当日症状"
@@ -73,7 +74,7 @@
     <view class="service-item main-bg">
       <view class="input-item service-item-mark flex--sb">
         <text class="item-label">消费备注：</text>
-        <view wx:if="{{ readonly }}">{{ consumeInfo }}</view>
+        <view wx:if="{{ readonly }}">{{ consumeInfo || '未填写' }}</view>
         <!-- 
           tips: textarea 组件是由客户端创建的原生组件，它的层级是最高的，不能通过 z-index 控制层级
         -->
@@ -96,7 +97,7 @@
     <view class="service-item main-bg">
       <view class="input-item service-item-mark flex--sb">
         <text class="item-label">购买备注：</text>
-        <view wx:if="{{ readonly }}"></view>
+        <view wx:if="{{ readonly }}">{{ purchaseInfo || '未填写' }}</view>
         <PurchaseInfoInput
           wx:else
           class="flex-item" 
