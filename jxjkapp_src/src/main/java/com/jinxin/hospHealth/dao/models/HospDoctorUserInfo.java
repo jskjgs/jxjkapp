@@ -50,10 +50,7 @@ public class HospDoctorUserInfo {
         doctorUserInfoVO.setEmail(this.email);
         doctorUserInfoVO.setHeadPortrait(this.headPortrait);
         doctorUserInfoVO.setPhone(this.phone);
-        doctorUserInfoVO.setSex(
-                this.sex != null
-                        ? SexEnum.getByCode(this.sex).getDesc()
-                        : null);
+        doctorUserInfoVO.setSex(this.sex);
         doctorUserInfoVO.setName(this.name);
         return doctorUserInfoVO;
     }

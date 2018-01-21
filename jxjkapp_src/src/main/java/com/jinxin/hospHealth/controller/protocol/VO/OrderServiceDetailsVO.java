@@ -40,8 +40,8 @@ public class OrderServiceDetailsVO {
     private String consumptionNote;
     @ApiModelProperty("购买备注")
     private String buyNote;
-    @ApiModelProperty("状态")
-    private String state;
+    @ApiModelProperty("状态 0 指派中/1 服务中/2 已完成 /98 申请作废 99 已作废")
+    private Integer state;
     @ApiModelProperty("创建时间")
     private Date createDate;
     @ApiModelProperty("更新时间")

@@ -37,7 +37,7 @@ public class OrderProductVO {
     @ApiModelProperty("订单评价")
     private HospOrderGrade grade;
     @ApiModelProperty("状态 0 正常 1 申请退款 2 退款完毕")
-    private String state;
+    private Integer state;
     @ApiModelProperty("创建时间")
     private Date createDate;
     @ApiModelProperty("更新时间")

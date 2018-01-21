@@ -73,10 +73,7 @@ public class HospOrderServiceDetails {
         vo.setConsumptionNote(this.consumptionNote);
         vo.setDoctorSign(this.doctorSign);
         vo.setUserSign(this.userSign);
-        vo.setState(
-                this.state != null
-                        ? OrderServiceDetailsStateEnum.getByCode(this.state).getDesc()
-                        : null);
+        vo.setState(this.state);
         vo.setCreateDate(this.createDate);
         vo.setUpdateDate(this.updateDate);
         vo.setAddress(this.address);
