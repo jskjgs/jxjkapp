@@ -1,7 +1,7 @@
 <template>
   <view id="page-serviceDetail">
     <OrderInfo 
-      @submit.user="handleSubmit"
+      :initData.sync="initData"
       :readonly.sync="readonly">
     </OrderInfo>
   </view>
@@ -23,25 +23,52 @@
     mixins = []
 
     data = {
+      initData: {},
       readonly: true
     }
 
     computed = {
     }
 
-    watch = {
-    }
-
     methods = {
-      handleSubmit (formData) {
-        console.log('handleSubmit:formData', formData)
-      }
     }
 
     events = {
     }
 
-    onLoad () {
+    onLoad ({id}) {
+      this.id = id
+      this.initPageData()
+    }
+
+    initPageData () {
+      this.$_request({
+        url: '/orderService/query',
+        method: 'POST',
+        data: {
+          id: this.id
+        }
+      }).then(content => {
+        try {
+          const data = content.list[0]
+          const orderProduct = data.orderProduct || {}
+          const userInfo = data.userInfo || {}
+          this.initData = Object.assign({}, this.initData, {
+            serviceName: orderProduct.productSkuName,
+            userName: userInfo.name,
+            userTel: userInfo.phone,
+            partnerId: data.associates,
+            doctorSignTouchList: data.doctorSign,
+            templateContent: data.doctorComment,
+            consumeInfo: data.consumptionNote,
+            userSignTouchList: data.userSign,
+            purchaseInfo: data.buyNote
+          })
+          this.$apply()
+        } catch (e) {
+          throw new Error(e)
+        }
+      })
     }
   }
 </script>

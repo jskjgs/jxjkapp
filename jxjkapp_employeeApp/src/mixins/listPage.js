@@ -29,44 +29,51 @@ export default class ListPageMixin extends wepy.mixin {
     }
   }
 
-  initData (reqParams, resCb, toLoginFn) {
+  initData (reqParams, resCb, toLoginFn = 'redirectTo') {
     if (reqParams) { // 暂存传入的参数
       this.initFnAgrs = {
         reqParams,
-        resCb,
-        toLoginFn: toLoginFn || 'redirectTo'
+        resCb
       }
     }
     reqParams = reqParams || this.initFnAgrs.reqParams
     resCb = resCb || this.initFnAgrs.resCb
-    toLoginFn = toLoginFn || this.initFnAgrs.toLoginFn
     const pageNum = this.pageNum || 1
     reqParams.data.pageNum = pageNum
+    console.log('reqParams', reqParams, 'toLoginFn', toLoginFn)
+    if (pageNum === 1) {
+      this.$invoke('CustomPage', 'initPage', {
+        noData: false,
+        dataInited: false,
+        noServer: false
+      })
+    }
     return this.$_request(reqParams, {toLoginFn}).then(content => {
       content = content || {}
       this.isLastPage = !!content.isLastPage
       const list = content.list || []
       if (pageNum > 1) { // 下滑翻页
-        this.listData = this.listData.concat(list.map(item => {
-          return resCb(item, content)
+        this.listData = this.listData.concat(list.map((item, index) => {
+          return resCb(item, index, content)
         }))
       } else { // 加载第一页数据
-        this.listData = list.map(item => {
-          return resCb(item, content)
+        this.listData = list.map((item, index) => {
+          return resCb(item, index, content)
         })
         if (list.length === 0) { // 无数据
           this.$invoke('CustomPage', 'initPage', {
             noData: true
           })
-          return
         }
       }
       this.$invoke('CustomPage', 'initPage', {
         dataInited: true
       })
     }).catch((e) => {
+      console.log(e)
       if (pageNum > 1) {
         wx.showToast({
+          image: '../assets/images/error.png',
           title: '加载失败'
         })
       } else {

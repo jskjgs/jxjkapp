@@ -24,6 +24,7 @@ export default {
       totalPrice: 0.00,
       unitPrice: 0.00,
       paymentPrice: null,
+      paymentAmount: null,
       selectSku: null,
       selectCategroy: null,
       categroyList: {}
@@ -64,7 +65,6 @@ export default {
       return this.categroyList[this.selectCategroy]
     },
     handleGetPaymentPrice () {
-      // TODO 根据所填写的订单信息调取价格计算引擎计算实际支付价格。 以下代码为测试代码
       let data = this.getOrderData()
       orderCheckoutApi(data).then((res) => {
         this.paymentPrice = !res.content ? 0 : res.content.orderPayPrice
@@ -209,38 +209,24 @@ export default {
           @click="handleGetPaymentPrice">计算支付金额
         </el-button>
         <span v-show="paymentPrice!=null">
-          <b>支付金额</b>
+          <b>订单金额</b>
           <b style="color:red">￥{{paymentPrice}}</b>
         </span>
       </div>
     </div>
-    <div class="flex--vcenter" style="margin-top: 20px;">
+   
+     <div class="flex--vcenter" style="margin-top: 20px;">
         <textarea
           v-model="comments"
           placeholder="备注信息"
           style="width: 100%;height: 260px;font-size: 15px">
         </textarea>
     </div>
-    <div class="flex--vcenter" style="margin-top: 20px;">
-      <div class="tool-item">
-        HIS缴费订单号
-        <el-input
-          v-model="paymentNumber"
-          placeholder="用户如果是VIP可以不填"
-          style="width: 490px;">
-        </el-input>
-      </div>
-    </div>
     <div class="flex--vcenter"  style="margin-top: 20px;">
         <el-button
           class="tool-item"
           type="primary"
           @click="handleCreateOrder">创建订单
-        </el-button>
-        <el-button
-          class="tool-item"
-          type="primary"
-          @click="handleUpdateOrder">更新订单
         </el-button>
     </div>
   </div>

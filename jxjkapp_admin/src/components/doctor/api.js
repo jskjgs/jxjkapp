@@ -1,7 +1,7 @@
 import { fetchApi } from '@/utils/index'
 
 // 获取医生列表
-export const GET_LIST_URL = '/doctorInfo/admin/query'
+export const GET_LIST_URL = '/doctorInfo/admin/all'
 export const getListApi = (data) => {
   return fetchApi({
     url: GET_LIST_URL,
