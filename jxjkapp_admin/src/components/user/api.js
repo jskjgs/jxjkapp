@@ -1,12 +1,12 @@
 import { fetchApi } from '@/utils/index'
 
 // 获取用户列表
-export const GET_LIST_URL = '/account/queryUser'
-export const getListApi = (params) => {
+export const GET_LIST_URL = '/userInfo/admin/all'
+export const getListApi = (data) => {
   return fetchApi({
     url: GET_LIST_URL,
-    type: 'get',
-    params
+    type: 'post',
+    data
   })
 }
 

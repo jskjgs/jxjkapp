@@ -10,22 +10,11 @@ export const getOrderInfoApi = (data) => {
   })
 }
 
-// 修改roder
-export const MODIFY_BANNER_URL = '/order'
-export const modifyOrderApi = (params, data) => {
+// 订单退款
+export const GET_ORDER_REFUNDMENT = '/orderProduct/refundment'
+export const orderRefundmentApi = (data) => {
   return fetchApi({
-    url: MODIFY_BANNER_URL,
-    type: 'get',
-    params,
-    data
-  })
-}
-
-// 增加order
-export const ADD_BANNER_URL = '/banner/'
-export const addOrderApi = (data) => {
-  return fetchApi({
-    url: ADD_BANNER_URL,
+    url: GET_ORDER_REFUNDMENT,
     type: 'post',
     data
   })

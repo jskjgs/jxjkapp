@@ -7,6 +7,7 @@
   import {
     getListApi
   } from './api'
+  import { userStateFormat } from '@/utils/index'
   export default {
     name: 'UserManage',
     components: {
@@ -22,14 +23,26 @@
       }
       this.columnData = [{
         attrs: {
-          'prop': 'phone',
+          'prop': 'userId',
+          'label': 'ID',
+          'min-width': '140'
+        }
+      }, {
+        attrs: {
+          'prop': 'userPhone',
           'label': '手机号',
           'min-width': '140'
         }
       }, {
         attrs: {
-          'prop': 'namefe',
+          'prop': 'userName',
           'label': '姓名',
+          'min-width': '140'
+        }
+      }, {
+        attrs: {
+          'prop': 'isVip',
+          'label': '用户等级',
           'min-width': '140'
         }
       }, {
@@ -39,23 +52,10 @@
         },
         scopedSlots: {
           default: (scope) => {
-            // <span
-            //   class="operate-item el-icon-edit"
-            //   onClick={() => this.openEditDialog(scope.row)}>
-            // </span>
             return (
-              <div class="flex--center operations">
-                <span class="operate-item top-switch flex--vcenter">
-                  <el-switch
-                    style="margin-right: 10px;"
-                    value={!!scope.row.enable}
-                    onInput={(enable) => (scope.row.enable = enable)}
-                    onChange={() => this.switchEnable(scope.row)}
-                    {...{props: { 'on-text': '', 'off-text': '' }}}>
-                  </el-switch>
-                  { scope.row.enable ? '启用' : '禁用' }
-                </span>
-              </div>
+              <button type="button"
+              class="el-button el-button--text"
+              onClick={() => this.openDetail(scope.row.userId)}><span>查看详情</span></button>
             )
           }
         }
@@ -63,16 +63,14 @@
       this.listApi = {
         requestFn: getListApi,
         responseFn (res) {
-          console.log(res, 'res')
           const content = res.content || {}
           const list = content.list || []
           this.tableData = list.map(item => {
             return {
-              no: item.no,
-              userName: item.account,
-              id: item.id,
-              tel: item.phone,
-              enable: !!item.enable
+              userName: item.name,
+              userId: item.id,
+              userPhone: item.phone,
+              isVip: userStateFormat(item.isVip)
             }
           })
           this.total = content.total || 0
@@ -96,21 +94,8 @@
           }
         })
       },
-      // 切换置顶状态
-      switchEnable (rowData) {
-        const enableUserApi = function () {
-          return Promise.reject()
-        }
-        enableUserApi({
-          doctorId: rowData.id
-        }).then(res => {
-          this.$message({
-            type: 'success',
-            message: rowData.enable ? '启用成功' : '禁用成功'
-          })
-        }).finally(() => {
-          // this.$refs.searchTable.init()
-        })
+      openDetail (userId) {
+        console.log(userId)
       }
     }
   }
