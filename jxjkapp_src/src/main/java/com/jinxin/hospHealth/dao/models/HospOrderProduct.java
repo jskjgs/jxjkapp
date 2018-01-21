@@ -57,9 +57,7 @@ public class HospOrderProduct extends PageBean {
         orderProductVO.setQuantity(this.quantity);
         orderProductVO.setServiceQuantity(this.serviceQuantity);
         orderProductVO.setStartDate(this.startDate);
-        orderProductVO.setState(this.state != null
-                ? OrderProductStateEnum.getByCode(this.state).getDesc()
-                : null);
+        orderProductVO.setState(this.state);
         orderProductVO.setStopDate(this.stopDate);
         orderProductVO.setGrade(grade);
         orderProductVO.setCreateDate(this.createDate);

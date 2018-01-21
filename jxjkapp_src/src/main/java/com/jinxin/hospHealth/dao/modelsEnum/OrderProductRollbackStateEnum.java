@@ -8,9 +8,8 @@ import com.doraemon.base.language.Language;
  */
 public enum  OrderProductRollbackStateEnum {
 
-    NORMAL(0,"正常"),
-    APPLY_CANCELLATION(1,"申请退款"),
-    CANCELLATION(2,"已退款");
+    APPLY_CANCELLATION(0,"申请退款"),
+    CANCELLATION(1,"已退款");
 
     private int code;
     private String desc;

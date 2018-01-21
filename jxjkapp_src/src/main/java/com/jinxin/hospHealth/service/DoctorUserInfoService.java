@@ -26,6 +26,8 @@ public class DoctorUserInfoService implements BaseService<HospDoctorUserInfo,Doc
     HospDoctorUserInfoMapper hospDoctorUserInfoMapper;
     @Value("${default.userHeadPortrait}")
     String defaultUserHeadPortrait;
+    @Autowired
+    HospAreaService hospAreaService;
 
     @Override
     public HospDoctorUserInfo add(DoctorUserInfoPO po) throws Exception {
@@ -45,7 +47,10 @@ public class DoctorUserInfoService implements BaseService<HospDoctorUserInfo,Doc
                 po.getPassword() != null,
                 Language.get("user.password-null"),
                 true);
-
+        DPreconditions.checkNotNull(
+                hospAreaService.selectOne(po.getAreaId()),
+                "院区信息没有找到.",
+                true);
         po.setHeadPortrait(
                 po.getHeadPortrait() != null
                         ? po.getHeadPortrait()

@@ -27,6 +27,8 @@ public class AdminUserInfoService implements BaseService<HospAdminUserInfo, Admi
     HospAdminUserInfoMapper hospAdminUserInfoMapper;
     @Value("${default.userHeadPortrait}")
     String defaultUserHeadPortrait;
+    @Autowired
+    HospAreaService hospAreaService;
 
     /**
      * 增加admin账号
@@ -56,6 +58,10 @@ public class AdminUserInfoService implements BaseService<HospAdminUserInfo, Admi
         DPreconditions.checkState(
                 po.getPermissions() != null,
                 Language.get("user.permissions-null"),
+                true);
+        DPreconditions.checkNotNull(
+                hospAreaService.selectOne(po.getAreaId()),
+                "院区信息没有查到.",
                 true);
         po.setHeadPortrait(
                 po.getHeadPortrait() != null

@@ -57,62 +57,43 @@ public class OrderServiceDetailsController extends TransformController{
     }
 
     @ApiOperation(value = "确认订单服务详情 ---doctor")
-    @RequestMapping(value = "/confirm", method = RequestMethod.POST)
+    @RequestMapping(value = "/doctor/confirm", method = RequestMethod.POST)
     @ResponseBody
     public JSONObject confirm(
-            @ApiParam(value = "订单服务详情 ID", required = true) @RequestParam(value = "id", required = true) Long id) throws Exception {
-        Long doctorUserId = getCurrentUserId();
-        OrderServiceDetailsPO select = new OrderServiceDetailsPO();
-        select.setDoctorUserId(doctorUserId);
-        select.setId(id);
-        DPreconditions.checkNotNull(
-                orderServiceDetailsService.selectOne(select),
-                "服务订单未查询到.",
-                true);
-        OrderServiceDetailsPO update = new OrderServiceDetailsPO();
-        update.setId(id);
-        update.setState(OrderServiceDetailsStateEnum.IN_SERVICE.getCode());
-        orderServiceDetailsService.update(update);
+            @ApiParam(value = "订单服务详情信息", required = true) @RequestBody OrderServiceDetailsPO orderServiceDetailsPO) throws Exception {
+        Long doctorUserId = getDoctorUserId();
+        orderServiceDetailsService.confirm(orderServiceDetailsPO,doctorUserId);
         return ResponseWrapperSuccess(null);
     }
 
-    @ApiOperation(value = "完成服务订单 ---admin")
-    @RequestMapping(value = "/complete", method = RequestMethod.POST)
-    @ResponseBody
-    public JSONObject complete(
-            @ApiParam(value = "订单服务详情 ID", required = true) @RequestParam(value = "id", required = true) Long id) throws Exception {
-        Long adminUserId = DPreconditions.checkNotNull(
-                getAdminUserId(),
-                "请先登陆.",
-                true);
-        OrderServiceDetailsPO update = new OrderServiceDetailsPO();
-        update.setId(id);
-        update.setState(OrderServiceDetailsStateEnum.COMPLETE.getCode());
-        orderServiceDetailsService.update(update);
-        return ResponseWrapperSuccess(null);
-    }
+    //todo: 缺少完成逻辑,这段不要删,等完成逻辑下来后,做调整
+//    @ApiOperation(value = "完成服务订单 ---admin")
+//    @RequestMapping(value = "/complete", method = RequestMethod.POST)
+//    @ResponseBody
+//    public JSONObject complete(
+//            @ApiParam(value = "订单服务详情 ID", required = true) @RequestParam(value = "id", required = true) Long id) throws Exception {
+//        Long adminUserId = DPreconditions.checkNotNull(
+//                getAdminUserId(),
+//                "请先登陆.",
+//                true);
+//        OrderServiceDetailsPO update = new OrderServiceDetailsPO();
+//        update.setId(id);
+//        update.setState(OrderServiceDetailsStateEnum.COMPLETE.getCode());
+//        orderServiceDetailsService.update(update);
+//        return ResponseWrapperSuccess(null);
+//    }
 
-    @ApiOperation(value = "作废服务订单 ---docker")
-    @RequestMapping(value = "/cancellation", method = RequestMethod.POST)
+    @ApiOperation(value = "作废服务订单 --- admin")
+    @RequestMapping(value = "/admin/cancellation", method = RequestMethod.POST)
     @ResponseBody
     public JSONObject cancellation(
             @ApiParam(value = "订单服务详情 ID", required = true) @RequestParam(value = "id", required = true) Long id) throws Exception {
         Long adminUserId = getAdminUserId();
-        OrderServiceDetailsPO select = new OrderServiceDetailsPO();
-        select.setDoctorUserId(adminUserId);
-        select.setId(id);
-        DPreconditions.checkNotNull(
-                orderServiceDetailsService.selectOne(select),
-                "服务订单未查询到.",
-                true);
-        OrderServiceDetailsPO update = new OrderServiceDetailsPO();
-        update.setId(id);
-        update.setState(OrderServiceDetailsStateEnum.CANCELLATION.getCode());
-        orderServiceDetailsService.update(update);
+        orderServiceDetailsService.cancellation(id,adminUserId);
         return ResponseWrapperSuccess(null);
     }
 
-    @ApiOperation(value = "申请作废服务订单")
+    @ApiOperation(value = "申请作废服务订单 --- 用户端")
     @RequestMapping(value = "/applyCancellation", method = RequestMethod.POST)
     @ResponseBody
     public JSONObject applyCancellation(
@@ -145,6 +126,28 @@ public class OrderServiceDetailsController extends TransformController{
     public JSONObject selectAllAdmin(
             @ApiParam(value = "分页信息", required = false) @RequestBody(required = false) PageBean pageBean) throws Exception {
         PageInfo<HospOrderServiceDetails> pageInfo = orderServiceDetailsService.selectAllAdmin(pageBean);
+        return ResponseWrapperSuccess(transformByHospOrderServiceDetails(pageInfo));
+    }
+
+    @ApiOperation(value = "查询全部订单服务详情信息---doctor", response = OrderServiceDetailsVO.class)
+    @RequestMapping(value = "/doctor/all", method = RequestMethod.POST)
+    @ResponseBody
+    public JSONObject selectAllDoctor(
+            @ApiParam(value = "状态", required = true) @RequestParam(value = "state", required = true) Integer state,
+            @ApiParam(value = "分页信息", required = false) @RequestBody(required = false) PageBean pageBean) throws Exception {
+        HospDoctorUserInfo hospDoctorUserInfo = DPreconditions.checkNotNull(
+                doctorUserInfoService.selectOne(getDoctorUserId()),
+                "医生端用户信息为空",
+                true);
+        OrderServiceDetailsPO orderServiceDetailsPO = new OrderServiceDetailsPO();
+        orderServiceDetailsPO.setDoctorAreaId(hospDoctorUserInfo.getAreaId());
+        orderServiceDetailsPO.setState(OrderServiceDetailsStateEnum.getByCode(state).getCode());
+        if(pageBean != null){
+            orderServiceDetailsPO.setPageNum(pageBean.getPageNum());
+            orderServiceDetailsPO.setPageSize(pageBean.getPageSize());
+            orderServiceDetailsPO.setField(pageBean.getField());
+        }
+        PageInfo<HospOrderServiceDetails> pageInfo = orderServiceDetailsService.select(orderServiceDetailsPO);
         return ResponseWrapperSuccess(transformByHospOrderServiceDetails(pageInfo));
     }
 

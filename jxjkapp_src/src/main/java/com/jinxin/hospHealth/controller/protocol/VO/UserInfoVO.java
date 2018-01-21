@@ -18,8 +18,8 @@ public class UserInfoVO  {
     private String name;
     @ApiModelProperty("头像")
     private String headPortrait;
-    @ApiModelProperty("性别 女/男")
-    private String sex;
+    @ApiModelProperty("性别 0 女/1 男")
+    private Integer sex;
     @ApiModelProperty("电话")
     private String phone;
     @ApiModelProperty("邮箱")

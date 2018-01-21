@@ -33,8 +33,6 @@ public class OrderServiceDetailsPO extends PageBean{
     private Long doctorUserId;
     @ApiModelProperty("合作的医生用户ID")
     private Long associatesId;
-    @ApiModelProperty("申请作废的理由")
-    private String account;
     @ApiModelProperty("医生签字")
     private String doctorSign;
     @ApiModelProperty("用户签字")
@@ -51,7 +49,14 @@ public class OrderServiceDetailsPO extends PageBean{
     private Integer state;
     @ApiModelProperty("使用的地址")
     private String address;
+    @ApiModelProperty("回退申请理由")
+    private String comment;
 
+    public String getField(){
+        return  this.field == null
+                ? "create_date DESC,state ASC"
+                : this.field;
+    }
 
     public HospOrderServiceDetails transform(Date createDate,Date updateDate) {
         HospOrderServiceDetails hospOrderServiceDetails = new HospOrderServiceDetails();
@@ -66,7 +71,6 @@ public class OrderServiceDetailsPO extends PageBean{
         hospOrderServiceDetails.setAssociatesId(this.associatesId);
         hospOrderServiceDetails.setAddress(this.address);
         hospOrderServiceDetails.setDoctorUserId(this.doctorUserId);
-        hospOrderServiceDetails.setAccount(this.account);
         hospOrderServiceDetails.setUserSign(this.userSign);
         hospOrderServiceDetails.setDoctorSign(this.doctorSign);
         hospOrderServiceDetails.setConsumptionNote(this.consumptionNote);

@@ -28,6 +28,8 @@ public class OrderInfoPO extends PageBean {
     private Long adminUserId;
     @ApiModelProperty("用户ID")
     private Long userId;
+    @ApiModelProperty("身份证ID")
+    private String idCard;
     @ApiModelProperty("类型（0 服务订单 1 商品订单）")
     private Integer type;
     @ApiModelProperty("支付状态 (0 未支付订单/1 已支付订单/2 退款申请中/3 退款完毕 )")

@@ -47,6 +47,8 @@ public class OrderService implements BaseService<HospOrder, OrderInfoPO> {
     UserBalanceService userBalanceService;
     @Autowired
     OrderServiceDetailsService orderServiceDetailsService;
+    @Autowired
+    PatientInfoService patientInfoService;
 
 
     /**
@@ -81,6 +83,10 @@ public class OrderService implements BaseService<HospOrder, OrderInfoPO> {
         DPreconditions.checkState(
                 orderInfoPO.getId() == null,
                 "新增订单,id不能填写.",
+                true);
+        HospPatientInfo hospPatientInfo = DPreconditions.checkNotNull(
+                patientInfoService.selectOneByIdCard(orderInfoPO.getIdCard()),
+                "没有查询到就诊人信息",
                 true);
         DPreconditions.checkNotNull(
                 userInfoService.selectOne(orderInfoPO.getUserId()),
@@ -117,6 +123,7 @@ public class OrderService implements BaseService<HospOrder, OrderInfoPO> {
                 new Date(),
                 null,
                 ShowEnum.DISPLAY.getCode());
+        add.setPatientInfoId(hospPatientInfo.getId());
         add.setAdminUserId(orderInfoPO.getAdminUserId());
         return add;
     }
@@ -276,33 +283,6 @@ public class OrderService implements BaseService<HospOrder, OrderInfoPO> {
         return hospOrderMapper.selectByOrderProductServiceId(orderProductServiceDetailsId);
     }
 
-    /**
-     * 不显示 订单
-     *
-     * @param id
-     * @throws Exception
-     */
-    @Transactional
-    public void show(Long id) throws Exception {
-        DPreconditions.checkNotNull(id,
-                Language.get("order.id-null"),
-                true);
-        HospOrder order = DPreconditions.checkNotNull(
-                selectOne(id),
-                Language.get("order.select-not-exist"),
-                true);
-        DPreconditions.checkState(
-                order.getPayState().equals(OrderPayStateEnum.NON_PAYMENT.getCode()),
-                Language.get("order.close-order-tyep-failure"),
-                true);
-        HospOrder update = new HospOrder();
-        update.setId(id);
-        update.setDisplay(ShowEnum.DISPLAY.getCode());
-        DPreconditions.checkState(
-                hospOrderMapper.updateByPrimaryKeySelective(update) == 1,
-                Language.get("service.update-failure"),
-                true);
-    }
 
     /**
      * 订单不显示
@@ -315,9 +295,14 @@ public class OrderService implements BaseService<HospOrder, OrderInfoPO> {
         DPreconditions.checkNotNull(id,
                 Language.get("order.id-null"),
                 true);
-        DPreconditions.checkNotNull(
+        HospOrder order = DPreconditions.checkNotNull(
                 selectOne(id),
                 Language.get("order.select-not-exist"),
+                true);
+        DPreconditions.checkState(
+                order.getPayState().equals(OrderPayStateEnum.NON_PAYMENT.getCode())
+                        || order.getPayState().equals(OrderPayStateEnum.FINISH.getCode()),
+                Language.get("order.close-order-tyep-failure"),
                 true);
         OrderInfoPO update = new OrderInfoPO();
         update.setId(id);

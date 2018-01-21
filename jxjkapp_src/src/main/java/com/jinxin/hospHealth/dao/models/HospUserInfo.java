@@ -47,10 +47,7 @@ public class HospUserInfo extends PageBean{
         userInfoVO.setId(this.id);
         userInfoVO.setName(this.name);
         userInfoVO.setHeadPortrait(this.headPortrait);
-        userInfoVO.setSex(
-                this.sex != null
-                        ? SexEnum.getByCode(this.sex).getDesc()
-                        : null);
+        userInfoVO.setSex(this.sex);
         userInfoVO.setPhone(this.phone);
         userInfoVO.setEmail(this.email);
         userInfoVO.setAge(this.age);

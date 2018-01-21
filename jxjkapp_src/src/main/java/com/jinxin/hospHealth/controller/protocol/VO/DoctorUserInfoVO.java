@@ -1,5 +1,6 @@
 package com.jinxin.hospHealth.controller.protocol.VO;
 
+import com.jinxin.hospHealth.dao.models.HospArea;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -19,10 +20,12 @@ public class DoctorUserInfoVO {
     private String name;
     @ApiModelProperty("密码")
     private String password;
+    @ApiModelProperty("院区ID")
+    private HospArea area;
     @ApiModelProperty("头像")
     private String headPortrait;
-    @ApiModelProperty("性别 女/男")
-    private String sex;
+    @ApiModelProperty("性别 0 女/1 男")
+    private Integer sex;
     @ApiModelProperty("电话")
     private String phone;
     @ApiModelProperty("邮箱")

@@ -21,6 +21,8 @@ public class DoctorUserInfoPO {
     private String name;
     @ApiModelProperty("密码")
     private String password;
+    @ApiModelProperty("院区ID")
+    private Long areaId;
     @ApiModelProperty("头像")
     private String headPortrait;
     @ApiModelProperty("性别 0 女 1 男")
@@ -42,6 +44,7 @@ public class DoctorUserInfoPO {
         HospDoctorUserInfo hospDoctorUserInfo = new HospDoctorUserInfo();
         hospDoctorUserInfo.setId(this.id);
         hospDoctorUserInfo.setName(this.name);
+        hospDoctorUserInfo.setAreaId(this.areaId);
         hospDoctorUserInfo.setPassword(
                 this.password != null
                         ? MD5Encryption.getMD5(this.password)

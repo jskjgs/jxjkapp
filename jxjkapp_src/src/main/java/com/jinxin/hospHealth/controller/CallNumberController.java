@@ -11,11 +11,13 @@ import com.github.pagehelper.PageInfo;
 import com.jinxin.hospHealth.controller.protocol.PO.CallNumberPO;
 import com.jinxin.hospHealth.controller.protocol.PO.DoctorInfoPO;
 import com.jinxin.hospHealth.controller.protocol.PO.OrderInfoPO;
+import com.jinxin.hospHealth.controller.protocol.PO.OrderServiceDetailsPO;
 import com.jinxin.hospHealth.controller.protocol.VO.CallNumberVO;
 import com.jinxin.hospHealth.dao.models.*;
 import com.jinxin.hospHealth.dao.modelsEnum.OrderPayStateEnum;
 import com.jinxin.hospHealth.dao.modelsEnum.OrderPayTypeEnum;
 import com.jinxin.hospHealth.service.CallNumberService;
+import com.jinxin.hospHealth.service.OrderServiceDetailsService;
 import com.jinxin.hospHealth.service.PatientInfoService;
 import com.jinxin.hospHealth.service.UserInfoService;
 import io.swagger.annotations.Api;
@@ -23,6 +25,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.actuate.metrics.export.MetricExportProperties;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -41,23 +44,32 @@ import java.util.Map;
 @Api(description = "排队叫号")
 public class CallNumberController extends TransformController{
 
-    String callQueName = "aaaa";
+    @Value("${call-number.waiting-que-name}")
+    String waitingQueName;
 
     @Autowired
     CallNumberService callNumberService;
     @Autowired
     RedisOperation redisOperation;
+    @Autowired
+    OrderServiceDetailsService orderServiceDetailsService;
 
     @ApiOperation(value = "排号")
     @RequestMapping(value = "/add", method = RequestMethod.POST)
     @ResponseBody
     public JSONObject push(
             @ApiParam(value = "排队叫号", required = true) @RequestBody CallNumberPO callNumber) throws Exception {
-        DPreconditions.checkState(
-                check(callNumber),
-                "该用户没有有效的订单,不能进行排号.",
+        HospAdminUserInfo  hospAdminUserInfo = DPreconditions.checkNotNull(
+                adminUserInfoService.selectOne(getAdminUserId()),
+                "admin用户信息为空.",
                 true);
-        redisOperation.usePool().push(callQueName, JSON.toJSONString(callNumber));
+        check(callNumber);
+        OrderServiceDetailsPO po = new OrderServiceDetailsPO();
+        po.setOrderProductId(callNumber.getOrderProductId());
+        po.setQty(1);
+        po.setDoctorAreaId(hospAdminUserInfo.getAreaId());
+        orderServiceDetailsService.add(po);
+        redisOperation.usePool().push(waitingQueName+hospAdminUserInfo.getAreaId(), JSON.toJSONString(callNumber));
         return ResponseWrapperSuccess(null);
     }
 
@@ -65,7 +77,11 @@ public class CallNumberController extends TransformController{
     @RequestMapping(value = "/call", method = RequestMethod.POST)
     @ResponseBody
     public JSONObject pop() throws Exception {
-        String callNumber = redisOperation.usePool().pop(callQueName);
+        HospAdminUserInfo  hospAdminUserInfo = DPreconditions.checkNotNull(
+                adminUserInfoService.selectOne(getAdminUserId()),
+                "admin用户信息为空.",
+                true);
+        String callNumber = redisOperation.usePool().pop(waitingQueName+hospAdminUserInfo.getAreaId());
         CallNumberPO callNumberPO = JSON.parseObject(callNumber,CallNumberPO.class);
         return ResponseWrapperSuccess(transform(callNumberPO));
     }
@@ -75,11 +91,17 @@ public class CallNumberController extends TransformController{
     @ResponseBody
     public JSONObject put(
             @ApiParam(value = "排队叫号", required = true) @RequestBody CallNumberPO callNumber) throws Exception {
-        DPreconditions.checkState(
-                check(callNumber),
-                "该用户没有有效的订单,不能进行排号.",
+        HospAdminUserInfo  hospAdminUserInfo = DPreconditions.checkNotNull(
+                adminUserInfoService.selectOne(getAdminUserId()),
+                "admin用户信息为空.",
                 true);
-        redisOperation.usePool().put(callQueName,JSON.toJSONString(callNumber));
+        check(callNumber);
+        OrderServiceDetailsPO po = new OrderServiceDetailsPO();
+        po.setOrderProductId(callNumber.getOrderProductId());
+        po.setQty(1);
+        po.setDoctorAreaId(hospAdminUserInfo.getAreaId());
+        orderServiceDetailsService.add(po);
+        redisOperation.usePool().put(waitingQueName+hospAdminUserInfo,JSON.toJSONString(callNumber));
         return ResponseWrapperSuccess(null);
     }
 
@@ -87,7 +109,11 @@ public class CallNumberController extends TransformController{
     @RequestMapping(value = "/selectAll", method = RequestMethod.POST)
     @ResponseBody
     public JSONObject selectAll() throws Exception {
-        List<String> values = redisOperation.usePool().lrange(callQueName,0,-1);
+        HospAdminUserInfo  hospAdminUserInfo = DPreconditions.checkNotNull(
+                adminUserInfoService.selectOne(getAdminUserId()),
+                "admin用户信息为空.",
+                true);
+        List<String> values = redisOperation.usePool().lrange(waitingQueName+hospAdminUserInfo,0,-1);
         if(values == null || values.size()<1)
             return ResponseWrapperSuccess(null);
         List<CallNumberVO> callNumberVOList = new ArrayList<>();
@@ -100,35 +126,28 @@ public class CallNumberController extends TransformController{
 
 
     /**
-     * 检查该用户是否有有效的订单,支付并没使用完的订单
+     * 检查该用户是否有有效的订单
      * @param callNumberPO
      * @return
      * @throws Exception
      */
-    private boolean check(CallNumberPO callNumberPO) throws Exception {
+    private void check(CallNumberPO callNumberPO) throws Exception {
         HospUserInfo hospUserInfo = DPreconditions.checkNotNull(
                 userInfoService.selectOneByPhone(callNumberPO.getPhone()),
                 Language.get("user.select-not-exist"),
                 true);
-        OrderInfoPO selectOrder = new OrderInfoPO();
-        selectOrder.setUserId(hospUserInfo.getId());
-        selectOrder.setPayState(OrderPayStateEnum.PAY.getCode());
-        PageInfo<HospOrder> pageInfoOrder = orderService.select(selectOrder);
-        if(pageInfoOrder == null || pageInfoOrder.getList() == null || pageInfoOrder.getList().size()<1)
-            throw new ShowExceptions("该用户没有有效的订单.");
-        boolean boo = false;
-        for(HospOrder order : pageInfoOrder.getList()){
-            PageInfo<HospOrderProduct> pageInfoOrderProduct =  orderProductService.selectByOrderId(order.getId());
-            if(pageInfoOrderProduct == null || pageInfoOrderProduct.getList() == null || pageInfoOrderProduct.getList().size()<1)
-                continue;
-            for(HospOrderProduct hospOrderProduct : pageInfoOrderProduct.getList()){
-                if(orderServiceDetailsService.remainingServiceNumber(hospOrderProduct.getId()) > 0){
-                    boo = true;
-                    break;
-                }
-            }
-        }
-        return boo;
+        HospOrderProduct hospOrderProduct = DPreconditions.checkNotNull(
+                orderProductService.selectOne(callNumberPO.getOrderProductId()),
+                "订单商品信息不存在.",
+                true);
+        HospOrder hospOrder = DPreconditions.checkNotNull(
+                orderService.selectOne(hospOrderProduct.getOrderId()),
+                "订单信息不存在.",
+                true);
+        DPreconditions.checkState(
+                hospOrder.getUserId() == hospUserInfo.getId(),
+                "排队的订单不属于该用户.",
+                true);
     }
 
 }

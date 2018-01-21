@@ -8,6 +8,7 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.github.pagehelper.util.StringUtil;
 import com.jinxin.hospHealth.dao.mapper.HospPrecontractMapper;
+import com.jinxin.hospHealth.dao.models.HospPatientInfo;
 import com.jinxin.hospHealth.dao.models.HospPrecontract;
 import com.jinxin.hospHealth.dao.models.HospUserInfo;
 import com.jinxin.hospHealth.dao.modelsEnum.PrecontractEnum;

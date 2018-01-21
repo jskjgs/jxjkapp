@@ -78,7 +78,7 @@ public class OrderProductController extends TransformController{
         }
         orderProductService.refundment(
                 orderProductPO.getId(),
-                orderProductPO.getProductPayPrice(),
+                orderProductPO.getRollbackMoney(),
                 orderProductPO.getComment(),
                 adminUserId);
         return ResponseWrapperSuccess(null);

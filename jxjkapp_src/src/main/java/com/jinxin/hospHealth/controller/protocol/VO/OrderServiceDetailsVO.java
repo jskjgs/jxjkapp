@@ -1,6 +1,7 @@
 package com.jinxin.hospHealth.controller.protocol.VO;
 
 import com.jinxin.hospHealth.dao.models.*;
+import com.sun.tools.internal.xjc.reader.xmlschema.bindinfo.BIConversion;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -40,14 +41,14 @@ public class OrderServiceDetailsVO {
     private String consumptionNote;
     @ApiModelProperty("购买备注")
     private String buyNote;
-    @ApiModelProperty("申请作废的理由")
-    private String account;
-    @ApiModelProperty("状态")
-    private String state;
+    @ApiModelProperty("状态 0 指派中/1 服务中/2 已完成 /98 申请作废 99 已作废")
+    private Integer state;
     @ApiModelProperty("创建时间")
     private Date createDate;
     @ApiModelProperty("更新时间")
     private Date updateDate;
     @ApiModelProperty("使用的地址")
     private String address;
+    @ApiModelProperty("用户信息")
+    private UserInfoVO userInfo;
 }

@@ -51,7 +51,8 @@ order:
     #未支付订单关闭时间(毫秒计算)
     close-time: 1800000
 cron:
-    send-close-order-time: 0 0/1 * * * ?
+    #每天晚上23点清理当天的排队叫号队列
+    clean-call-number-que: 0 0 23 * * ?
     clone-order-time: 0 0/1 * * * ?
 
 #语言配置文件

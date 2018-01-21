@@ -1,5 +1,6 @@
 package com.jinxin.hospHealth.dao.models;
 
+import com.doraemon.base.controller.bean.PageBean;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -12,10 +13,8 @@ import java.util.Date;
 @Data
 @ApiModel("订单商品回退申请表")
 @Table(name="hosp_order_product_rollback")
-public class HospOrderProductRollback {
+public class HospOrderProductRollback extends PageBean{
     @Id
-    @ApiModelProperty("订单商品回退申请表ID")
-    private Long id;
     @ApiModelProperty("订单商品表ID")
     private Long orderProductId;
     @ApiModelProperty("院区ID")

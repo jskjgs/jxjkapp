@@ -20,6 +20,8 @@ public class HospAdminUserInfo {
     private Long id;
     @ApiModelProperty("姓名")
     private String name;
+    @ApiModelProperty("院区ID")
+    private Long areaId;
     @ApiModelProperty("密码")
     private String password;
     @ApiModelProperty("头像")
@@ -42,9 +44,10 @@ public class HospAdminUserInfo {
     private Date updateDate;
 
 
-    public AdminInfoVO transform(){
+    public AdminInfoVO transform(HospArea hospArea){
         AdminInfoVO adminInfoVO = new AdminInfoVO();
         adminInfoVO.setId(this.id);
+        adminInfoVO.setArea(hospArea);
         adminInfoVO.setUpdateDate(this.updateDate);
         adminInfoVO.setAge(this.age);
         adminInfoVO.setBirthday(this.birthday);
@@ -55,9 +58,7 @@ public class HospAdminUserInfo {
                 ? null
                 : this.permissions.split(","));
         adminInfoVO.setPhone(this.phone);
-        adminInfoVO.setSex(this.sex == null
-                ? null
-                : SexEnum.getByCode(this.sex).getDesc());
+        adminInfoVO.setSex(this.sex);
         adminInfoVO.setName(this.name);
         return adminInfoVO;
     }

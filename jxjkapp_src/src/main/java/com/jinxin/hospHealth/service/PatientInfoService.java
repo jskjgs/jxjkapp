@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
+ * 就诊人相关操作
  * Created by zbs on 2017/12/25.
  */
 @Service
@@ -103,11 +104,25 @@ public class PatientInfoService implements BaseService<HospPatientInfo,HospPatie
     }
 
     /**
+     * 查询单个就诊人信息信息--根据身份证号
+     *
+     * @return
+     */
+    public HospPatientInfo selectOneByIdCard(String idCard) {
+        DPreconditions.checkNotNull(idCard, "身份证号不能为空.",true);
+        HospPatientInfo select = new HospPatientInfo();
+        select.setCardId(idCard);
+        return selectOne(select);
+    }
+
+    /**
      * 查下单个就诊人信息
      * @param hospPatientInfo
      * @return
      */
     public HospPatientInfo selectOne(HospPatientInfo hospPatientInfo) {
+        if(hospPatientInfo == null)
+            return null;
         return hospPatientInfoMapper.selectOne(hospPatientInfo);
     }
 

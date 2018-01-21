@@ -1,8 +1,6 @@
 package com.jinxin.hospHealth.controller.protocol.VO;
 
-import com.jinxin.hospHealth.dao.models.HospArea;
-import com.jinxin.hospHealth.dao.models.HospOrderProduct;
-import com.jinxin.hospHealth.dao.models.HospUserInfo;
+import com.jinxin.hospHealth.dao.models.*;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -26,6 +24,8 @@ public class OrderVO {
     private AdminInfoVO adminInfo;
     @ApiModelProperty("用户信息")
     private UserInfoVO user;
+    @ApiModelProperty("就诊人信息")
+    private HospPatientInfo patientInfo;
     @ApiModelProperty("类型（0 服务订单 1 商品订单）")
     private Integer type;
     @ApiModelProperty("支付状态 (0 未支付订单/1 已支付订单/2 退款申请中/3 退款完毕)")
