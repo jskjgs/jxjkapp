@@ -58,6 +58,19 @@ public class AdminController extends TransformController {
         return ResponseWrapperSuccess(transform(hospAdminUserInfo));
     }
 
+    @ApiOperation(value = "查询一条admin信息", response = AdminInfoVO.class)
+    @RequestMapping(value = "/selectOne", method = RequestMethod.GET)
+    @ResponseBody
+    public JSONObject select(
+            @ApiParam(value = "admin用户Id", required = true) @RequestParam(value = "id", required = true) Long id) throws Exception {
+        DPreconditions.checkNotNull(
+                getAdminUserId(),
+                "没有查询到用户的登陆信息.",
+                true);
+        HospAdminUserInfo hospAdminUserInfo = adminUserInfoService.selectOne(id);
+        return ResponseWrapperSuccess(transform(hospAdminUserInfo));
+    }
+
     @ApiOperation(value = "查询全部用户信息", response = AdminInfoVO.class)
     @RequestMapping(value = "/all", method = RequestMethod.POST)
     @ResponseBody
