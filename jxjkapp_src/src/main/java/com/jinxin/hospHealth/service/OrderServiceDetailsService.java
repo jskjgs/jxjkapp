@@ -139,7 +139,7 @@ public class OrderServiceDetailsService implements BaseService<HospOrderServiceD
     }
 
     /**
-     * 确认服务订单
+     * 确认服务订单 --- 完成态
      *
      * @param po
      */
@@ -173,7 +173,7 @@ public class OrderServiceDetailsService implements BaseService<HospOrderServiceD
         update.setUserSign(po.getUserSign());
         update.setDoctorSign(po.getDoctorSign());
         update.setDoctorComment(po.getDoctorComment());
-        update.setState(OrderServiceDetailsStateEnum.IN_SERVICE.getCode());
+        update.setState(OrderServiceDetailsStateEnum.COMPLETE.getCode());
         update(update);
     }
 

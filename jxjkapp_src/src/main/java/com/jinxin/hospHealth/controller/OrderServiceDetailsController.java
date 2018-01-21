@@ -5,10 +5,12 @@ import com.doraemon.base.controller.bean.PageBean;
 import com.doraemon.base.guava.DPreconditions;
 import com.github.pagehelper.PageInfo;
 import com.jinxin.hospHealth.controller.protocol.PO.OrderServiceDetailsPO;
+import com.jinxin.hospHealth.controller.protocol.VO.DoctorUserInfoVO;
 import com.jinxin.hospHealth.controller.protocol.VO.OrderServiceDetailsVO;
 import com.jinxin.hospHealth.dao.models.*;
 import com.jinxin.hospHealth.dao.modelsEnum.OrderServiceDetailsStateEnum;
 import com.jinxin.hospHealth.service.*;
+import com.sun.deploy.net.proxy.pac.PACFunctions;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -68,6 +70,7 @@ public class OrderServiceDetailsController extends TransformController{
         return ResponseWrapperSuccess(null);
     }
 
+    //todo: 缺少完成逻辑,这段不要删,等完成逻辑下来后,做调整
 //    @ApiOperation(value = "完成服务订单 ---admin")
 //    @RequestMapping(value = "/complete", method = RequestMethod.POST)
 //    @ResponseBody
@@ -127,6 +130,26 @@ public class OrderServiceDetailsController extends TransformController{
     public JSONObject selectAllAdmin(
             @ApiParam(value = "分页信息", required = false) @RequestBody(required = false) PageBean pageBean) throws Exception {
         PageInfo<HospOrderServiceDetails> pageInfo = orderServiceDetailsService.selectAllAdmin(pageBean);
+        return ResponseWrapperSuccess(transformByHospOrderServiceDetails(pageInfo));
+    }
+
+    @ApiOperation(value = "查询全部订单服务详情信息---doctor", response = OrderServiceDetailsVO.class)
+    @RequestMapping(value = "/doctor/all", method = RequestMethod.POST)
+    @ResponseBody
+    public JSONObject selectAllDoctor(
+            @ApiParam(value = "分页信息", required = false) @RequestBody(required = false) PageBean pageBean) throws Exception {
+        HospDoctorInfo hospDoctorInfo = DPreconditions.checkNotNull(
+                doctorInfoService.selectOne(getDoctorUserId()),
+                "医生端用户信息为空",
+                true);
+        OrderServiceDetailsPO orderServiceDetailsPO = new OrderServiceDetailsPO();
+        orderServiceDetailsPO.setDoctorAreaId(hospDoctorInfo.getHospAreaId());
+        if(pageBean != null){
+            orderServiceDetailsPO.setPageNum(pageBean.getPageNum());
+            orderServiceDetailsPO.setPageSize(pageBean.getPageSize());
+            orderServiceDetailsPO.setField(pageBean.getField());
+        }
+        PageInfo<HospOrderServiceDetails> pageInfo = orderServiceDetailsService.select(orderServiceDetailsPO);
         return ResponseWrapperSuccess(transformByHospOrderServiceDetails(pageInfo));
     }
 

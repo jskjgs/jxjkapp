@@ -52,6 +52,11 @@ public class OrderServiceDetailsPO extends PageBean{
     @ApiModelProperty("回退申请理由")
     private String comment;
 
+    public String getField(){
+        return  this.field == null
+                ? "create_date DESC,state ASC"
+                : this.field;
+    }
 
     public HospOrderServiceDetails transform(Date createDate,Date updateDate) {
         HospOrderServiceDetails hospOrderServiceDetails = new HospOrderServiceDetails();
