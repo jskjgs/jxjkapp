@@ -168,11 +168,8 @@ public class AdminUserInfoService implements BaseService<HospAdminUserInfo, Admi
      * @throws Exception
      */
     public HospAdminUserInfo selectOne(AdminInfoPO adminInfoPO) throws Exception {
-        if (adminInfoPO.getPassword() != null) {
-            DPreconditions.checkState(
-                    adminInfoPO.getId() != null
-                            || adminInfoPO.getPhone() != null);
-        }
+        if(adminInfoPO == null)
+            return null;
         HospAdminUserInfo select = adminInfoPO.transform(null,null);
         select.setEnable(EnableEnum.ENABLE_NORMAL.getCode());
         return hospAdminUserInfoMapper.selectOne(select);

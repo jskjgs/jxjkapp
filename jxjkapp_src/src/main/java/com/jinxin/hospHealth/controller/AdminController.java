@@ -116,5 +116,21 @@ public class AdminController extends TransformController {
         return ResponseWrapperSuccess(null);
     }
 
-
+    @ApiOperation(value = "登出")
+    @RequestMapping(value = "/logout", method = RequestMethod.POST)
+    @ResponseBody
+    public JSONObject logout() throws Exception {
+        Long id = getAdminUserId();
+        String toker = DPreconditions.checkNotNullAndEmpty(
+                getToken(),
+                "toker不能为空.",
+                true);
+        DPreconditions.checkNotNull(
+                userInfoService.selectOne(id),
+                "用户没有查询到.",
+                true);
+        redisOperation.usePool().del(userTokenPrefix+toker);
+        redisOperation.usePool().del(userTokenPrefix+id);
+        return ResponseWrapperSuccess(null);
+    }
 }
