@@ -7,6 +7,7 @@ import com.github.pagehelper.PageInfo;
 import com.jinxin.hospHealth.controller.protocol.PO.OrderServiceDetailsPO;
 import com.jinxin.hospHealth.controller.protocol.VO.OrderServiceDetailsVO;
 import com.jinxin.hospHealth.dao.models.*;
+import com.jinxin.hospHealth.dao.modelsEnum.OrderServiceDetailsStateEnum;
 import com.jinxin.hospHealth.service.*;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -132,6 +133,7 @@ public class OrderServiceDetailsController extends TransformController{
     @RequestMapping(value = "/doctor/all", method = RequestMethod.POST)
     @ResponseBody
     public JSONObject selectAllDoctor(
+            @ApiParam(value = "状态", required = true) @RequestParam(value = "state", required = true) Integer state,
             @ApiParam(value = "分页信息", required = false) @RequestBody(required = false) PageBean pageBean) throws Exception {
         HospDoctorUserInfo hospDoctorUserInfo = DPreconditions.checkNotNull(
                 doctorUserInfoService.selectOne(getDoctorUserId()),
@@ -139,6 +141,7 @@ public class OrderServiceDetailsController extends TransformController{
                 true);
         OrderServiceDetailsPO orderServiceDetailsPO = new OrderServiceDetailsPO();
         orderServiceDetailsPO.setDoctorAreaId(hospDoctorUserInfo.getAreaId());
+        orderServiceDetailsPO.setState(OrderServiceDetailsStateEnum.getByCode(state).getCode());
         if(pageBean != null){
             orderServiceDetailsPO.setPageNum(pageBean.getPageNum());
             orderServiceDetailsPO.setPageSize(pageBean.getPageSize());
