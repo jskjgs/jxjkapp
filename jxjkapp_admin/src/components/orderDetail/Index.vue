@@ -6,8 +6,10 @@
 
 import placeholderImg from '@/assets/images/placeholder.png'
 
+import { payStateFormat } from '@/utils/index'
+
 import {
-  getOrderInfoApi
+  getOrderInfoApi, orderRefundmentApi
 } from './api'
 export default {
   name: 'orderDetail',
@@ -16,88 +18,48 @@ export default {
   data () {
     return {
       orderId: this.$route.params.orderId,
-      orderFrom: {
-        userId: null,
-        productId: null,
-        qty: 0,
-        discontPrice: null,
-        comments: null,
-        paymentNumber: null,
-        unUseNum: 0
-      },
       refundment: {
-        amount: '',
-        comments: '',
+        id: this.$route.params.orderId,
+        amount: null,
+        comment: '',
         isRefund: false
       },
-      totalPrice: 0.00,
-      unitPrice: 0.00,
-      skuPrice: null,
-      paymentPrice: null,
-      selectProduct: null,
-      selectCategroy: null,
-      categroyList: null
+      userId: null,
+      isVip: false,
+      state: null,
+      productId: null,
+      qty: 0,
+      discontPrice: null,
+      comments: null,
+      paymentNumber: null,
+      orderCategroyName: null,
+      orderSkuName: null,
+      totalPrice: null,
+      unitPrice: null,
+      paymentPrice: null
     }
   },
   created () {
     this.placeholderImg = placeholderImg
-    this.initProductInfo()
     this.initOrderInfo()
   },
   watch: {
-    selectCategroy (val) {
-      this.selectProduct = null
-    },
-    selectProduct (val) {
-      this.unitPrice = 0
-      this.orderFrom.qty = 0
-      if (val == null) { return }
-      console.log(val)
-      this.orderFrom.productId = val.id
-      this.unitPrice = val.price
-    },
-    qty (newValue) {
-      this.totalPrice = this.unitPrice * newValue
-    },
-    totalPrice (newValue) {
-      this.paymentPrice = null
-    },
-    discontPrice (newValue) {
-      this.paymentPrice = null
-    }
-  },
-  computed: {
-    qty () {
-      return this.orderFrom.qty
-    },
-    discontPrice () {
-      return this.orderFrom.discontPrice
-    }
   },
   methods: {
-    // 根据选定的服务种类构造项目列表
-    productList () {
-      let key = this.selectCategroy
-      if (key == null) {
-        return []
-      }
-      return this.categroyList[this.selectCategroy]
-    },
-    handleGetPaymentPrice () {
-      // TODO 根据所填写的订单信息调取价格计算引擎计算实际支付价格。 以下代码为测试代码
-      let pay = this.totalPrice - this.orderFrom.discontPrice
-      this.paymentPrice = (pay < 0 ? 0 : pay)
-    },
-    handleCreateOrder () {
-    },
-    handleUpdateOrder () {},
     handleRefundment () {
       if (!this.refundment.isRefund) {
         this.refundment.isRefund = true
         return
       }
-      // TODO 发起退款
-      console.log('退款成功')
+      orderRefundmentApi(this.refundment).then((res) => {
+        console.log(res)
+        // TODO 请加入成功提示
+      }).catch((err) => {
+        console.log(err)
+      })
+      .finally(() => {
+        this.loginLoading = false
+      })
     },
     initOrderInfo () {
       if (!this.orderId) {
@@ -107,32 +69,26 @@ export default {
         id: this.orderId
       }).then((res) => {
         let data = res.content.list[0]
-        this.orderFrom.userId = data.user.id
-
+        this.userId = data.user.id
+        this.isVip = data.user.isVip
+        this.state = payStateFormat(data.payState)
         let product = data.orderProductList[0]
-        this.orderFrom.productId = product.id
-        this.orderFrom.qty = product.quantity
-        // this.orderFrom.discontPrice: null,
-        // this.orderFrom.comments: null,
-        // this.orderFrom.paymentNumber: null
-        // this.selectCategroy: null,
-        this.selectProduct = product.productSkuName
-        this.skuPrice = product.productSku.salesPrice
+        console.log(product)
+        this.qty = product.quantity
+        // this.discontPrice: null,
+        // this.comments = null,
+        // this.paymentNumber: null
+        this.refundment.id = product.productSku.id
+        this.orderSkuName = product.productSkuName
+        this.orderCategroyName = product.productSku.product.name
+        this.unitPrice = product.productSku.salesPrice
         this.totalPrice = data.orderSalesPrice
         this.paymentPrice = data.orderPayPrice
-        console.log(data)
       }).catch((err) => {
         console.log(err)
-      })
-      .finally(() => {
+      }).finally(() => {
         this.loginLoading = false
       })
-    },
-    // 请求商品列表，含每个sku的价格
-    initProductInfo () {
-      // TODO 请求类目和产品列表
-      this.categroyList = {'A': [{'name': '小六1', 'id': 1, 'price': 100.00}, {'name': '小六3', 'id': 3, 'price': 300.00}],
-        'B': [{'name': '小六2', 'id': 2, 'price': 200.00}, {'name': '小六4', 'id': 4, 'price': 400.00}]}
     }
   }
 }
@@ -142,107 +98,59 @@ export default {
   <div id="orderDetail">
     <div class="flex--vcenter page-top">
       <div class="page-title">
-        <router-link to="/order"> 订单管理 </router-link> > {{ orderFrom ? '订单详情' : '添加订单' }} 
+        <router-link to="/order"> 订单管理 </router-link> > 订单详情
       </div>
     </div>
     <div class="flex--vcenter" style="margin-top: 20px; justify-content: space-between;">
       <div class="tool-item">
-        用户标识
-        <el-input
-          v-model.trim="orderFrom.userId"
-          :disabled="orderId!=null"
-          placeholder="请输入客户手机／就诊卡号"
-          style="width: 230px;">
-        </el-input>
+        用户ID: <span>{{userId}}</span>
       </div>
       <div class="tool-item">
-        *服务种类 
-        <el-select v-model="selectCategroy" placeholder="请选择" :disabled="orderId!=null">
-          <el-option
-            v-for="(key, value) in categroyList"
-            :key="key"
-            :label="value"
-            :value="value">
-          </el-option>
-        </el-select>
+        服务种类: <span>{{orderCategroyName}}</span>
       </div>
       <div class="tool-item">
-        *项目名称
-        <el-select v-model="selectProduct" placeholder="请选择" :disabled="orderId!=null">
-          <el-option
-            v-for="product in productList()"
-            :key="product"
-            :label="product.name"
-            :value="product">
-          </el-option>
-        </el-select>
+        项目名称: <span>{{orderSkuName}}</span>
+      </div>
+      <div class="tool-item">
+        订单状态: <span>{{state}}</span>
       </div>
     </div>
     
     <div class="flex--vcenter" style="margin-top: 20px; justify-content: space-between;">
       <div class="tool-item">
-        服务单价
-        {{unitPrice}}{{skuPrice}}
+        服务单价: <span>{{unitPrice}}</span>
       </div>
       <div class="tool-item">
-        *购买数量
-        <el-input
-          v-model="orderFrom.qty"
-          :disabled="!unitPrice || orderId"
-          placeholder="请输入数量"
-          type="number"
-          style="width: 200px;">
-        </el-input>
+        购买数量: <span>{{qty}}</span>
       </div>
-      <!-- <div class="tool-item" v-show="orderId!=null">
-        剩余次数  {{orderFrom.unUseNum}}
-      </div> -->
       <div class="tool-item">
-        折扣金额
-        <el-input
-          v-model="orderFrom.discontPrice"
-          :disabled="!orderFrom.qty"
-          placeholder="打折请慎重"
-          type="number"
-          style="width: 200px;">
-        </el-input>
+        折扣金额: <span>{{discontPrice}}</span>
       </div>
     </div>
 
     <div class="flex--vcenter" style="margin-top: 20px; justify-content: space-between;">
       <div class="tool-item">
-        <b>总金额</b>
+        <b>总金额:</b>
         <b>￥{{totalPrice}}</b>
       </div>
       <div class="tool-item">
-        <el-button
-          v-show="paymentPrice==null"
-          class="tool-item"
-          type="primary"
-          @click="handleGetPaymentPrice">计算支付金额
-        </el-button>
-        <span v-show="paymentPrice!=null">
-          <b>支付金额</b>
-          <b style="color:red">￥{{paymentPrice}}</b>
-        </span>
+        <b>支付金额:</b>
+        <b style="color:red">￥{{paymentPrice}}</b>
       </div>
     </div>
     <div class="flex--vcenter" style="margin-top: 20px;">
+      <b>备注信息:</b>
         <textarea
-          v-model="orderFrom.commonts"
+          v-model="comments"
+          readonly=true
           placeholder="备注信息"
           style="width: 100%;height: 260px;font-size: 15px">
         </textarea>
     </div>
     <div class="flex--vcenter" style="margin-top: 20px;">
       <div class="tool-item">
-        HIS缴费订单号
-        <el-input
-          v-model="orderFrom.paymentNumber"
-          placeholder="用户如果是VIP可以不填"
-          :disabled="!orderId"
-          style="width: 490px;">
-        </el-input>
+        缴费号:<span v-show="!isVip">{{paymentNumber}}</span>
+        <span v-show="isVip">VIP用户余额支付</span>
       </div>
     </div>
     
@@ -259,18 +167,6 @@ export default {
             style="width: 490px;">
           </el-input>
         </span>
-        <el-button
-          v-show="orderId==null"
-          class="tool-item"
-          type="primary"
-          @click="handleGetPaymentPrice">创建订单
-        </el-button>
-        <el-button
-          v-show="orderId!=null && !refundment.isRefund"
-          class="tool-item"
-          type="primary"
-          @click="handleGetPaymentPrice">保存
-        </el-button>
         <el-button
           v-show="orderId!=null"
           type="primary"

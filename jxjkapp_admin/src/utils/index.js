@@ -179,3 +179,25 @@ export const getAccountInfo = (function () {
     return accountInfo
   }
 }())
+
+/**
+ * 订单状态
+ */
+export const payStateFormat = (state) => {
+  if (state === 0) { return '未支付' }
+  if (state === 1) { return '已支付' }
+  if (state === 2) { return '退款申请中' }
+  if (state === 3) { return '退款完毕' }
+  return ''
+}
+
+/**
+ * 用户等级
+ */
+export const userStateFormat = (isVip) => {
+  if (isVip) {
+    return 'VIP'
+  }
+  return '普通用户'
+}
+
