@@ -3,17 +3,17 @@
  * Created by zhengji
  * Date: 2017/8/29
  */
-import placeholderImg from '@/assets/images/placeholder.png'
-
 import SearchTable from '@/components/_common/searchTable/SearchTable'
-
+import EditDialog from './_thumbs/EditDialog.vue'
 import {
-  queryServiceRecordApi
+  getListApi,
+  modifyDoctorApi
 } from './api'
 
 export default {
-  name: 'ServiceRecord',
+  name: 'Doctor',
   components: {
+    EditDialog,
     SearchTable
   },
   data () {
@@ -26,34 +26,49 @@ export default {
     }
     this.columnData = [{
       attrs: {
-        'prop': 'provider',
-        'label': '服务人员',
+        'prop': 'no',
+        'label': '员工编号',
         'min-width': '100',
         'show-overflow-tooltip': true
       }
     }, {
       attrs: {
-        'prop': 'completeTime',
-        'label': '完成时间',
+        'prop': 'name',
+        'label': '姓名',
         'min-width': '100',
         'show-overflow-tooltip': true
       }
     }, {
       attrs: {
-        'prop': 'serviceState',
-        'label': '状态',
+        'prop': 'area',
+        'label': '院区',
         'min-width': '100',
         'show-overflow-tooltip': true
       }
     }, {
       attrs: {
-        'prop': 'index',
-        'label': '服务次数',
-        'min-width': '50'
+        'prop': 'title',
+        'label': '职位',
+        'min-width': '160',
+        'show-overflow-tooltip': true
       }
     }, {
       attrs: {
-        'min-width': '180',
+        'prop': 'sex',
+        'label': '性别',
+        'min-width': '160',
+        'show-overflow-tooltip': true
+      }
+    }, {
+      attrs: {
+        'prop': 'author',
+        'label': '账号等级',
+        'min-width': '160',
+        'show-overflow-tooltip': true
+      }
+    }, {
+      attrs: {
+        'min-width': '140',
         'label': '操作'
       },
       scopedSlots: {
@@ -61,9 +76,8 @@ export default {
           return (
             <div class="flex--center operations">
               <span
-                class="operate-item "
-                onClick={() => this.openDetail(scope.row)}>
-                  查看详情
+                  class="operate-item el-icon-edit"
+                  onClick={() => this.openEditDialog(scope.row)}>
               </span>
             </div>
           )
@@ -71,34 +85,43 @@ export default {
       }
     }]
     this.listApi = {
-      requestFn: queryServiceRecordApi,
+      requestFn: getListApi,
       responseFn (data) {
         let content = data.content || {}
         console.log(content.list)
-        this.tableData = (content.list || []).map((item) => ({
-          serviceId: item.productSku.id,
-          provider: item.doctorUserInfo.name,
-          completeTime: item.doctorUserInfo.updateDate,
-          index: item.productSku.serviceQuantity,
-          serviceState: item.state
-        }))
+        this.tableData = (content.list || []).map((item) => {
+          return {
+            no: item.id,
+            name: item.name,
+            area: item.hospArea.name,
+            phone: item.phone,
+            title: item.title,
+            author: item.author,
+            sex: ((sex) => { sex === 0 ? '男' : '女' })(item.sex)
+          }
+        })
         this.total = content.total || 0
       }
     }
+
     return {
-      orderId: this.$route.params.orderId,
-      orderState: this.$route.params.orderState,
+      editDialogVisible: false,
+      editData: {},
+      keyWords: null,
       apiKeysMap: {
         pageSize: {
           value: 10,
           innerKey: 'pageSize' // searchTable组件内部映射的key
         },
-        id: {
-          value: this.$route.params.orderId
+        departmentId: {
+          value: undefined
+        },
+        keyWords: {
+          value: ''
         },
         currentPage: 'pageNum',
         orderBy: {
-          value: 'service_index'
+          value: 'order_number'
         },
         desc: {
           value: true
@@ -107,26 +130,64 @@ export default {
     }
   },
   created () {
-    this.placeholderImg = placeholderImg
   },
   watch: {
+    editDialogVisible (val) {
+      if (!val) {
+        this.editData = null
+      }
+    },
+    currentPage (newPageNum) {
+      this.getList({
+        pageNum: newPageNum
+      })
+    }
   },
   methods: {
-    openDetail (rowData) {
-      console.log(1)
-      rowData = !rowData ? {} : rowData
-      this.$router.push({name: 'order/serviceDetail_root', params: { serviceId: rowData.serviceId }})
-      console.log(2)
+    handleSearch () {
+      this.apiKeysMap = Object.assign({}, this.apiKeysMap, {
+        departmentId: {
+          value: this.departmentId || undefined
+        }
+      })
+    },
+    handleEditCancel () {
+    },
+    addEmployee () {
+      console.log(123)
+      this.editDialogVisible = true
+    },
+    handleEditSubmit (data, respondCb) {
+      let formData
+      if (data.file) {
+        formData = new FormData()
+        formData.append('file', data.file)
+      }
+      let sendData = {
+        goodDescribe: data.describe,
+        doctorId: data.id
+      }
+      modifyDoctorApi(sendData, formData).then(res => {
+        this.$message({
+          type: 'success',
+          message: '修改成功'
+        })
+        this.editDialogVisible = false
+        this.$refs.searchTable.getList()
+        respondCb(true)
+      }).catch(() => {
+        respondCb()
+      })
     }
   }
 }
 </script>
 
 <template>
-  <div id="order">
+  <div id="doctor">
     <div class="flex--vcenter page-top">
       <div class="page-title">
-        <router-link to="/order"> 订单管理 </router-link> > 服务记录
+        员工管理
       </div>
     </div>
     <search-table
@@ -135,19 +196,26 @@ export default {
       :column-data="columnData"
       :list-api="listApi"
       :api-keys-map="apiKeysMap">
-      <div class="table-tools flex--vcenter" slot="table-tools" style="margin-top: 20px; justify-content: space-between;">
-  
+      <div class="table-tools flex--vcenter"  style="justify-content: space-between;" slot="table-tools">
+        <div class="search-wrap flex--vcenter">
           <div class="tool-item">
-            <span style="margin-right:50px">用户名:{{}}</span>
-            <span>手机号:{{}}</span>
+            搜索关键字：
+            <el-input v-model="keyWords" style="width: auto;" placeholder="请填入关键字"></el-input>
           </div>
-          <!-- <div class="tool-item">
-            <el-button
-              style="width: 100%;"
-              type="primary"
-              @click="assginService">派发服务
-            </el-button>
-          </div> -->
+          <el-button
+            class="tool-item"
+            type="primary"
+            @click="handleSearch">搜索
+          </el-button>
+        </div>
+        <div class="btn-wrap">
+          <el-button
+            class="btn--add"
+            type="primary"
+            @click="addEmployee()">
+            新增 <i class="el-icon-plus"></i>
+          </el-button>
+        </div>
       </div>
     </search-table>
   </div>
@@ -156,7 +224,7 @@ export default {
 <style lang="scss">
   @import "~@/assets/style/variables/index";
 
-  #order {
+  #doctor {
     .display-num-control {
       margin-left: 60px;
       .label {
@@ -167,10 +235,6 @@ export default {
         color: #adb9ca;
         cursor: pointer;
       }
-    }
-
-    .table-tools {
-      justify-content: space-between;
     }
 
     .search-input {
