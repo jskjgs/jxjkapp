@@ -149,7 +149,10 @@ public class ProductService implements BaseService<HospProduct,HospProduct>{
      */
     public HospProduct selectOne(Long id) {
         DPreconditions.checkNotNull(id, "商品的id不能为空");
-        return hospProductMapper.selectByPrimaryKey(id);
+        HospProduct hospProduct = new HospProduct();
+        hospProduct.setEnable(EnableEnum.ENABLE_NORMAL.getCode());
+        hospProduct.setId(id);
+        return hospProductMapper.selectOne(hospProduct);
     }
 
     /**
@@ -164,10 +167,8 @@ public class ProductService implements BaseService<HospProduct,HospProduct>{
         PageHelper.startPage(hospProduct.getPageNum(), hospProduct.getPageSize());
         if (StringUtil.isNotEmpty(hospProduct.getField()))
             PageHelper.orderBy(hospProduct.getField());
-        HospProduct select = new HospProduct();
-        select.setName(hospProduct.getName());
-        select.setProductTypeId(hospProduct.getProductTypeId());
-        return new PageInfo(hospProductMapper.select(select));
+        hospProduct.setEnable(EnableEnum.ENABLE_NORMAL.getCode());
+        return new PageInfo(hospProductMapper.select(hospProduct));
     }
 
     /**
@@ -182,7 +183,9 @@ public class ProductService implements BaseService<HospProduct,HospProduct>{
         PageHelper.startPage(pageBean.getPageNum(), pageBean.getPageSize());
         if (StringUtil.isNotEmpty(pageBean.getField()))
             PageHelper.orderBy(pageBean.getField());
-        return new PageInfo(hospProductMapper.selectAll());
+        HospProduct hospProduct = new HospProduct();
+        hospProduct.setEnable(EnableEnum.ENABLE_NORMAL.getCode());
+        return new PageInfo(hospProductMapper.select(hospProduct));
     }
 
     /**
@@ -196,7 +199,6 @@ public class ProductService implements BaseService<HospProduct,HospProduct>{
         DPreconditions.checkNotNull(id, "商品的id不能为空");
         HospProduct select = new HospProduct();
         select.setId(id);
-        select.setEnable(null);
         return hospProductMapper.selectOne(select);
     }
 
@@ -213,11 +215,7 @@ public class ProductService implements BaseService<HospProduct,HospProduct>{
         PageHelper.startPage(hospProduct.getPageNum(), hospProduct.getPageSize());
         if (StringUtil.isNotEmpty(hospProduct.getField()))
             PageHelper.orderBy(hospProduct.getField());
-        HospProduct select = new HospProduct();
-        select.setEnable(hospProduct.getEnable());
-        select.setName(hospProduct.getName());
-        select.setProductTypeId(hospProduct.getProductTypeId());
-        return new PageInfo(hospProductMapper.select(select));
+        return new PageInfo(hospProductMapper.select(hospProduct));
     }
 
     /**
@@ -233,8 +231,6 @@ public class ProductService implements BaseService<HospProduct,HospProduct>{
         PageHelper.startPage(pageBean.getPageNum(), pageBean.getPageSize());
         if (StringUtil.isNotEmpty(pageBean.getField()))
             PageHelper.orderBy(pageBean.getField());
-        HospProduct select = new HospProduct();
-        select.setEnable(null);
-        return new PageInfo(hospProductMapper.select(select));
+        return new PageInfo(hospProductMapper.selectAll());
     }
 }

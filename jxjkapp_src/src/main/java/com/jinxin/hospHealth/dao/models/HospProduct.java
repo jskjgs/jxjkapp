@@ -38,6 +38,12 @@ public class HospProduct extends PageBean{
     @ApiModelProperty("删除标识 0:正常 1:禁用  99:删除")
     private Integer enable;
 
+    public String getField(){
+         return this.field == null
+                 ? " sort_number DESC ,update_date DESC "
+                 : this.field;
+    }
+
     public ProductVO transform(HospProductType productType,HospProductSku defaultSku){
         ProductVO productVO = new ProductVO();
         productVO.setId(this.getId());
