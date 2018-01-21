@@ -69,8 +69,8 @@ Promise.prototype.finally = function (callback) {
     },
     // 处理页面进入的逻辑（判断是否登陆）
     '$_onPageShow': {
-      value (vm, next) {
-        if (vm.$_checkLogin()) {
+      value (vm, next, checkLoginRouteFn) {
+        if (vm.$_checkLogin(checkLoginRouteFn)) {
           const token = vm.$parent.globalData.token
           if (vm.$$token !== token) {
             vm.$$token = token
