@@ -9,8 +9,7 @@ import {
   deleteBannerApi,
   deleteBannerBatchApi,
   addBanenrApi,
-  modifyBannerApi,
-  switchVisibleApi
+  modifyBannerApi
 } from './api'
 import { Loading } from 'element-ui'
 import EditDialog from './_thumbs/EditDialog.vue'
@@ -192,8 +191,9 @@ export default {
     },
     // 显示／隐藏
     switchVisible (rowData) {
-      switchVisibleApi({
-        bannerId: rowData.id
+      modifyBannerApi({
+        id: rowData.id,
+        display: rowData.visible ? 1 : 0
       }).then(res => {
         this.$message({
           type: 'success',
@@ -213,14 +213,14 @@ export default {
       <div class="page-title">
         BANNER管理
       </div>
-      <div class="display-num-control">
+      <!-- <div class="display-num-control">
         <span class="label">展示数量 ：</span>
         <span class="display-num">4个</span>
         <span
           class="el-icon-edit"
           @click="changeDisplayNum">
         </span>
-      </div>
+      </div> -->
     </div>
     <search-table
       ref="searchTable"
@@ -259,7 +259,7 @@ export default {
         align="center"
         prop="cover"
         label="封面图"
-        width="180">
+        min-width="140">
         <template scope="scope">
           <img-zoom
             :src="scope.row.cover"

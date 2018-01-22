@@ -93,7 +93,8 @@ export default {
           id: rowData.id,
           name: rowData.title,
           no: rowData.sortNumber,
-          cover: rowData.cover
+          cover: rowData.cover,
+          richText: rowData.content
         }
       }
     },
@@ -141,7 +142,7 @@ export default {
           sortNumber: data.no,
           id: data.id,
           images: imageUrl || '',
-          content: '内容。。。' // 内容
+          content: data.richText // 内容
         }
         let requestFn = adding ? addNewsApi : modifyNewsApi
         return requestFn(sendData).then(res => {
@@ -191,6 +192,19 @@ export default {
         })
       }).finally(() => {
         this.$refs.searchTable.init()
+      })
+    },
+    // 置顶
+    toTop (rowData) {
+      modifyNewsApi({
+        id: rowData.id,
+        sortNumber: -1
+      }).then(() => {
+        this.$message({
+          type: 'success',
+          message: '置顶成功'
+        })
+        this.$refs.searchTable.getList()
       })
     }
   }
@@ -260,7 +274,7 @@ export default {
           </img-zoom>
         </template>
       </el-table-column>
-      <el-table-column
+      <!-- <el-table-column
         slot="column-jumpUrl"
         align="center"
         label="新闻链接"
@@ -269,7 +283,7 @@ export default {
           <a v-if="scope.row.jumpUrl" :href="scope.row.jumpUrl" target="_blank">{{ scope.row.jumpUrl }}</a>
           <template v-else>--</template>
         </template>
-      </el-table-column>
+      </el-table-column> -->
       <el-table-column
         slot="column-operate"
         align="center"
@@ -287,7 +301,12 @@ export default {
             </span>
             <span
               class="operate-item">
-              <el-button type="text" :disabled="currentPage === 1 && scope.$index === 0">置顶</el-button>
+              <el-button 
+                type="text" 
+                :disabled="currentPage === 1 && scope.$index === 0"
+                @click="toTop(scope.row)">
+                置顶
+              </el-button>
             </span>
           </div>     
         </template>

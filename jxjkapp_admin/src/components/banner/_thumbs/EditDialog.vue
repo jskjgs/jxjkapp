@@ -7,7 +7,7 @@ let fileObj = ''
 let initData = {
   submitLoading: false,
   fileInputValid: true, // 上传的文件有效性
-  activePanelIndex: 0 // 当前激活的栏目（banner基本信息 / banner内容）
+  activePanelIndex: 1 // 当前激活的栏目（banner基本信息 / banner内容）
 }
 
 import ImgUploader from '@/components/_common/imgUploader/ImgUploader.vue'
@@ -195,10 +195,10 @@ export default {
           </el-button>
         </template>
         <template v-else>
-          <el-button
+          <!-- <el-button
             @click="activePanelIndex = 0">
             上一步
-          </el-button>
+          </el-button> -->
           <el-button
             type="primary"
             :disabled="submitLoading"

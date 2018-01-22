@@ -125,7 +125,7 @@ export default {
   <div class="edit-dialog">
     <el-dialog
       class="dialog--center"
-      :title="`${data ? '修改' : '新增'}BANNER`"
+      :title="`${data ? '修改' : '新增'}新闻`"
       :visible.sync="visible"
       @close="handleClose">
       <el-form
@@ -165,7 +165,7 @@ export default {
             </el-form-item>
           </el-col>
         </el-row>
-        <el-form-item
+        <!-- <el-form-item
           label="跳转链接"
           prop="link"
           :rules="[
@@ -176,7 +176,7 @@ export default {
             v-model.trim="form.link"
             auto-complete="off">
           </el-input>
-        </el-form-item>
+        </el-form-item> -->
         <el-form-item
           label="封面图"
           required>
@@ -187,13 +187,14 @@ export default {
         </el-form-item>
       </el-form>
       <div v-show="activePanelIndex === 0">
-        <h4 style="margin-top: 0;">banner内容</h4>
+        <h4 style="margin-top: 0;">新闻内容</h4>
         <div class="flex--hcenter">
-          <rich-text 
+          <!-- <rich-text 
             style="width: 375px;"
             v-model="form.richText"
             upload-img-server="/upload">
-          </rich-text>
+          </rich-text> -->
+          <el-input type="textarea" v-model="form.richText" class="content-textarea"/>
         </div>
       </div>
       <div slot="footer" class="dialog-footer">
@@ -232,6 +233,15 @@ export default {
   .edit-dialog {
     .el-dialog {
       min-width: 720px;
+    }
+
+    .content-textarea {
+      display: flex;
+      justify-content: center;
+      textarea {
+        width: 375px;
+        height: 400px;
+      }
     }
 
     .upload-box {
