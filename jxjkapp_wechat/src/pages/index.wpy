@@ -218,9 +218,11 @@
       @change="handleHospAreaChange" 
       value="{{ pickedHospAreaIndex }}" 
       range="{{ hospAreaList }}"
-      range-key="name">
+      range-key="name"
+      disabled="{{ queueNoticeSpread }}">
       <view 
-        class="queue-notice-wrap flex--vcenter {{ queueNoticeSpread ? 'spread' : '' }}">
+        class="queue-notice-wrap flex--vcenter {{ queueNoticeSpread ? 'spread' : '' }}"
+        @tap="handleQueueTap">
         <view 
           wx:if="{{ !queueNoticeSpread }}" 
           class="fold-text-wrap flex--center text-col">
@@ -287,7 +289,16 @@
       handleHospAreaChange ({detail}) {
         const index = detail.value
         this.pickedHospAreaId = this.hospAreaList[index].id
-        this.getQueueInfo()
+        this.getQueueInfo().then(() => {
+          this.queueNoticeSpread = true
+          this.$apply()
+        })
+      },
+      // (展开的)排队信息点击
+      handleQueueTap () {
+        if (this.queueNoticeSpread) {
+          this.queueNoticeSpread = false
+        }
       }
     }
 
@@ -367,18 +378,21 @@
     // 获取排号信息
     getQueueInfo () {
       if (this.$_checkLogin(null, false)) {
-        this.$_request({
+        return this.$_request({
           url: `/call/select?areaId=${this.pickedHospAreaId}`,
           method: 'POST'
         }).then(content => {
           content = content || {}
+          const orderProduct = content.orderProduct || {}
+          const productSkuName = orderProduct.productSkuName
           this.queueNotice = {
-            project: '手法项目排队',
-            NO: content.orderNumber,
-            waitNum: content.waitNumber
+            project: productSkuName,
+            NO: content.number,
+            waitNum: content.beforeNumber
           }
         })
       } else {
+        return Promise.reject()
       }
     }
   }
