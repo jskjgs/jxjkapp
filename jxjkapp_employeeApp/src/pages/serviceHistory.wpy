@@ -87,7 +87,7 @@
     methods = {
       // 点击查看／编辑详情
       serviceDetail (item) {
-        if (item.status !== 'finish') {
+        if (item.status === 'finish') {
           wx.navigateTo({
             url: `/pages/serviceDetail?id=${item.id}`
           })
