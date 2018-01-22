@@ -5,11 +5,12 @@
  */
 import placeholderImg from '@/assets/images/placeholder.png'
 import SearchTable from '@/components/_common/searchTable/SearchTable'
-// import { userStateFormat } from '@/utils/index'
+import { userStateFormat } from '@/utils/index'
 
 import {
   getUserInfoApi,
-  addToQueueApi
+  addToQueueApi,
+  getUserOrdersApi
 } from './api'
 
 export default {
@@ -89,17 +90,41 @@ export default {
     handleSearch () {
       getUserInfoApi({phone: this.keyWords}).then((res) => {
         console.log(res.content)
-        // getUserOrdersApi().then((res) => {
-        //   console.log(res.content.list)
-        // })
+        let user = res.content
+        if (!user) {
+          this.$message({
+            type: 'error',
+            message: '用户数据异常'
+          })
+          return false
+        }
+        this.userName = user.name
+        this.userPhone = user.phone
+        this.userType = userStateFormat(user.isVip)
+        getUserOrdersApi().then((res) => {
+          console.log(res.content.list)
+          let data = res.content.list
+          data.forEach(function (value) {
+            let option = Object.create(null)
+            option.orderId = value.id
+            option.orderCode = value.code
+            option.orderAmount = value.orderPayPrice
+            let product = value.orderProductList ? value.orderProductList[0] : []
+            option.storage = product.remainingServiceNumber
+            option.serviceName = product.productSkuName
+            option.serviceId = product.id
+            this.tableData.push(option)
+          })
+        })
       })
     },
     addToQueue (rowData) {
       addToQueueApi({phone: this.userPhone, orderProductId: rowData.orderId}).then((res) => {
-        console.log(res.content)
-        // getUserOrdersApi().then((res) => {
-        //   console.log(res.content.list)
-        // })
+        this.$message({
+          type: 'success',
+          message: '排队成功'
+        })
+        this.$router.push({name: 'queue_root'})
       })
       console.log(rowData.serviceId)
     }
