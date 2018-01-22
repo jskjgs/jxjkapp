@@ -87,13 +87,13 @@
     methods = {
       // 点击查看／编辑详情
       serviceDetail (item) {
-        if (item.status === 'finish') {
+        if (item.status !== 'finish') {
           wx.navigateTo({
             url: `/pages/serviceDetail?id=${item.id}`
           })
         } else {
           wx.navigateTo({
-            url: `/pages/serviceRecord?id=${id}&userInfo=${JSON.stringify(item.userInfo)}&orderProductName=${item.orderProductName}`
+            url: `/pages/serviceRecord?id=${item.id}&userInfo=${JSON.stringify(item.userInfo)}&orderProductName=${item.orderProductName}`
           })
         }
       }
@@ -119,7 +119,6 @@
     }
 
     getList () {
-      console.log('this.userInfo', this.userInfo, this.$parent.globalData.userInfo)
       return this.initData({
         url: '/orderService/query',
         method: 'POST',

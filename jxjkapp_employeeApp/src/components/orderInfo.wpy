@@ -2,6 +2,8 @@
   <view class="comp-serviceDetail">
     <SearchPage 
       :visible.sync="onSearchPartner"
+      :results="doctorList"
+      @search.user="handlePartnerSearch"
       @picked.user="handlePartnerPicked" />
     <view class="service-record main-bg">
       <view class="service-record-title">{{ storageData.serviceName }}</view>
@@ -135,6 +137,7 @@
     }
 
     data = {
+      doctorList: [], // 合伙人搜索结果列表
       onSearchPartner: false, // 标示在搜索
       diagnoseInputDisabled: true, // 诊断内容输入框是否禁用
       partnerPickerIndex: 0, // 合伙人类型选择
@@ -216,6 +219,32 @@
         } else {
           this.onSearchPartner = true
         }
+      },
+      // 合伙人搜索
+      handlePartnerSearch (value) {
+        this.$_request({
+          url: '/doctorInfo/query',
+          method: 'POST',
+          data: {
+            name: value
+          }
+        }).then(content => {
+          content = content || {}
+          const list = content.list || []
+          if (list.length === 0) {
+            wx.showToast({
+              image: '../assets/images/error.png',
+              title: '查无数据'
+            })
+          } else {
+            this.doctorList = list.map(item => {
+              return {
+                id: item.id,
+                name: item.name
+              }
+            })
+          }
+        })
       },
       // 合伙人选择
       handlePartnerPicked (partner) {
