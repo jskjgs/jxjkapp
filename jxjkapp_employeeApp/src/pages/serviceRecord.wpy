@@ -46,7 +46,7 @@
           buyNote: formData.purchaseInfo
         }
         this.$_request({
-          url: '/orderService/doctor/confirm',
+          url: '/orderService/admin/confirm',
           method: 'POST',
           data: sendData
         }).then(res => {

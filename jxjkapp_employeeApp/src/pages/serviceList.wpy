@@ -101,7 +101,7 @@
 
     getList () {
       return this.initData({
-        url: '/orderService/doctor/all?state=0',
+        url: '/orderService/admin/all ?state=0',
         method: 'POST',
         data: {
           pageSize: 5

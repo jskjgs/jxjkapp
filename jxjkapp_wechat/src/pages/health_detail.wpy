@@ -444,7 +444,7 @@
       }, (listItem, index, content) => {
         const orderProduct = listItem.orderProduct || {}
         const productSku = orderProduct.productSku || {}
-        const doctorUserInfo = listItem.doctorUserInfo || {}
+        const doctorUserInfo = listItem.adminInfo || {}
         return {
           _symptomSpread: undefined,
           id: listItem.id,

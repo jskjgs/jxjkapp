@@ -214,31 +214,36 @@
         </navigator>
       </view>
     </view>
-    <view 
-      class="queue-notice-wrap flex--vcenter {{ queueNoticeSpread ? 'spread' : '' }}" 
-      @tap="handleTapQueueNotice">
+    <picker 
+      @change="handleHospAreaChange" 
+      value="{{ pickedHospAreaIndex }}" 
+      range="{{ hospAreaList }}"
+      range-key="name">
       <view 
-        wx:if="{{ !queueNoticeSpread }}" 
-        class="fold-text-wrap flex--center text-col">
-        <text class="fold-text">排号</text>
-      </view>
-      <view 
-        wx:elif="{{ queueNoticeSpread && userInfo && queueNotice }}"
-        class="queue-notice">
-        <view class="project-name">
-          <text>{{ queueNotice.project }}：</text>
+        class="queue-notice-wrap flex--vcenter {{ queueNoticeSpread ? 'spread' : '' }}">
+        <view 
+          wx:if="{{ !queueNoticeSpread }}" 
+          class="fold-text-wrap flex--center text-col">
+          <text class="fold-text">排号</text>
         </view>
-        <view class="queue-info">
-          <text>您的排号为{{ queueNotice.NO }}号，前面还有<text class="wait-num">{{ queueNotice.waitNum }}</text>人</text>
+        <view 
+          wx:elif="{{ queueNoticeSpread && userInfo && queueNotice }}"
+          class="queue-notice">
+          <view class="project-name">
+            <text>{{ queueNotice.project }}：</text>
+          </view>
+          <view class="queue-info">
+            <text>您的排号为{{ queueNotice.NO }}号，前面还有<text class="wait-num">{{ queueNotice.waitNum }}</text>人</text>
+          </view>
+        </view>
+        <view wx:elif="{{ userInfo }}" class="no-queue-notice-wrap">
+          <text>暂无排号信息，请到前台排队就诊！</text>
+        </view>
+        <view wx:else class="no-queue-notice-wrap">
+          <text>请登陆后查看排号信息！</text>
         </view>
       </view>
-      <view wx:elif="{{ userInfo }}" class="no-queue-notice-wrap">
-        <text>暂无排号信息，请到前台排队就诊！</text>
-      </view>
-      <view wx:else class="no-queue-notice-wrap">
-        <text>请登陆后查看排号信息！</text>
-      </view>
-    </view>
+    </picker>
   </view>
 </template>
 
@@ -256,11 +261,13 @@
     mixins = []
 
     data = {
-      bannerList: [],
-      // 项目分类
-      projectTypeList: [],
-      queueNoticeSpread: false,
-      queueNotice: ''
+      hospAreaList: [], // 院区列表
+      pickedHospAreaId: '', //  选择的院区id
+      pickedHospAreaIndex: '', //  picker组件选择的院区index
+      bannerList: [], // banner列表
+      projectTypeList: [], // 项目分类
+      queueNoticeSpread: false, // 标示是否展开排队信息
+      queueNotice: '' // 排队信息
     }
 
     computed = {
@@ -269,23 +276,18 @@
       }
     }
 
-    watch = {
-      projectTypeList (newVal) {
-        console.log(newVal, 9999)
-      }
-    }
-
     methods = {
-      handleTapQueueNotice () {
-        if (!this.queueNoticeSpread) {
-          this.getQueueInfo()
-        }
-        this.queueNoticeSpread = !this.queueNoticeSpread
-      },
+      // banner点击
       handleBannerTap (jumpUrl) {
-        wx.navigateTo({
-          url: '/pages/banner_detail?jumpUrl=' + jumpUrl
-        })
+        // wx.navigateTo({
+        //   url: '/pages/banner_detail?jumpUrl=' + jumpUrl
+        // })
+      },
+      // picker组件的change事件
+      handleHospAreaChange ({detail}) {
+        const index = detail.value
+        this.pickedHospAreaId = this.hospAreaList[index].id
+        this.getQueueInfo()
       }
     }
 
@@ -300,7 +302,7 @@
     }
 
     initPageData () {
-      return Promise.all([this.getBanner(), this.getProjectType()])
+      return Promise.all([this.getBanner(), this.getProjectType(), this.getHospAreaList()])
     }
 
     // 获取banner数据
@@ -342,12 +344,31 @@
         this.$apply()
       })
     }
+    
+    // 获取院区列表
+    getHospAreaList () {
+      return this.$_request({
+        url: '/hospArea/all',
+        method: 'POST',
+        data: {}
+      }).then(content => {
+        content = content || {}
+        const list = content.list
+        this.hospAreaList = list.map(item => {
+          return {
+            name: item.name,
+            id: item.id
+          }
+        })
+        this.$apply()
+      })
+    }
 
     // 获取排号信息
     getQueueInfo () {
       if (this.$_checkLogin(null, false)) {
         this.$_request({
-          url: '/call/selectAll',
+          url: `/call/select?areaId=${this.pickedHospAreaId}`,
           method: 'POST'
         }).then(content => {
           content = content || {}
