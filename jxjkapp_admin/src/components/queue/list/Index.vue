@@ -96,6 +96,9 @@ export default {
       }).catch((err) => {
         console.log(err)
       })
+    },
+    add () {
+      this.$router.push({name: 'queue/add_root'})
     }
   }
 }
@@ -110,7 +113,7 @@ export default {
     </div>
     <div class="top-box flex--vcenter" style="margin-top: 20px;">
       <div class="btn-wrap flex-item--none">
-        <el-button type="primary" style="margin-left: 20px;width: 120px;border-radius: 4px;">用户排号</el-button>
+        <el-button type="primary" @click="add"  style="margin-left: 20px;width: 120px;border-radius: 4px;">用户排号</el-button>
       </div>
     </div>
     <div class="top-box flex--vcenter">
