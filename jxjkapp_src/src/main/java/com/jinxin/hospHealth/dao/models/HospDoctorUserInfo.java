@@ -1,8 +1,6 @@
 package com.jinxin.hospHealth.dao.models;
 
-import com.jinxin.hospHealth.controller.protocol.PO.DoctorUserInfoPO;
 import com.jinxin.hospHealth.controller.protocol.VO.DoctorUserInfoVO;
-import com.jinxin.hospHealth.dao.modelsEnum.SexEnum;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -40,6 +38,8 @@ public class HospDoctorUserInfo {
     private Date createDate;
     @ApiModelProperty("更新时间")
     private Date updateDate;
+    @ApiModelProperty("删除标识 0:正常 1:禁用  99:删除")
+    private Integer enable;
 
 
     public DoctorUserInfoVO transform(HospArea area) {

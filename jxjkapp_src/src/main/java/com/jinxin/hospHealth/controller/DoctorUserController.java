@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/doctorUser")
 @Slf4j
-@Api(description = "医生端用户相关接口")
+@Api(description = "医生端用户相关接口 ---勿用废弃")
 public class DoctorUserController extends TransformController {
 
     @Autowired
@@ -42,6 +42,19 @@ public class DoctorUserController extends TransformController {
             @ApiParam(value = "管理员用户信息", required = true) @RequestBody DoctorUserInfoPO doctorUserInfoPO) throws Exception {
         HospDoctorUserInfo hospDoctorUserInfo = doctorUserInfoService.add(doctorUserInfoPO);
         return ResponseWrapperSuccess(transform(hospDoctorUserInfo));
+    }
+
+    @ApiOperation(value = "软删除Doctor用户")
+    @RequestMapping(value = "/admin/setStateAsInvalid", method = RequestMethod.DELETE)
+    @ResponseBody
+    public JSONObject setStateAsInvalid(
+            @ApiParam(value = "Doctor用户Id", required = true) @RequestParam(value = "adminUserId", required = true) Long id) throws Exception {
+        DPreconditions.checkNotNull(
+                getAdminUserId(),
+                "adminId 为空",
+                true);
+        doctorUserInfoService.setStateAsInvalid(id);
+        return ResponseWrapperSuccess(null);
     }
 
     @ApiOperation(value = "查询当前admin用户自己的信息", response = DoctorUserInfoVO.class)

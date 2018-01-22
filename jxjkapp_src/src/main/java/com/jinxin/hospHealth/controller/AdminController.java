@@ -58,6 +58,19 @@ public class AdminController extends TransformController {
         return ResponseWrapperSuccess(transform(hospAdminUserInfo));
     }
 
+    @ApiOperation(value = "查询一条admin信息", response = AdminInfoVO.class)
+    @RequestMapping(value = "/selectOne", method = RequestMethod.GET)
+    @ResponseBody
+    public JSONObject select(
+            @ApiParam(value = "admin用户Id", required = true) @RequestParam(value = "id", required = true) Long id) throws Exception {
+        DPreconditions.checkNotNull(
+                getAdminUserId(),
+                "没有查询到用户的登陆信息.",
+                true);
+        HospAdminUserInfo hospAdminUserInfo = adminUserInfoService.selectOneAdmin(id);
+        return ResponseWrapperSuccess(transform(hospAdminUserInfo));
+    }
+
     @ApiOperation(value = "查询全部用户信息", response = AdminInfoVO.class)
     @RequestMapping(value = "/all", method = RequestMethod.POST)
     @ResponseBody
@@ -67,17 +80,15 @@ public class AdminController extends TransformController {
         return ResponseWrapperSuccess(transformByHospAdminUserInfo(pageInfo));
     }
 
-    @ApiOperation(value = "更新本登陆账号信息(包含权限)", response = AdminInfoVO.class)
+    @ApiOperation(value = "更新账号信息(包含权限)", response = AdminInfoVO.class)
     @RequestMapping(value = "/update", method = RequestMethod.POST)
     @ResponseBody
     public JSONObject update(
             @ApiParam(value = "管理员用户信息", required = true) @RequestBody AdminInfoPO adminInfo) throws Exception {
-        //不能用更新方法更新用户的密码
-        DPreconditions.checkState(
-                adminInfo.getPassword() != null,
-                Language.get("admin-user.change-password-wrong"),
+        DPreconditions.checkNotNull(
+                getAdminUserId(),
+                "没有查询到用户的登陆信息.",
                 true);
-        adminInfo.setId(getAdminUserId());
         adminUserInfoService.update(adminInfo);
         return ResponseWrapperSuccess(null);
     }
@@ -102,4 +113,43 @@ public class AdminController extends TransformController {
         return ResponseWrapperSuccess(null);
     }
 
+
+    @ApiOperation(value = "软删除Doctor用户")
+    @RequestMapping(value = "/setStateAsInvalid", method = RequestMethod.DELETE)
+    @ResponseBody
+    public JSONObject setStateAsInvalid(
+            @ApiParam(value = "admin用户Id", required = true) @RequestParam(value = "id", required = true) Long id) throws Exception {
+        Long adminUserId = DPreconditions.checkNotNull(
+                getAdminUserId(),
+                "没有查询到用户的登陆信息.",
+                true);
+        DPreconditions.checkNotNull(
+                id,
+                "传入的ID不能为空.",
+                true);
+        DPreconditions.checkState(
+                !adminUserId.equals(id),
+                "不能删除自己的账户.",
+                true);
+        adminUserInfoService.setStateAsInvalid(id);
+        return ResponseWrapperSuccess(null);
+    }
+
+    @ApiOperation(value = "登出")
+    @RequestMapping(value = "/logout", method = RequestMethod.POST)
+    @ResponseBody
+    public JSONObject logout() throws Exception {
+        Long id = getAdminUserId();
+        String toker = DPreconditions.checkNotNullAndEmpty(
+                getToken(),
+                "toker不能为空.",
+                true);
+        DPreconditions.checkNotNull(
+                adminUserInfoService.selectOne(id),
+                "用户没有查询到.",
+                true);
+        redisOperation.usePool().del(adminTokenPrefix + toker);
+        redisOperation.usePool().del(adminTokenPrefix + id);
+        return ResponseWrapperSuccess(null);
+    }
 }

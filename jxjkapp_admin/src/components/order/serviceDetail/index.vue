@@ -5,8 +5,10 @@
  */
 import placeholderImg from '@/assets/images/placeholder.png'
 
+import { convertDate, convertServiceState } from '@/utils/index'
 import {
-  queryServiceRecordApi
+  queryServiceRecordApi,
+  rejcetServiceApi
 } from './api'
 
 export default {
@@ -15,7 +17,7 @@ export default {
   },
   data () {
     return {
-      serviceId: this.$route.params.orderId,
+      serviceId: this.$route.params.serviceId,
       serviceName: null,
       recordNumber: null,
       userName: null,
@@ -38,6 +40,7 @@ export default {
         rejectDate: null,
         state: { '通过': 1, '拒绝': 2 },
         form: {
+          id: this.$route.params.serviceId,
           rejectState: 1
         }
       }
@@ -45,32 +48,49 @@ export default {
   },
   created () {
     this.placeholderImg = placeholderImg
+    if (this.$route.params.serviceId) {
+      this.getServiceDetail()
+    }
   },
   watch: {
   },
   methods: {
+    rejcetService () {
+      let data = this.reject.form
+      console.log(data)
+      rejcetServiceApi(data).then((res) => {
+        console.log(res)
+        this.$message({
+          type: 'success',
+          message: '创建成功'
+        })
+        this.getServiceDetail()
+      })
+    },
     getServiceDetail () {
-      let data = queryServiceRecordApi()
-      this.serviceName = data.serviceName
-      this.recordNumber = data.recordNumber
-      this.userName = data.userName
-      this.userPhone = data.userPhone
-      this.providerName = data.providerName
-      this.serviceDate = data.serviceDate
-      this.serviceState = data.serviceState
-      this.serviceComments = data.serviceComments
+      queryServiceRecordApi({id: this.$route.params.serviceId}).then((res) => {
+        let data = res.content.list[0]
+        console.log(data)
+        this.serviceName = data.serviceName
+        this.recordNumber = data.recordNumber
+        this.userName = data.userInfo.name
+        this.userPhone = data.userInfo.phone
+        this.providerName = data.adminInfo ? data.adminInfo.name : null
+        this.serviceDate = convertDate(data.createDate)
+        this.serviceState = convertServiceState(data.state)
+        this.serviceComments = data.doctorComment
+        this.userAutograph = data.userSign
 
-      this.userAutograph = data.userAutograph
+        this.providerAutograph = data.doctorSign
 
-      this.providerAutograph = data.providerAutograph
+        this.feedback.serviceScore = data.grade ? data.grade.level : 0
+        this.feedback.userComments = data.grade ? data.grade.comment : null
 
-      this.feedback.serviceScore = data.serviceScore
-      this.feedback.userComments = data.userComments
-
-      this.reject.rejectComments = data.rejectComments
-      this.reject.rejectState = data.rejectState
-      this.reject.form.rejectState = this.reject.rejectState
-      this.reject.rejectDate = data.rejectDate
+        this.reject.rejectComments = data.rejectComments
+        this.reject.rejectState = data.rejectState
+        this.reject.form.rejectState = data.rejectState
+        this.reject.rejectDate = data.rejectDate
+      })
     },
     rejectState () {
       switch (this.reject.rejectState) {
@@ -140,7 +160,7 @@ export default {
           <el-button
             v-show="!this.reject.rejectState"
             type="primary"
-            @click="">退款
+            @click="rejcetService">提交
           </el-button>
         </div>
     </div>

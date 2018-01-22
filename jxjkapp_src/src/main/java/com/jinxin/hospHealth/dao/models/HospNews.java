@@ -32,4 +32,10 @@ public class HospNews extends PageBean {
     @ApiModelProperty("0:正常 1:禁用  99:删除")
     private Integer enable;
 
+    public String getField(){
+        return this.field == null
+                ? " sort_number DESC ,create_date DESC "
+                : this.field;
+    }
+
 }

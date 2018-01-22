@@ -1,5 +1,6 @@
 package com.jinxin.hospHealth.controller.protocol.PO;
 
+import com.doraemon.base.controller.bean.PageBean;
 import com.doraemon.base.util.MD5Encryption;
 import com.jinxin.hospHealth.dao.models.HospDoctorUserInfo;
 import io.swagger.annotations.ApiModel;
@@ -13,7 +14,7 @@ import java.util.Date;
  */
 @Data
 @ApiModel("doctor账户信息")
-public class DoctorUserInfoPO {
+public class DoctorUserInfoPO extends PageBean{
 
     @ApiModelProperty("用户ID")
     private Long id;

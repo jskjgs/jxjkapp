@@ -4,6 +4,7 @@
  * Date: 2017/8/29
  */
 import {
+  addEmployee, updateEmployeeApi, getEmployee, getHospList
 } from './api'
 
 export default {
@@ -13,22 +14,72 @@ export default {
   data () {
     return {
       fromData: {
+        id: this.$route.params.id,
+        phone: 123,
         account: null,
         password: null,
-        hospital: null,
+        areaId: null,
         author: null,
         sex: null,
-        name: null
+        nickname: null
       },
-      hospitalList: [],
-      authorList: []
+      hospitalList: []
     }
   },
   created () {
+    // 包装医院列表
+    getHospList().then((res) => {
+      let list = res.content.list
+      list.forEach((value) => {
+        let data = Object.create(null)
+        data.id = value.id
+        data.name = value.name
+        this.hospitalList.push(data)
+      })
+    })
+    if (this.$route.params.id) {
+      console.log(1)
+      getEmployee({id: this.$route.params.id}).then((res) => {
+        let info = res.content
+        this.fromData.phone = info.phone
+        this.fromData.account = info.account
+        this.fromData.areaId = info.area.id
+        this.fromData.author = info.authorId
+        this.fromData.sex = info.sex
+        this.fromData.nickname = info.nickname
+        console.log(res)
+      })
+    }
   },
   watch: {
   },
   methods: {
+    handleCancel () {
+      this.$router.push({name: 'employee_root'})
+    },
+    handleUpdate () {
+      if (!this.fromData.id) {
+        addEmployee(this.fromData).then((res) => {
+          console.log(res)
+          this.$message({
+            type: 'success',
+            message: '创建成功'
+          })
+          this.$router.push({name: 'employee_root'})
+        }).finally(() => {
+          this.loginLoading = false
+        })
+      } else {
+        updateEmployeeApi(this.fromData).then((res) => {
+          this.$message({
+            type: 'success',
+            message: '更新成功'
+          })
+        }).finally(() => {
+          this.loginLoading = false
+        })
+      }
+    }
   }
 }
 </script>
@@ -54,14 +105,14 @@ export default {
         <el-input
           v-model.trim="fromData.password"
           type="password"
-          placeholder="请输初始密码"
+          :placeholder="fromData.id ? '请填入新密码' : '请输初始密码'"
           style="width: 230px;">
         </el-input>
       </div>
       <div class="tool-item">
         员工姓名
         <el-input
-          v-model.trim="fromData.name"
+          v-model.trim="fromData.nickname"
           placeholder="请输就员工姓名"
           style="width: 230px;">
         </el-input>
@@ -70,12 +121,12 @@ export default {
     <div class="flex--vcenter" style="margin-top: 20px; justify-content: space-between;">
       <div class="tool-item">
         所在院区
-        <el-select v-model="fromData.hospital" placeholder="请选择" style="width: 230px;">
+        <el-select v-model="fromData.areaId" placeholder="请选择" style="width: 230px;">
           <el-option
-            v-for="item in area"
+            v-for="item in hospitalList"
             :key="item.id"
             :label="item.name"
-            :value="item.name">
+            :value="item.id">
           </el-option>
         </el-select>
       </div>
@@ -107,12 +158,10 @@ export default {
           class="tool-item"
           @click="handleCancel">取消
         </el-button>
-    </div>
-    <div class="flex--vcenter"  style="margin-top: 20px;">
         <el-button
           class="tool-item"
           type="primary"
-          @click="handleCreate">保存
+          @click="handleUpdate">保存
         </el-button>
     </div>
   </div>

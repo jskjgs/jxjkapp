@@ -25,8 +25,8 @@ public class HospOrderServiceDetails {
     private Integer qty;
     @ApiModelProperty("医院院区ID")
     private Long doctorAreaId;
-    @ApiModelProperty("医生用户ID")
-    private Long doctorUserId;
+    @ApiModelProperty("admin用户ID")
+    private Long adminUserId;
     @ApiModelProperty("合作的医生用户ID")
     private Long associatesId;
     @ApiModelProperty("医生签字")
@@ -52,8 +52,8 @@ public class HospOrderServiceDetails {
 
     public OrderServiceDetailsVO transform(
             OrderProductVO orderProduct,
-            DoctorUserInfoVO doctorUserInfoVO,
-            DoctorUserInfoVO associates,
+            AdminInfoVO adminInfoVO,
+            AdminInfoVO associates,
             HospOrderGrade grade,
             HospArea area,
             UserInfoVO userInfoVO) {
@@ -65,7 +65,7 @@ public class HospOrderServiceDetails {
         vo.setAssociates(associates);
         vo.setArea(area);
         vo.setUserInfo(userInfoVO);
-        vo.setDoctorUserInfo(doctorUserInfoVO);
+        vo.setAdminInfo(adminInfoVO);
         vo.setDoctorComment(this.doctorComment);
         vo.setGrade(grade);
         vo.setBuyNote(this.buyNote);
