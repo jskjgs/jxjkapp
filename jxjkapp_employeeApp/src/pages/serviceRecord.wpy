@@ -54,6 +54,7 @@
             title: '提交成功'
           })
           setTimeout(() => {
+            this.$_eventBus.emit('serviceHistory:init')
             wx.navigateBack()
           }, 400)
         })
@@ -71,13 +72,11 @@
         userTel: userInfo.phone
       })
     }
-    onUnload () {
-    }
   }
 </script>
 
 <style lang="scss">
-// @import '../assets/style/variables/theme.scss';
+@import '../assets/style/variables/theme.scss';
 #page-login {
   padding-top: 78rpx;
   .page-title-wrap {

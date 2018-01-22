@@ -1,0 +1,111 @@
+<style lang="scss">
+@import '../assets/style/variables/theme.scss';
+#page-sign {
+  $topWrap_h: 90rpx;
+  .top-btn-wrap {
+    padding: 0 30rpx;
+    height: $topWrap_h;
+    font-size: 15px;
+
+    .rewrite-btn {
+      color: #b8b8b8;
+    }
+    .save-btn {
+      color: $primaryColor;
+    }
+  }
+  .sign-panel {
+    width: 100%;
+    background: #fff;
+  }
+}
+</style>
+
+<template>
+<view id="page-sign">
+  <view class="sign-dialog__inner">
+    <view class="top-btn-wrap flex--vcenter--sb">
+      <view class="rewrite-btn" @tap="handleReDraw">重写</view>
+      <view class="save-btn" @tap="handleSubmitDraw">保存</view>
+    </view>
+    <canvas 
+      class="sign-panel" 
+      style="height: calc(100vh - 90rpx);"
+      canvas-id="myCanvasId"
+      @touchstart="handleTouchstart"
+      @touchmove="handleTouchmove">
+    </canvas>
+  </view>
+</view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  export default class Index extends wepy.page {
+    data = {
+      touchList: []
+    }
+
+    watch = {
+      // 监听画线节点数据变化
+      touchList (newVal) {
+        this.drawStroke()
+      }
+    }
+
+    methods = {
+      handleTouchstart ({ touches }) {
+        this.saveActions(touches, 'start')
+      },
+      handleTouchmove ({ touches }) {
+        this.saveActions(touches, 'move')
+      },
+      // 重写
+      handleReDraw () {
+        const ctx = this.canvasCtx
+        this.touchList = []
+        ctx.draw()
+      },
+      // 提交签名
+      handleSubmitDraw () {
+        this.$_eventBus.emit(`sign:${this.type}`, this.touchList)
+        wx.navigateBack()
+      }
+    }
+
+    onLoad ({readonly, type, title, touchList}) {
+      this.readonly = JSON.parse(readonly)
+      this.type = type
+      wx.setNavigationBarTitle({
+        title: title || ''
+      })
+      this.canvasCtx = wx.createCanvasContext('myCanvasId')
+      this.touchList = JSON.parse(touchList || '[]')
+    }
+
+    // 记录画笔历史节点
+    saveActions (touches, type) {
+      if (this.readonly) {
+        return
+      }
+      const touch = touches[0]
+      this.touchList.push({
+        type,
+        ...touch
+      })
+    }
+    // 画线
+    drawStroke (touches, type) {
+      const ctx = this.canvasCtx
+      this.touchList.forEach((item) => {
+        if (item.type === 'start') {
+          ctx.moveTo(item.x, item.y)
+        } else if (item.type === 'move') {
+          ctx.lineTo(item.x, item.y)
+        }
+      })
+      ctx.stroke()
+      ctx.draw()
+    }
+  }
+</script>

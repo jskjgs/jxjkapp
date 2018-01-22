@@ -79,16 +79,23 @@
         })
       },
       acceptOrder (id, item) {
-        wx.navigateTo({
-          url: `/pages/serviceRecord?id=${id}&userInfo=${JSON.stringify(item.userInfo)}&orderProductName=${item.orderProductName}`
+        wx.showModal({
+          title: '提示',
+          content: '确定接单？',
+          confirmColor: '#9190FF',
+          success: (res) => {
+            if (res.confirm) {
+              this.$_eventBus.emit('serviceHistory:init')
+              wx.switchTab({
+                url: '/pages/serviceHistory'
+              })
+            }
+          }
         })
       }
     }
-    events = {
-    }
 
     onShow () {
-      console.log('this.getCurrentPages()', this.getCurrentPages())
       this.$_onPageShow(this, () => {
         this.initPageData()
       })
@@ -101,7 +108,7 @@
 
     getList () {
       return this.initData({
-        url: '/orderService/admin/all ?state=0',
+        url: '/orderService/admin/query?state=0',
         method: 'POST',
         data: {
           pageSize: 5

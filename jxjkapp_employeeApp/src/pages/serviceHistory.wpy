@@ -13,9 +13,10 @@
       </view>
       <view class="list-wrap">
         <repeat for="{{ listData }}" key="index" item="item" index="index">
-          <view class="history-box" @tap="serviceDetail({{ item.id }})">
+          <view class="history-box" @tap="serviceDetail({{ item }})">
             <view class="history-head">
               <text class="history-name">{{ item.orderProductName }}</text>
+              <text style="color: {{ statusDict[item.status].color }}">{{ statusDict[item.status].text }}</text>
             </view>
             <view class="history-msg">
               <view class="history-user">
@@ -47,6 +48,17 @@
   //   APPLY_CANCELLATION(98,"申请作废"),
   //   CANCELLATION(99,"已作废");
 
+  const statusDict = {
+    'finish': {
+      text: '已完成',
+      color: '#2FC660'
+    },
+    'inUse': {
+      text: '待服务',
+      color: '#FFB400'
+    }
+  }
+
   export default class serviceHistory extends wepy.page {
     config = {
       navigationBarTitleText: '历史记录',
@@ -60,29 +72,30 @@
     mixins = [listPageMixin]
 
     data = {
-      serviceType: '',
-      historyList: [
-        {'orderAssignTime': '2017-10-21', 'userName': '王晓路', 'phoneNumber': '15928113204'},
-        {'orderAssignTime': '2017-10-21', 'userName': '王晓路', 'phoneNumber': '15928113204'},
-        {'orderAssignTime': '2017-10-21', 'userName': '王晓路', 'phoneNumber': '15928113204'},
-        {'orderAssignTime': '2017-10-21', 'userName': '王晓路', 'phoneNumber': '15928113204'},
-        {'orderAssignTime': '2017-10-21', 'userName': '王晓路', 'phoneNumber': '15928113204'}
-      ]
+      serviceType: ''
     }
 
     computed = {
+      statusDict () {
+        return statusDict
+      },
       userInfo () {
         return this.$parent.globalData.userInfo
       }
     }
 
     methods = {
-      handleSumbit () {
-      },
-      serviceDetail (id) {
-        wx.navigateTo({
-          url: `/pages/serviceDetail?id=${id}`
-        })
+      // 点击查看／编辑详情
+      serviceDetail (item) {
+        if (item.status === 'finish') {
+          wx.navigateTo({
+            url: `/pages/serviceDetail?id=${item.id}`
+          })
+        } else {
+          wx.navigateTo({
+            url: `/pages/serviceRecord?id=${id}&userInfo=${JSON.stringify(item.userInfo)}&orderProductName=${item.orderProductName}`
+          })
+        }
       }
     }
 
@@ -95,6 +108,9 @@
     }
 
     onLoad () {
+      this.$_eventBus.on('serviceHistory:init', () => {
+        this.initPageData()
+      })
     }
 
     initPageData () {
@@ -103,18 +119,21 @@
     }
 
     getList () {
+      console.log('this.userInfo', this.userInfo, this.$parent.globalData.userInfo)
       return this.initData({
         url: '/orderService/query',
         method: 'POST',
         data: {
-          doctorUserId: this.userInfo.id,
+          adminUserId: this.userInfo.id,
           state: 2
         }
       }, (listItem) => {
         const orderProduct = listItem.orderProduct || {}
         const userInfo = listItem.userInfo || {}
         return {
+          status: listItem.state === 1 ? 'inUse' : 'finish',
           id: listItem.id,
+          userInfo: userInfo,
           userName: userInfo.name,
           userTel: userInfo.phone,
           updateDate: this.$_convertDate(listItem.updateDate, 'Y-M-D h:m:s'),

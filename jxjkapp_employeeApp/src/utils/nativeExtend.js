@@ -1,5 +1,6 @@
 import wepy from 'wepy'
 import convertDate from '@/utils/convertDate'
+import eventBus from '@/plugins/eventBus'
 
 const $_getApp = (target) => {
   let app = target
@@ -18,6 +19,9 @@ Promise.prototype.finally = function (callback) {
 }
 ;(['app', 'page', 'component']).forEach(function (item) {
   Object.defineProperties(wepy[item].prototype, {
+    '$_eventBus': {
+      value: eventBus
+    },
     // 同步用户信息（储存 / 删除 / 获取）
     '$_syncUserData': {
       value (newData) {
