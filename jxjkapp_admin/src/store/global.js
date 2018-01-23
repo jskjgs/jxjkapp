@@ -10,8 +10,11 @@ export const UPDATE_ACCOUNTINFO = 'global/update_accountInfo'
 
 export const UPDATE_HOSPAREALIST = 'global/UPDATE_HOSPAREALIST'
 
+export const UPDATE_PRODUCT_TYPE_LIST = 'global/UPDATE_PRODUCT_TYPE_LIST'
+
 import {
-  getHospAreaApi
+  getHospAreaApi,
+  getProductTypeApi
 } from '@/globalApi'
 
 import {
@@ -30,7 +33,8 @@ const state = {
   // todo: 删除`Array.from({length: 8 - 1 + 1}).map((item, index) => `m_0${index + 1}`) &&`
   auth: Array.from({length: 8 - 1 + 1}).map((item, index) => `m_0${index + 1}`),
   accountInfo: getAccountInfo() || {},
-  hospAreaList: [] // 院区列表
+  hospAreaList: [], // 院区列表
+  productTypeList: [] // 服务分类
 }
 
 const mutations = {
@@ -56,11 +60,17 @@ const mutations = {
   },
   [UPDATE_HOSPAREALIST] (state, list) {
     state.hospAreaList = list
+  },
+  [UPDATE_PRODUCT_TYPE_LIST] (state, list) {
+    state.productTypeList = list
   }
 }
 const actions = {
   [UPDATE_HOSPAREALIST] ({commit}) {
-    getHospAreaApi().then(res => {
+    getHospAreaApi({
+      'pageNum': 1,
+      'pageSize': 1000
+    }).then(res => {
       const content = res.content || {}
       let list = content.list || []
       list = list.map(item => {
@@ -70,6 +80,22 @@ const actions = {
         }
       })
       commit(UPDATE_HOSPAREALIST, list)
+    })
+  },
+  [UPDATE_PRODUCT_TYPE_LIST] ({commit}) {
+    getProductTypeApi({
+      'pageNum': 1,
+      'pageSize': 1000
+    }).then(res => {
+      const content = res.content || {}
+      let list = content.list || []
+      list = list.map(item => {
+        return {
+          label: item.name,
+          value: item.id
+        }
+      })
+      commit(UPDATE_PRODUCT_TYPE_LIST, list)
     })
   }
 }

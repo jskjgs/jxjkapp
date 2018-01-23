@@ -8,13 +8,12 @@ import placeholderImg from '@/assets/images/placeholder.png'
 import SearchTable from '@/components/_common/searchTable/SearchTable'
 
 import {
-  getListApi,
-  deleteBannerBatchApi,
-  addBanenrApi,
-  modifyBannerApi
+  updateProductApi,
+  createProductApi,
+  delProductApi
 } from './api'
 
-// import { Loading } from 'element-ui'
+import tableCfgMaker from './_consts/tableCfgMaker'
 import EditDialog from './_thumbs/EditDialog.vue'
 import ReserveTimeDialog from './_thumbs/ReserveTimeDialog.vue'
 import ImgZoom from '@/components/_common/imgZoom/ImgZoom.vue'
@@ -29,113 +28,14 @@ export default {
     SearchTable
   },
   data () {
-    this.tableAttrs = {
-      'props': {
-        'tooltip-effect': 'dark',
-        'style': 'width: 100%',
-        'align': 'center'
-      },
-      'on': {
-        'selection-change': this.handleSelectionChange.bind(this)
-      }
-    }
-    this.columnData = [{
-      attrs: {
-        'type': 'selection',
-        'width': '90',
-        'align': 'left'
-      }
-    }, {
-      attrs: {
-        'prop': 'no',
-        'label': '排序',
-        'min-width': '80'
-      }
-    }, {
-      attrs: {
-        'prop': 'name',
-        'label': '项目名称',
-        'min-width': '140',
-        'show-overflow-tooltip': true
-      }
-    }, {
-      attrs: {
-        'prop': 'cover',
-        'min-width': '120',
-        'label': '展示图片'
-      },
-      scopedSlots: {
-        default: (scope) => {
-          return (
-            <img-zoom
-              src={scope.row.cover}
-              style="width: 80px;height: 60px;">
-            </img-zoom>
-          )
-        }
-      }
-    }, {
-      attrs: {
-        'prop': 'type',
-        'min-width': '120',
-        'label': '分类名称'
-      }
-    }, {
-      attrs: {
-        'prop': 'type',
-        'min-width': '120',
-        'label': '预约时间'
-      },
-      scopedSlots: {
-        default: (scope) => {
-          return (
-            <el-button
-              type="text"
-              onClick={ () => this.openReserveTimeDialog(scope.row) }>
-              查看
-            </el-button>
-          )
-        }
-      }
-    }, {
-      attrs: {
-        'min-width': '200',
-        'label': '操作'
-      },
-      scopedSlots: {
-        default: (scope) => {
-          return (
-            <div class="flex--center operations">
-              <span
-                class="operate-item el-icon-edit"
-                onClick={() => this.openEditDialog(scope.row)}>
-              </span>
-              <span
-                class="operate-item el-icon-delete"
-                onClick={() => this.delRow(scope.row)}>
-              </span>
-            </div>
-          )
-        }
-      }
-    }]
-    this.listApi = {
-      requestFn: getListApi,
-      responseFn (data) {
-        let content = data.content || {}
-        this.tableData = (content.list || []).map((item) => ({
-          no: item.orderNumber,
-          id: item.id,
-          name: item.name,
-          cover: item.bannerUrl,
-          link: item.jumpUrl,
-          visible: !item.display  // display: 0表示显示 1表示隐藏
-        }))
-        this.total = content.total || 0
-      }
-    }
+    const tableCfg = tableCfgMaker.call(this)
+    this.tableAttrs = tableCfg.tableAttrs
+    this.columnData = tableCfg.columnData
+    this.listApi = tableCfg.listApi
+
     return {
       searchKeyword: '',
+      productTypeId: '',
       currentPage: 1,
       pageSize: 10,
       total: 0,
@@ -152,12 +52,20 @@ export default {
         name: {
           value: undefined
         },
+        productTypeId: {
+          value: undefined
+        },
         currentPage: 'pageNum'
       }
     }
   },
   created () {
     this.placeholderImg = placeholderImg
+  },
+  computed: {
+    productTypeList () {
+      return this.$_productTypeList
+    }
   },
   watch: {
     editDialogVisible (val) {
@@ -173,39 +81,45 @@ export default {
       this.apiKeysMap = Object.assign({}, this.apiKeysMap, {
         name: {
           value: this.searchKeyword || undefined
+        },
+        productTypeId: {
+          value: this.productTypeId || undefined
         }
       })
     },
     // 多选
     handleSelectionChange (val) {
-      console.log('handleSelectionChange')
       this.multipleSelection = val
     },
-    // 编辑或新增
+    // 打开编辑或新增弹框
     openEditDialog (rowData, isAdd) {
-      if (isAdd) {
-        this.reverseInfoDialogVisible = true
+      this.editDialogVisible = true
+      if (rowData) {
+        this.editData = {
+          id: rowData.id,
+          name: rowData.name,
+          typeId: rowData.typeId,
+          description: rowData.description,
+          cover: rowData.cover
+        }
       } else {
-        this.editDialogVisible = true
-        this.editData = rowData
-        adding = !!isAdd
+        this.editData = null
       }
+      adding = !!isAdd
     },
     openReserveInfoDialog (rowData) {
       this.reverseInfoDialogVisible = true
       this.reverseInfoData = rowData
     },
     // 删除单个banner
-    delRow (row) {
+    delRow (rowData) {
       this.$confirm('是否删除该信息？', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning',
         beforeClose: (action, instance, done) => {
           if (action === 'confirm') {
-            deleteBannerBatchApi({
-              bannerIdList: row.id
-            }).then(res => {
+            delProductApi(rowData.id).then(res => {
               done()
               this.$message({
                 type: 'success',
@@ -219,44 +133,41 @@ export default {
         }
       })
     },
-    // 批量删除
-    batchRemove () {
-      deleteBannerBatchApi({
-        bannerIdList: this.multipleSelection.map(item => item.id).join(',')
-      }).then(res => {
-        this.$message({
-          type: 'success',
-          message: '删除成功'
-        })
-        this.editDialogVisible = false
-        this.$refs.searchTable.getList()
-      })
-    },
     // 提交编辑或新增
     handleEditSubmit (data, respondCb) {
       let formData
+      const uploadForm = (imageUrl) => {
+        let sendData = {
+          id: data.id,
+          name: data.name,
+          description: data.description,
+          information: data.description,
+          images: imageUrl,
+          productTypeId: data.typeId
+        }
+        let requestFn = adding ? createProductApi : updateProductApi
+        return requestFn(sendData).then(res => {
+          this.$message({
+            type: 'success',
+            message: adding ? '添加成功' : '修改成功'
+          })
+          this.editDialogVisible = false
+          this.$refs.searchTable.init()
+          respondCb(true)
+        }).catch(() => {
+          respondCb()
+        })
+      }
       if (data.file) {
         formData = new FormData()
         formData.append('file', data.file)
-      }
-      let sendData = {
-        name: data.name,
-        jumpUrl: data.link,
-        orderNumber: data.no,
-        bannerId: data.id
-      }
-      let requestFn = adding ? addBanenrApi : modifyBannerApi
-      requestFn(sendData, formData).then(res => {
-        this.$message({
-          type: 'success',
-          message: adding ? '添加成功' : '修改成功'
+        // 上传图片后获取地址再上传表单数据
+        this.$uploadFile(formData).then(res => {
+          uploadForm(res.content)
         })
-        this.editDialogVisible = false
-        this.$refs.searchTable.init()
-        respondCb(true)
-      }).catch(() => {
-        respondCb()
-      })
+      } else {
+        uploadForm(data.cover)
+      }
     },
     handleInfoEditSubmit () {
     }
@@ -285,9 +196,9 @@ export default {
           </div>
           <div class="tool-item">
             分类名称：
-            <el-select v-model="searchKeyword" placeholder="选择分类">
+            <el-select v-model="productTypeId" placeholder="选择分类">
               <el-option
-                v-for="item in []"
+                v-for="item in productTypeList"
                 :key="item.value"
                 :label="item.label"
                 :value="item.value">
@@ -308,23 +219,61 @@ export default {
             新增 <i class="el-icon-plus"></i>
           </el-button>
           <el-button
-            :disabled="!multipleSelection.length"
-            @click="batchRemove">
+            :disabled="!multipleSelection.length">
             批量删除
           </el-button>
         </div>
       </div>
+      <el-table-column
+        slot="column-cover"
+        align="center"
+        prop="cover"
+        label="封面图"
+        min-width="140">
+        <template scope="scope">
+          <img-zoom
+            :src="scope.row.cover"
+            style="width: 80px;height: 60px;">
+          </img-zoom>
+        </template>
+      </el-table-column>
+      <el-table-column
+        slot="column-operate"
+        align="center"
+        label="操作"
+        width="220">
+        <template scope="scope">
+          <div class="flex--center operate-items">
+            <span
+              class="operate-item">
+              <el-button 
+                type="text" 
+                @click="openEditDialog(scope.row)">
+                编辑
+              </el-button>
+            </span>
+            <span
+              class="operate-item">
+              <el-button 
+                type="text" 
+                @click="delRow(scope.row)">
+                删除
+              </el-button>
+            </span>
+          </div>     
+        </template>
+      </el-table-column>
     </search-table>
     <edit-dialog
       v-model="editDialogVisible"
       :data="editData"
       @submit="handleEditSubmit">
     </edit-dialog>
-    <reserve-info-dialog
+    <!-- <reserve-info-dialog
       v-model="reverseInfoDialogVisible"
       :data="reverseInfoData"
       @submit="handleInfoEditSubmit">
-    </reserve-info-dialog>
+    </reserve-info-dialog> -->
   </div>
 </template>
 

@@ -10,6 +10,13 @@ let initData = {
   activePanelIndex: 0 // 当前激活的栏目（banner基本信息 / banner内容）
 }
 
+const formInitData = {
+  name: '',
+  typeId: '',
+  description: '',
+  cover: ''
+}
+
 import ImgUploader from '@/components/_common/imgUploader/ImgUploader.vue'
 import RichText from '@/components/_common/richText/RichText'
 
@@ -28,20 +35,12 @@ export default {
     RichText
   },
   data () {
-    return Object.assign({}, {
+    return {
       form: {
-        name: '',
-        no: '',
-        type: []
+        ...formInitData
       },
-      typeOptions: [{
-        label: '类型1',
-        value: 1
-      }, {
-        label: '类型2',
-        value: 2
-      }]
-    }, initData)
+      ...initData
+    }
   },
   computed: {
     visible: {
@@ -51,12 +50,17 @@ export default {
       set (val) {
         this.$emit('input', val)
       }
+    },
+    productTypeList () { // 分类列表
+      return this.$_productTypeList
     }
   },
   watch: {
     data (val) {
       if (val) {
         Object.assign(this.form, this.data)
+      } else {
+        this.form = Object.assign({}, formInitData)
       }
     }
   },
@@ -79,6 +83,7 @@ export default {
         })
       })
     },
+    // 提交
     handleSubmit () {
       this.$refs.ruleForm.validate((valid) => {
         let checkFileExist = this.$refs.imgUploader.checkFileExist(fileObj)
@@ -97,28 +102,19 @@ export default {
         }
       })
     },
+    // 关闭弹框
     handleClose () { // 清空数据
       fileObj = ''
       Object.keys(initData).forEach(key => {
         this[key] = initData[key]
       })
       this.$refs.ruleForm.resetFields()
-      this.form = {
-        name: '',
-        no: '',
-        type: []
-      }
+      this.form = Object.assign({}, formInitData)
       this.$refs.imgUploader.clearFileInput()
     },
+    // 监听文件变化
     handleFileChange (newFile) {
       fileObj = newFile
-    },
-    // 下一步
-    toNext () {
-      // this.validForm().then(() => {
-      //   this.activePanelIndex = 1
-      // })
-      this.activePanelIndex = 1
     }
   }
 }
@@ -128,7 +124,7 @@ export default {
   <div class="edit-dialog">
     <el-dialog
       class="dialog--center"
-      :title="`${data ? '修改' : '新增'}商品类型`"
+      :title="`${data ? '修改' : '新增'}项目`"
       :visible.sync="visible"
       @close="handleClose">
       <el-form
@@ -152,17 +148,17 @@ export default {
           </el-col>
           <el-col :span="8">
             <el-form-item
-              label="分类名称"
-              prop="type"
+              label="分类"
+              prop="typeId"
               :rules="[
-                { required: true, message: '请选择类型', trigger: 'blur' }
+                { require: true, message: '请选择分类', trigger: 'blur' }
               ]">
-              <el-select v-model="form.type" multiple placeholder="请选择">
+              <el-select v-model="form.typeId" placeholder="请选择">
                 <el-option
-                  v-for="item in typeOptions"
+                  v-for="item in productTypeList"
                   :key="item.value"
                   :label="item.label"
-                  :value="item.value">
+                  :value="item.value + ''">
                 </el-option>
               </el-select>
             </el-form-item>
@@ -170,16 +166,19 @@ export default {
         </el-row>
         <el-form-item
           label="描述"
-          prop="describe"
+          prop="description"
           required
           :rules="[
-            { required: true, message: '描述不能为空'},
-            { pattern: /^\s*.{0,30}\s*$/, message: '字数不能超30', trigger: 'blur'}
+            { required: true, message: '描述不能为空'}
           ]">
-          <rich-text 
+          <!-- <rich-text 
             v-model="form.describe"
             upload-img-server="/upload">
-          </rich-text>
+          </rich-text> -->
+          <el-input 
+            type="textarea" 
+            class="description-textarea"
+            v-model="form.description"/>
         </el-form-item>
         <el-form-item
           label="商品类型图片"
@@ -187,9 +186,9 @@ export default {
           <img-uploader
             ref="imgUploader"
             :img-src="form.cover"
-            @file-change="handleFileChange"></img-uploader>
+            @file-change="handleFileChange" />
         </el-form-item>
-        <el-form-item
+        <!-- <el-form-item
           label="价格设置">
           <el-row :gutter="20">
             <el-col :span="8">
@@ -206,13 +205,12 @@ export default {
               <i class="el-icon-plus plus-btn"></i>
             </el-col>
           </el-row>
-        </el-form-item>
+        </el-form-item> -->
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button
           type="default"
           :disabled="submitLoading"
-          v-loading="submitLoading"
           @click="visible = false">
           取消
         </el-button>
@@ -233,6 +231,12 @@ export default {
   .edit-dialog {
     .el-dialog {
       min-width: 720px;
+    }
+
+    .description-textarea {
+      textarea {
+        height: 200px;
+      }
     }
 
     .upload-box {

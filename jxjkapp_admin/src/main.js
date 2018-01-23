@@ -8,11 +8,8 @@ import 'es6-promise/auto'
 import Vue from 'vue'
 import store from '@/store'
 import router from '@/router'
-import {
-  UPDATE_HOSPAREALIST
-} from './store/global'
 
-import './utils/globalFn'
+import './utils/nativeExtend'
 
 import './rootApi'
 
@@ -28,17 +25,6 @@ Vue.use(eventBus)
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-default/index.css'
 Vue.use(ElementUI)
-
-Object.defineProperty(Vue.prototype, '$_hospAreaList', {
-  get () {
-    if (!store.state.hospAreaList || !store.state.hospAreaList.length) {
-      store.dispatch(UPDATE_HOSPAREALIST)
-    } else {
-      return store.state.hospAreaList
-    }
-  }
-})
-
 /* 插件 END */
 
 /* 全局mixin */
