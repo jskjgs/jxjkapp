@@ -2,7 +2,7 @@
   <view class="comp-serviceDetail">
     <SearchPage 
       :visible.sync="onSearchPartner"
-      :results="doctorList"
+      :results.sync="doctorList"
       @search.user="handlePartnerSearch"
       @picked.user="handlePartnerPicked" />
     <view class="service-record main-bg">
@@ -226,7 +226,7 @@
           url: '/doctorInfo/query',
           method: 'POST',
           data: {
-            name: value
+            name: value || undefined
           }
         }).then(content => {
           content = content || {}
@@ -243,6 +243,7 @@
                 name: item.name
               }
             })
+            this.$apply()
           }
         })
       },
