@@ -39,9 +39,18 @@ public interface HospOrderMapper extends MyMapper<HospOrder> {
             " <if test = 'order.stopTime != null and order.stopTime != \"\"'>" +
             "   and create_date &lt;= #{order.stopTime}" +
             " </if>" +
-            " <if test = 'order.userIds != null and order.userIds != \"\"'>" +
-            "   and user_id in (#{order.userIds})" +
+            " <if test = 'order.userIds != null '>" +
+            "   and user_id in " +
+            "      <foreach item='id' index='index' collection='order.userIds' open='(' separator=',' close=')'>" +
+            "           #{id}" +
+            "       </foreach>" +
             " </if>" +
+            " <if test = 'order.payStates != null '> " +
+            "   and pay_state in " +
+            "      <foreach item='id' index='index' collection='order.payStates' open='(' separator=',' close=')'>" +
+            "           #{id}" +
+            "       </foreach>" +
+            " </if>  " +
             " </script>"})
     List<HospOrder> selectByExampleByCustom(@Param("order") OrderInfoPO orderInfoPO);
 

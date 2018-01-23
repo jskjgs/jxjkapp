@@ -57,7 +57,8 @@ public class HospOrderServiceDetails {
             AdminInfoVO associates,
             HospOrderGrade grade,
             HospArea area,
-            UserInfoVO userInfoVO) {
+            UserInfoVO userInfoVO,
+            HospOrderServiceRollback hospOrderServiceRollback) {
         OrderServiceDetailsVO vo = new OrderServiceDetailsVO();
         vo.setId(this.id);
         vo.setCode(this.code);
@@ -77,6 +78,7 @@ public class HospOrderServiceDetails {
         vo.setCreateDate(this.createDate);
         vo.setUpdateDate(this.updateDate);
         vo.setAddress(this.address);
+        vo.setServiceRollback(hospOrderServiceRollback);
         return vo;
     }
 

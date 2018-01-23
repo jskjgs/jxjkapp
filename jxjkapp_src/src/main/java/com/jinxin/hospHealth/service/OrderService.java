@@ -171,6 +171,7 @@ public class OrderService implements BaseService<HospOrder, OrderInfoPO> {
             userBalance.setBalance(DBigDecimal.upsideDown(orderInfoPO.getAmount()));
             userBalanceService.update(userBalance);
         }
+        //如果是his支付
         if (orderInfoPO.getPaymentType().equals(OrderPayTypeEnum.HIS.getCode())) {
             DPreconditions.checkNotNullAndEmpty(
                     orderInfoPO.getPaymentCode(),
@@ -183,6 +184,7 @@ public class OrderService implements BaseService<HospOrder, OrderInfoPO> {
         update.setPayState(OrderPayStateEnum.PAY.getCode());
         update.setPaymentType(orderInfoPO.getPaymentType());
         update.setUpdateDate(new Date());
+        update.setPaymentType(orderInfoPO.getPaymentType());
         DPreconditions.checkState(hospOrderMapper.updateByPrimaryKeySelective(update) == 1,
                 Language.get("service.update-failure"),
                 true);

@@ -3,6 +3,7 @@ package com.jinxin.hospHealth.controller;
 import com.alibaba.fastjson.JSONObject;
 import com.doraemon.base.guava.DPreconditions;
 import com.doraemon.base.language.Language;
+import com.doraemon.base.util.MD5Encryption;
 import com.doraemon.base.util.RandomUtil;
 import com.jinxin.hospHealth.controller.protocol.PO.AdminInfoPO;
 import com.jinxin.hospHealth.controller.protocol.PO.UserInfoPO;

@@ -49,8 +49,10 @@ public class OrderInfoPO extends PageBean {
     private String startTime;
     @ApiModelProperty("订单创建时间-结束时间  YYYY-MM-DD  HH:mm:ss")
     private String stopTime;
-    @ApiModelProperty("多个用户ID,使用,分割")
-    private String userIds;
+    @ApiModelProperty("多个用户ID")
+    private List<Integer> userIds;
+    @ApiModelProperty("多个支付状态 (0 未支付订单/1 已支付订单/2 退款申请中/3 退款完毕 )")
+    private List<Integer> payStates;
 
     /**
      * 默认排序,如果没有传入排序的话

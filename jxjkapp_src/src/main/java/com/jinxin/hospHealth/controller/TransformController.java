@@ -49,6 +49,8 @@ public class TransformController extends MyBaseController {
     AdminUserInfoService adminUserInfoService;
     @Autowired
     PatientInfoService patientInfoService;
+    @Autowired
+    OrderServiceRollbackService orderServiceRollbackService;
 
     public OrderServiceRollbackVO transform(HospOrderServiceRollback hospOrderServiceRollback) throws Exception {
         if (hospOrderServiceRollback == null)
@@ -178,7 +180,7 @@ public class TransformController extends MyBaseController {
                         ? transform(hospOrderProduct)
                         : null;
         HospOrder hospOrder =
-                hospOrderProduct.getOrderId() != null
+                hospOrderProduct != null && hospOrderProduct.getOrderId() != null
                         ? orderService.selectOne(hospOrderProduct.getOrderId())
                         : null;
         UserInfoVO userInfoVO =
@@ -202,13 +204,15 @@ public class TransformController extends MyBaseController {
                 hospOrderServiceDetails.getAdminUserId() != null
                         ? transform(adminUserInfoService.selectOne(hospOrderServiceDetails.getAdminUserId()))
                         : null;
+        HospOrderServiceRollback hospOrderServiceRollback = orderServiceRollbackService.selectOne(hospOrderServiceDetails.getId());
         return hospOrderServiceDetails.transform(
                 orderProductVO,
                 adminInfoVO,
                 associates,
                 hospOrderGrade,
                 hospArea,
-                userInfoVO);
+                userInfoVO,
+                hospOrderServiceRollback);
     }
 
     public OrderVO transform(HospOrder hospOrder) throws Exception {
