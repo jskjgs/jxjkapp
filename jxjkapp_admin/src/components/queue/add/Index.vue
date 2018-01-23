@@ -4,22 +4,80 @@
  * Date: 2017/8/29
  */
 import placeholderImg from '@/assets/images/placeholder.png'
-
-// import { userStateFormat } from '@/utils/index'
+import SearchTable from '@/components/_common/searchTable/SearchTable'
+import { userStateFormat } from '@/utils/index'
 
 import {
-  getUserInfoApi
-  // getUserOrdersApi
+  getUserInfoApi,
+  addToQueueApi,
+  getUserOrdersApi
 } from './api'
 
 export default {
   name: 'addQueue',
+  components: {
+    SearchTable
+  },
   data () {
+    this.tableAttrs = {
+      'props': {
+        'tooltip-effect': 'dark',
+        'style': 'width: 100%',
+        'align': 'center'
+      }
+    }
+    this.columnData = [{
+      attrs: {
+        'prop': 'orderCode',
+        'label': '订单号',
+        'min-width': '120',
+        'show-overflow-tooltip': true
+      }
+    }, {
+      attrs: {
+        'prop': 'orderAmount',
+        'label': '金额',
+        'min-width': '50',
+        'show-overflow-tooltip': true
+      }
+    }, {
+      attrs: {
+        'prop': 'serviceName',
+        'label': '项目名称',
+        'min-width': '120',
+        'show-overflow-tooltip': true
+      }
+    }, {
+      attrs: {
+        'prop': 'storage',
+        'label': '剩余次数',
+        'min-width': '80'
+      }
+    }, {
+      attrs: {
+        'min-width': '120',
+        'label': '操作'
+      },
+      scopedSlots: {
+        default: (scope) => {
+          return (
+            <div class="flex--center operations">
+              <span
+                class="operate-item "
+                onClick={() => this.addToQueue(scope.row)}>
+                  排队
+              </span>
+            </div>
+          )
+        }
+      }
+    }]
     return {
       userName: null,
-      userPhone: null,
+      userPhone: 15928113204,
       userType: null,
-      tableData: null,
+      tableData: [{orderId: 12, orderCode: 1213123, serviceId: 11111},
+      {orderCode: 1213123, serviceId: 22222, orderId: 14}],
       keyWords: ''
     }
   },
@@ -32,12 +90,43 @@ export default {
     handleSearch () {
       getUserInfoApi({phone: this.keyWords}).then((res) => {
         console.log(res.content)
-        // getUserOrdersApi().then((res) => {
-        //   console.log(res.content.list)
-        // })
+        let user = res.content
+        if (!user) {
+          this.$message({
+            type: 'error',
+            message: '用户数据异常'
+          })
+          return false
+        }
+        this.userName = user.name
+        this.userPhone = user.phone
+        this.userType = userStateFormat(user.isVip)
+        getUserOrdersApi().then((res) => {
+          console.log(res.content.list)
+          let data = res.content.list
+          data.forEach(function (value) {
+            let option = Object.create(null)
+            option.orderId = value.id
+            option.orderCode = value.code
+            option.orderAmount = value.orderPayPrice
+            let product = value.orderProductList ? value.orderProductList[0] : []
+            option.storage = product.remainingServiceNumber
+            option.serviceName = product.productSkuName
+            option.serviceId = product.id
+            this.tableData.push(option)
+          })
+        })
       })
     },
     addToQueue (rowData) {
+      addToQueueApi({phone: this.userPhone, orderProductId: rowData.orderId}).then((res) => {
+        this.$message({
+          type: 'success',
+          message: '排队成功'
+        })
+        this.$router.push({name: 'queue_root'})
+      })
+      console.log(rowData.serviceId)
     }
   }
 }
@@ -50,31 +139,32 @@ export default {
         新增排队
       </div>
     </div>
-    <search-table
-      ref="searchTable"
-      :table-attrs="tableAttrs"
-      :column-data="columnData"
-      :list-api="listApi"
-      :api-keys-map="apiKeysMap">
-      <div class="table-tools flex--vcenter" slot="table-tools">
-        <div class="search-wrap flex--vcenter">
-          <div class="tool-item">
-            搜索关键字：
-            <el-input v-model="keyWords" style="width: auto;" placeholder="请填入用户手机号"></el-input>
-          </div>
-          <el-button
-            class="tool-item"
-            type="primary"
-            @click="handleSearch">搜索
-          </el-button>
-        </div>
-        <div class="tool-item">
-          <span style="margin-right:50px">用户名:{{userName}}</span>
-          <span>手机号:{{userPhone}}</span>
-          <span>用户类型:{{userType}}</span>
-        </div>
+    <div class="top-box flex--vcenter" style="margin-top: 20px;">
+      <div class="tool-item">
+        搜索关键字：
+        <el-input v-model="keyWords" style="width: auto;" placeholder="请填入用户手机号"></el-input>
       </div>
-    </search-table>
+      <el-button
+        class="tool-item"
+        type="primary"
+        @click="handleSearch">搜索
+      </el-button>
+    </div>
+    <div class="top-box flex--vcenter" style="margin-top: 20px;">
+      <div class="tool-item">
+        <span style="margin-right:50px">用户名:{{userName}}</span>
+        <span style="margin-right:50px">手机号:{{userPhone}}</span>
+        <span style="margin-right:50px">用户类型:{{userType}}</span>
+      </div>
+    </div>
+    <div class="top-box flex--vcenter" style="margin-top: 20px;">
+      <search-table
+        ref="SearchTable"
+        :table-attrs="tableAttrs"
+        :column-data="columnData"
+        :initData="tableData">
+      </search-table>
+    </div>
   </div>
 </template>
 
