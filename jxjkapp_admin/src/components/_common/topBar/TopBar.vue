@@ -8,7 +8,8 @@
   import ResetPsdDialog from './ResetPsdDialog'
 
   import {
-    logoutApi
+    logoutApi,
+    modifyPsdApi
   } from './api'
 
   export default {
@@ -24,20 +25,24 @@
     computed: {
       ...mapState({
         // 用户名
-        userName: state => state.accountInfo.account
+        userName: state => (state.accountInfo.adminInfoVO || state.accountInfo.adminInfo || {}).account
       })
     },
     methods: {
       ...mapMutations({
         updateAccountInfo: UPDATE_ACCOUNTINFO // 更新vuex中的accountInfo和auth
       }),
-      // 清除cookie
+      // 清除用户信息
+      clearUserInfo () {
+        Cookie.remove('login')
+        localStorage.removeItem('accountInfo')
+        this.updateAccountInfo({})
+      },
+      // 退出登录
       logout () {
         logoutApi().then(() => {
-          Cookie.remove('login')
-          localStorage.removeItem('accountInfo')
-          this.$router.push('/login')
-          this.updateAccountInfo({})
+          this.clearUserInfo()
+          this.$router.replace('/login')
           this.$message({
             type: 'success',
             message: '退出成功'
@@ -49,12 +54,21 @@
         this.resetPsdDialogVisible = true
       },
       submitResetPsd (formData, resolveDialog) {
-        console.log(formData)
-        return new Promise((resolve, reject) => {
+        return modifyPsdApi({
+          passwordOld: formData.oldPsd,
+          passwordNew: formData.psd
+        }).then(() => {
+          this.resetPsdDialogVisible = false
+          this.$message({
+            type: 'success',
+            message: '密码修改成功！请重新登录'
+          })
           setTimeout(() => {
-            resolveDialog()
-            this.resetPsdDialogVisible = false
-          }, 2000)
+            this.clearUserInfo()
+            this.$router.replace('/login')
+          }, 1000)
+        }).finally(() => {
+          resolveDialog()
         })
       }
     }
