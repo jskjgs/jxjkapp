@@ -85,9 +85,21 @@
           confirmColor: '#9190FF',
           success: (res) => {
             if (res.confirm) {
-              this.$_eventBus.emit('serviceHistory:init')
-              wx.switchTab({
-                url: '/pages/serviceHistory'
+              this.$_request({
+                url: '/orderService/admin/accept',
+                method: 'POST',
+                data: {
+                  id
+                }
+              }).then(() => {
+                wx.showToast({
+                  title: '接单成功'
+                })
+                this.initPageData()
+                this.$_eventBus.emit('serviceHistory:init')
+                wx.switchTab({
+                  url: '/pages/serviceHistory'
+                })
               })
             }
           }
@@ -108,10 +120,11 @@
 
     getList () {
       return this.initData({
-        url: '/orderService/admin/query?state=0',
+        url: '/orderService/admin/query',
         method: 'POST',
         data: {
-          pageSize: 5
+          pageSize: 5,
+          states: '0'
         }
       }, (listItem) => {
         const orderProduct = listItem.orderProduct || {}

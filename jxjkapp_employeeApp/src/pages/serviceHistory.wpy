@@ -124,7 +124,7 @@
         method: 'POST',
         data: {
           adminUserId: this.userInfo.id,
-          state: 2
+          states: '1,2'
         }
       }, (listItem) => {
         const orderProduct = listItem.orderProduct || {}

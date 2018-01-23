@@ -19,19 +19,33 @@
       margin-top: 100rpx;
     }
   }
+  
+  .avatar-wrap {
+    margin-top: 100rpx;
+  }
+  .avatar {
+    overflow: hidden;
+    margin: 0 0 30rpx 0;
+    border-radius: 50%;
+    width: 140rpx;
+    height: 140rpx;
+  }
 }
 </style>
 
 <template>
-  <view class="comp-logout flex--center">
+  <view class="comp-logout flex--hcenter">
     <view class="comp-logout-wrap">
-      <view class="user-title">当前登陆人：{{ userInfo.phone }}</view>
-      <view class="comp-tel-input">
-        <view class="btn-wrap flex--hcenter">
-          <button 
-            class="primary-btn"
-            @tap="submit">{{ submitBtnText }}</button>
-        </view>
+      <view class="avatar-wrap flex--center">
+        <image 
+          src="../assets/images/avatar.png" 
+          class="avatar" />
+      </view>
+      <view class="user-title">{{ userInfo.phone }}</view>
+      <view class="btn-wrap flex--hcenter">
+        <button
+          class="primary-btn"
+          @tap="submit">{{ submitBtnText }}</button>
       </view>
     </view>
   </view>
