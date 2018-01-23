@@ -153,7 +153,7 @@ export default {
     </div>
     <el-row :gutter="20" class="info-items">
       <el-col 
-        v-for="item in ITEMS"
+        v-for="item in ITEMS" :key="item.valueKey"
         :span="8" 
         class="info-item-wrap">
         <div class="info-item flex" :style="item.style || ''">

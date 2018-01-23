@@ -9,7 +9,7 @@ import {
 } from '@/components/doctor/_consts/routers'
 import {
   INDEX as userCfg
-} from '@/components/user/_consts/routers'
+} from '@/components/user/list/_consts/routers'
 import {
   INDEX as newsCfg
 } from '@/components/news/_consts/routers'
