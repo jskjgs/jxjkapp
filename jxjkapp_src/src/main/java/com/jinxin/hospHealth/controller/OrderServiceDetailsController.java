@@ -113,7 +113,7 @@ public class OrderServiceDetailsController extends TransformController{
     }
 
     @ApiOperation(value = "查询order下所有订单服务详情信息", response = OrderServiceDetailsVO.class)
-    @RequestMapping(value = "/queryByOrderId", method = RequestMethod.POST)
+    @RequestMapping(value = "/admin/queryByOrderId", method = RequestMethod.POST)
     @ResponseBody
     public JSONObject select(
             @ApiParam(value = "orderId", required = true) @RequestParam(value = "orderId", required = true) Long orderId,
