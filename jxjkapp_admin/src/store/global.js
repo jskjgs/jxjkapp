@@ -8,6 +8,12 @@ export const GET_AUTH = 'global/get_auth'
 
 export const UPDATE_ACCOUNTINFO = 'global/update_accountInfo'
 
+export const UPDATE_HOSPAREALIST = 'global/UPDATE_HOSPAREALIST'
+
+import {
+  getHospAreaApi
+} from '@/globalApi'
+
 import {
   getAccountInfo
 } from '@/utils/index'
@@ -23,7 +29,8 @@ const state = {
   keepAlive: 'no-match',
   // todo: 删除`Array.from({length: 8 - 1 + 1}).map((item, index) => `m_0${index + 1}`) &&`
   auth: Array.from({length: 8 - 1 + 1}).map((item, index) => `m_0${index + 1}`),
-  accountInfo: getAccountInfo() || {}
+  accountInfo: getAccountInfo() || {},
+  hospAreaList: [] // 院区列表
 }
 
 const mutations = {
@@ -46,9 +53,25 @@ const mutations = {
     accountInfo = accountInfo || {}
     state.accountInfo = accountInfo
     state.auth = accountInfo.permissionList || Array.from({length: 8 - 1 + 1}).map((item, index) => `m_0${index + 1}`)
+  },
+  [UPDATE_HOSPAREALIST] (state, list) {
+    state.hospAreaList = list
   }
 }
 const actions = {
+  [UPDATE_HOSPAREALIST] ({commit}) {
+    getHospAreaApi().then(res => {
+      const content = res.content || {}
+      let list = content.list || []
+      list = list.map(item => {
+        return {
+          label: item.name,
+          value: item.id
+        }
+      })
+      commit(UPDATE_HOSPAREALIST, list)
+    })
+  }
 }
 
 export default {

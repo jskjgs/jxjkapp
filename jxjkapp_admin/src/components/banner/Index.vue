@@ -281,16 +281,24 @@ export default {
         slot="column-operate"
         align="center"
         label="操作"
-        width="200">
+        width="220">
         <template scope="scope">
           <div class="flex--center operate-items">
             <span
-              class="operate-item el-icon-edit"
-              @click="openEditDialog(scope.row)">
+              class="operate-item">
+              <el-button 
+                type="text" 
+                @click="openEditDialog(scope.row)">
+                编辑
+              </el-button>
             </span>
             <span
-              class="operate-item el-icon-delete"
-              @click="delRow(scope.row)">
+              class="operate-item">
+              <el-button 
+                type="text" 
+                @click="delRow(scope.row)">
+                删除
+              </el-button>
             </span>
             <span class="operate-item visible-switch flex--vcenter">
               <el-switch

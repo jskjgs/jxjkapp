@@ -1,7 +1,7 @@
 import { fetchApi } from '@/utils/index'
 
 // 获取医生列表
-export const GET_LIST_URL = '/doctorInfo/admin/all'
+export const GET_LIST_URL = '/doctorInfo/admin/query'
 export const getListApi = (data) => {
   return fetchApi({
     url: GET_LIST_URL,
@@ -20,6 +20,18 @@ export const modifyDoctorApi = (data) => {
   })
 }
 
+// 删除医生
+export const DEL_DOCTOR_URL = '/doctorInfo/'
+export const delDoctorApi = (id) => {
+  return fetchApi({
+    url: DEL_DOCTOR_URL,
+    type: 'delete',
+    params: {
+      id
+    }
+  })
+}
+
 // 新增医生信息
 export const ADD_DOCTOR_URL = '/doctorInfo/'
 export const addDoctorApi = (data) => {
@@ -27,6 +39,19 @@ export const addDoctorApi = (data) => {
     url: ADD_DOCTOR_URL,
     type: 'post',
     data
+  })
+}
+
+//  查询医生类别
+export const GET_DOCTOR_TYPE_LIST_URL = '/doctorType/all'
+export const getDoctorTypeListApi = () => {
+  return fetchApi({
+    url: GET_DOCTOR_TYPE_LIST_URL,
+    type: 'post',
+    data: {
+      pageNum: '1',
+      pageSize: 10000
+    }
   })
 }
 

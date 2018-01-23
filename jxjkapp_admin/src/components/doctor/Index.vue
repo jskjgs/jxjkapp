@@ -8,14 +8,13 @@ import EditDialog from './_thumbs/EditDialog.vue'
 import ImgZoom from '@/components/_common/imgZoom/ImgZoom.vue'
 import SearchTable from '@/components/_common/searchTable/SearchTable'
 import {
-  getListApi,
   modifyDoctorApi,
   addDoctorApi,
-  topDoctorApi
+  topDoctorApi,
+  delDoctorApi
 } from './api'
-import {
-  getHospAreaApi
-} from '@/globalApi'
+import tableCfgMaker from './_consts/tableCfgMaker'
+
 let adding = false
 export default {
   name: 'Doctor',
@@ -25,89 +24,12 @@ export default {
     SearchTable
   },
   data () {
-    this.tableAttrs = {
-      'props': {
-        'tooltip-effect': 'dark',
-        'style': 'width: 100%',
-        'align': 'center'
-      }
-    }
-    this.columnData = [{
-      attrs: {
-        'prop': 'name',
-        'label': '姓名',
-        'min-width': '100',
-        'show-overflow-tooltip': true
-      }
-    }, {
-      attrs: {
-        'prop': 'avatar',
-        'min-width': '120',
-        'label': '照片'
-      },
-      scopedSlots: {
-        default: (scope) => {
-          return (
-            <img-zoom
-              src={scope.row.avatar}
-              style="width: 80px;height: 60px;">
-            </img-zoom>
-          )
-        }
-      }
-    }, {
-      attrs: {
-        'prop': 'hospAreaName',
-        'label': '院区',
-        'min-width': '160',
-        'show-overflow-tooltip': true
-      }
-    }, {
-      attrs: {
-        'min-width': '180',
-        'label': '操作'
-      },
-      scopedSlots: {
-        default: (scope) => {
-          return (
-            <div class="flex--center operations">
-              <span class="operate-item flex--vcenter" style="color: inherit; font-size: inherit;">
-                <el-button type="text">置顶</el-button>
-              </span>
-              <span class="operate-item flex--vcenter" style="color: inherit; font-size: inherit;">
-                <el-button
-                  type="text"
-                  onClick={() => this.openEditDialog(scope.row)}>查看详情</el-button>
-              </span>
-              <span class="operate-item flex--vcenter" style="color: inherit; font-size: inherit;">
-                <el-button
-                  type="text"
-                  onClick={() => this.openEditDialog(scope.row)}>编辑</el-button>
-              </span>
-            </div>
-          )
-        }
-      }
-    }]
-    this.listApi = {
-      requestFn: getListApi,
-      responseFn (data) {
-        let content = data.content || {}
-        this.tableData = (content.list || []).map((item) => {
-          return {
-            id: item.id,
-            doctorTypeId: (item.doctorType || {}).id,
-            name: item.name,
-            avatar: item.headPortrait,
-            hospAreaName: (item.hospArea || {}).name,
-            description: item.description
-          }
-        })
-        this.total = content.total || 0
-      }
-    }
+    const tableCfg = tableCfgMaker.call(this)
+    this.tableAttrs = tableCfg.tableAttrs
+    this.columnData = tableCfg.columnData
+    this.listApi = tableCfg.listApi
+
     return {
-      hospAreaList: [], // 院区列表
       pickedHospAreaId: '', // 选择的院区id
       doctorName: '',
       editDialogVisible: false,
@@ -128,7 +50,14 @@ export default {
     }
   },
   created () {
-    this.getHospAreaList()
+  },
+  computed: {
+    currentPage () {
+      return this.$refs.searchTable.currentPage
+    },
+    hospAreaList () {
+      return this.$_hospAreaList
+    }
   },
   watch: {
     editDialogVisible (val) {
@@ -136,27 +65,10 @@ export default {
         this.editData = null
         adding = false
       }
-    },
-    currentPage (newPageNum) {
-      this.getList({
-        pageNum: newPageNum
-      })
     }
   },
   methods: {
-    // 获取院区列表
-    getHospAreaList () {
-      return getHospAreaApi().then(res => {
-        const content = res.content || {}
-        const list = content.list || []
-        this.hospAreaList = list.map(item => {
-          return {
-            label: item.name,
-            value: item.id
-          }
-        })
-      })
-    },
+    // 搜索
     handleSearch () {
       this.apiKeysMap = Object.assign({}, this.apiKeysMap, {
         hospAreaId: {
@@ -167,20 +79,49 @@ export default {
         }
       })
     },
+    // 打开编辑／新增弹框
     openEditDialog (rowData, isAdd) {
       this.editDialogVisible = true
       adding = !!isAdd
       this.editData = rowData
     },
-    handleEditCancel () {
+    // 删除医生
+    delRow ({id}) {
+      this.$confirm('是否删除该人员？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning',
+        beforeClose: (action, instance, done) => {
+          if (action === 'confirm') {
+            delDoctorApi(id).then(() => {
+              this.$message({
+                type: 'success',
+                message: '删除成功'
+              })
+              this.$refs.searchTable.getList()
+            }).finally(() => {
+              done()
+            })
+          } else {
+            done()
+          }
+        }
+      })
     },
+    // 置顶
+    toTop ({id}) {
+    },
+    // 修改／新增信息提交
     handleEditSubmit (data, respondCb) {
+      console.log('data', data)
       const uploadForm = (imageUrl) => {
         const sendData = {
+          name: data.name,
           headPortrait: imageUrl || data.avatar,
           id: data.id,
-          doctorTypeId: data.doctorTypeId,
-          description: data.description
+          description: data.description,
+          hospAreaId: data.hospAreaId,
+          doctorTypeId: data.doctorTypeId
         }
         const requestFn = adding ? addDoctorApi : modifyDoctorApi
         requestFn(sendData).then(res => {
@@ -267,11 +208,58 @@ export default {
           </el-button>
         </div>
       </div>
+      <el-table-column
+        slot="column-avatar"
+        align="center"
+        prop="avatar"
+        label="照片"
+        min-width="140">
+        <template scope="scope">
+          <img-zoom
+            :src="scope.row.avatar"
+            style="width: 80px;height: 60px;">
+          </img-zoom>
+        </template>
+      </el-table-column>
+      <el-table-column
+        slot="column-operate"
+        align="center"
+        label="操作"
+        width="220">
+        <template scope="scope">
+          <div class="flex--center operate-items">
+            <span
+              class="operate-item">
+              <el-button 
+                type="text" 
+                @click="openEditDialog(scope.row)">
+                编辑
+              </el-button>
+            </span>
+            <span
+              class="operate-item">
+              <el-button 
+                type="text" 
+                @click="delRow(scope.row)">
+                删除
+              </el-button>
+            </span>
+            <span
+              class="operate-item">
+              <el-button 
+                type="text" 
+                :disabled="currentPage === 1 && scope.$index === 0"
+                @click="toTop(scope.row)">
+                置顶
+              </el-button>
+            </span>
+          </div>     
+        </template>
+      </el-table-column>
     </search-table>
     <edit-dialog
       v-model="editDialogVisible"
       :data="editData"
-      @cancel="handleEditCancel"
       @submit="handleEditSubmit">
     </edit-dialog>
   </div>
