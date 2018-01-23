@@ -164,7 +164,7 @@ export default {
         </div>
       </el-col>
     </el-row>
-    <div class="flex--vcenter info-item" style="margin-top: 20px;">
+    <div class="flex info-item" style="margin-top: 20px;">
       <span style="width: 60px;" class="flex-item--none info-item__label">备注信息</span>:
       <el-input
         type="textarea"
