@@ -385,10 +385,14 @@
           content = content || {}
           const orderProduct = content.orderProduct || {}
           const productSkuName = orderProduct.productSkuName
-          this.queueNotice = {
-            project: productSkuName,
-            NO: content.number,
-            waitNum: content.beforeNumber
+          if (!productSkuName && !content.number && !content.beforeNumber) {
+            this.queueNotice = null
+          } else {
+            this.queueNotice = {
+              project: productSkuName,
+              NO: content.number,
+              waitNum: content.beforeNumber
+            }
           }
         })
       } else {
