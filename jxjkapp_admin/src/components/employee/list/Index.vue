@@ -74,12 +74,16 @@ export default {
           return (
             <div class="flex--center operations">
               <span
-                  class="operate-item"
-                  onClick={() => this.handleViewDetail(scope.row.no)}>查看
+                class="operate-item">
+                <el-button
+                  type="text"
+                  onClick={() => this.handleViewDetail(scope.row.no)}>查看</el-button>
               </span>
               <span
-                  class="operate-item"
-                  onClick={() => this.handleDel(scope.row.no)}>删除
+                class="operate-item">
+                <el-button
+                  type="text"
+                  onClick={() => this.handleDel(scope.row.no)}>删除</el-button>
               </span>
             </div>
           )
@@ -270,18 +274,6 @@ export default {
       background-size: 40px 30px;
     }
 
-    .operate-item {
-      color: $color4;
-      font-size: 18px;
-      cursor: pointer;
-      & + .operate-item {
-        margin-left: 20px;
-      }
-
-      .el-switch {
-        margin-right: 10px;
-      }
-    }
     .top-switch {
       display: inline-block;
       width: 124px;

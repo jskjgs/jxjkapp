@@ -16,6 +16,42 @@ export default {
   components: {
   },
   data () {
+    this.ITEMS = [{
+      label: '用户ID',
+      valueKey: 'userId'
+    }, {
+      label: '服务种类',
+      valueKey: 'orderCategroyName'
+    }, {
+      label: '项目名称',
+      valueKey: 'orderSkuName'
+    }, {
+      label: '订单状态',
+      valueKey: 'state'
+    }, {
+      label: '服务单价',
+      valueKey: 'unitPrice'
+    }, {
+      label: '购买数量',
+      valueKey: 'qty'
+    }, {
+      label: '折扣金额',
+      valueKey: 'discontPrice'
+    }, {
+      label: '总金额',
+      valueKey: 'totalPrice',
+      formatter (value) {
+        return value == null ? '' : `￥${value}`
+      }
+    }, {
+      label: '支付金额',
+      valueKey: 'paymentPrice',
+      formatter (value) {
+        return value == null ? '' : `￥${value}`
+      },
+      style: 'color: red;'
+    }]
+
     return {
       orderId: this.$route.params.orderId,
       refundment: {
@@ -112,65 +148,40 @@ export default {
   <div id="orderDetail">
     <div class="flex--vcenter page-top">
       <div class="page-title">
-        <router-link to="/order"> 订单管理 </router-link> > 订单详情
+        <router-link to="/order"> 订单管理 </router-link> &gt; 订单详情
       </div>
     </div>
-    <div class="flex--vcenter" style="margin-top: 20px; justify-content: space-between;">
-      <div class="tool-item">
-        用户ID: <span>{{userId}}</span>
-      </div>
-      <div class="tool-item">
-        服务种类: <span>{{orderCategroyName}}</span>
-      </div>
-      <div class="tool-item">
-        项目名称: <span>{{orderSkuName}}</span>
-      </div>
-      <div class="tool-item">
-        订单状态: <span>{{state}}</span>
-      </div>
+    <el-row :gutter="20" class="info-items">
+      <el-col 
+        v-for="item in ITEMS" :key="item.valueKey"
+        :span="8" 
+        class="info-item-wrap">
+        <div class="info-item flex" :style="item.style || ''">
+          <span class="info-item__label flex-item--none">
+            {{ item.label }}
+          </span>:
+          <span class="info-item__content">{{ item.formatter ? item.formatter($data[item.valueKey]) : $data[item.valueKey]}}</span>
+        </div>
+      </el-col>
+    </el-row>
+    <div class="flex--vcenter info-item" style="margin-top: 20px;">
+      <span style="width: 60px;" class="flex-item--none info-item__label">备注信息</span>:
+      <el-input
+        type="textarea"
+        class="info-item__content"
+        v-model="comments"
+        :readonly="true"
+        placeholder="备注信息">
+      </el-input>
     </div>
-    
-    <div class="flex--vcenter" style="margin-top: 20px; justify-content: space-between;">
-      <div class="tool-item">
-        服务单价: <span>{{unitPrice}}</span>
-      </div>
-      <div class="tool-item">
-        购买数量: <span>{{qty}}</span>
-      </div>
-      <div class="tool-item">
-        折扣金额: <span>{{discontPrice}}</span>
-      </div>
-    </div>
-
-    <div class="flex--vcenter" style="margin-top: 20px; justify-content: space-between;">
-      <div class="tool-item">
-        <b>总金额:</b>
-        <b>￥{{totalPrice}}</b>
-      </div>
-      <div class="tool-item">
-        <b>支付金额:</b>
-        <b style="color:red">￥{{paymentPrice}}</b>
-      </div>
-    </div>
-    <div class="flex--vcenter" style="margin-top: 20px;">
-      <b>备注信息:</b>
-        <textarea
-          v-model="comments"
-          readonly=true
-          placeholder="备注信息"
-          style="width: 100%;height: 260px;font-size: 15px">
-        </textarea>
-    </div>
-    <div class="flex--vcenter" style="margin-top: 20px;">
-      <div class="tool-item">
-        缴费单号
-        <el-input
-          :disabled="state === '已支付'"
-          v-model="paymentNumber"
-          :placeholder="isVip?'VIP用户可用余额进行支付' : '普通用户请输入缴费单号'"
-          style="width: 300px;">
-        </el-input>
-      </div>
+    <div class="flex--vcenter info-item" style="margin-top: 20px;">
+      <span class="info-item__label">缴费单号</span>:
+      <el-input
+        class="info-item__content"
+        :disabled="state === '已支付'"
+        v-model="paymentNumber"
+        :placeholder="isVip ? 'VIP用户可用余额进行支付' : '普通用户请输入缴费单号'"
+        style="width: 300px;"/>
     </div>
     <div class="flex--vcenter"  style="margin-top: 20px;" v-show="state === '未支付'">
         <el-button
@@ -204,6 +215,23 @@ export default {
   @import "~@/assets/style/variables/index";
 
   #orderDetail {
+    .info-item-wrap {
+      margin-top: 20px;
+    }
+    .info-item {
+      &__label {
+        width: 60px;
+      }
+
+      &__content {
+        margin-left: 10px;
+
+        textarea {
+          height: 150px;
+        }
+      }
+    }
+
     .btn-wrap {
       .el-button {
         border-radius: 18px;

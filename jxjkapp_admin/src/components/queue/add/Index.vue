@@ -63,9 +63,12 @@ export default {
           return (
             <div class="flex--center operations">
               <span
-                class="operate-item "
-                onClick={() => this.addToQueue(scope.row)}>
-                  排队
+                class="operate-item">
+                  <el-button
+                    type="text"
+                    onClick={() => this.addToQueue(scope.row)}>
+                    排队
+                  </el-button>
               </span>
             </div>
           )
@@ -147,6 +150,7 @@ export default {
       <el-button
         class="tool-item"
         type="primary"
+        style="margin-left: 20px;"
         @click="handleSearch">搜索
       </el-button>
     </div>
@@ -157,7 +161,7 @@ export default {
         <span style="margin-right:50px">用户类型:{{userType}}</span>
       </div>
     </div>
-    <div class="top-box flex--vcenter" style="margin-top: 20px;">
+    <div class="top-box" style="margin-top: 20px;">
       <search-table
         ref="SearchTable"
         :table-attrs="tableAttrs"
@@ -226,18 +230,6 @@ export default {
       background-size: 40px 30px;
     }
 
-    .operate-item {
-      color: $color4;
-      font-size: 18px;
-      cursor: pointer;
-      & + .operate-item {
-        margin-left: 20px;
-      }
-
-      .el-switch {
-        margin-right: 10px;
-      }
-    }
     .top-switch {
       display: inline-block;
       width: 124px;
