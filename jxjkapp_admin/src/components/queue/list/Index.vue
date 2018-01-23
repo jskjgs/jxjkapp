@@ -111,20 +111,51 @@ export default {
         排队管理
       </div>
     </div>
-    <div class="top-box flex--vcenter" style="margin-top: 20px;">
-      <div class="btn-wrap flex-item--none">
-        <el-button type="primary" @click="add"  style="margin-left: 20px;width: 120px;border-radius: 4px;">用户排号</el-button>
-      </div>
-    </div>
+    <el-row :gutter="20" style="margin-top: 20px;">
+      <el-col :span="8">
+        <div class="info-item">
+          <span class="info-item__label">当前号码</span>：
+          <span class="info-item__content">{{currentInfo.number}}</span>
+        </div>
+      </el-col>
+      <el-col :span="8">
+        <div class="info-item">
+          <span class="info-item__label">用户姓名</span>：
+          <span class="info-item__content">{{currentInfo.userName}}</span>
+        </div>
+      </el-col>
+      <el-col :span="8">
+        <div class="info-item">
+          <span class="info-item__label">用户ID</span>：
+          <span class="info-item__content">{{currentInfo.userId}}</span>
+        </div>
+      </el-col>
+      <el-col :span="8">
+        <div class="info-item">
+          <span class="info-item__label">用户电话</span>：
+          <span class="info-item__content">{{currentInfo.number}}</span>
+        </div>
+      </el-col>
+      <el-col :span="8">
+        <div class="info-item">
+          <span class="info-item__label">当前号码</span>：
+          <span class="info-item__content">{{currentInfo.userPhone}}</span>
+        </div>
+      </el-col>
+      <el-col :span="8">
+        <div class="info-item">
+          <span class="info-item__label">项目名称</span>：
+          <span class="info-item__content">{{currentInfo.serviceName}}</span>
+        </div>
+      </el-col>
+    </el-row>
     <div class="top-box flex--vcenter">
-      <div class="btn-wrap flex-item--none">
-        <h3>当前号码</h3> {{currentInfo.number}}
-        <h3>用户姓名</h3> {{currentInfo.userName}}
-        <h3>用户ID</h3> {{currentInfo.userId}}
-        <h3>用户电话</h3> {{currentInfo.userPhone}}
-        <h3>项目名称</h3> {{currentInfo.serviceName}}
+      <div class="top-box flex--vcenter">
+        <div class="btn-wrap flex-item--none">
+          <el-button type="primary" @click="add"  style="width: 120px;border-radius: 4px;">用户排号</el-button>
+        </div>
       </div>
-      <div class="btn-wrap flex-item--none">
+      <div class="btn-wrap flex-item--none" style="margin-left: 20px;">
         <el-button type="primary" @click="next">下一位</el-button>
       </div>
     </div>
@@ -142,25 +173,17 @@ export default {
   @import "~@/assets/style/variables/index";
 
   #page-queue {
+    .info-item {
+      margin-bottom: 20px;
+    }
+
     .top-box {
       .input-items {
         padding: 10px;
       }
     }
-
-    .search-input {
-      width: 300px;
-      input {
-        border-radius: 18px;
-      }
-    }
     .search-label {
       color: $color3;
-    }
-    .btn-wrap {
-      .el-button {
-        border-radius: 18px;
-      }
     }
     .btn--del {
       background: $bg5;
