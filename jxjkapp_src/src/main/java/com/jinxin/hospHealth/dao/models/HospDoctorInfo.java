@@ -1,7 +1,6 @@
 package com.jinxin.hospHealth.dao.models;
 
 import com.jinxin.hospHealth.controller.protocol.VO.DoctorInfoVO;
-import com.jinxin.hospHealth.dao.modelsEnum.SexEnum;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;

@@ -56,32 +56,25 @@ public class OrderServiceDetailsController extends TransformController{
         return ResponseWrapperSuccess(map);
     }
 
-    @ApiOperation(value = "确认订单服务详情 ---admin")
+    @ApiOperation(value = "完成服务详情 ---docker")
     @RequestMapping(value = "/admin/confirm", method = RequestMethod.POST)
     @ResponseBody
     public JSONObject confirm(
-            @ApiParam(value = "订单服务详情信息", required = true) @RequestBody OrderServiceDetailsPO orderServiceDetailsPO) throws Exception {
-        Long adminUserId = getAdminUserId();
-        orderServiceDetailsService.confirm(orderServiceDetailsPO,adminUserId);
+            @ApiParam(value = "完成服务详情", required = true) @RequestBody OrderServiceDetailsPO orderServiceDetailsPO) throws Exception {
+        orderServiceDetailsPO.setAdminUserId(getAdminUserId());
+        orderServiceDetailsService.confirm(orderServiceDetailsPO);
         return ResponseWrapperSuccess(null);
     }
 
-    //todo: 缺少完成逻辑,这段不要删,等完成逻辑下来后,做调整
-//    @ApiOperation(value = "完成服务订单 ---admin")
-//    @RequestMapping(value = "/complete", method = RequestMethod.POST)
-//    @ResponseBody
-//    public JSONObject complete(
-//            @ApiParam(value = "订单服务详情 ID", required = true) @RequestParam(value = "id", required = true) Long id) throws Exception {
-//        Long adminUserId = DPreconditions.checkNotNull(
-//                getAdminUserId(),
-//                "请先登陆.",
-//                true);
-//        OrderServiceDetailsPO update = new OrderServiceDetailsPO();
-//        update.setId(id);
-//        update.setState(OrderServiceDetailsStateEnum.COMPLETE.getCode());
-//        orderServiceDetailsService.update(update);
-//        return ResponseWrapperSuccess(null);
-//    }
+    @ApiOperation(value = "确认订单服务详情 ---docker")
+    @RequestMapping(value = "/admin/accept", method = RequestMethod.POST)
+    @ResponseBody
+    public JSONObject accept(
+            @ApiParam(value = "订单服务详情信息", required = true) @RequestBody OrderServiceDetailsPO orderServiceDetailsPO) throws Exception {
+        orderServiceDetailsPO.setAdminUserId(getAdminUserId());
+        orderServiceDetailsService.accept(orderServiceDetailsPO);
+        return ResponseWrapperSuccess(null);
+    }
 
     @ApiOperation(value = "作废服务订单 --- admin")
     @RequestMapping(value = "/admin/cancellation", method = RequestMethod.POST)

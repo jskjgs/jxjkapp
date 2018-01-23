@@ -12,7 +12,7 @@ public interface HospDoctorInfoMapper extends MyMapper<HospDoctorInfo> {
 
      @Select({
              " <script> ",
-             " SELECT * FROM `hosp_doctor_info` where 1=1 ",
+             " SELECT * FROM hosp_doctor_info where 1=1 ",
              " <if test='doctorInfo.name != null and doctorInfo.name != \"\"'> ",
              "   AND name LIKE CONCAT('%',#{doctorInfo.name},'%')",
              " </if> ",

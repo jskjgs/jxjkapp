@@ -141,17 +141,44 @@ public class OrderServiceDetailsService implements BaseService<HospOrderServiceD
     }
 
     /**
-     * 确认服务订单 --- 完成态
+     * 接单服务订单
      *
      * @param po
      */
-    public void confirm(OrderServiceDetailsPO po, Long adminUserId) throws Exception {
+    @Transactional
+    public void accept(OrderServiceDetailsPO po) throws Exception {
         OrderServiceDetailsPO select = new OrderServiceDetailsPO();
         select.setId(po.getId());
         select.setState(OrderServiceDetailsStateEnum.NORMAL.getCode());
         DPreconditions.checkNotNull(
                 selectOne(select),
                 "服务订单未查询到.",
+                true);
+        DPreconditions.checkNotNull(
+                adminUserInfoService.selectOne(po.getAdminUserId()),
+                "医生用户ID不存在",
+                true);
+        OrderServiceDetailsPO update = new OrderServiceDetailsPO();
+        update.setId(po.getId());
+        update.setAdminUserId(po.getAdminUserId());
+        update.setState(OrderServiceDetailsStateEnum.IN_SERVICE.getCode());
+        update(update);
+    }
+
+    /**
+     * 完成服务订单
+     *
+     * @param po
+     */
+    @Transactional
+    public void confirm(OrderServiceDetailsPO po) throws Exception {
+        OrderServiceDetailsPO select = new OrderServiceDetailsPO();
+        select.setId(po.getId());
+        select.setAdminUserId(po.getAdminUserId());
+        select.setState(OrderServiceDetailsStateEnum.IN_SERVICE.getCode());
+        DPreconditions.checkNotNull(
+                selectOne(select),
+                "服务订单未查询到,或者不属于改账号接的单.",
                 true);
         DPreconditions.checkNotNullAndEmpty(
                 po.getDoctorSign(),
@@ -162,12 +189,11 @@ public class OrderServiceDetailsService implements BaseService<HospOrderServiceD
                 "用户签字不能为空.",
                 true);
         DPreconditions.checkNotNull(
-                adminUserInfoService.selectOne(adminUserId),
+                adminUserInfoService.selectOne(po.getAdminUserId()),
                 "医生用户ID不存在",
                 true);
         OrderServiceDetailsPO update = new OrderServiceDetailsPO();
         update.setId(po.getId());
-        update.setAdminUserId(adminUserId);
         update.setAssociatesId(po.getAssociatesId());
         update.setConsumptionNote(po.getConsumptionNote());
         update.setBuyNote(po.getBuyNote());
@@ -292,8 +318,7 @@ public class OrderServiceDetailsService implements BaseService<HospOrderServiceD
         PageHelper.startPage(po.getPageNum(), po.getPageSize());
         if (StringUtil.isNotEmpty(po.getField()))
             PageHelper.orderBy(po.getField());
-        HospOrderServiceDetails select = po.transform(null, null);
-        return new PageInfo<>(hospOrderServiceDetailsMapper.select(select));
+        return new PageInfo<>(hospOrderServiceDetailsMapper.selectByExampleByCustom(po));
     }
 
     @Override
