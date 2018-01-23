@@ -162,18 +162,6 @@ export default {
             </el-form-item>
           </el-col>
         </el-row>
-        <!-- <el-form-item
-          label="跳转链接"
-          prop="link"
-          :rules="[
-            { required: false, message: '跳转链接不能为空'},
-            { pattern: /^(https?:\/\/)?[\w\-]+(\.[\w\-]+)+([\w\-\.,@?^=%&:\/~\+#]*[\w\-\@?^=%&\/~\+#])?$/, message: '请输入正确的链接地址', trigger: 'blur'}
-          ]">
-          <el-input
-            v-model.trim="form.link"
-            auto-complete="off">
-          </el-input>
-        </el-form-item> -->
         <el-form-item
           label="商品类型图片"
           required>
@@ -187,7 +175,6 @@ export default {
         <el-button
           type="default"
           :disabled="submitLoading"
-          v-loading="submitLoading"
           @click="visible = false">
           取消
         </el-button>

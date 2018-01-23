@@ -1,7 +1,7 @@
 import { fetchApi } from '@/utils/index'
 
-// 获取医生列表
-export const GET_LIST_URL = '/doctorInfo/admin/all'
+// 获取员工列表
+export const GET_LIST_URL = '/admin/all'
 export const getListApi = (data) => {
   return fetchApi({
     url: GET_LIST_URL,
@@ -10,13 +10,12 @@ export const getListApi = (data) => {
   })
 }
 
-// 修改医生信息
-export const MODIFY_DOCTOR_URL = '/doctor_i/modifyDoctor'
-export const modifyDoctorApi = (params, data) => {
+// 删除员工账号
+export const DELETE_EMPLOYEE_URL = '/admin/setStateAsInvalid'
+export const delEmployee = (params) => {
   return fetchApi({
-    url: MODIFY_DOCTOR_URL,
-    type: 'post',
-    params,
-    data
+    url: DELETE_EMPLOYEE_URL,
+    type: 'delete',
+    params
   })
 }

@@ -17,7 +17,8 @@ export default class extends wepy.app {
       'pages/serviceHistory',
       'pages/account',
       'pages/serviceDetail',
-      'pages/serviceRecord'
+      'pages/serviceRecord',
+      'pages/sign'
     ],
     window: {
       backgroundTextStyle: 'light',
@@ -36,7 +37,7 @@ export default class extends wepy.app {
         'pagePath': 'pages/serviceHistory',
         'iconPath': './assets/images/history_normal.png',
         'selectedIconPath': './assets/images/history_press.png',
-        'text': '历史记录'
+        'text': '我的接单'
       }, {
         'pagePath': 'pages/account',
         'iconPath': './assets/images/tab-my.png',
@@ -66,7 +67,7 @@ export default class extends wepy.app {
       enableDebug: true
     })
     // wx.reLaunch({
-    //   url: '/pages/serviceRecord'
+    //   url: '/pages/sign'
     // })
   }
 }

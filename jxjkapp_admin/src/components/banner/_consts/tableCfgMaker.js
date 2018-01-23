@@ -51,18 +51,17 @@ export default function () {
     }, {
       attrs: {
         'prop': 'cover',
-        'width': '140',
         'label': '封面图'
       },
       slotName: 'column-cover'
-    }, {
+    }, /* {
       attrs: {
         'prop': 'jumpUrl',
         'min-width': '120',
         'label': '跳转链接'
       },
       slotName: 'column-jumpUrl'
-    }, {
+    }, */ {
       attrs: {
         'label': '操作'
       },

@@ -1,5 +1,12 @@
 <style lang="scss">
-.comp-tel-input {
+.comp-logout {
+  height: 100vh;
+
+  .user-title {
+    font-size: 16px;
+    text-align: center;
+  }
+
   .input-group + .input-group {
     border-top: 2rpx solid #F2F2F2;
   }
@@ -16,13 +23,15 @@
 </style>
 
 <template>
-  <view>
-    <!-- <view class="page-title-wrap">{{ title }}</view> -->
-    <view class="comp-tel-input">
-      <view class="btn-wrap flex--hcenter">
-        <button 
-          class="primary-btn"
-          @tap="submit">{{ submitBtnText }}</button>
+  <view class="comp-logout flex--center">
+    <view class="comp-logout-wrap">
+      <view class="user-title">当前登陆人：{{ userInfo.phone }}</view>
+      <view class="comp-tel-input">
+        <view class="btn-wrap flex--hcenter">
+          <button 
+            class="primary-btn"
+            @tap="submit">{{ submitBtnText }}</button>
+        </view>
       </view>
     </view>
   </view>
@@ -49,6 +58,9 @@
     }
 
     computed = {
+      userInfo () {
+        return this.$parent.$parent.globalData.userInfo || {}
+      }
     }
 
     methods = {
@@ -57,7 +69,7 @@
       }
     }
 
-    events = {
+    onLoad () {
     }
   }
 </script>

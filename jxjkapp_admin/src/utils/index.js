@@ -188,7 +188,7 @@ export const payStateFormat = (state) => {
   if (state === 1) { return '已支付' }
   if (state === 2) { return '退款申请中' }
   if (state === 3) { return '退款完毕' }
-  return ''
+  return state
 }
 
 /**
@@ -201,3 +201,28 @@ export const userStateFormat = (isVip) => {
   return '普通用户'
 }
 
+/**
+ * 用户等级
+ */
+export const authorFormat = (author) => {
+  switch (author) {
+    case 0: { return '医生' }
+    case 1: { return '医院主管' }
+    case 2: { return '集团领导' }
+  }
+  return author
+}
+
+/**
+ * 用户等级
+ */
+export const convertServiceState = (state) => {
+  switch (state) {
+    case 0: { return '指派中' }
+    case 1: { return '服务中' }
+    case 2: { return '已完成' }
+    case 98: { return '申请作废' }
+    case 99: { return '已作废' }
+  }
+  return state
+}

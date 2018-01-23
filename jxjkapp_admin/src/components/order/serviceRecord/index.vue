@@ -7,6 +7,7 @@ import placeholderImg from '@/assets/images/placeholder.png'
 
 import SearchTable from '@/components/_common/searchTable/SearchTable'
 
+import { convertDate, convertServiceState } from '@/utils/index'
 import {
   queryServiceRecordApi
 } from './api'
@@ -33,23 +34,33 @@ export default {
       }
     }, {
       attrs: {
+        'prop': 'createDate',
+        'label': '开始时间',
+        'min-width': '100',
+        'show-overflow-tooltip': true,
+        'formatter' (row, col) {
+          return row.createDate ? convertDate(row.createDate, 'Y-M-D h:m') : '--'
+        }
+      }
+    }, {
+      attrs: {
         'prop': 'completeTime',
         'label': '完成时间',
         'min-width': '100',
-        'show-overflow-tooltip': true
+        'show-overflow-tooltip': true,
+        'formatter' (row, col) {
+          return row.completeTime ? convertDate(row.completeTime, 'Y-M-D h:m') : '--'
+        }
       }
     }, {
       attrs: {
         'prop': 'serviceState',
         'label': '状态',
         'min-width': '100',
-        'show-overflow-tooltip': true
-      }
-    }, {
-      attrs: {
-        'prop': 'index',
-        'label': '服务次数',
-        'min-width': '50'
+        'show-overflow-tooltip': true,
+        'formatter' (row, col) {
+          return convertServiceState(row.serviceState)
+        }
       }
     }, {
       attrs: {
@@ -76,10 +87,10 @@ export default {
         let content = data.content || {}
         console.log(content.list)
         this.tableData = (content.list || []).map((item) => ({
+          createDate: item.createDate,
           serviceId: item.id,
-          provider: item.doctorUserInfo.name,
-          completeTime: item.doctorUserInfo.updateDate,
-          // index: item.productSku.serviceQuantity,
+          provider: !item.adminInfo ? '' : item.adminInfo.name,
+          completeTime: !item.adminInfo ? null : item.adminInfo.updateDate,
           serviceState: item.state
         }))
         this.total = content.total || 0

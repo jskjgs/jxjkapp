@@ -30,7 +30,7 @@ import {
 } from '@/components/order/list/_consts/routers'
 import {
   INDEX as queueCfg
-} from '@/components/queue/_consts/routers'
+} from '@/components/queue/list/_consts/routers'
 
 export default [{
   label: '运营管理',

@@ -37,7 +37,7 @@ export default function () {
       attrs: {
         'prop': 'no',
         'label': '排序',
-        'min-width': '80'
+        'min-width': '100'
       }
     }, {
       attrs: {
@@ -49,13 +49,11 @@ export default function () {
     }, {
       attrs: {
         'prop': 'cover',
-        'min-width': '120',
         'label': '展示图片'
       },
       slotName: 'column-cover'
     }, {
       attrs: {
-        'min-width': '200',
         'label': '操作'
       },
       slotName: 'column-operate'

@@ -62,7 +62,7 @@
         item="item">
         <view class="result-item flex--vcenter--sb" @tap="handlePickItem({{ item }})">
           <text class="item-label">{{ item.name }}</text>
-          <text class="item-info">工号：{{ item.jobId }}</text>
+          <!-- <text class="item-info">工号：{{ item.jobId }}</text> -->
         </view>
       </repeat>
     </view>
@@ -76,6 +76,10 @@
     }
 
     props = {
+      results: {
+        type: Array,
+        twoWay: true
+      },
       visible: {
         type: Boolean,
         twoWay: true,
@@ -86,7 +90,6 @@
     mixins = []
 
     data = {
-      results: []
     }
 
     watch = {
@@ -98,16 +101,7 @@
     methods = {
       // 搜索
       handleSearch ({ detail }) {
-        // const value = detail.value
-        this.results = [{
-          id: 1,
-          name: '员工1',
-          jobId: '34324324'
-        }, {
-          id: 2,
-          name: '员工2',
-          jobId: '90920392'
-        }]
+        this.$emit('search', detail.value)
       },
       // 取消搜索
       handleCancelSearch () {

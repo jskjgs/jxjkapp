@@ -4,16 +4,14 @@
  * Date: 2017/8/29
  */
 import SearchTable from '@/components/_common/searchTable/SearchTable'
-import EditDialog from './_thumbs/EditDialog.vue'
 import {
   getListApi,
-  modifyDoctorApi
+  delEmployee
 } from './api'
-
+import { authorFormat } from '@/utils/index'
 export default {
   name: 'Doctor',
   components: {
-    EditDialog,
     SearchTable
   },
   data () {
@@ -62,7 +60,7 @@ export default {
     }, {
       attrs: {
         'prop': 'author',
-        'label': '账号等级',
+        'label': '权限',
         'min-width': '160',
         'show-overflow-tooltip': true
       }
@@ -76,8 +74,12 @@ export default {
           return (
             <div class="flex--center operations">
               <span
-                  class="operate-item el-icon-edit"
-                  onClick={() => this.openEditDialog(scope.row)}>
+                  class="operate-item"
+                  onClick={() => this.handleViewDetail(scope.row.no)}>查看
+              </span>
+              <span
+                  class="operate-item"
+                  onClick={() => this.handleDel(scope.row.no)}>删除
               </span>
             </div>
           )
@@ -92,12 +94,12 @@ export default {
         this.tableData = (content.list || []).map((item) => {
           return {
             no: item.id,
-            name: item.name,
-            area: item.hospArea.name,
+            name: item.nickname,
+            area: item.area.name,
             phone: item.phone,
             title: item.title,
-            author: item.author,
-            sex: ((sex) => { sex === 0 ? '男' : '女' })(item.sex)
+            author: authorFormat(item.authorId),
+            sex: ((sex) => { return sex === 0 ? '女' : '男' })(item.sex)
           }
         })
         this.total = content.total || 0
@@ -105,15 +107,13 @@ export default {
     }
 
     return {
-      editDialogVisible: false,
-      editData: {},
       keyWords: null,
       apiKeysMap: {
         pageSize: {
           value: 10,
           innerKey: 'pageSize' // searchTable组件内部映射的key
         },
-        departmentId: {
+        id: {
           value: undefined
         },
         keyWords: {
@@ -132,11 +132,6 @@ export default {
   created () {
   },
   watch: {
-    editDialogVisible (val) {
-      if (!val) {
-        this.editData = null
-      }
-    },
     currentPage (newPageNum) {
       this.getList({
         pageNum: newPageNum
@@ -151,31 +146,32 @@ export default {
         }
       })
     },
-    handleEditCancel () {
+    handleViewDetail (id) {
+      this.$router.push({name: 'employee/detail_root', params: { id: id }})
     },
     addEmployee () {
-      this.$router.push({path: 'employee/add'})
+      this.$router.push({name: 'employee/detail_root'})
     },
-    handleEditSubmit (data, respondCb) {
-      let formData
-      if (data.file) {
-        formData = new FormData()
-        formData.append('file', data.file)
-      }
-      let sendData = {
-        goodDescribe: data.describe,
-        doctorId: data.id
-      }
-      modifyDoctorApi(sendData, formData).then(res => {
-        this.$message({
-          type: 'success',
-          message: '修改成功'
-        })
-        this.editDialogVisible = false
-        this.$refs.searchTable.getList()
-        respondCb(true)
-      }).catch(() => {
-        respondCb()
+    handleDel (id) {
+      this.$confirm('是否删除该信息？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning',
+        beforeClose: (action, instance, done) => {
+          if (action === 'confirm') {
+            delEmployee({id: id}).then((res) => {
+              this.$message({
+                type: 'success',
+                message: '删除成功'
+              })
+              this.$refs.searchTable.getList()
+            }).finally(() => {
+              done()
+            })
+          } else {
+            done()
+          }
+        }
       })
     }
   }

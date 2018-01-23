@@ -1,12 +1,9 @@
 <template>
   <view class="comp-serviceDetail">
-    <SignDialog 
-      :visible.sync="signDialogVisible"
-      :title.sync="signDialogTitle" 
-      :readonly.sync="readonly"
-      :touchList.sync="signDialogTouchList"/>
     <SearchPage 
       :visible.sync="onSearchPartner"
+      :results="doctorList"
+      @search.user="handlePartnerSearch"
       @picked.user="handlePartnerPicked" />
     <view class="service-record main-bg">
       <view class="service-record-title">{{ storageData.serviceName }}</view>
@@ -21,7 +18,7 @@
         style="border-bottom: 1px solid #F2F2F2;">
         <text class="item-label">合作人：</text>
         <view wx:if="{{ readonly }}">
-          {{ storageData.partner != undefined && storageData.partner !== '' ? storageData.partner : '未选择' }}
+          {{ storageData.partner != undefined && storageData.partner !== '' ? storageData.partner : '独立完成' }}
         </view>
         <picker 
           wx:else
@@ -42,9 +39,9 @@
     <view class="service-item main-bg">
       <view class="input-item flex--vcenter--sb">
         <text class="item-label">当日症状：</text>
-        <view wx:if="{{ readonly }}">
+        <!-- <view wx:if="{{ readonly }}">
           {{ storageData.templateName != undefined && storageData.templateName !== '' ? storageData.templateName : '未选择' }}
-        </view>
+        </view> -->
         <!-- <picker 
           wx:else
           bindchange="handleTemplatePickerChange" 
@@ -54,16 +51,17 @@
           {{ storageData.templateName != undefined && storageData.templateName !== '' ? storageData.templateName : '请选择' }}<text class="arrow-rt"></text>
         </picker> -->
       </view>
-      <block wx:if="{{ readonly }}">
-        <view wx:if="{{ templateContent }}">{{ templateContent }}</view>
-      </block>
-      <view wx:else class="input-item" style="padding-top: 0;">
+      <view class="input-item" style="padding-top: 0;">
         <!-- <DiagnoseInput 
           type="textarea" 
           class="diagnose-input"
           :disabled.sync="diagnoseInputDisabled"
           :value.sync="templateContent"/> -->
+        <block wx:if="{{ readonly }}">
+          <view>{{ templateContent || '未填写' }}</view>
+        </block>
         <DiagnoseInput 
+          wx:else
           type="textarea" 
           class="diagnose-input"
           placeholder="请输入当日症状"
@@ -73,7 +71,7 @@
     <view class="service-item main-bg">
       <view class="input-item service-item-mark flex--sb">
         <text class="item-label">消费备注：</text>
-        <view wx:if="{{ readonly }}">{{ consumeInfo }}</view>
+        <view wx:if="{{ readonly }}">{{ consumeInfo || '未填写' }}</view>
         <!-- 
           tips: textarea 组件是由客户端创建的原生组件，它的层级是最高的，不能通过 z-index 控制层级
         -->
@@ -81,7 +79,6 @@
           wx:else
           class="flex-item"
           type="textarea"
-          :disabled.sync="signDialogVisible"
           :value.sync="consumeInfo" />
       </view>
     </view>
@@ -96,12 +93,11 @@
     <view class="service-item main-bg">
       <view class="input-item service-item-mark flex--sb">
         <text class="item-label">购买备注：</text>
-        <view wx:if="{{ readonly }}"></view>
+        <view wx:if="{{ readonly }}">{{ purchaseInfo || '未填写' }}</view>
         <PurchaseInfoInput
           wx:else
           class="flex-item" 
           type="textarea"
-          :disabled.sync="signDialogVisible"
           :value.sync="purchaseInfo"/>
       </view>
     </view>
@@ -141,9 +137,7 @@
     }
 
     data = {
-      signDialogVisible: false, // 签名弹框显示状态
-      signDialogTitle: '', // 签名弹框标题
-      signDialogTouchList: [], // 签名touchList
+      doctorList: [], // 合伙人搜索结果列表
       onSearchPartner: false, // 标示在搜索
       diagnoseInputDisabled: true, // 诊断内容输入框是否禁用
       partnerPickerIndex: 0, // 合伙人类型选择
@@ -211,14 +205,6 @@
       },
       templateContent (templateContent) {
         console.log('templateContent', templateContent)
-      },
-      signDialogTouchList (newVal) {
-        console.log(newVal, 111111)
-        if (this.signDialogType === 'doctor') {
-          this.storageData.doctorSignTouchList = newVal
-        } else if (this.signDialogType === 'user') {
-          this.storageData.userSignTouchList = newVal
-        }
       }
     }
 
@@ -234,6 +220,32 @@
           this.onSearchPartner = true
         }
       },
+      // 合伙人搜索
+      handlePartnerSearch (value) {
+        this.$_request({
+          url: '/doctorInfo/query',
+          method: 'POST',
+          data: {
+            name: value
+          }
+        }).then(content => {
+          content = content || {}
+          const list = content.list || []
+          if (list.length === 0) {
+            wx.showToast({
+              image: '../assets/images/error.png',
+              title: '查无数据'
+            })
+          } else {
+            this.doctorList = list.map(item => {
+              return {
+                id: item.id,
+                name: item.name
+              }
+            })
+          }
+        })
+      },
       // 合伙人选择
       handlePartnerPicked (partner) {
         console.log('partner', partner)
@@ -248,17 +260,17 @@
         this.storageData.templateId = picked.value
         this.storageData.templateName = picked.label
       },
-      // 显示签字弹框
+      // 签名页面
       showSignDialog (type) {
-        this.signDialogType = type
         if (type === 'doctor') {
-          this.signDialogTitle = '技师签名'
-          this.signDialogTouchList = this.storageData.doctorSignTouchList
+          wx.navigateTo({
+            url: `/pages/sign?title=技师签名&readonly=${this.readonly}&type=${type}&touchList=${JSON.stringify(this.storageData.doctorSignTouchList)}`
+          })
         } else if (type === 'user') {
-          this.signDialogTitle = '用户签名'
-          this.signDialogTouchList = this.storageData.userSignTouchList
+          wx.navigateTo({
+            url: `/pages/sign?title=用户签名&readonly=${this.readonly}&type=${type}&touchList=${JSON.stringify(this.storageData.userSignTouchList)}`
+          })
         }
-        this.signDialogVisible = true
       },
       // 提交表单
       submit () {
@@ -270,12 +282,22 @@
     }
 
     onLoad () {
+      this.$_eventBus.on('sign:doctor', (touchList) => {
+        console.log('touchList', touchList)
+        this.storageData.doctorSignTouchList = touchList
+        this.$apply()
+      })
+      this.$_eventBus.on('sign:user', (touchList) => {
+        console.log('touchList', touchList)
+        this.storageData.userSignTouchList = touchList
+        this.$apply()
+      })
     }
   }
 </script>
 
 <style lang="scss">
-// @import '../assets/style/variables/theme.scss';
+@import '../assets/style/variables/theme.scss';
 .comp-serviceDetail {
   .service {
     &-record {

@@ -144,18 +144,21 @@
     }
 
     onShow () {
-      if (this.toLogined) {
-        wx.switchTab({
-          url: '/pages/index'
-        })
-        this.toLogined = false
-      } else {
-        if (this.$_checkLogin('navigateTo')) {
-          this.initPageData()
-        } else {
-          this.toLogined = true
-        }
-      }
+      // if (this.toLogined) {
+      //   wx.switchTab({
+      //     url: '/pages/index'
+      //   })
+      //   this.toLogined = false
+      // } else {
+      //   if (this.$_checkLogin('navigateTo')) {
+      //     this.initPageData()
+      //   } else {
+      //     this.toLogined = true
+      //   }
+      // }
+      this.$_onPageShow(this, () => {
+        this.initPageData()
+      }, 'navigateTo')
     }
 
     initPageData () {

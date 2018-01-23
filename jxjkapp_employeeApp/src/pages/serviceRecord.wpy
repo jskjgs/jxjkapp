@@ -39,16 +39,24 @@
         const sendData = {
           id: this.id,
           associatesId: formData.partnerId === -1 ? undefined : formData.partnerId,
-          doctorSign: formData.doctorSignTouchList,
+          doctorSign: JSON.stringify(formData.doctorSignTouchList),
           doctorComment: formData.templateContent,
           consumptionNote: formData.consumeInfo,
-          userSign: formData.userSignTouchList,
+          userSign: JSON.stringify(formData.userSignTouchList),
           buyNote: formData.purchaseInfo
         }
         this.$_request({
-          url: '/orderService/doctor/confirm',
+          url: '/orderService/admin/confirm',
           method: 'POST',
           data: sendData
+        }).then(res => {
+          wx.showToast({
+            title: '提交成功'
+          })
+          setTimeout(() => {
+            this.$_eventBus.emit('serviceHistory:init')
+            wx.navigateBack()
+          }, 400)
         })
       }
     }
@@ -64,13 +72,11 @@
         userTel: userInfo.phone
       })
     }
-    onUnload () {
-    }
   }
 </script>
 
 <style lang="scss">
-// @import '../assets/style/variables/theme.scss';
+@import '../assets/style/variables/theme.scss';
 #page-login {
   padding-top: 78rpx;
   .page-title-wrap {

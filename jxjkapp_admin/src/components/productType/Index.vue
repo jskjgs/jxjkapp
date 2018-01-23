@@ -3,21 +3,17 @@
  * Created by zhengji
  * Date: 2017/8/29
  */
-import placeholderImg from '@/assets/images/placeholder.png'
-
 import SearchTable from '@/components/_common/searchTable/SearchTable'
 
 import {
-  deleteBannerBatchApi,
-  addBanenrApi,
-  modifyBannerApi,
-  switchVisibleApi
+  createTypeApi,
+  updateTypeApi,
+  delTypeApi
 } from './api'
 
 // import { Loading } from 'element-ui'
 import EditDialog from './_thumbs/EditDialog.vue'
 import ImgZoom from '@/components/_common/imgZoom/ImgZoom.vue'
-
 import tableCfgMaker from './_consts/tableCfgMaker'
 
 let adding = false
@@ -56,7 +52,6 @@ export default {
     }
   },
   created () {
-    this.placeholderImg = placeholderImg
   },
   watch: {
     editDialogVisible (val) {
@@ -86,17 +81,15 @@ export default {
       this.editData = rowData
       adding = !!isAdd
     },
-    // 删除单个banner
-    delRow (row) {
-      this.$confirm('是否删除该信息？', '提示', {
+    // 删除
+    delRow (rowData) {
+      this.$confirm('是否删除该分类？', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning',
         beforeClose: (action, instance, done) => {
           if (action === 'confirm') {
-            deleteBannerBatchApi({
-              bannerIdList: row.id
-            }).then(res => {
+            delTypeApi(rowData.id).then(res => {
               done()
               this.$message({
                 type: 'success',
@@ -110,59 +103,42 @@ export default {
         }
       })
     },
-    // 批量删除
-    batchRemove () {
-      deleteBannerBatchApi({
-        bannerIdList: this.multipleSelection.map(item => item.id).join(',')
-      }).then(res => {
-        this.$message({
-          type: 'success',
-          message: '删除成功'
-        })
-        this.editDialogVisible = false
-        this.$refs.searchTable.getList()
-      })
-    },
     handleEditCancel () {
     },
     // 提交编辑或新增
     handleEditSubmit (data, respondCb) {
       let formData
+      const uploadForm = (imageUrl) => {
+        let sendData = {
+          id: data.id,
+          name: data.name,
+          images: imageUrl,
+          sortNumber: data.no,
+          description: '不需要描述'
+        }
+        let requestFn = adding ? createTypeApi : updateTypeApi
+        return requestFn(sendData).then(res => {
+          this.$message({
+            type: 'success',
+            message: adding ? '添加成功' : '修改成功'
+          })
+          this.editDialogVisible = false
+          this.$refs.searchTable.init()
+          respondCb(true)
+        }).catch(() => {
+          respondCb()
+        })
+      }
       if (data.file) {
         formData = new FormData()
         formData.append('file', data.file)
-      }
-      let sendData = {
-        name: data.name,
-        jumpUrl: data.link,
-        orderNumber: data.no,
-        bannerId: data.id
-      }
-      let requestFn = adding ? addBanenrApi : modifyBannerApi
-      requestFn(sendData, formData).then(res => {
-        this.$message({
-          type: 'success',
-          message: adding ? '添加成功' : '修改成功'
+        // 上传图片后获取地址再上传表单数据
+        this.$uploadFile(formData).then(res => {
+          uploadForm(res.content)
         })
-        this.editDialogVisible = false
-        this.$refs.searchTable.init()
-        respondCb(true)
-      }).catch(() => {
-        respondCb()
-      })
-    },
-    // 显示／隐藏
-    switchVisible (rowData) {
-      switchVisibleApi({
-        bannerId: rowData.id
-      }).then(res => {
-        this.$message({
-          type: 'success',
-          message: rowData.visible ? '显示成功' : '隐藏成功'
-        })
-      }).finally(() => {
-        this.$refs.searchTable.getList()
-      })
+      } else {
+        uploadForm(data.cover)
+      }
     }
   }
 }
@@ -201,8 +177,7 @@ export default {
             新增 <i class="el-icon-plus"></i>
           </el-button>
           <el-button
-            :disabled="!multipleSelection.length"
-            @click="batchRemove">
+            :disabled="!multipleSelection.length">
             批量删除
           </el-button>
         </div>
@@ -212,7 +187,7 @@ export default {
         align="center"
         prop="cover"
         label="封面图"
-        width="180">
+        min-width="140">
         <template scope="scope">
           <img-zoom
             :src="scope.row.cover"
@@ -228,12 +203,20 @@ export default {
         <template scope="scope">
           <div class="flex--center operate-items">
             <span
-              class="operate-item el-icon-edit"
-              @click="openEditDialog(scope.row)">
+              class="operate-item">
+              <el-button 
+                type="text"
+                @click="openEditDialog(scope.row)">
+                编辑
+              </el-button>
             </span>
             <span
-              class="operate-item el-icon-delete"
-              @click="delRow(scope.row)">
+              class="operate-item">
+              <el-button 
+                type="text"
+                @click="delRow(scope.row)">
+                删除
+              </el-button>
             </span>
           </div>     
         </template>
