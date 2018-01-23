@@ -52,9 +52,40 @@ export default {
       this.getServiceDetail()
     }
   },
+  mounted () {
+    this.userSignCtx = this.$refs.userSign.getContext('2d')
+    this.doctorSignCtx = this.$refs.doctorSign.getContext('2d')
+  },
   watch: {
+    userAutograph (newVal) {
+      if (newVal) {
+        try {
+          this.drawSign(this.userSignCtx, JSON.parse(newVal))
+        } catch (e) {
+        }
+      }
+    },
+    providerAutograph (newVal) {
+      if (newVal) {
+        try {
+          this.drawSign(this.doctorSignCtx, JSON.parse(newVal))
+        } catch (e) {
+        }
+      }
+    }
   },
   methods: {
+    drawSign (ctx, touchList) {
+      touchList = touchList || []
+      touchList.forEach((item) => {
+        if (item.type === 'start') {
+          ctx.moveTo(item.x, item.y)
+        } else if (item.type === 'move') {
+          ctx.lineTo(item.x, item.y)
+        }
+      })
+      ctx.stroke()
+    },
     rejcetService () {
       let data = this.reject.form
       console.log(data)
@@ -90,6 +121,15 @@ export default {
         this.reject.rejectState = data.rejectState
         this.reject.form.rejectState = data.rejectState
         this.reject.rejectDate = data.rejectDate
+
+        const userSignEl = this.$refs.userSign
+        const doctorSignEl = this.$refs.doctorSignEl
+        if (userSignEl) {
+          this.drawSign(userSignEl.getContext('2d'), JSON.parse(data.userSign))
+        }
+        if (doctorSignEl) {
+          this.drawSign(userSignEl.getContext('2d'), JSON.parse(data.doctorSign))
+        }
       })
     },
     rejectState () {
@@ -113,141 +153,106 @@ export default {
         {{recordNumber ? '>'+recordNumber :''}}
       </div>
     </div>
-    <div class="flex--vcenter"  style="margin-top: 20px;">
-        <div>
-          <p>用户名称: {{userName}}</p>
-          <p>用户电话: {{userPhone}}</p>
-          <p>服务人员: {{providerName}}</p>
-          <p>治疗时间: {{serviceDate}}</p>
-          <p>订单类型: {{serviceState}}</p>
-          <p>当日症状: {{serviceComments}}</p>
-        </div>
+    <div class="info-item flex--vcenter">
+      <span class="info-item__label">用户名称</span>:
+      <span class="info-item__content">{{userName}}</span>
     </div>
-    <div class="flex--vcenter"  style="margin-top: 20px;">
-        <h3>客户签名</h3>
-        <div>
-          <p>{{userAutograph}}</p>
-        </div>
+    <div class="info-item flex--vcenter">
+      <span class="info-item__label">用户电话</span>:
+      <span class="info-item__content">{{userPhone}}</span>
     </div>
-    <div class="flex--vcenter"  style="margin-top: 20px;">
-        <h3>医生签名</h3>
-        <div>
-          <p>{{providerAutograph}}</p>
-        </div>
+    <div class="info-item flex--vcenter">
+      <span class="info-item__label">服务人员</span>:
+      <span class="info-item__content">{{providerName}}</span>
     </div>
-    <div class="flex--vcenter"  style="margin-top: 20px;">
-        <h3>用户反馈</h3>
-        <div>
-          <p>{{feedback.serviceScore}}</p>
-          <p>评价内容：{{!feedback.userComments?'用户没有发表评论':feedback.userComments}}</p>
-        </div>
+    <div class="info-item flex--vcenter">
+      <span class="info-item__label">治疗时间</span>:
+      <span class="info-item__content">{{serviceDate}}</span>
     </div>
-    <div class="flex--vcenter"  style="margin-top: 20px;">
-        <div>
-          <h3>申请作废</h3>
-          <p>申请作废理由：{{reject.rejectComments}}</p>
-          <p>审核状态:
-            <el-select v-model="reject.form.rejectState"  :disabled="reject.rejectState > 0" placeholder="请选择">
-              <el-option
-                v-for="(item,key,value) in reject.state"
-                :key="key"
-                :label="key"
-                :value="value">
-              </el-option>
-            </el-select>
-          </p>
-          <p v-show="reject.rejectState > 0">审核时间：{{reject.rejectDate}}</p>
-          <el-button
-            v-show="!this.reject.rejectState"
-            type="primary"
-            @click="rejcetService">提交
-          </el-button>
-        </div>
+    <div class="info-item flex--vcenter">
+      <span class="info-item__label">订单类型</span>:
+      <span class="info-item__content">{{serviceState}}</span>
     </div>
+    <div class="info-item flex--vcenter">
+      <span class="info-item__label">当日症状</span>:
+      <span class="info-item__content">{{serviceComments}}</span>
+    </div>
+    <div class="flex--vcenter">
+      <div class="info-item flex-item flex">
+        <span class="info-item__label">客户签名</span>:
+        <span class="info-item__content sign-panel-wrap">
+          <canvas id="userSign" class="sign-panel" ref="userSign" width="375" height="600"></canvas>
+        </span>
+      </div>
+      <div class="info-item flex-item flex">
+        <span class="info-item__label">医生签名</span>:
+        <span class="info-item__content sign-panel-wrap">
+          <canvas id="doctorSign" class="sign-panel" ref="doctorSign" width="375" height="600"></canvas>
+        </span>
+      </div>
+    </div>
+    <div class="info-item flex--vcenter">
+      <span class="info-item__label">用户反馈</span>:
+      <span class="info-item__content">{{!feedback.userComments?'用户没有发表评论':feedback.userComments}}</span>
+    </div>
+    <h3>申请作废</h3>
+    <div class="info-item flex-item flex--vcenter">
+      <span class="info-item__label">作废理由</span>:
+      <span class="info-item__content">
+        {{reject.rejectComments}}
+      </span>
+    </div>
+    <div class="info-item flex-item flex--vcenter">
+      <span class="info-item__label">审核状态</span>:
+      <span class="info-item__content">
+        <el-select v-model="reject.form.rejectState"  :disabled="reject.rejectState > 0" placeholder="请选择">
+          <el-option
+            v-for="(item,key,value) in reject.state"
+            :key="key"
+            :label="key"
+            :value="value">
+          </el-option>
+        </el-select>
+      </span>
+    </div>
+    <div class="info-item flex-item flex--vcenter" v-show="reject.rejectState > 0">
+      <span class="info-item__label">审核时间</span>:
+      <span class="info-item__content">
+        {{reject.rejectDate}}
+      </span>
+    </div>
+    <el-button
+      style="margin-top: 20px;"
+      v-show="!this.reject.rejectState"
+      type="primary"
+      @click="rejcetService">提交
+    </el-button>
   </div>
 </template>
 
 <style lang="scss">
-  @import "~@/assets/style/variables/index";
+@import "~@/assets/style/variables/index";
 
-  #order {
-    .display-num-control {
-      margin-left: 60px;
-      .label {
-        color: $color3;
-      }
-
-      .el-icon-edit {
-        color: #adb9ca;
-        cursor: pointer;
-      }
+#serviceDetail {
+  .info-item {
+    margin-top: 20px;
+    &__label {
+      flex: none;
+      width: 70px;
     }
-
-    .table-tools {
-      justify-content: space-between;
-    }
-
-    .search-input {
-      width: 300px;
-      input {
-        border-radius: 18px;
-      }
-    }
-    .search-label {
-      color: $color3;
-    }
-    .btn-wrap {
-      .el-button {
-        border-radius: 18px;
-      }
-    }
-    .btn--del {
-      background: $bg5;
-      color: #fff;
-      &:hover {
-        border-color: transparent;
-      }
-    }
-
-    .el-table {
-      margin-top: 20px;
-      td {
-        height: 80px;
-      }
-    }
-    .cover-img {
-      vertical-align: middle;
-      display: inline-block;
-      background: $bg6;
-    }
-    .cover-noimg {
-      background: $bg6 url('~@/assets/images/placeholder.png') center no-repeat;
-      background-size: 40px 30px;
-    }
-
-    .operate-item {
-      color: $color4;
-      font-size: 18px;
-      cursor: pointer;
-      & + .operate-item {
-        margin-left: 20px;
-      }
-
-      .el-switch {
-        margin-right: 10px;
-      }
-    }
-    .top-switch {
-      display: inline-block;
-      width: 124px;
-      text-align: left;
-      color: $color3;
-      font-size: 14px;
-    }
-
-    .pagination-wrap {
-      margin-top: 30px;
-      text-align: right;
+    &__content {
+      margin-left: 10px;
     }
   }
+
+  .sign-panel-wrap {
+    width: 190px;
+    height: 300px;
+    overflow: hidden;
+  }
+  .sign-panel {
+    transform-origin: left top;
+    transform: scale(0.5);
+  }
+}
 </style>

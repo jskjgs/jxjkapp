@@ -37,7 +37,7 @@ export default {
       attrs: {
         'prop': 'orderAmount',
         'label': '金额',
-        'min-width': '50',
+        'width': '100',
         'show-overflow-tooltip': true
       }
     }, {
@@ -82,16 +82,18 @@ export default {
       scopedSlots: {
         default: (scope) => {
           return (
-            <div class="flex--center operations">
+            <div class="flex--center operate-items">
               <span
-                class="operate-item "
-                onClick={() => this.openDetail(scope.row)}>
-                  详情
+                class="operate-item">
+                <el-button
+                  type="text"
+                  onClick={() => this.openDetail(scope.row)}>详情</el-button>
               </span>
               <span v-show={ !scope.row.state }
-                class="operate-item "
-                onClick={() => this.openServiceRecord(scope.row)}>
-                  记录
+                class="operate-item">
+                <el-button
+                  type="text"
+                  onClick={() => this.openServiceRecord(scope.row)}>记录</el-button>
               </span>
             </div>
           )
@@ -268,18 +270,6 @@ export default {
       background-size: 40px 30px;
     }
 
-    .operate-item {
-      color: $color4;
-      font-size: 18px;
-      cursor: pointer;
-      & + .operate-item {
-        margin-left: 20px;
-      }
-
-      .el-switch {
-        margin-right: 10px;
-      }
-    }
     .top-switch {
       display: inline-block;
       width: 124px;

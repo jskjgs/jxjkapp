@@ -132,99 +132,123 @@ export default {
         <h2> 添加订单</h2>
       </div>
     </div>
+    <el-row :gutter="20">
+      <el-col :span="8">
+        <div class="info-item">
+          <span class="info-item__label">
+            用户ID
+          </span>
+          <el-input
+            class="info-item__content"
+            v-model.trim="userId"
+            placeholder="请输就诊人身份证号">
+          </el-input>
+        </div>
+      </el-col>
+      <el-col :span="8">
+        <div class="info-item">
+          <span class="info-item__label">
+            *服务种类
+          </span>
+          <el-select 
+            class="info-item__content"
+            v-model="selectCategroy" 
+            placeholder="请选择">
+            <el-option
+              v-for="(key, value) in categroyList"
+              :key="key"
+              :label="value"
+              :value="value">
+            </el-option>
+          </el-select>
+        </div>
+      </el-col>
+      <el-col :span="8">
+        <div class="info-item">
+          <span class="info-item__label">
+            *项目名称
+          </span>
+          <el-select 
+            class="info-item__content"
+            v-model="selectSku" placeholder="请选择">
+            <el-option
+              v-for="product in productList()"
+              :key="product.id"
+              :label="product.name"
+              :value="product">
+            </el-option>
+          </el-select>
+        </div>
+      </el-col>
+      <el-col :span="8">
+        <div class="info-item">
+          <span class="info-item__label">
+            服务单价
+          </span>
+          <el-input
+            class="info-item__content">
+            v-model="unitPrice"
+            :readonly=true
+            type="number">
+          </el-input>
+        </div>
+      </el-col>
+      <el-col :span="8">
+        <div class="info-item">
+          <span class="info-item__label">
+            *购买数量
+          </span>
+          <el-input
+            class="info-item__content"
+            v-model="qty"
+            placeholder="请输入数量"
+            type="number">
+          </el-input>
+        </div>
+      </el-col>
+      <el-col :span="8">
+        <div class="info-item">
+          <span class="info-item__label">
+            折扣金额
+          </span>
+          <el-input
+            class="info-item__content"
+            v-model="discontPrice"
+            :disabled="!qty"
+            placeholder="打折请慎重"
+            type="number">
+          </el-input>
+        </div>
+      </el-col>
+    </el-row>
     <div class="flex--vcenter" style="margin-top: 20px; justify-content: space-between;">
-      <div class="tool-item">
-        用户ID
-        <el-input
-          v-model.trim="userId"
-          placeholder="请输就诊人身份证号"
-          style="width: 230px;">
-        </el-input>
-      </div>
-      <div class="tool-item">
-        *服务种类 
-        <el-select v-model="selectCategroy" placeholder="请选择">
-          <el-option
-            v-for="(key, value) in categroyList"
-            :key="key"
-            :label="value"
-            :value="value">
-          </el-option>
-        </el-select>
-      </div>
-      <div class="tool-item">
-        *项目名称
-        <el-select v-model="selectSku" placeholder="请选择">
-          <el-option
-            v-for="product in productList()"
-            :key="product.id"
-            :label="product.name"
-            :value="product">
-          </el-option>
-        </el-select>
-      </div>
-    </div>
-    
-    <div class="flex--vcenter" style="margin-top: 20px; justify-content: space-between;">
-      <div class="tool-item">
-        服务单价
-        <el-input
-          v-model="unitPrice"
-          :readonly=true
-          type="number"
-          style="width: 200px;">
-        </el-input>
-      </div>
-      <div class="tool-item">
-        *购买数量
-        <el-input
-          v-model="qty"
-          placeholder="请输入数量"
-          type="number"
-          style="width: 200px;">
-        </el-input>
-      </div>
-      <div class="tool-item">
-        折扣金额
-        <el-input
-          v-model="discontPrice"
-          :disabled="!qty"
-          placeholder="打折请慎重"
-          type="number"
-          style="width: 200px;">
-        </el-input>
-      </div>
-    </div>
-
-    <div class="flex--vcenter" style="margin-top: 20px; justify-content: space-between;">
-      <div class="tool-item">
+      <div>
         <b>总金额</b>
         <b>￥{{totalPrice}}</b>
       </div>
-      <div class="tool-item">
-        <el-button
-          v-show="paymentPrice==null"
-          class="tool-item"
-          type="primary"
-          @click="handleGetPaymentPrice">计算支付金额
-        </el-button>
-        <span v-show="paymentPrice!=null">
-          <b>订单金额</b>
-          <b style="color:red">￥{{paymentPrice}}</b>
-        </span>
+      <div>
+      <el-button
+        v-show="paymentPrice==null"
+        class="info-item"
+        type="primary"
+        style="margin-bottom: 0;"
+        @click="handleGetPaymentPrice">计算支付金额
+      </el-button>
+      <span v-show="paymentPrice!=null">
+        <b>订单金额</b>
+        <b style="color:red">￥{{paymentPrice}}</b>
+      </span>
       </div>
     </div>
-   
-     <div class="flex--vcenter" style="margin-top: 20px;">
-        <textarea
-          v-model="comments"
-          placeholder="备注信息"
-          style="width: 100%;height: 260px;font-size: 15px">
-        </textarea>
-    </div>
+    <el-input
+      class="note-info"
+      type="textarea"
+      v-model="comments"
+      placeholder="备注信息">
+    </el-input>
     <div class="flex--vcenter"  style="margin-top: 20px;">
         <el-button
-          class="tool-item"
+          class="info-item"
           type="primary"
           @click="handleCreateOrder">创建订单
         </el-button>
@@ -236,6 +260,25 @@ export default {
   @import "~@/assets/style/variables/index";
 
   #orderDetail {
+    .info-item {
+      display: flex;
+      align-items: center;
+      margin-bottom: 20px;
+      &__label {
+        width: 80px;
+        flex: none;
+      }
+      &__content {
+        flex: 1;
+      }
+    }
+    .note-info {
+      margin-top: 20px;
+      textarea {
+        height: 150px;
+      }
+    }
+
     .btn-wrap {
       .el-button {
         border-radius: 18px;
