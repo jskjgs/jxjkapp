@@ -14,7 +14,10 @@ const formInitData = {
   name: '',
   typeId: '',
   description: '',
-  cover: ''
+  cover: '',
+  showPrice: '',
+  salePrice: '',
+  areaId: ''
 }
 
 import ImgUploader from '@/components/_common/imgUploader/ImgUploader.vue'
@@ -53,6 +56,9 @@ export default {
     },
     productTypeList () { // 分类列表
       return this.$_productTypeList
+    },
+    hospAreaList () { // 院区列表
+      return this.$_hospAreaList
     }
   },
   watch: {
@@ -115,6 +121,13 @@ export default {
     // 监听文件变化
     handleFileChange (newFile) {
       fileObj = newFile
+    },
+    validNum (rule, value, cb) {
+      if (Number.isNaN(+value)) {
+        cb(new Error('请输入数字'))
+      } else {
+        cb()
+      }
     }
   }
 }
@@ -146,6 +159,8 @@ export default {
               <span class="text-length">{{ form.name ? form.name.length : 0 }}/30</span>
             </el-form-item>
           </el-col>
+        </el-row>
+        <el-row :gutter="20">
           <el-col :span="8">
             <el-form-item
               label="分类"
@@ -161,6 +176,46 @@ export default {
                   :value="item.value + ''">
                 </el-option>
               </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item class="doctor-hospArea" label="院区：">
+              <el-select v-model="form.areaId" placeholder="选择院区">
+                <el-option
+                  v-for="item in hospAreaList"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value">
+                </el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row :gutter="20">
+          <el-col :span="8">
+            <el-form-item
+              label="显示价格"
+              prop="showPrice"
+              class="banner-name"
+              required
+              :rules="[
+                { required: true, message: '显示价格不能为空'},
+                { validator: validNum, trigger: 'change, blur'}
+              ]">
+              <el-input v-model="form.showPrice" auto-complete="off"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item
+              label="售卖价格"
+              prop="salePrice"
+              class="banner-name"
+              required
+              :rules="[
+                { required: true, message: '售卖价格不能为空'},
+                { validator: validNum, trigger: 'change, blur'}
+              ]">
+              <el-input v-model="form.salePrice" auto-complete="off"></el-input>
             </el-form-item>
           </el-col>
         </el-row>

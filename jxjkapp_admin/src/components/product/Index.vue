@@ -94,17 +94,7 @@ export default {
     // 打开编辑或新增弹框
     openEditDialog (rowData, isAdd) {
       this.editDialogVisible = true
-      if (rowData) {
-        this.editData = {
-          id: rowData.id,
-          name: rowData.name,
-          typeId: rowData.typeId,
-          description: rowData.description,
-          cover: rowData.cover
-        }
-      } else {
-        this.editData = null
-      }
+      this.editData = rowData
       adding = !!isAdd
     },
     openReserveInfoDialog (rowData) {
@@ -143,7 +133,12 @@ export default {
           description: data.description,
           information: data.description,
           images: imageUrl,
-          productTypeId: data.typeId
+          productTypeId: data.typeId,
+          defaultSku: {
+            showPrice: data.showPrice,
+            salePrice: data.salePrice,
+            areaId: data.areaId
+          }
         }
         let requestFn = adding ? createProductApi : updateProductApi
         return requestFn(sendData).then(res => {
