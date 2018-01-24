@@ -12,10 +12,32 @@ export const getListApi = (data) => {
 
 // 删除员工账号
 export const DELETE_EMPLOYEE_URL = '/admin/setStateAsInvalid'
-export const delEmployee = (params) => {
+export const delEmployeeApi = (id) => {
   return fetchApi({
     url: DELETE_EMPLOYEE_URL,
     type: 'delete',
-    params
+    params: {
+      id
+    }
+  })
+}
+
+// 修改员工信息
+export const MODIFY_EMPLOYEE_URL = '/admin/update'
+export const modifyEmployeeApi = (data) => {
+  return fetchApi({
+    url: MODIFY_EMPLOYEE_URL,
+    type: 'post',
+    data
+  })
+}
+
+// 新增员工
+export const CREATE_EMPLOYEE_URL = '/admin/add'
+export const createEmployeeApi = (data) => {
+  return fetchApi({
+    url: CREATE_EMPLOYEE_URL,
+    type: 'post',
+    data
   })
 }

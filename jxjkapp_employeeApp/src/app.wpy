@@ -4,7 +4,6 @@
 <script>
 import wepy from 'wepy'
 import 'wepy-async-function'
-import convertDate from '@/utils/convertDate'
 import '@/utils/nativeExtend'
 
 export default class extends wepy.app {

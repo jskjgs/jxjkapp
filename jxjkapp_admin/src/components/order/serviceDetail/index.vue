@@ -17,6 +17,7 @@ export default {
   },
   data () {
     return {
+      activeName: 'first',
       serviceId: this.$route.params.serviceId,
       serviceName: null,
       recordNumber: null,
@@ -26,23 +27,19 @@ export default {
       serviceDate: null,
       serviceState: null,
       serviceComments: null,
-
+      stateToString: null,
       userAutograph: null,
 
       providerAutograph: null,
       feedback: {
-        serviceScore: '',
+        serviceScore: 0,
         userComments: ''
       },
       reject: {
         rejectComments: '',
         rejectState: 0,
         rejectDate: null,
-        state: { '通过': 1, '拒绝': 2 },
-        form: {
-          id: this.$route.params.serviceId,
-          rejectState: 1
-        }
+        state: { '通过': 1, '拒绝': 2 }
       }
     }
   },
@@ -87,7 +84,7 @@ export default {
       ctx.stroke()
     },
     rejcetService () {
-      let data = this.reject.form
+      let data = {id: this.$route.params.serviceId, rejectState: this.reject.rejectState}
       console.log(data)
       rejcetServiceApi(data).then((res) => {
         console.log(res)
@@ -108,7 +105,8 @@ export default {
         this.userPhone = data.userInfo.phone
         this.providerName = data.adminInfo ? data.adminInfo.name : null
         this.serviceDate = convertDate(data.createDate)
-        this.serviceState = convertServiceState(data.state)
+        this.serviceState = data.state
+        this.stateToString = convertServiceState(data.state)
         this.serviceComments = data.doctorComment
         this.userAutograph = data.userSign
 
@@ -116,12 +114,11 @@ export default {
 
         this.feedback.serviceScore = data.grade ? data.grade.level : 0
         this.feedback.userComments = data.grade ? data.grade.comment : null
-
-        this.reject.rejectComments = data.rejectComments
-        this.reject.rejectState = data.rejectState
-        this.reject.form.rejectState = data.rejectState
-        this.reject.rejectDate = data.rejectDate
-
+        if (data.serviceRollback) {
+          this.reject.rejectComments = data.serviceRollback.comment
+          this.reject.rejectState = data.serviceRollback.state
+          this.reject.rejectDate = data.serviceRollback.updateDate
+        }
         const userSignEl = this.$refs.userSign
         const doctorSignEl = this.$refs.doctorSignEl
         if (userSignEl) {
@@ -139,6 +136,9 @@ export default {
         case 2:
           return '拒绝'
       }
+    },
+    handleTab (tab, event) {
+      console.log(tab, event)
     }
   }
 }
@@ -153,80 +153,84 @@ export default {
         {{recordNumber ? '>'+recordNumber :''}}
       </div>
     </div>
-    <div class="info-item flex--vcenter">
-      <span class="info-item__label">用户名称</span>:
-      <span class="info-item__content">{{userName}}</span>
-    </div>
-    <div class="info-item flex--vcenter">
-      <span class="info-item__label">用户电话</span>:
-      <span class="info-item__content">{{userPhone}}</span>
-    </div>
-    <div class="info-item flex--vcenter">
-      <span class="info-item__label">服务人员</span>:
-      <span class="info-item__content">{{providerName}}</span>
-    </div>
-    <div class="info-item flex--vcenter">
-      <span class="info-item__label">治疗时间</span>:
-      <span class="info-item__content">{{serviceDate}}</span>
-    </div>
-    <div class="info-item flex--vcenter">
-      <span class="info-item__label">订单类型</span>:
-      <span class="info-item__content">{{serviceState}}</span>
-    </div>
-    <div class="info-item flex--vcenter">
-      <span class="info-item__label">当日症状</span>:
-      <span class="info-item__content">{{serviceComments}}</span>
-    </div>
-    <div class="flex--vcenter">
-      <div class="info-item flex-item flex">
-        <span class="info-item__label">客户签名</span>:
-        <span class="info-item__content sign-panel-wrap">
-          <canvas id="userSign" class="sign-panel" ref="userSign" width="375" height="600"></canvas>
-        </span>
+    <div>
+      <el-row :gutter="20">
+        <el-col :span="6">
+          <span class="info-item__label">用户名称</span>:
+          <span class="info-item__content">{{userName}}</span>
+        </el-col>
+        <el-col :span="6">
+          <span class="info-item__label">用户电话</span>:
+          <span class="info-item__content">{{userPhone}}</span>
+        </el-col>
+      </el-row>
+      
+      <div class="info-item flex--vcenter">
+        <span class="info-item__label">服务人员</span>:
+        <span class="info-item__content">{{providerName}}</span>
       </div>
-      <div class="info-item flex-item flex">
-        <span class="info-item__label">医生签名</span>:
-        <span class="info-item__content sign-panel-wrap">
-          <canvas id="doctorSign" class="sign-panel" ref="doctorSign" width="375" height="600"></canvas>
-        </span>
+      <div class="info-item flex--vcenter">
+        <span class="info-item__label">治疗时间</span>:
+        <span class="info-item__content">{{serviceDate}}</span>
       </div>
+      <div class="info-item flex--vcenter">
+        <span class="info-item__label">状态</span>:
+        <span class="info-item__content">{{stateToString}}</span>
+      </div>
+      <div class="info-item flex--vcenter">
+        <span class="info-item__label">当日症状</span>:
+        <span class="info-item__content">{{serviceComments}}</span>
+      </div>
+      <el-tabs v-model="activeName" @tab-click="handleTab" type="border-card">
+        <el-tab-pane label="客户签名" name="first">
+          <canvas id="userSign" class="sign-panel" ref="userSign" width="375" height="300"></canvas>
+        </el-tab-pane>
+        <el-tab-pane label="医生签名" name="second">
+          <canvas id="doctorSign" class="sign-panel" ref="doctorSign" width="375" height="300"></canvas>
+        </el-tab-pane>
+        <el-tab-pane label="用户反馈" name="third">
+          <el-rate
+            v-model="feedback.serviceScore"
+            show-text
+            :colors="['#99A9BF', '#F7BA2A', '#FF9900']">
+          </el-rate>
+          <span class="info-item__content">{{!feedback.userComments?'用户没有发表评论':feedback.userComments}}</span>
+        </el-tab-pane>
+        <el-tab-pane label="申请作废" name="fourth">
+          <div class="info-item flex-item flex--vcenter">
+            <span class="info-item__label">作废理由</span>:
+            <span class="info-item__content">
+              {{reject.rejectComments}}
+            </span>
+          </div>
+          <div class="info-item flex-item flex--vcenter">
+            <span class="info-item__label">审核状态</span>:
+            <span class="info-item__content">
+              <el-select v-model="reject.rejectState"  :disabled="serviceState == 99" placeholder="请选择">
+                <el-option
+                  v-for="(item,key,value) in reject.state"
+                  :key="key"
+                  :label="key"
+                  :value="value">
+                </el-option>
+              </el-select>
+            </span>
+          </div>
+          <div class="info-item flex-item flex--vcenter">
+            <span class="info-item__label">审核时间</span>:
+            <span class="info-item__content">
+              {{reject.rejectDate}}
+            </span>
+          </div>
+          <el-button
+            style="margin-top: 20px;"
+            v-show="serviceState == 98"
+            type="primary"
+            @click="rejcetService">提交
+          </el-button>
+        </el-tab-pane>
+      </el-tabs>
     </div>
-    <div class="info-item flex--vcenter">
-      <span class="info-item__label">用户反馈</span>:
-      <span class="info-item__content">{{!feedback.userComments?'用户没有发表评论':feedback.userComments}}</span>
-    </div>
-    <h3>申请作废</h3>
-    <div class="info-item flex-item flex--vcenter">
-      <span class="info-item__label">作废理由</span>:
-      <span class="info-item__content">
-        {{reject.rejectComments}}
-      </span>
-    </div>
-    <div class="info-item flex-item flex--vcenter">
-      <span class="info-item__label">审核状态</span>:
-      <span class="info-item__content">
-        <el-select v-model="reject.form.rejectState"  :disabled="reject.rejectState > 0" placeholder="请选择">
-          <el-option
-            v-for="(item,key,value) in reject.state"
-            :key="key"
-            :label="key"
-            :value="value">
-          </el-option>
-        </el-select>
-      </span>
-    </div>
-    <div class="info-item flex-item flex--vcenter" v-show="reject.rejectState > 0">
-      <span class="info-item__label">审核时间</span>:
-      <span class="info-item__content">
-        {{reject.rejectDate}}
-      </span>
-    </div>
-    <el-button
-      style="margin-top: 20px;"
-      v-show="!this.reject.rejectState"
-      type="primary"
-      @click="rejcetService">提交
-    </el-button>
   </div>
 </template>
 

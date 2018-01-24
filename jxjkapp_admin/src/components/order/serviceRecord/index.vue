@@ -85,6 +85,7 @@ export default {
       }
     }]
     this.listApi = {
+      listQueryParams: {orderId: this.$route.params.orderId},
       requestFn: queryServiceRecordApi,
       responseFn (data) {
         let content = data.content || {}
@@ -128,10 +129,8 @@ export default {
   },
   methods: {
     openDetail (rowData) {
-      console.log(1)
       rowData = !rowData ? {} : rowData
       this.$router.push({name: 'order/serviceDetail_root', params: { serviceId: rowData.serviceId }})
-      console.log(2)
     }
   }
 }

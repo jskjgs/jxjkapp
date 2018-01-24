@@ -124,7 +124,7 @@
         method: 'POST',
         data: {
           pageSize: 5,
-          states: '0'
+          states: [0]
         }
       }, (listItem) => {
         const orderProduct = listItem.orderProduct || {}

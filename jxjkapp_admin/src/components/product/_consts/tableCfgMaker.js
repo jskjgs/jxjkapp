@@ -8,15 +8,23 @@ export default function () {
       requestFn: getListApi,
       responseFn (data) {
         let content = data.content || {}
-        this.tableData = (content.list || []).map((item) => ({
-          no: item.sortNumber,
-          id: item.id,
-          name: item.name,
-          cover: item.images,
-          type: (item.productType || {}).name,
-          typeId: (item.productType || {}).id + '',
-          description: item.description
-        }))
+        this.tableData = (content.list || []).map((item) => {
+          const productType = item.productType || {}
+          const defaultSku = item.defaultSku || {}
+          const area = defaultSku.area || {}
+          return {
+            no: item.sortNumber,
+            id: item.id,
+            name: item.name,
+            cover: item.images,
+            type: productType.name,
+            typeId: productType.id + '',
+            description: item.description,
+            showPrice: defaultSku.showPrice,
+            salePrice: defaultSku.salesPrice,
+            areaId: area.id
+          }
+        })
         this.total = content.total || 0
       }
     },

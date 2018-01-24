@@ -1,10 +1,10 @@
 import { fetchApi } from '@/utils/index'
 
-// 获取用户列表
-export const GET_LIST_URL = '/userInfo/admin/all'
-export const getListApi = (data) => {
+// 获取用户订单列表
+export const GET_ORDER_LIST_URL = '/userInfo/admin/all'
+export const getOrderListApi = (data) => {
   return fetchApi({
-    url: GET_LIST_URL,
+    url: GET_ORDER_LIST_URL,
     type: 'post',
     data
   })
@@ -22,22 +22,3 @@ export const userInfoApi = (accountId) => {
   })
 }
 
-// 获取用户日记
-export const USER_LOG_URL = '/diary/queryByAccountId'
-export const userLogApi = (params) => {
-  return fetchApi({
-    url: USER_LOG_URL,
-    type: 'get',
-    params
-  })
-}
-
-// 获取关联人列表
-export const RELATION_URL = '/patientInfo/queryForAdmin'
-export const relationApi = (params) => {
-  return fetchApi({
-    url: RELATION_URL,
-    type: 'get',
-    params
-  })
-}

@@ -77,11 +77,10 @@ export default {
     }]
     return {
       userName: null,
-      userPhone: 15928113204,
+      userPhone: null,
       userType: null,
-      tableData: [{orderId: 12, orderCode: 1213123, serviceId: 11111},
-      {orderCode: 1213123, serviceId: 22222, orderId: 14}],
-      keyWords: ''
+      tableData: [],
+      keyWords: null
     }
   },
   created () {
@@ -93,7 +92,7 @@ export default {
     handleSearch () {
       getUserInfoApi({phone: this.keyWords}).then((res) => {
         console.log(res.content)
-        let user = res.content
+        let user = res.content.list[0]
         if (!user) {
           this.$message({
             type: 'error',
@@ -104,9 +103,10 @@ export default {
         this.userName = user.name
         this.userPhone = user.phone
         this.userType = userStateFormat(user.isVip)
-        getUserOrdersApi().then((res) => {
+        getUserOrdersApi({userId: user.id}).then((res) => {
           console.log(res.content.list)
           let data = res.content.list
+          let table = this.tableData
           data.forEach(function (value) {
             let option = Object.create(null)
             option.orderId = value.id
@@ -116,8 +116,9 @@ export default {
             option.storage = product.remainingServiceNumber
             option.serviceName = product.productSkuName
             option.serviceId = product.id
-            this.tableData.push(option)
+            table.push(option)
           })
+          console.log(this.tableData)
         })
       })
     },

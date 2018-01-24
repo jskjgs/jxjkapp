@@ -4,113 +4,31 @@
  * Date: 2017/8/29
  */
 import SearchTable from '@/components/_common/searchTable/SearchTable'
+import EditDialog from './_thumbs/EditDialog.vue'
 import {
-  getListApi,
-  delEmployee
+  delEmployeeApi,
+  modifyEmployeeApi,
+  createEmployeeApi
 } from './api'
-import { authorFormat } from '@/utils/index'
+
+import tableCfgMaker from './_consts/tableCfgMaker'
+let adding = false
+
 export default {
   name: 'Doctor',
   components: {
-    SearchTable
+    SearchTable,
+    EditDialog
   },
   data () {
-    this.tableAttrs = {
-      'props': {
-        'tooltip-effect': 'dark',
-        'style': 'width: 100%',
-        'align': 'center'
-      }
-    }
-    this.columnData = [{
-      attrs: {
-        'prop': 'no',
-        'label': '员工编号',
-        'min-width': '100',
-        'show-overflow-tooltip': true
-      }
-    }, {
-      attrs: {
-        'prop': 'name',
-        'label': '姓名',
-        'min-width': '100',
-        'show-overflow-tooltip': true
-      }
-    }, {
-      attrs: {
-        'prop': 'area',
-        'label': '院区',
-        'min-width': '100',
-        'show-overflow-tooltip': true
-      }
-    }, {
-      attrs: {
-        'prop': 'title',
-        'label': '职位',
-        'min-width': '160',
-        'show-overflow-tooltip': true
-      }
-    }, {
-      attrs: {
-        'prop': 'sex',
-        'label': '性别',
-        'min-width': '160',
-        'show-overflow-tooltip': true
-      }
-    }, {
-      attrs: {
-        'prop': 'author',
-        'label': '权限',
-        'min-width': '160',
-        'show-overflow-tooltip': true
-      }
-    }, {
-      attrs: {
-        'min-width': '140',
-        'label': '操作'
-      },
-      scopedSlots: {
-        default: (scope) => {
-          return (
-            <div class="flex--center operations">
-              <span
-                class="operate-item">
-                <el-button
-                  type="text"
-                  onClick={() => this.handleViewDetail(scope.row.no)}>查看</el-button>
-              </span>
-              <span
-                class="operate-item">
-                <el-button
-                  type="text"
-                  onClick={() => this.handleDel(scope.row.no)}>删除</el-button>
-              </span>
-            </div>
-          )
-        }
-      }
-    }]
-    this.listApi = {
-      requestFn: getListApi,
-      responseFn (data) {
-        let content = data.content || {}
-        console.log(content.list)
-        this.tableData = (content.list || []).map((item) => {
-          return {
-            no: item.id,
-            name: item.nickname,
-            area: item.area.name,
-            phone: item.phone,
-            title: item.title,
-            author: authorFormat(item.authorId),
-            sex: ((sex) => { return sex === 0 ? '女' : '男' })(item.sex)
-          }
-        })
-        this.total = content.total || 0
-      }
-    }
+    const tableCfg = tableCfgMaker.call(this)
+    this.tableAttrs = tableCfg.tableAttrs
+    this.columnData = tableCfg.columnData
+    this.listApi = tableCfg.listApi
 
     return {
+      editData: null,
+      editDialogVisible: false,
       keyWords: null,
       apiKeysMap: {
         pageSize: {
@@ -136,6 +54,12 @@ export default {
   created () {
   },
   watch: {
+    editDialogVisible (val) {
+      if (!val) {
+        this.editData = null
+        adding = false
+      }
+    },
     currentPage (newPageNum) {
       this.getList({
         pageNum: newPageNum
@@ -150,6 +74,12 @@ export default {
         }
       })
     },
+    // 编辑或新增
+    openEditDialog (rowData, isAdd) {
+      this.editDialogVisible = true
+      adding = !!isAdd
+      this.editData = rowData
+    },
     handleViewDetail (id) {
       this.$router.push({name: 'employee/detail_root', params: { id: id }})
     },
@@ -163,7 +93,7 @@ export default {
         type: 'warning',
         beforeClose: (action, instance, done) => {
           if (action === 'confirm') {
-            delEmployee({id: id}).then((res) => {
+            delEmployeeApi(id).then((res) => {
               this.$message({
                 type: 'success',
                 message: '删除成功'
@@ -176,6 +106,25 @@ export default {
             done()
           }
         }
+      })
+    },
+    // 提交编辑或新增
+    handleEditSubmit (data, respondCb) {
+      let requestFn = adding ? createEmployeeApi : modifyEmployeeApi
+      data = Object.assign({}, data, {
+        author: data.authorId,
+        nickname: data.name
+      })
+      return requestFn(data).then(res => {
+        this.$message({
+          type: 'success',
+          message: adding ? '添加成功' : '修改成功'
+        })
+        this.editDialogVisible = false
+        this.$refs.searchTable.init()
+        respondCb(true)
+      }).catch(() => {
+        respondCb()
       })
     }
   }
@@ -211,12 +160,42 @@ export default {
           <el-button
             class="btn--add"
             type="primary"
-            @click="addEmployee()">
+            @click="openEditDialog(null, true)">
             新增 <i class="el-icon-plus"></i>
           </el-button>
         </div>
       </div>
+      <el-table-column
+        slot="column-operate"
+        align="center"
+        label="操作"
+        width="220">
+        <template scope="scope">
+          <div class="flex--center operate-items">
+            <span
+              class="operate-item">
+              <el-button 
+                type="text" 
+                @click="openEditDialog(scope.row)">
+                编辑
+              </el-button>
+            </span>
+            <span
+              class="operate-item">
+              <el-button 
+                type="text" 
+                @click="handleDel(scope.row.no)">
+                删除
+              </el-button>
+            </span>
+          </div>     
+        </template>
+      </el-table-column>
     </search-table>
+    <edit-dialog
+      v-model="editDialogVisible"
+      :data="editData"
+      @submit="handleEditSubmit"/>
   </div>
 </template>
 

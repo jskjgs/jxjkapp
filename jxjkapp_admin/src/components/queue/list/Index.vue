@@ -6,7 +6,7 @@
 import SearchTable from '@/components/_common/searchTable/SearchTable'
 import tableCfgMaker from './_consts/tableCfg'
 import {
-  getListApi, callNext
+  getListApi, callNext, getCurrentApi
 } from './api'
 
 export default {
@@ -22,6 +22,7 @@ export default {
       requestFn: getListApi,
       responseFn (data) {
         let content = data.content || {}
+        console.log(content)
         this.tableData = (content.list || []).map((item) => {
           return {
             id: item.id,
@@ -67,6 +68,7 @@ export default {
     }
   },
   created () {
+    getCurrentApi
   },
   watch: {
     currentPage (newPageNum) {
@@ -90,9 +92,19 @@ export default {
         }
       })
     },
+    getCurrent () {
+      getCurrentApi({areaId: 1}).then((res) => {
+        let data = res.content
+        this.userName = data.userInfo.name
+        this.userId = data.userInfo.id
+        this.userPhone = data.userInfo.phone
+        this.serviceName = data.productSku.name
+        this.number = data.number
+      })
+    },
     next () {
       callNext().then((res) => {
-        console.log(res)
+        this.getCurrent()
       }).catch((err) => {
         console.log(err)
       })
