@@ -113,7 +113,6 @@ export default {
     },
     // 修改／新增信息提交
     handleEditSubmit (data, respondCb) {
-      console.log('data', data)
       const uploadForm = (imageUrl) => {
         const sendData = {
           name: data.name,
@@ -260,8 +259,7 @@ export default {
     <edit-dialog
       v-model="editDialogVisible"
       :data="editData"
-      @submit="handleEditSubmit">
-    </edit-dialog>
+      @submit="handleEditSubmit" />
   </div>
 </template>
 

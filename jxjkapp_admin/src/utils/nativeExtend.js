@@ -3,6 +3,9 @@ import {
   fetchApi
 } from './index'
 import store from '@/store'
+import {
+  convertDate
+} from '@/utils/index'
 
 import {
   UPDATE_HOSPAREALIST,
@@ -10,6 +13,9 @@ import {
 } from '../store/global'
 
 Object.defineProperties(Vue.prototype, {
+  '$_convertDate': {
+    value: convertDate
+  },
   '$_hospAreaList': {
     get () {
       if (!store.state.hospAreaList || !store.state.hospAreaList.length) {
@@ -29,7 +35,7 @@ Object.defineProperties(Vue.prototype, {
     }
   },
   '$uploadFile': {
-    value: function (data) {
+    value (data) {
       return new Promise(function (resolve, reject) {
         if (!(data instanceof FormData)) {
           const formData = new FormData()
