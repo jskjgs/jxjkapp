@@ -41,7 +41,7 @@
           src="../assets/images/avatar.png" 
           class="avatar" />
       </view>
-      <view class="user-title">{{ userInfo.phone }}</view>
+      <view class="user-title">{{ userName }}</view>
       <view class="btn-wrap flex--hcenter">
         <button
           class="primary-btn"
@@ -58,8 +58,13 @@
     }
 
     props = {
+      userName: {
+        type: String,
+        default: ''
+      },
       submitBtnText: {
-        type: String
+        type: String,
+        default: ''
       }
     }
 
@@ -72,9 +77,6 @@
     }
 
     computed = {
-      userInfo () {
-        return this.$parent.$parent.globalData.userInfo || {}
-      }
     }
 
     methods = {

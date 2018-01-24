@@ -80,7 +80,7 @@
         return statusDict
       },
       userInfo () {
-        return this.$parent.globalData.userInfo
+        return this.$parent.globalData.userInfo || {}
       }
     }
 
@@ -123,8 +123,7 @@
         url: '/orderService/query',
         method: 'POST',
         data: {
-          adminUserId: this.userInfo.id,
-          states: '1,2'
+          states: [1, 2]
         }
       }, (listItem) => {
         const orderProduct = listItem.orderProduct || {}

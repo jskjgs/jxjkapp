@@ -64,6 +64,7 @@
           wx:else
           type="textarea" 
           class="diagnose-input"
+          maxlength="1000"
           placeholder="请输入当日症状"
           :value.sync="templateContent"/>
       </view>

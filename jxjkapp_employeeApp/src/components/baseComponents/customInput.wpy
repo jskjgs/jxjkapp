@@ -15,7 +15,7 @@
       wx:if="{{ type === 'textarea' }}" 
       value="{{ value }}"
       disabled="{{ disabled }}"
-      maxlength="{{ maxlength }}"
+      maxlength="{{ maxlength - 0 }}"
       placeholder="{{ placeholder }}"
       placeholder-style="{{ 'color: #B8B8B8;' + placeholderStyle }}"
       bindinput="handleInput"/>
@@ -25,7 +25,7 @@
       value="{{ value }}"
       password="{{ password }}"
       disabled="{{ disabled }}"
-      maxlength="{{ maxlength }}"
+      maxlength="{{ maxlength - 0 }}"
       placeholder="{{ placeholder }}"
       placeholder-style="{{ 'color: #B8B8B8;' + placeholderStyle }}"
       bindinput="handleInput" />
@@ -58,8 +58,8 @@
         default: false
       },
       maxlength: {
-        type: Number,
-        default: 140
+        type: String,
+        default: '140'
       },
       placeholder: {
         type: String,
