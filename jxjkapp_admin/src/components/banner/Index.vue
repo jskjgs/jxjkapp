@@ -11,11 +11,13 @@ import {
   addBanenrApi,
   modifyBannerApi
 } from './api'
+let adding = false
+
 import { Loading } from 'element-ui'
 import EditDialog from './_thumbs/EditDialog.vue'
 import ImgZoom from '@/components/_common/imgZoom/ImgZoom.vue'
 import tableCfgMaker from './_consts/tableCfgMaker'
-let adding = false
+
 export default {
   name: 'Banner',
   components: {
@@ -151,8 +153,6 @@ export default {
         this.editDialogVisible = false
         this.$refs.searchTable.getList()
       })
-    },
-    handleEditCancel () {
     },
     // 提交编辑或新增
     handleEditSubmit (data, respondCb) {
@@ -316,9 +316,7 @@ export default {
     <edit-dialog
       v-model="editDialogVisible"
       :data="editData"
-      @cancel="handleEditCancel"
-      @submit="handleEditSubmit">
-    </edit-dialog>
+      @submit="handleEditSubmit"/>
   </div>
 </template>
 
