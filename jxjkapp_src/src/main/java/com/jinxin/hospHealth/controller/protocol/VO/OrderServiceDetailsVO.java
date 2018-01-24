@@ -51,4 +51,6 @@ public class OrderServiceDetailsVO {
     private String address;
     @ApiModelProperty("用户信息")
     private UserInfoVO userInfo;
+    @ApiModelProperty("回退信息")
+    private HospOrderServiceRollback serviceRollback;
 }

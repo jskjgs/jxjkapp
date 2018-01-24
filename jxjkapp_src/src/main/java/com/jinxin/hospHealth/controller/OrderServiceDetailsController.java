@@ -56,17 +56,17 @@ public class OrderServiceDetailsController extends TransformController{
         return ResponseWrapperSuccess(map);
     }
 
-    @ApiOperation(value = "完成服务详情 ---docker")
+    @ApiOperation(value = "确认完成服务详情 ---docker")
     @RequestMapping(value = "/admin/confirm", method = RequestMethod.POST)
     @ResponseBody
     public JSONObject confirm(
-            @ApiParam(value = "完成服务详情", required = true) @RequestBody OrderServiceDetailsPO orderServiceDetailsPO) throws Exception {
+            @ApiParam(value = "订单服务详情信息", required = true) @RequestBody OrderServiceDetailsPO orderServiceDetailsPO) throws Exception {
         orderServiceDetailsPO.setAdminUserId(getAdminUserId());
         orderServiceDetailsService.confirm(orderServiceDetailsPO);
         return ResponseWrapperSuccess(null);
     }
 
-    @ApiOperation(value = "确认订单服务详情 ---docker")
+    @ApiOperation(value = "接受订单服务详情 ---docker")
     @RequestMapping(value = "/admin/accept", method = RequestMethod.POST)
     @ResponseBody
     public JSONObject accept(
@@ -109,6 +109,16 @@ public class OrderServiceDetailsController extends TransformController{
     public JSONObject select(
             @ApiParam(value = "订单服务详情 信息", required = true) @RequestBody(required = true) OrderServiceDetailsPO orderServiceDetailsPO) throws Exception {
         PageInfo<HospOrderServiceDetails> pageInfo = orderServiceDetailsService.select(orderServiceDetailsPO);
+        return ResponseWrapperSuccess(transformByHospOrderServiceDetails(pageInfo));
+    }
+
+    @ApiOperation(value = "查询order下所有订单服务详情信息", response = OrderServiceDetailsVO.class)
+    @RequestMapping(value = "/admin/queryByOrderId", method = RequestMethod.POST)
+    @ResponseBody
+    public JSONObject select(
+            @ApiParam(value = "orderId", required = true) @RequestParam(value = "orderId", required = true) Long orderId,
+            @ApiParam(value = "分页信息", required = false) @RequestBody(required = false) PageBean pageBean) throws Exception {
+        PageInfo<HospOrderServiceDetails> pageInfo = orderServiceDetailsService.queryByOrderId(pageBean,orderId);
         return ResponseWrapperSuccess(transformByHospOrderServiceDetails(pageInfo));
     }
 

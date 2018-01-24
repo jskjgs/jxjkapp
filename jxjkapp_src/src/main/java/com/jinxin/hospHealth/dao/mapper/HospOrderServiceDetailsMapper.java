@@ -14,8 +14,14 @@ public interface HospOrderServiceDetailsMapper extends MyMapper<HospOrderService
 
     @Select({"<script>" +
             " select * from hosp_order_service_details where 1=1" +
-            " <if test = 'value.states!= null and value.states!= \"\"'> " +
-            "   and state in (#{value.states})" +
+            " <if test = 'value.states!= null '> " +
+            "   and state in " +
+            "      <foreach item='id' index='index' collection='value.states' open='(' separator=',' close=')'>" +
+            "           #{id}" +
+            "       </foreach>" +
+            " </if>  " +
+            " <if test = 'value.state!= null and value.state!= \"\"'> " +
+            "   and state = #{value.state}" +
             " </if>  " +
             " <if test = 'value.id!= null and value.id!= \"\"'> " +
             "   and id = #{value.id}" +
@@ -51,5 +57,9 @@ public interface HospOrderServiceDetailsMapper extends MyMapper<HospOrderService
             " where order_product_id = #{orderProductId} " +
             " and state != #{state};"})
     int countUseNumber(@Param("orderProductId") Long orderProductId,@Param("state") Integer state);
+
+    @Select({"select a.* from hosp_order_service_details as a , hosp_order as b, hosp_order_product as c" +
+            " where b.id = #{orderId}   and c.order_id = b.id and a.order_product_id = c.id"})
+    List<HospOrderServiceDetails> queryByOrderId(@Param("orderId") Long orderId);
 
 }

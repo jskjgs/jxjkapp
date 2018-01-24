@@ -223,7 +223,7 @@ public class UserInfoService implements BaseService<HospUserInfo, UserInfoPO> {
 
     @Override
     public PageInfo<HospUserInfo> selectAdmin(UserInfoPO userInfoPO) throws Exception {
-        return selectAdmin(userInfoPO);
+        return select(userInfoPO);
     }
 
     @Override

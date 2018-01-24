@@ -14,6 +14,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import java.util.Date;
+import java.util.List;
 
 @Data
 @ApiModel("预约")
@@ -33,11 +34,11 @@ public class HospPrecontract extends PageBean{
     @ApiModelProperty("商品SKU-id")
     private Long productSkuId;
     @Transient
-    @ApiModelProperty("多个用户ID,使用,分割")
-    private String userIds;
+    @ApiModelProperty("多个用户ID")
+    private List<Integer> userIds;
     @Transient
-    @ApiModelProperty("多个商品SKU-ID,使用,分割")
-    private String productSkuIds;
+    @ApiModelProperty("多个商品SKU-ID")
+    private List<Integer> productSkuIds;
     @Transient
     @ApiModelProperty("时间区间-开始时间  YYYY-MM-DD  HH:mm:ss")
     private String startTime;

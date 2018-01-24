@@ -152,7 +152,7 @@ public class OrderServiceDetailsService implements BaseService<HospOrderServiceD
         select.setState(OrderServiceDetailsStateEnum.NORMAL.getCode());
         DPreconditions.checkNotNull(
                 selectOne(select),
-                "服务订单未查询到.",
+                "能被接单的服务订单未查询到,请确认该单是否存在或者状态为指派中.",
                 true);
         DPreconditions.checkNotNull(
                 adminUserInfoService.selectOne(po.getAdminUserId()),
@@ -178,7 +178,7 @@ public class OrderServiceDetailsService implements BaseService<HospOrderServiceD
         select.setState(OrderServiceDetailsStateEnum.IN_SERVICE.getCode());
         DPreconditions.checkNotNull(
                 selectOne(select),
-                "服务订单未查询到,或者不属于改账号接的单.",
+                "服务订单未查询到,请确认该单属于该账号接的单,并处于服务中状态.",
                 true);
         DPreconditions.checkNotNullAndEmpty(
                 po.getDoctorSign(),
@@ -319,6 +319,22 @@ public class OrderServiceDetailsService implements BaseService<HospOrderServiceD
         if (StringUtil.isNotEmpty(po.getField()))
             PageHelper.orderBy(po.getField());
         return new PageInfo<>(hospOrderServiceDetailsMapper.selectByExampleByCustom(po));
+    }
+
+    /**
+     * 根据order id查询所有的订单服务详情列表
+     * @param pageBean
+     * @param orderId
+     * @return
+     * @throws Exception
+     */
+    public PageInfo<HospOrderServiceDetails> queryByOrderId(PageBean pageBean,Long orderId) throws Exception {
+        if (pageBean == null || orderId == null)
+            pageBean = new PageBean();
+        PageHelper.startPage(pageBean.getPageNum(), pageBean.getPageSize());
+        if (StringUtil.isNotEmpty(pageBean.getField()))
+            PageHelper.orderBy(pageBean.getField());
+        return new PageInfo<>(hospOrderServiceDetailsMapper.queryByOrderId(orderId));
     }
 
     @Override
