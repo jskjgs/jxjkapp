@@ -20,9 +20,6 @@ import {
   INDEX as productCfg
 } from '@/components/product/_consts/routers'
 import {
-  INDEX as productSkuCfg
-} from '@/components/productSku/_consts/routers'
-import {
   INDEX as reserveCfg
 } from '@/components/reserve/_consts/routers'
 import {
@@ -75,8 +72,4 @@ export default [{
   label: userCfg.meta.label,
   path: userCfg.path,
   permissionId: userCfg.meta.permissionId
-}, {
-  label: productSkuCfg.meta.label,
-  path: productSkuCfg.path,
-  permissionId: productSkuCfg.meta.permissionId
 }]

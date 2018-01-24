@@ -195,6 +195,20 @@ public class OrderController extends TransformController {
         return ResponseWrapperSuccess(null);
     }
 
+    @ApiOperation(value = "HIS支付接口")
+    @RequestMapping(value = "/hisPay", method = RequestMethod.POST)
+    @ResponseBody
+    public JSONObject hisPay(
+            @ApiParam(value = "订单ID", required = true) @RequestParam(value = "id", required = true) Long id,
+            @ApiParam(value = "支付的金额", required = true) @RequestParam(value = "amount", required = true) double amount) throws Exception {
+        OrderInfoPO orderInfoPO = new OrderInfoPO();
+        orderInfoPO.setId(id);
+        orderInfoPO.setAmount(BigDecimal.valueOf(amount));
+        orderInfoPO.setPaymentType(OrderPayTypeEnum.HIS.getCode());
+        orderService.pay(orderInfoPO);
+        return ResponseWrapperSuccess(null);
+    }
+
     @ApiOperation(value = "微信支付回调接口")
     @RequestMapping(value = "/wechatCallback", method = RequestMethod.POST)
     @ResponseBody

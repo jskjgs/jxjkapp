@@ -84,7 +84,7 @@
           key: {
             value: undefined
           },
-          currentPage: 'startPage'
+          currentPage: 'pageNum'
         }
       }
     },

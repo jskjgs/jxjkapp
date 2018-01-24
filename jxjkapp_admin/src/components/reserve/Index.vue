@@ -4,128 +4,32 @@
    * Date: 2017/10/21
    */
   import SearchTable from '@/components/_common/searchTable/SearchTable'
+  import EditDialog from './_thumbs/EditDialog'
   import { Loading } from 'element-ui'
-
+  import tableCfgMaker from './_consts/tableCfgMaker'
   import {
-    getListApi as getDoctorListApi
-  } from '@/components/doctor/api'
-  import {
-    getListApi
+    delReserveApi,
+    createReserveApi,
+    modifyReserveApi
   } from './api'
 
-  import {
-    convertDate
-  } from '@/utils/index'
+  let adding = false
 
   export default {
     name: 'Diary',
     components: {
-      SearchTable
+      SearchTable,
+      EditDialog
     },
     data () {
-      // const vm = this
-      // const statusOptions = [{
-      //   label: '全部',
-      //   value: undefined
-      // }, {
-      //   label: '过期未到诊',
-      //   value: 1
-      // }, {
-      //   label: '正常就诊',
-      //   value: 0
-      // }, {
-      //   label: '预约就诊',
-      //   value: 2
-      // }]
-      // const statusDict = {
-      //   0: '正常就诊',
-      //   1: '过期未到诊',
-      //   2: '预约就诊'
-      // }
-      this.tableAttrs = {
-        'props': {
-          'tooltip-effect': 'dark',
-          'style': 'width: 100%',
-          'align': 'center'
-        }
-      }
-      this.columnData = [{
-        attrs: {
-          'prop': 'patientName',
-          'label': '项目名称',
-          'min-width': '120'
-        }
-      }, {
-        attrs: {
-          'prop': 'patientName',
-          'label': '院区',
-          'min-width': '120'
-        }
-      }, {
-        attrs: {
-          'prop': 'registerTime',
-          'label': '预约时间',
-          'min-width': '180',
-          'formatter' (row, col) {
-            return row.registerTime ? convertDate(row.registerTime, 'Y-M-D h:m') : '--'
-          }
-        }
-      }, {
-        attrs: {
-          'prop': 'patientName',
-          'label': '用户姓名',
-          'min-width': '120'
-        }
-      }, {
-        attrs: {
-          'prop': 'phone',
-          'label': '手机号',
-          'min-width': '120'
-        }
-      }, {
-        attrs: {
-          'prop': 'idCard',
-          'label': '就诊卡号',
-          'min-width': '120'
-        }
-      }, {
-        attrs: {
-          'min-width': '200',
-          'label': '操作'
-        },
-        scopedSlots: {
-          default: (scope) => {
-            return (
-              <div class="flex--center operations">
-                <span
-                  class="operate-item el-icon-edit"
-                  onClick={() => this.openEditDialog(scope.row)}>
-                </span>
-                <el-button
-                  class="operate-item"
-                  type="text"
-                  onClick={() => this.cancelReserve(scope.row)}>取消预约</el-button>
-              </div>
-            )
-          }
-        }
-      }]
-      this.listApi = {
-        requestFn: getListApi,
-        responseFn (data) {
-          let content = data.content || {}
-          this.tableData = content.list || []
-          this.total = content.total || 0
-        }
-      }
-      this.checkOptions = [{
-        label: '审核通过',
-        value: '0'
-      }, {
-        label: '审核拒绝',
-        value: '2'
-      }]
+      const tableCfg = tableCfgMaker.call(this)
+      this.tableAttrs = tableCfg.tableAttrs
+      this.columnData = tableCfg.columnData
+      this.listApi = tableCfg.listApi
+
       return {
+        editDialogVisible: false,
+        editData: null,
         apiKeysMap: {
           projectId: {
             value: undefined
@@ -148,7 +52,7 @@
           departmentId: {
             value: undefined
           },
-          currentPage: 'startPage'
+          currentPage: 'pageNum'
         },
         projectId: undefined,
         projects: [],
@@ -159,12 +63,16 @@
       }
     },
     created () {
-      this.getDoctorList()
+    },
+    watch: {
+      editDialogVisible (val) {
+        if (!val) {
+          this.editData = null
+          adding = false
+        }
+      }
     },
     methods: {
-      selectStatus (status) {
-        this.apiKeysMap.status.value = status.value
-      },
       handleSearch () {
         const createTimeRange = this.createTimeRange || []
         this.apiKeysMap = Object.assign({}, this.apiKeysMap, {
@@ -179,24 +87,12 @@
           }
         })
       },
-      getDoctorList () {
-        return getDoctorListApi().then(res => {
-          const content = res.content || {}
-          const list = (content.list || []).map(item => {
-            const doctor = item.doctor || {}
-            return {
-              label: doctor.name,
-              value: doctor.id
-            }
-          })
-          this.doctorList = [{
-            label: '全部',
-            value: undefined
-          }].concat(list)
-        })
+      // 打开编辑／新增弹框
+      openEditDialog (rowData, isAdd) {
+        this.editDialogVisible = true
+        adding = !!isAdd
+        this.editData = rowData
       },
-      openCreateDialog () {},
-      openEditDialog () {},
       // 取消预约
       cancelReserve (rowData) {
         this.$confirm(`确定取消本次预约？`, '提示', {
@@ -206,12 +102,53 @@
           beforeClose: (action, instance, done) => {
             if (action === 'confirm') {
               const loading = Loading.service({ fullscreen: true })
-              loading.close()
+              delReserveApi(rowData.id).then(() => {
+                this.$message({
+                  type: 'success',
+                  message: '取消成功!'
+                })
+              }).finally(() => {
+                loading.close()
+              })
             } else {
               done()
             }
           }
         })
+      },
+      // 新增／修改预约信息
+      handleEditSubmit (data, respondCb) {
+        const uploadForm = (imageUrl) => {
+          const sendData = {
+            name: data.name,
+            headPortrait: imageUrl || data.avatar,
+            id: data.id,
+            description: data.description,
+            hospAreaId: data.hospAreaId,
+            doctorTypeId: data.doctorTypeId
+          }
+          const requestFn = adding ? createReserveApi : modifyReserveApi
+          requestFn(sendData).then(res => {
+            this.$message({
+              type: 'success',
+              message: '修改成功'
+            })
+            this.editDialogVisible = false
+            this.$refs.searchTable.getList()
+            respondCb(true)
+          }).catch(() => {
+            respondCb()
+          })
+        }
+        if (data.file) {
+          const formData = new FormData()
+          formData.append('file', data.file)
+          this.$uploadFile(formData).then(res => {
+            uploadForm(res.content)
+          })
+        } else {
+          uploadForm()
+        }
       }
     }
   }
@@ -270,57 +207,46 @@
           <el-button
             class="btn--add"
             type="primary"
-            @click="openCreateDialog(null, true)">
+            @click="openEditDialog(null, true)">
             新增 <i class="el-icon-plus"></i>
           </el-button>
         </div>
       </div>
+      <el-table-column
+        slot="column-operate"
+        align="center"
+        label="操作"
+        width="220">
+        <template scope="scope">
+          <div class="flex--center operate-items">
+            <span
+              class="operate-item">
+              <el-button 
+                type="text" 
+                @click="openEditDialog(scope.row)">
+                编辑
+              </el-button>
+            </span>
+            <span
+              class="operate-item">
+              <el-button 
+                type="text" 
+                @click="cancelReserve(scope.row)">
+                取消预约
+              </el-button>
+            </span>
+          </div>     
+        </template>
+      </el-table-column>
     </search-table>
+    <edit-dialog
+      v-model="editDialogVisible"
+      :data="editData"
+      @submit="handleEditSubmit" />
   </div>
 </template>
 
 <style lang="scss">
   #reverse-manage {
-    .status-label {
-      display: inline-block;
-      width: 60px;
-      height: 24px;
-      border-radius: 4px;
-      font-size: 12px;
-
-      &.status-pass {
-        color: #10ad57;
-        background: rgba(19,206,102,0.10);
-        border: 1px solid rgba(19,206,102,0.20);
-      }
-      &.status-wait {
-        color: #20a0ff;
-        background: rgba(32,160,255,0.10);
-        border: 1px solid rgba(32,160,255,0.20);
-      }
-      &.status-refuse {
-        color: #ff4949;
-        background: rgba(255,73,73,0.10);
-        border: 1px solid rgba(255,73,73,0.20);
-      }
-    }
-
-    .operations {
-    }
-  }
-  .filter-dropdown-menu {
-    &__scroller {
-      height: 200px;
-    }
-    .el-scrollbar__wrap {
-      overflow: auto;
-    }
-    
-    .el-dropdown-menu__item {
-      &.status-active {
-        background: #20a0ff;
-        color: #fff;
-      }
-    }
   }
 </style>

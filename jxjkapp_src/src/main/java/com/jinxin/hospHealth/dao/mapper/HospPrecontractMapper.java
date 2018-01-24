@@ -14,8 +14,11 @@ public interface HospPrecontractMapper extends MyMapper<HospPrecontract> {
             " <if test = 'hospPrecontract.id != null and hospPrecontract.id != \"\"'> " +
             "    and id = #{hospPrecontract.id}" +
             " </if>  " +
-            " <if test = 'hospPrecontract.userIds != null and hospPrecontract.userIds != \"\"'> " +
-            "   and user_id in (#{hospPrecontract.userIds})" +
+            " <if test = 'hospPrecontract.userIds != null '> " +
+            "   and user_id in " +
+            "      <foreach item='id' index='index' collection='hospPrecontract.userIds' open='(' separator=',' close=')'>" +
+            "           #{id}" +
+            "       </foreach>" +
             " </if>  " +
             " <if test = 'hospPrecontract.userId != null and hospPrecontract.userId != \"\"'> " +
             "   and user_id = #{hospPrecontract.userId}" +
@@ -23,8 +26,11 @@ public interface HospPrecontractMapper extends MyMapper<HospPrecontract> {
             " <if test = 'hospPrecontract.areaId != null and hospPrecontract.areaId != \"\"'> " +
             "   and area_id = #{hospPrecontract.areaId}" +
             " </if>  " +
-            " <if test = 'hospPrecontract.productSkuIds != null and hospPrecontract.productSkuIds != \"\"'> " +
-            "   and product_sku_id in (#{hospPrecontract.productSkuIds})" +
+            " <if test = 'hospPrecontract.productSkuIds != null '> " +
+            "   and product_sku_id in " +
+            "      <foreach item='id' index='index' collection='hospPrecontract.productSkuIds' open='(' separator=',' close=')'>" +
+            "           #{id}" +
+            "       </foreach>" +
             " </if>  " +
             " <if test = 'hospPrecontract.status != null and hospPrecontract.status != \"\"'> " +
             "   and status = #{hospPrecontract.status}" +

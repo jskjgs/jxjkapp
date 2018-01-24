@@ -1,16 +1,13 @@
 package com.jinxin.hospHealth.controller.protocol.PO;
 
 import com.doraemon.base.controller.bean.PageBean;
-import com.jinxin.hospHealth.controller.protocol.VO.DoctorInfoVO;
-import com.jinxin.hospHealth.controller.protocol.VO.OrderServiceDetailsVO;
-import com.jinxin.hospHealth.controller.protocol.VO.ProductSkuVO;
-import com.jinxin.hospHealth.dao.models.HospOrderGrade;
 import com.jinxin.hospHealth.dao.models.HospOrderServiceDetails;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by zbs on 2018/1/17.
@@ -48,7 +45,7 @@ public class OrderServiceDetailsPO extends PageBean{
     @ApiModelProperty("状态 0 指派中/1 服务中/2 已完成 /98 申请作废 99 已作废")
     private Integer state;
     @ApiModelProperty("多个状态,逗号分隔  0 指派中/1 服务中/2 已完成 /98 申请作废 99 已作废")
-    private String states;
+    private List<Integer> states;
     @ApiModelProperty("使用的地址")
     private String address;
     @ApiModelProperty("回退申请理由")
