@@ -20,3 +20,12 @@ export const callNext = (data) => {
   })
 }
 
+// 获取排队列表
+export const CURRENT_CALL = '/call/select'
+export const getCurrentApi = (data) => {
+  return fetchApi({
+    url: CURRENT_CALL,
+    type: 'post',
+    data
+  })
+}

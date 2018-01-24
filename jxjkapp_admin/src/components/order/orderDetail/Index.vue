@@ -175,12 +175,13 @@ export default {
       </el-input>
     </div>
     <div class="flex--vcenter info-item" style="margin-top: 20px;">
+      <b v-show="isVip" style="color: red">*VIP用户如果不填写缴费单号则默认使用余额进行支付</b>
       <span class="info-item__label">缴费单号</span>:
       <el-input
         class="info-item__content"
         :disabled="state === '已支付'"
         v-model="paymentNumber"
-        :placeholder="isVip ? 'VIP用户可用余额进行支付' : '普通用户请输入缴费单号'"
+        placeholder="请输入来自HIS系统的缴费单号"
         style="width: 300px;"/>
     </div>
     <div class="flex--vcenter"  style="margin-top: 20px;" v-show="state === '未支付'">

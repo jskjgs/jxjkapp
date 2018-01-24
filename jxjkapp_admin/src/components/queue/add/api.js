@@ -23,7 +23,7 @@ export const addToQueueApi = (data) => {
 }
 
 // 查询用户订单信息
-export const QUERY_ORDER_URL = '/order/admin/all'
+export const QUERY_ORDER_URL = '/order/admin/query'
 export const getUserOrdersApi = (data) => {
   return fetchApi({
     url: QUERY_ORDER_URL,

@@ -5,7 +5,7 @@
    */
   import SearchTable from '@/components/_common/searchTable/SearchTable'
   import {
-    getListApi
+    getOrderListApi
   } from './api'
   import { userStateFormat } from '@/utils/index'
   export default {
@@ -61,7 +61,8 @@
         }
       }]
       this.listApi = {
-        requestFn: getListApi,
+        listQueryParams: {userId: this.$route.params.userId},
+        requestFn: getOrderListApi,
         responseFn (res) {
           const content = res.content || {}
           const list = content.list || []
@@ -77,6 +78,7 @@
         }
       }
       return {
+        activeName: 'second',
         searchKeyword: '',
         apiKeysMap: {
           key: {
@@ -94,13 +96,12 @@
           }
         })
       },
-      openDetail (userId) {
-        console.log(userId)
+      handleClick (tab, event) {
+        console.log(tab, event)
       }
     }
   }
 </script>
-
 <template>
   <div id="user-manage">
     <div class="flex--vcenter page-top">
@@ -108,34 +109,16 @@
         用户管理
       </div>
     </div>
-    <search-table
-      ref="searchTable"
-      :table-attrs="tableAttrs"
-      :column-data="columnData"
-      :list-api="listApi"
-      :api-keys-map="apiKeysMap">
-      <div class="table-tools flex--vcenter" slot="table-tools">
-        <div class="search-wrap">
-          <span class="search-label">搜索关键字：</span>
-          <el-input
-            class="inline-block search-input"
-            placeholder="请输入手机号和用户ID..."
-            v-model="searchKeyword"
-            @keyup.enter.native="handleSearch">
-          </el-input>
-          <el-button
-            type="primary"
-            style="margin-left: 30px;"
-            @click="handleSearch">
-            搜索
-          </el-button>
-        </div>
-      </div>
-    </search-table>
+    <div style="margin-top: 30px">
+    用户姓名：
+    手机号：
+    用户性别：
+    用户ID：
+    </div>
+    <el-tabs v-model="activeName" @tab-click="handleClick" style="margin-top: 30px">
+      <el-tab-pane label="就诊卡" name="first">就诊卡</el-tab-pane>
+      <el-tab-pane label="订单记录" name="second">订单记录</el-tab-pane>
+      <el-tab-pane label="充值记录" name="third">充值记录</el-tab-pane>
+    </el-tabs>
   </div>
 </template>
-
-<style lang="scss">
-  #user-manage {
-  }
-</style>
