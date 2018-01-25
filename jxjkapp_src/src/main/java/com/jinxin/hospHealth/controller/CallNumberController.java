@@ -48,6 +48,8 @@ public class CallNumberController extends TransformController{
     String waitingQueName;
     @Value("${call-number.waiting-que-number}")
     String waitingQueNumber;
+    @Value("${call-number.after-call-que}")
+    String afterCallQue;
     @Autowired
     CallNumberService callNumberService;
     @Autowired
@@ -85,6 +87,8 @@ public class CallNumberController extends TransformController{
                 "admin用户信息为空.",
                 true);
         String callNumber = redisOperation.usePool().pop(waitingQueName+hospAdminUserInfo.getAreaId());
+        //放入过号对列
+        redisOperation.usePool().push(afterCallQue+hospAdminUserInfo.getAreaId(),callNumber);
         CallNumberPO callNumberPO = JSON.parseObject(callNumber,CallNumberPO.class);
         return ResponseWrapperSuccess(transform(callNumberPO));
     }
@@ -118,6 +122,41 @@ public class CallNumberController extends TransformController{
                 "admin用户信息为空.",
                 true);
         List<String> values = redisOperation.usePool().lrange(waitingQueName+hospAdminUserInfo.getAreaId(),0,-1);
+        if(values == null || values.size()<1)
+            return ResponseWrapperSuccess(null);
+        List<CallNumberVO> callNumberVOList = new ArrayList<>();
+        for(String s : values){
+            CallNumberPO po = JSON.parseObject(s,CallNumberPO.class);
+            callNumberVOList.add(transform(po));
+        }
+        return ResponseWrapperSuccess(callNumberVOList);
+    }
+
+    @ApiOperation(value = "查询当前排队的信息 ---admin",response = CallNumberVO.class)
+    @RequestMapping(value = "/admin/selecCurrentt", method = RequestMethod.POST)
+    @ResponseBody
+    public JSONObject selectCurrent() throws Exception {
+        HospAdminUserInfo  hospAdminUserInfo = DPreconditions.checkNotNull(
+                adminUserInfoService.selectOne(getAdminUserId()),
+                "admin用户信息为空.",
+                true);
+        List<String> values = redisOperation.usePool().lrange(waitingQueName+hospAdminUserInfo.getAreaId(),-1,-1);
+        if(values == null || values.size()<1)
+            return ResponseWrapperSuccess(null);
+        CallNumberPO po = JSON.parseObject(values.get(0),CallNumberPO.class);
+        CallNumberVO callNumberVO =transform(po);
+        return ResponseWrapperSuccess(callNumberVO);
+    }
+
+    @ApiOperation(value = "查询叫过的号的列表 ---admin",response = CallNumberVO.class)
+    @RequestMapping(value = "/admin/selectAfterCall", method = RequestMethod.POST)
+    @ResponseBody
+    public JSONObject afterCall() throws Exception {
+        HospAdminUserInfo  hospAdminUserInfo = DPreconditions.checkNotNull(
+                adminUserInfoService.selectOne(getAdminUserId()),
+                "admin用户信息为空.",
+                true);
+        List<String> values = redisOperation.usePool().lrange(afterCallQue+hospAdminUserInfo.getAreaId(),0,-1);
         if(values == null || values.size()<1)
             return ResponseWrapperSuccess(null);
         List<CallNumberVO> callNumberVOList = new ArrayList<>();
