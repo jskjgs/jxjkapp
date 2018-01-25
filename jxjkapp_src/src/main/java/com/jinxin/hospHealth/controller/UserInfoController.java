@@ -48,6 +48,7 @@ public class UserInfoController extends TransformController{
     @ResponseBody
     public JSONObject update(
             @ApiParam(value = "用户信息", required = true)  @RequestBody UserInfoPO userInfoPO) throws Exception {
+        userInfoPO.setId(getCurrentUserId());
         userInfoService.update(userInfoPO);
         return ResponseWrapperSuccess(null);
     }
@@ -109,14 +110,14 @@ public class UserInfoController extends TransformController{
         return ResponseWrapperSuccess(transformByHospUserInfo(userInfoService.selectAdmin(userInfoPO)));
     }
 
-    @ApiOperation(value = "删除单个用户信息")
-    @RequestMapping(value="/", method = RequestMethod.DELETE)
-    @ResponseBody
-    public JSONObject deleteOne(
-            @ApiParam(value = "用户ID", required = true) @RequestParam(value = "id", required = true) Long id) throws Exception {
-        userInfoService.deleteOne(id);
-        return ResponseWrapperSuccess(null);
-    }
+//    @ApiOperation(value = "删除单个用户信息 ---admin")
+//    @RequestMapping(value="/", method = RequestMethod.DELETE)
+//    @ResponseBody
+//    public JSONObject deleteOne(
+//            @ApiParam(value = "用户ID", required = true) @RequestParam(value = "id", required = true) Long id) throws Exception {
+//        userInfoService.deleteOne(id);
+//        return ResponseWrapperSuccess(null);
+//    }
     
     @ApiOperation(value = "换绑手机号",response = UserInfoVO.class)
     @RequestMapping(value = "/updatePhone", method = RequestMethod.POST)

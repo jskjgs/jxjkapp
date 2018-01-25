@@ -58,10 +58,6 @@ public class MyBaseController extends BaseController {
         return getId(adminTokenPrefix);
     }
 
-    public Long getDoctorUserId() {
-         return getId(doctorTokenPrefix);
-    }
-
     private Long getId(String tokenPrefix) {
         try {
             HttpServletRequest request = getCurrentRequest();

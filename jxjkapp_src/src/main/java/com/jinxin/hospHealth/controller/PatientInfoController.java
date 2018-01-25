@@ -83,7 +83,7 @@ public class PatientInfoController extends MyBaseController{
             hospPatientInfo.setPageSize(pageBean.getPageSize());
             hospPatientInfo.setField(pageBean.getField());
         }
-        return ResponseWrapperSuccess(patientInfoService.selectAll(pageBean));
+        return ResponseWrapperSuccess(patientInfoService.select(hospPatientInfo));
     }
 
     @ApiOperation(value = "根据条件查询就诊人信息",response = HospPatientInfo.class)
