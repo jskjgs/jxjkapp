@@ -107,18 +107,20 @@ export default {
         this.userType = userStateFormat(user.isVip)
         getUserOrdersApi({userId: user.id}).then((res) => {
           console.log(res.content.list)
-          let data = res.content.list
-          let table = this.tableData
-          data.forEach(function (value) {
-            let option = Object.create(null)
-            option.orderId = value.id
-            option.orderCode = value.code
-            option.orderAmount = value.orderPayPrice
-            let product = value.orderProductList ? value.orderProductList[0] : []
-            option.storage = product.remainingServiceNumber
-            option.serviceName = product.productSkuName
-            option.serviceId = product.id
-            table.push(option)
+          const content = res.content || {}
+          const list = content.list || []
+          this.tableData = list.map(item => {
+            const product = item.orderProductList ? (item.orderProductList[0]) || {} : {}
+            const userinfo = item.user || {}
+            return {
+              orderId: item.id,
+              orderCode: item.code,
+              orderAmount: item.orderPayPrice,
+              storage: product.remainingServiceNumber,
+              serviceName: product.productSkuName,
+              serviceId: product.id,
+              userId: userinfo.id
+            }
           })
           console.log(this.tableData)
         })

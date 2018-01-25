@@ -42,6 +42,8 @@ public class OrderInfoPO extends PageBean {
     private String paymentCode;
     @ApiModelProperty("支付金额")
     private BigDecimal amount;
+    @ApiModelProperty("折扣倍数")
+    private BigDecimal discount;
     @ApiModelProperty("是否显示 0:显示 1:隐藏")
     private Integer display;
 
@@ -96,6 +98,7 @@ public class OrderInfoPO extends PageBean {
         hospOrder.setCreateDate(createDate);
         hospOrder.setUpdateDate(updateDate);
         hospOrder.setPromotionIds(promotionIds);
+        hospOrder.setDiscount(this.discount);
         hospOrder.setDisplay(
                 display != null
                         ? ShowEnum.getByCode(display).getCode()

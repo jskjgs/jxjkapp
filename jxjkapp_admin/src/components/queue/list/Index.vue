@@ -8,7 +8,7 @@ import tableCfgMaker from './_consts/tableCfg'
 import {
   getListApi, callNext, getCurrentApi, JumpQueue
 } from './api'
-
+import { Loading } from 'element-ui'
 export default {
   name: 'Queue',
   components: {
@@ -21,29 +21,44 @@ export default {
     this.listApi = {
       requestFn: getListApi,
       responseFn (res) {
-        const content = res.content || {}
-        const list = content || []
-        console.log(res)
-        this.tableData = (list || {}).map((item) => {
+        const content = res.content || []
+        // const list = content.list || []
+        const list = content
+        this.tableData = list.map((item) => {
+          const userInfo = item.userInfo || {}
+          const orderProduct = item.orderProduct || {}
           return {
             id: item.id,
             queueNum: item.number,
-            userName: item.userInfo.name,
-            phone: item.userInfo.phone,
-            serviceName: item.orderProduct.productSkuName
+            userName: userInfo.name,
+            userId: userInfo.id,
+            phone: userInfo.phone,
+            serviceName: orderProduct.productSkuName,
+            serviceId: orderProduct.id
           }
         })
       }
     }
 
+    this.currentInfoList = [{
+      label: '用户姓名',
+      valueKey: 'userName'
+    }, {
+      label: '用户ID',
+      valueKey: 'userId'
+    }, {
+      label: '手机号',
+      valueKey: 'userPhone'
+    }, {
+      label: '项目名称',
+      valueKey: 'serviceName'
+    }, {
+      label: '备注',
+      valueKey: ''
+    }]
+
     return {
-      currentInfo: {
-        userName: '',
-        userId: '',
-        userPhone: '',
-        serviceName: '',
-        number: ''
-      },
+      currentInfo: null,
       apiKeysMap: {
         pageSize: {
           value: 10,
@@ -66,7 +81,7 @@ export default {
     }
   },
   created () {
-    getCurrentApi
+    this.getCurrent()
   },
   watch: {
     currentPage (newPageNum) {
@@ -78,18 +93,18 @@ export default {
   methods: {
     // 跳过排队
     skipQueue (rowData) {
-      this.$confirm('确定执行过号操作？', '提示', {
+      this.$confirm('确定执行插队操作？', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning',
         beforeClose: (action, instance, done) => {
           if (action === 'confirm') {
-            console.log(rowData)
-            JumpQueue({callNumber: rowData.queueNum}).then((res) => {
+            JumpQueue({phone: rowData.phone, number: rowData.queueNum, orderProductId: rowData.serviceId, userId: rowData.userId}).then((res) => {
               this.$message({
                 type: 'success',
                 message: '插队成功'
               })
+              this.$refs.searchTable.getList()
             }).finally(() => {
               done()
             })
@@ -100,18 +115,30 @@ export default {
       })
     },
     getCurrent () {
-      getCurrentApi({areaId: 1}).then((res) => {
-        let data = res.content
-        this.userName = data.userInfo.name
-        this.userId = data.userInfo.id
-        this.userPhone = data.userInfo.phone
-        this.serviceName = data.productSku.name
-        this.number = data.number
+      return getCurrentApi().then((res) => {
+        const data = res.content
+        if (data) {
+          const userInfo = data.userInfo || {}
+          const orderProduct = data.orderProduct || {}
+          this.currentInfo = {
+            userName: userInfo.name,
+            userId: userInfo.id,
+            userPhone: userInfo.phone,
+            serviceName: orderProduct.productSkuName,
+            number: data.number
+          }
+        } else {
+          this.currentInfo = null
+        }
       })
     },
     next () {
       callNext().then((res) => {
-        this.getCurrent()
+        let loading = Loading.service({ fullscreen: true })
+        this.getCurrent().then(() => {
+          loading.close()
+        })
+        this.apiKeysMap = Object.assign({}, this.apiKeysMap)
         // TODO 刷新当页列表
         // this.$router.go({name: 'queue_root'})
       }).catch((err) => {
@@ -132,52 +159,25 @@ export default {
         排队管理
       </div>
     </div>
-    <el-row :gutter="20" style="margin-top: 20px;">
-      <el-col :span="8">
-        <div class="info-item">
-          <span class="info-item__label">当前号码</span>：
-          <span class="info-item__content">{{currentInfo.number}}</span>
-        </div>
-      </el-col>
-      <el-col :span="8">
-        <div class="info-item">
-          <span class="info-item__label">用户姓名</span>：
-          <span class="info-item__content">{{currentInfo.userName}}</span>
-        </div>
-      </el-col>
-      <el-col :span="8">
-        <div class="info-item">
-          <span class="info-item__label">用户ID</span>：
-          <span class="info-item__content">{{currentInfo.userId}}</span>
-        </div>
-      </el-col>
-      <el-col :span="8">
-        <div class="info-item">
-          <span class="info-item__label">用户电话</span>：
-          <span class="info-item__content">{{currentInfo.number}}</span>
-        </div>
-      </el-col>
-      <el-col :span="8">
-        <div class="info-item">
-          <span class="info-item__label">当前号码</span>：
-          <span class="info-item__content">{{currentInfo.userPhone}}</span>
-        </div>
-      </el-col>
-      <el-col :span="8">
-        <div class="info-item">
-          <span class="info-item__label">项目名称</span>：
-          <span class="info-item__content">{{currentInfo.serviceName}}</span>
-        </div>
-      </el-col>
-    </el-row>
     <div class="top-box flex--vcenter">
-      <div class="top-box flex--vcenter">
-        <div class="btn-wrap flex-item--none">
-          <el-button type="primary" @click="add"  style="width: 120px;border-radius: 4px;">用户排号</el-button>
+      <div class="btn-wrap flex-item--none">
+        <el-button type="primary" @click="add"  style="width: 120px;border-radius: 4px;margin-top: 20px;">新增排队</el-button>
+      </div>
+    </div>
+    <div class="current-queue flex" v-if="currentInfo">
+      <div class="current-queue__num flex-item--none flex--center">
+        <div class="text-center">
+          排队号:<div class="num">{{currentInfo.number}}</div>
         </div>
       </div>
-      <div class="btn-wrap flex-item--none" style="margin-left: 20px;">
-        <el-button type="primary" @click="next">叫号</el-button>
+      <div class="current-queue__info flex-item">
+        <div class="info-item flex" v-for="item in currentInfoList">
+          <span class="info-item__label flex-item--none">{{ item.label }}</span>:
+          <span class="info-item__content flex-item">{{ currentInfo[item.valueKey] }}</span>
+        </div>
+      </div>
+      <div class="btn-wrap flex-item--none flex--center" style="margin-left: 20px; width: 150px;">
+        <el-button type="primary" @click="next">下一位</el-button>
       </div>
     </div>
     <search-table
@@ -194,9 +194,39 @@ export default {
   @import "~@/assets/style/variables/index";
 
   #page-queue {
+    .current-queue {
+      margin: 20px 0;
+      border: 1px solid #dfe6ec;
+      border-radius: 2px;
+      align-items: stretch;
+
+      &__num {
+        width: 200px;
+        border-right: 1px solid #dfe6ec;
+        .num {
+          font-size: 26px;
+        }
+      }
+
+      &__info {
+        padding: 20px;
+
+        .info-item {
+          &__label {
+            color: #888;
+            width: 60px;
+          }
+          &__content {
+            margin-left: 20px;
+          }
+        }
+      }
+    }
+
     .info-item {
       margin-bottom: 20px;
     }
+    
 
     .top-box {
       .input-items {
