@@ -16,6 +16,7 @@ export default {
   data () {
     return {
       userId: this.$route.params.userId,
+      userIdNumber: null,
       productId: null,
       qty: 0,
       discontPrice: null,
@@ -72,7 +73,7 @@ export default {
     },
     getOrderData () {
       let data = {
-        userId: this.userId,
+        idCard: this.userIdNumber,
         type: 0,
         orderProductPOList: [{
           productSkuId: !this.selectSku ? null : this.selectSku.id,
@@ -102,6 +103,7 @@ export default {
           let cat = ((prodcutList) => {
             let pl = []
             prodcutList.forEach(function (product) {
+              console.log('123123', product)
               let option = Object.create(null)
               option['id'] = product.defaultSku.id
               option['name'] = product.name
@@ -114,7 +116,7 @@ export default {
             categroyList[value.name] = cat
           }
         })
-        console.log(categroyList)
+        // console.log(categroyList)
         this.categroyList = categroyList
       })
       // 以下是测试数据
@@ -136,11 +138,11 @@ export default {
       <el-col :span="8">
         <div class="info-item">
           <span class="info-item__label">
-            用户ID
+            用户身份证号
           </span>
           <el-input
             class="info-item__content"
-            v-model.trim="userId"
+            v-model.trim="userIdNumber"
             placeholder="请输就诊人身份证号">
           </el-input>
         </div>
