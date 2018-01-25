@@ -91,6 +91,8 @@ public class UserInfoService implements BaseService<HospUserInfo, UserInfoPO> {
                 Language.get("user.select-not-exist"),
                 true);
         HospUserInfo update = userInfoPO.transform(null, new Date(), null, null);
+        //使用update不能更新VIP
+        update.setIsVip(null);
         DPreconditions.checkState(
                 hospUserInfoMapper.updateByPrimaryKeySelective(update) == 1,
                 "更新用户信息失败.",

@@ -22,6 +22,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.math.MathContext;
+import java.math.RoundingMode;
 import java.util.*;
 
 /**
@@ -88,10 +90,6 @@ public class OrderService implements BaseService<HospOrder, OrderInfoPO> {
                 patientInfoService.selectOneByIdCard(orderInfoPO.getIdCard()),
                 "没有查询到就诊人信息",
                 true);
-//        DPreconditions.checkNotNull(
-//                userInfoService.selectOne(orderInfoPO.getUserId()),
-//                Language.get("user.select-not-exist"),
-//                true);
         DPreconditions.checkNotNull(
                 orderInfoPO.getType(),
                 Language.get("order.type-null"),
@@ -105,6 +103,12 @@ public class OrderService implements BaseService<HospOrder, OrderInfoPO> {
                 orderInfoPO.getAdminUserId(),
                 Language.get("order.operation-name-null"),
                 true);
+        DPreconditions.checkState(
+                orderInfoPO.getDiscount() == null ||
+                        (orderInfoPO.getDiscount() !=null
+                                && BigDecimal.ONE.compareTo(orderInfoPO.getDiscount()) >= 0),
+                "商品折扣数如果不为空的话,必须是小于0的2位小数."
+                ,true);
         //创建 order product list 对象
         List<OrderProductPO> orderProductPOList = orderInfoPO.getOrderProductPOList();
         replenish(
@@ -450,6 +454,10 @@ public class OrderService implements BaseService<HospOrder, OrderInfoPO> {
         BigDecimal payPrice = BigDecimal.ZERO;
         for (OrderProductPO orderProductPO : orderInfoPO.getOrderProductPOList())
             payPrice = payPrice.add(orderProductPO.getProductPayPrice());
+        //计算折扣价格,针对订单全部
+        if(orderInfoPO.getDiscount() != null && BigDecimal.ZERO.compareTo(payPrice) < 0){
+            payPrice = payPrice.multiply(orderInfoPO.getDiscount(),new MathContext(2, RoundingMode.HALF_UP));
+        }
         return payPrice;
     }
 
@@ -503,7 +511,7 @@ public class OrderService implements BaseService<HospOrder, OrderInfoPO> {
             orderProductPO.setProductPayPrice(
                     DBigDecimal.multiply(
                             hospProductSku.getSalesPrice(),
-                            orderProductPO.getQuantity()));
+                            orderProductPO.getQuantity()).setScale(2, BigDecimal.ROUND_HALF_UP));
             //如果是服务的话,计算出服务的次数
             if (serviceType)
                 orderProductPO.setServiceQuantity(orderProductPO.getQuantity() * hospProductSku.getServiceQuantity());

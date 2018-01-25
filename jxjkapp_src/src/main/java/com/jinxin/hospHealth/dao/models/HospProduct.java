@@ -40,7 +40,7 @@ public class HospProduct extends PageBean{
 
     public String getField(){
          return this.field == null
-                 ? " sort_number DESC ,update_date DESC "
+                 ? " sort_number DESC , update_date DESC "
                  : this.field;
     }
 

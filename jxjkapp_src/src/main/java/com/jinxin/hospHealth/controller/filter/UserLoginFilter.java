@@ -44,8 +44,7 @@ public class UserLoginFilter implements Filter {
         HttpServletRequest request = (HttpServletRequest) servletRequest;
         Result result = new Result();
         if (validation(request,userTokenPrefix)
-                || validation(request,adminTokenPrefix)
-                || validation(request,doctorTokenPrefix)) {
+                || validation(request,adminTokenPrefix)) {
             filterChain.doFilter(servletRequest, servletResponse);
         } else {
             servletResponse.getWriter().print(result.addMessage("Please log in.").ExeFaild(401));
