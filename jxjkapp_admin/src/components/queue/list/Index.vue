@@ -8,7 +8,7 @@ import tableCfgMaker from './_consts/tableCfg'
 import {
   getListApi, callNext, getCurrentApi, JumpQueue
 } from './api'
-
+import { Loading } from 'element-ui'
 export default {
   name: 'Queue',
   components: {
@@ -58,13 +58,7 @@ export default {
     }]
 
     return {
-      currentInfo: {
-        userName: '',
-        userId: '',
-        userPhone: '',
-        serviceName: '',
-        number: ''
-      },
+      currentInfo: null,
       apiKeysMap: {
         pageSize: {
           value: 10,
@@ -122,21 +116,29 @@ export default {
     },
     getCurrent () {
       return getCurrentApi().then((res) => {
-        const data = res.content || {}
-        const userInfo = data.userInfo || {}
-        const orderProduct = data.orderProduct || {}
-        this.currentInfo = {
-          userName: userInfo.name,
-          userId: userInfo.id,
-          userPhone: userInfo.phone,
-          serviceName: orderProduct.productSkuName,
-          number: data.number
+        const data = res.content
+        if (data) {
+          const userInfo = data.userInfo || {}
+          const orderProduct = data.orderProduct || {}
+          this.currentInfo = {
+            userName: userInfo.name,
+            userId: userInfo.id,
+            userPhone: userInfo.phone,
+            serviceName: orderProduct.productSkuName,
+            number: data.number
+          }
+        } else {
+          this.currentInfo = null
         }
       })
     },
     next () {
       callNext().then((res) => {
-        this.getCurrent()
+        let loading = Loading.service({ fullscreen: true })
+        this.getCurrent().then(() => {
+          loading.close()
+        })
+        this.apiKeysMap = Object.assign({}, this.apiKeysMap)
         // TODO 刷新当页列表
         // this.$router.go({name: 'queue_root'})
       }).catch((err) => {
@@ -162,7 +164,7 @@ export default {
         <el-button type="primary" @click="add"  style="width: 120px;border-radius: 4px;margin-top: 20px;">新增排队</el-button>
       </div>
     </div>
-    <div class="current-queue flex">
+    <div class="current-queue flex" v-if="currentInfo">
       <div class="current-queue__num flex-item--none flex--center">
         <div class="text-center">
           排队号:<div class="num">{{currentInfo.number}}</div>
