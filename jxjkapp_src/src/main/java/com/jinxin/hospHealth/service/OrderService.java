@@ -88,10 +88,10 @@ public class OrderService implements BaseService<HospOrder, OrderInfoPO> {
                 patientInfoService.selectOneByIdCard(orderInfoPO.getIdCard()),
                 "没有查询到就诊人信息",
                 true);
-        DPreconditions.checkNotNull(
-                userInfoService.selectOne(orderInfoPO.getUserId()),
-                Language.get("user.select-not-exist"),
-                true);
+//        DPreconditions.checkNotNull(
+//                userInfoService.selectOne(orderInfoPO.getUserId()),
+//                Language.get("user.select-not-exist"),
+//                true);
         DPreconditions.checkNotNull(
                 orderInfoPO.getType(),
                 Language.get("order.type-null"),
@@ -115,6 +115,7 @@ public class OrderService implements BaseService<HospOrder, OrderInfoPO> {
         //创建 hospOrder object 对象
         orderInfoPO.setCode(UUidGenerate.create());
         orderInfoPO.setPayState(OrderPayStateEnum.NON_PAYMENT.getCode());
+        orderInfoPO.setUserId(hospPatientInfo.getUserId());
         HospOrder add = orderInfoPO.transform(
                 orderPayPrice(orderInfoPO),
                 orderSalesPrice(orderProductPOList),
