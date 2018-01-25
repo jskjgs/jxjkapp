@@ -76,6 +76,7 @@ export default {
       }
     }]
     return {
+      userId: null,
       userName: null,
       userPhone: null,
       userType: null,
@@ -100,6 +101,7 @@ export default {
           })
           return false
         }
+        this.userId = user.id
         this.userName = user.name
         this.userPhone = user.phone
         this.userType = userStateFormat(user.isVip)
@@ -123,7 +125,7 @@ export default {
       })
     },
     addToQueue (rowData) {
-      addToQueueApi({phone: this.userPhone, orderProductId: rowData.orderId}).then((res) => {
+      addToQueueApi({phone: this.userPhone, orderProductId: rowData.serviceId}).then((res) => {
         this.$message({
           type: 'success',
           message: '排队成功'

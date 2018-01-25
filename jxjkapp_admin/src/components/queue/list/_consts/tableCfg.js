@@ -15,32 +15,20 @@ export default function () {
       }
     }, {
       attrs: {
-        'prop': 'type',
-        'label': '状态',
-        'min-width': '160'
-      }
-    }, {
-      attrs: {
         'prop': 'userName',
         'label': '用户姓名',
         'min-width': '160'
       }
     }, {
       attrs: {
-        'prop': 'type',
+        'prop': 'phone',
         'label': '手机号',
         'min-width': '160'
       }
     }, {
       attrs: {
-        'prop': 'type',
-        'label': '状态',
-        'min-width': '160'
-      }
-    }, {
-      attrs: {
-        'prop': 'type',
-        'label': '备注',
+        'prop': 'serviceName',
+        'label': '项目名称',
         'min-width': '160'
       }
     }, {

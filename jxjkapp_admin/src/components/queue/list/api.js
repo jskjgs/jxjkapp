@@ -14,9 +14,19 @@ export const getListApi = (data) => {
 export const CALL_NEXT = '/call/admin/next'
 export const callNext = (data) => {
   return fetchApi({
-    url: LIST_URL,
+    url: CALL_NEXT,
     type: 'post',
     data
+  })
+}
+
+// 呼叫下一位
+export const JUMP_QUEUE = '/call/admin/put'
+export const JumpQueue = (params) => {
+  return fetchApi({
+    url: JUMP_QUEUE,
+    type: 'post',
+    params
   })
 }
 

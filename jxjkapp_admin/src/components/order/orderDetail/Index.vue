@@ -17,8 +17,8 @@ export default {
   },
   data () {
     this.ITEMS = [{
-      label: '用户ID',
-      valueKey: 'userId'
+      label: '用户手机号',
+      valueKey: 'userPhone'
     }, {
       label: '服务种类',
       valueKey: 'orderCategroyName'
@@ -61,6 +61,7 @@ export default {
         isRefund: false
       },
       userId: null,
+      userPhone: null,
       isVip: false,
       state: null,
       productId: null,
@@ -120,6 +121,7 @@ export default {
       }).then((res) => {
         let data = res.content.list[0]
         this.userId = data.user.id
+        this.userPhone = data.user.phone
         this.isVip = data.user.isVip
         this.state = payStateFormat(data.payState)
         let product = data.orderProductList[0]
@@ -175,7 +177,9 @@ export default {
       </el-input>
     </div>
     <div class="flex--vcenter info-item" style="margin-top: 20px;">
-      <b v-show="isVip" style="color: red">*VIP用户如果不填写缴费单号则默认使用余额进行支付</b>
+      <div>
+        <b v-show="isVip" style="color: red">*VIP用户如果不填写缴费单号则默认使用余额进行支付</b>
+      </div>
       <span class="info-item__label">缴费单号</span>:
       <el-input
         class="info-item__content"

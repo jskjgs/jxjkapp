@@ -6,7 +6,7 @@
 import SearchTable from '@/components/_common/searchTable/SearchTable'
 import tableCfgMaker from './_consts/tableCfg'
 import {
-  getListApi, callNext, getCurrentApi
+  getListApi, callNext, getCurrentApi, JumpQueue
 } from './api'
 
 export default {
@@ -20,21 +20,19 @@ export default {
     this.columnData = tableCfg.columnData
     this.listApi = {
       requestFn: getListApi,
-      responseFn (data) {
-        let content = data.content || {}
-        console.log(content)
-        this.tableData = (content.list || []).map((item) => {
+      responseFn (res) {
+        const content = res.content || {}
+        const list = content || []
+        console.log(res)
+        this.tableData = (list || {}).map((item) => {
           return {
             id: item.id,
-            queueNum: item.queueNum,
-            type: item.type,
-            userName: item.userName,
-            phone: item.phone,
-            status: item.status,
-            remark: item.remark
+            queueNum: item.number,
+            userName: item.userInfo.name,
+            phone: item.userInfo.phone,
+            serviceName: item.orderProduct.productSkuName
           }
         })
-        this.total = content.total || 0
       }
     }
 
@@ -86,6 +84,15 @@ export default {
         type: 'warning',
         beforeClose: (action, instance, done) => {
           if (action === 'confirm') {
+            console.log(rowData)
+            JumpQueue({callNumber: rowData.queueNum}).then((res) => {
+              this.$message({
+                type: 'success',
+                message: '插队成功'
+              })
+            }).finally(() => {
+              done()
+            })
           } else {
             done()
           }
@@ -105,6 +112,8 @@ export default {
     next () {
       callNext().then((res) => {
         this.getCurrent()
+        // TODO 刷新当页列表
+        // this.$router.go({name: 'queue_root'})
       }).catch((err) => {
         console.log(err)
       })
@@ -168,7 +177,7 @@ export default {
         </div>
       </div>
       <div class="btn-wrap flex-item--none" style="margin-left: 20px;">
-        <el-button type="primary" @click="next">下一位</el-button>
+        <el-button type="primary" @click="next">叫号</el-button>
       </div>
     </div>
     <search-table

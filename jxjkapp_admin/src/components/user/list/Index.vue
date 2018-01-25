@@ -137,6 +137,4 @@
 </template>
 
 <style lang="scss">
-  #user-manage {
-  }
 </style>
