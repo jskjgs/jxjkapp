@@ -45,7 +45,7 @@ export default {
       }
     },
     hospAreaList () {
-      return this.$_hospAreaList
+      return this.$_getters.hospAreaList || []
     }
   },
   watch: {

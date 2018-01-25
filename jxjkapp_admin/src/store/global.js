@@ -33,8 +33,8 @@ const state = {
   // todo: 删除`Array.from({length: 8 - 1 + 1}).map((item, index) => `m_0${index + 1}`) &&`
   auth: Array.from({length: 8 - 1 + 1}).map((item, index) => `m_0${index + 1}`),
   accountInfo: getAccountInfo() || {},
-  hospAreaList: [], // 院区列表
-  productTypeList: [] // 服务分类
+  hospAreaList: null, // 院区列表
+  productTypeList: null // 服务分类
 }
 
 const mutations = {
@@ -67,7 +67,7 @@ const mutations = {
 }
 const actions = {
   [UPDATE_HOSPAREALIST] ({commit}) {
-    getHospAreaApi({
+    return getHospAreaApi({
       'pageNum': 1,
       'pageSize': 1000
     }).then(res => {
@@ -83,7 +83,7 @@ const actions = {
     })
   },
   [UPDATE_PRODUCT_TYPE_LIST] ({commit}) {
-    getProductTypeApi({
+    return getProductTypeApi({
       'pageNum': 1,
       'pageSize': 1000
     }).then(res => {

@@ -64,7 +64,7 @@ export default {
   },
   computed: {
     productTypeList () {
-      return this.$_productTypeList
+      return this.$_getters.productTypeList || []
     }
   },
   watch: {

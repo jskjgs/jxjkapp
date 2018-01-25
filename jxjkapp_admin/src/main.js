@@ -9,7 +9,8 @@ import Vue from 'vue'
 import store from '@/store'
 import router from '@/router'
 
-import './utils/nativeExtend'
+import './extends/index'
+console.log('Vue.prototype', Vue.prototype)
 
 import './rootApi'
 
