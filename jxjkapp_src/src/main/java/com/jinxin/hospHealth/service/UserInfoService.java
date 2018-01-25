@@ -193,9 +193,7 @@ public class UserInfoService implements BaseService<HospUserInfo, UserInfoPO> {
         PageHelper.startPage(userInfoPO.getPageNum(), userInfoPO.getPageSize());
         if (StringUtil.isNotEmpty(userInfoPO.getField()))
             PageHelper.orderBy(userInfoPO.getField());
-        HospUserInfo select = new HospUserInfo();
-        select.setName(userInfoPO.getName());
-        select.setSex(userInfoPO.getSex());
+        HospUserInfo select = userInfoPO.transform(null,null,null,null);
         return new PageInfo(hospUserInfoMapper.select(select));
     }
 

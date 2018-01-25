@@ -71,7 +71,7 @@ public class CallNumberController extends TransformController{
         po.setDoctorAreaId(hospAdminUserInfo.getAreaId());
         orderServiceDetailsService.add(po);
         //计数
-        callNumber.setNumber(redisOperation.usePool().incrBy(waitingQueNumber,1));
+        callNumber.setNumber(redisOperation.usePool().incrBy(waitingQueNumber+hospAdminUserInfo.getAreaId(),1));
         redisOperation.usePool().push(waitingQueName+hospAdminUserInfo.getAreaId(), JSON.toJSONString(callNumber));
         return ResponseWrapperSuccess(null);
     }

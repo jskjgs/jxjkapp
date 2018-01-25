@@ -234,10 +234,9 @@ public class TransformController extends MyBaseController {
                 hospAdminUserInfo != null
                         ? transform(hospAdminUserInfo)
                         : null;
-        OrderProductPO orderProductPO = new OrderProductPO();
-        orderProductPO.setOrderId(hospOrder.getId());
         PageInfo<OrderProductVO> pageInfo =
-                transformByHospOrderProduct(orderProductService.select(orderProductPO));
+                transformByHospOrderProduct(
+                        orderProductService.selectByOrderId(hospOrder.getId()));
         HospPatientInfo hospPatientInfo =
                 hospOrder.getPatientInfoId() != null
                         ? patientInfoService.selectOne(hospOrder.getPatientInfoId())
