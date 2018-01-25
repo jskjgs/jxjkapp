@@ -79,6 +79,7 @@ public class TransformController extends MyBaseController {
         CallNumberVO vo = new CallNumberVO();
         vo.setUserInfo(userInfoVO);
         vo.setOrderProduct(orderProductVO);
+        vo.setNumber(callNumberPO.getNumber());
         return vo;
     }
 

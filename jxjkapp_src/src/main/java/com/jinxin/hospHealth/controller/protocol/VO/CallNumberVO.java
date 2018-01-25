@@ -16,7 +16,7 @@ public class CallNumberVO {
     @ApiModelProperty("订单商品信息")
     OrderProductVO orderProduct;
     @ApiModelProperty("排号")
-    Integer number;
+    Long number;
     @ApiModelProperty("前面的人数")
     Integer beforeNumber;
 }
