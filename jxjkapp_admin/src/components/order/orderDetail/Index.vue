@@ -20,6 +20,9 @@ export default {
       label: '用户手机号',
       valueKey: 'userPhone'
     }, {
+      label: '身份证号',
+      valueKey: 'idCardNumber'
+    }, {
       label: '服务种类',
       valueKey: 'orderCategroyName'
     }, {
@@ -62,6 +65,7 @@ export default {
       },
       userId: null,
       userPhone: null,
+      idCardNumber: null,
       isVip: false,
       state: null,
       productId: null,
@@ -122,6 +126,7 @@ export default {
         let data = res.content.list[0]
         this.userId = data.user.id
         this.userPhone = data.user.phone
+        this.idCardNumber = data.idCard
         this.isVip = data.user.isVip
         this.state = payStateFormat(data.payState)
         let product = data.orderProductList[0]
