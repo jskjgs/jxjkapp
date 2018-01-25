@@ -135,10 +135,11 @@
         }
       }).then(content => {
         content = content || {}
-        this.skuId = (content.defaultSku || {}).productId
-        this.photo = content.images || ''
-        this.name = content.name || ''
-        this.description = content.description || ''
+        const sku = content.defaultSku || {}
+        this.skuId = sku.productId
+        this.photo = sku.images || ''
+        this.name = sku.name || ''
+        this.description = sku.description || ''
         this.$apply()
       })
     }

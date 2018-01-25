@@ -71,7 +71,7 @@
   import wepy from 'wepy'
 
   import CustomPage from '@/components/customPage'
-  import pageMixin from '@/mixins/listPage'
+  import listPageMixin from '@/mixins/listPage'
 
   export default class Index extends wepy.page {
     config = {
@@ -82,13 +82,10 @@
       CustomPage
     }
 
-    mixins = [pageMixin]
+    mixins = [listPageMixin]
 
     data = {
-      typeId: '',
-      listData: [] /* Array.from({length: 7}).map(item => ({
-        bg: '../assets/images/demo.png' && ''
-      })) */
+      typeId: ''
     }
 
     computed = {
@@ -121,10 +118,12 @@
           productTypeId: this.typeId
         })
       }, (listItem, res) => {
+        const sku = listItem.defaultSku || {}
         return {
-          bg: listItem.images,
-          name: listItem.name,
-          description: listItem.description,
+          bg: sku.images,
+          name: sku.name,
+          description: sku.description,
+          skuId: sku.id,
           id: listItem.id
         }
       })
