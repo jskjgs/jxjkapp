@@ -22,16 +22,16 @@ export const callNext = (data) => {
 
 // 呼叫下一位
 export const JUMP_QUEUE = '/call/admin/put'
-export const JumpQueue = (params) => {
+export const JumpQueue = (data) => {
   return fetchApi({
     url: JUMP_QUEUE,
     type: 'post',
-    params
+    data
   })
 }
 
 // 获取排队列表
-export const CURRENT_CALL = '/call/select'
+export const CURRENT_CALL = '/call/admin/selecCurrentt'
 export const getCurrentApi = (data) => {
   return fetchApi({
     url: CURRENT_CALL,
