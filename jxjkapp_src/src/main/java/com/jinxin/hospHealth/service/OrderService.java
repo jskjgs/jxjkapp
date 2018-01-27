@@ -86,8 +86,11 @@ public class OrderService implements BaseService<HospOrder, OrderInfoPO> {
                 orderInfoPO.getId() == null,
                 "新增订单,id不能填写.",
                 true);
+        HospPatientInfo select = new HospPatientInfo();
+        select.setUserId(orderInfoPO.getUserId());
+        select.setId(orderInfoPO.getPatientId());
         HospPatientInfo hospPatientInfo = DPreconditions.checkNotNull(
-                patientInfoService.selectOneByIdCard(orderInfoPO.getIdCard()),
+                patientInfoService.selectOne(select),
                 "没有查询到就诊人信息",
                 true);
         DPreconditions.checkNotNull(
