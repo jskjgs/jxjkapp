@@ -94,7 +94,7 @@ public class OrderService implements BaseService<HospOrder, OrderInfoPO> {
         select.setId(DPreconditions.checkNotNull(
                 orderInfoPO.getPatientId(),
                 "就诊人ID不能为空.",
-                true);
+                true));
         HospPatientInfo hospPatientInfo = DPreconditions.checkNotNull(
                 patientInfoService.selectOne(select),
                 "没有查询到就诊人信息",
