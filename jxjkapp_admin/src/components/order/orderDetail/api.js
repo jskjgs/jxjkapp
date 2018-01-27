@@ -1,12 +1,12 @@
 import { fetchApi } from '@/utils/index'
 
 // 查询当前订单信息
-export const GET_ORDER_INFO = '/order/admin/query'
-export const getOrderInfoApi = (data) => {
+export const GET_ORDER_INFO = '/order/admin/'
+export const getOrderInfoApi = (params) => {
   return fetchApi({
     url: GET_ORDER_INFO,
-    type: 'post',
-    data
+    type: 'get',
+    params
   })
 }
 
