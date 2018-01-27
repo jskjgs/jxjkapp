@@ -7,7 +7,7 @@
 import placeholderImg from '@/assets/images/placeholder.png'
 
 import {
-  productInfoApi, orderCheckoutApi, addOrderApi, updateOrderApi
+  productInfoApi, orderCheckoutApi, addOrderApi, updateOrderApi, getPatientListApi
 } from './api'
 export default {
   name: 'orderDetail',
@@ -16,6 +16,7 @@ export default {
   data () {
     return {
       userId: this.$route.params.userId,
+      userPhone: null,
       userIdNumber: null,
       productId: null,
       qty: 0,
@@ -27,7 +28,9 @@ export default {
       paymentPrice: null,
       paymentAmount: null,
       selectSku: null,
+      selectPatient: null,
       selectCategroy: null,
+      patientList: null,
       categroyList: {}
     }
   },
@@ -73,7 +76,7 @@ export default {
     },
     getOrderData () {
       let data = {
-        idCard: this.userIdNumber,
+        patientId: this.selectPatient,
         type: 0,
         orderProductPOList: [{
           productSkuId: !this.selectSku ? null : this.selectSku.id,
@@ -85,13 +88,25 @@ export default {
     handleCreateOrder () {
       let data = this.getOrderData()
       addOrderApi(data).then((res) => {
-          // TODO 添加操作成功的提示
+        this.$message({
+          type: 'success',
+          message: '创建成功'
+        })
+        this.$router.go({name: 'order_root'})
+      })
+    },
+    handleGetPatientList () {
+      getPatientListApi({userPhone: this.userPhone}).then((res) => {
+        this.patientList = res.content.list
       })
     },
     handleUpdateOrder () {
       let data = this.getOrderData()
       updateOrderApi(data).then((res) => {
-          // TODO 更新操作成功的提示
+        this.$message({
+          type: 'success',
+          message: '更新成功'
+        })
       })
     },
     // 请求商品列表，含每个sku的价格
@@ -134,17 +149,41 @@ export default {
         <h2> 添加订单</h2>
       </div>
     </div>
+    <div class="info-item">
+      <span class="info-item__label">
+        用户手机号
+      </span>
+      <el-input
+        class="info-item__content"
+        v-model.trim="userPhone"
+        style="width: 50%"
+        placeholder="请输用户手机号">
+      </el-input>
+      <el-button
+        class="info-item"
+        type="primary"
+        style="margin-bottom: 0;"
+        @click="handleGetPatientList">查询就诊人
+      </el-button>
+    </div>
     <el-row :gutter="20">
       <el-col :span="8">
         <div class="info-item">
           <span class="info-item__label">
-            用户身份证号
+            就诊人
           </span>
-          <el-input
+          <el-select 
             class="info-item__content"
-            v-model.trim="userIdNumber"
-            placeholder="请输就诊人身份证号">
-          </el-input>
+            v-model="selectPatient" 
+            :disabled="!patientList"
+            placeholder="请选择">
+            <el-option
+              v-for="(key, value) in patientList"
+              :key="key"
+              :label="value"
+              :value="value">
+            </el-option>
+          </el-select>
         </div>
       </el-col>
       <el-col :span="8">
