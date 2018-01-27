@@ -86,8 +86,17 @@ public class OrderService implements BaseService<HospOrder, OrderInfoPO> {
                 orderInfoPO.getId() == null,
                 "新增订单,id不能填写.",
                 true);
+        HospPatientInfo select = new HospPatientInfo();
+        select.setUserId(DPreconditions.checkNotNull(
+                orderInfoPO.getUserId(),
+                "用户ID不能为空.",
+                true));
+        select.setId(DPreconditions.checkNotNull(
+                orderInfoPO.getPatientId(),
+                "就诊人ID不能为空.",
+                true));
         HospPatientInfo hospPatientInfo = DPreconditions.checkNotNull(
-                patientInfoService.selectOneByIdCard(orderInfoPO.getIdCard()),
+                patientInfoService.selectOne(select),
                 "没有查询到就诊人信息",
                 true);
         DPreconditions.checkNotNull(
@@ -105,10 +114,10 @@ public class OrderService implements BaseService<HospOrder, OrderInfoPO> {
                 true);
         DPreconditions.checkState(
                 orderInfoPO.getDiscount() == null ||
-                        (orderInfoPO.getDiscount() !=null
+                        (orderInfoPO.getDiscount() != null
                                 && BigDecimal.ONE.compareTo(orderInfoPO.getDiscount()) >= 0),
                 "商品折扣数如果不为空的话,必须是小于0的2位小数."
-                ,true);
+                , true);
         //创建 order product list 对象
         List<OrderProductPO> orderProductPOList = orderInfoPO.getOrderProductPOList();
         replenish(
@@ -455,8 +464,8 @@ public class OrderService implements BaseService<HospOrder, OrderInfoPO> {
         for (OrderProductPO orderProductPO : orderInfoPO.getOrderProductPOList())
             payPrice = payPrice.add(orderProductPO.getProductPayPrice());
         //计算折扣价格,针对订单全部
-        if(orderInfoPO.getDiscount() != null && BigDecimal.ZERO.compareTo(payPrice) < 0){
-            payPrice = payPrice.multiply(orderInfoPO.getDiscount(),new MathContext(2, RoundingMode.HALF_UP));
+        if (orderInfoPO.getDiscount() != null && BigDecimal.ZERO.compareTo(payPrice) < 0) {
+            payPrice = payPrice.multiply(orderInfoPO.getDiscount(), new MathContext(2, RoundingMode.HALF_UP));
         }
         return payPrice;
     }
