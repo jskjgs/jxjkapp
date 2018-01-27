@@ -48,6 +48,8 @@ public class HospOrder {
     private Date updateDate;
     @ApiModelProperty("折扣倍数")
     private BigDecimal discount;
+    @ApiModelProperty("备注")
+    private String comment;
     @ApiModelProperty("订单参加的全部活动，按逗号分隔")
     private String promotionIds;
     @ApiModelProperty("是否显示 0:显示 1:隐藏")
@@ -74,6 +76,7 @@ public class HospOrder {
         orderVO.setUpdateDate(this.updateDate);
         orderVO.setUser(userInfoVO);
         orderVO.setDiscount(this.discount);
+        orderVO.setComment(this.comment);
         orderVO.setOrderProductList(orderProductVOList);
         return orderVO;
     }

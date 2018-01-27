@@ -42,6 +42,8 @@ public class OrderVO {
     private Date createDate;
     @ApiModelProperty("更新时间")
     private Date updateDate;
+    @ApiModelProperty("备注")
+    private String comment;
     @ApiModelProperty("折扣倍数")
     private BigDecimal discount;
     @ApiModelProperty("订单参加的全部活动，按逗号分隔")

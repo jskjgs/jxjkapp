@@ -6,6 +6,7 @@ import com.doraemon.base.guava.DPreconditions;
 import com.doraemon.base.language.Language;
 import com.doraemon.base.redis.RedisOperation;
 import com.doraemon.base.util.DBigDecimal;
+import com.doraemon.base.util.RandomUtil;
 import com.doraemon.base.util.UUidGenerate;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -65,6 +66,7 @@ public class OrderService implements BaseService<HospOrder, OrderInfoPO> {
     public HospOrder add(OrderInfoPO orderInfoPO) throws Exception {
         HospOrder add = checkOutOrder(orderInfoPO);
         //开始保存
+        add.setCode(RandomUtil.getRandomLetterAndNum(8));
         DPreconditions.checkState(hospOrderMapper.insertSelectiveReturnId(add) == 1,
                 Language.get("service.save-failure"),
                 true);
@@ -126,7 +128,6 @@ public class OrderService implements BaseService<HospOrder, OrderInfoPO> {
                         ? true
                         : false);
         //创建 hospOrder object 对象
-        orderInfoPO.setCode(UUidGenerate.create());
         orderInfoPO.setPayState(OrderPayStateEnum.NON_PAYMENT.getCode());
         orderInfoPO.setUserId(hospPatientInfo.getUserId());
         HospOrder add = orderInfoPO.transform(
