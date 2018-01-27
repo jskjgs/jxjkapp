@@ -39,3 +39,14 @@ export const orderCheckoutApi = (data) => {
     data
   })
 }
+
+// 计算订单价格
+export const PATIENT_INFO = '/patientInfo/admin/query'
+export const getPatientListApi = (data) => {
+  return fetchApi({
+    url: PATIENT_INFO,
+    type: 'post',
+    data
+  })
+}
+
