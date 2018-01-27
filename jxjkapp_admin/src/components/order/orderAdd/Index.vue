@@ -46,6 +46,7 @@ export default {
       this.unitPrice = 0
       this.qty = 0
       if (val == null) { return }
+      console.log(val)
       this.productId = val.id
       this.unitPrice = val.price
     },
@@ -76,13 +77,15 @@ export default {
     },
     getOrderData () {
       let data = {
-        patientId: this.selectPatient,
+        userId: this.userId,
+        patientId: !this.selectPatient ? null : this.selectPatient.id,
         type: 0,
         orderProductPOList: [{
           productSkuId: !this.selectSku ? null : this.selectSku.id,
           quantity: this.qty,
           discontPrice: this.discontPrice}]
       }
+      console.log(this.userId)
       return data
     },
     handleCreateOrder () {
@@ -92,12 +95,20 @@ export default {
           type: 'success',
           message: '创建成功'
         })
-        this.$router.go({name: 'order_root'})
+        this.$router.push({path: '/order'})
       })
     },
     handleGetPatientList () {
-      getPatientListApi({userPhone: this.userPhone}).then((res) => {
-        this.patientList = res.content.list
+      getPatientListApi({phone: this.userPhone}).then((res) => {
+        let user = res.content
+        if (!user) {
+          this.$message({
+            type: 'error',
+            message: '没有该手机号用户的信息'
+          })
+        }
+        this.userId = user.id
+        this.patientList = user.patientInfoList
       })
     },
     handleUpdateOrder () {
@@ -118,7 +129,6 @@ export default {
           let cat = ((prodcutList) => {
             let pl = []
             prodcutList.forEach(function (product) {
-              console.log('123123', product)
               let option = Object.create(null)
               option['id'] = product.defaultSku.id
               option['name'] = product.name
@@ -157,6 +167,7 @@ export default {
         class="info-item__content"
         v-model.trim="userPhone"
         style="width: 50%"
+        type="number"
         placeholder="请输用户手机号">
       </el-input>
       <el-button
@@ -178,10 +189,10 @@ export default {
             :disabled="!patientList"
             placeholder="请选择">
             <el-option
-              v-for="(key, value) in patientList"
-              :key="key"
-              :label="value"
-              :value="value">
+              v-for="item in patientList"
+              :key="item.id"
+              :label="item.patientCard"
+              :value="item">
             </el-option>
           </el-select>
         </div>
@@ -227,7 +238,7 @@ export default {
             服务单价
           </span>
           <el-input
-            class="info-item__content">
+            class="info-item__content"
             v-model="unitPrice"
             :readonly=true
             type="number">
