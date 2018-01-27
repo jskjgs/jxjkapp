@@ -92,7 +92,7 @@ public class OtherController extends MyBaseController {
         loginInfoVO.setToken(
                 createToken(
                         respUserInfo.getId(), userTokenPrefix));
-        loginInfoVO.setUserInfo(respUserInfo.transform());
+        loginInfoVO.setUserInfo(respUserInfo.transform(null));
         loginInfoVO.setEmpty(isEmpty);
         return ResponseWrapperSuccess(loginInfoVO);
     }

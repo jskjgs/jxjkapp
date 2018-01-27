@@ -219,13 +219,9 @@ public class TransformController extends MyBaseController {
     public OrderVO transform(HospOrder hospOrder) throws Exception {
         if (hospOrder == null)
             return null;
-        HospUserInfo hospUserInfo =
-                hospOrder.getUserId() != null
-                        ? userInfoService.selectOne(hospOrder.getUserId())
-                        : null;
         UserInfoVO userInfoVO =
-                hospUserInfo != null
-                        ? hospUserInfo.transform()
+                hospOrder.getUserId() != null
+                        ? transform(userInfoService.selectOne(hospOrder.getUserId()))
                         : null;
         HospAdminUserInfo hospAdminUserInfo =
                 hospOrder.getAdminUserId() != null
@@ -248,7 +244,11 @@ public class TransformController extends MyBaseController {
     public UserInfoVO transform(HospUserInfo hospUserInfo) {
         if (hospUserInfo == null)
             return null;
-        return hospUserInfo.transform();
+        HospPatientInfo select = new HospPatientInfo();
+        select.setUserId(hospUserInfo.getId());
+        PageInfo<HospPatientInfo> patientInfoPageInfo =
+                patientInfoService.select(select);
+        return hospUserInfo.transform(patientInfoPageInfo.getList());
     }
 
     public AdminInfoVO transform(HospAdminUserInfo hospAdminUserInfo) {

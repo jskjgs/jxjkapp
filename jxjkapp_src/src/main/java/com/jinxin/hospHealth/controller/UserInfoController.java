@@ -106,7 +106,7 @@ public class UserInfoController extends TransformController{
     @RequestMapping(value="/admin/query", method = RequestMethod.POST)
     @ResponseBody
     public JSONObject selectAdmin(
-            @ApiParam(value = "商品信息", required = true)  @RequestBody UserInfoPO userInfoPO) throws Exception {
+            @ApiParam(value = "用户信息", required = true)  @RequestBody UserInfoPO userInfoPO) throws Exception {
         return ResponseWrapperSuccess(transformByHospUserInfo(userInfoService.selectAdmin(userInfoPO)));
     }
 

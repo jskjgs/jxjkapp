@@ -9,6 +9,7 @@ import lombok.Data;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import java.util.Date;
+import java.util.List;
 
 @Data
 @ApiModel("用户信息")
@@ -42,7 +43,7 @@ public class HospUserInfo extends PageBean{
     @ApiModelProperty("更新时间")
     private Date updateDate;
 
-    public UserInfoVO transform(){
+    public UserInfoVO transform(List<HospPatientInfo> patientInfoList){
         UserInfoVO userInfoVO = new UserInfoVO();
         userInfoVO.setId(this.id);
         userInfoVO.setName(this.name);
@@ -55,6 +56,7 @@ public class HospUserInfo extends PageBean{
         userInfoVO.setCreateDate(this.createDate);
         userInfoVO.setUpdateDate(this.updateDate);
         userInfoVO.setIsVip(this.isVip);
+        userInfoVO.setPatientInfoList(patientInfoList);
         return userInfoVO;
     }
 
