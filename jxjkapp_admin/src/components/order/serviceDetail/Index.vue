@@ -153,15 +153,19 @@ export default {
         {{recordNumber ? '>'+recordNumber :''}}
       </div>
     </div>
-    <div>
+    <div style="margin-top: 20px;">
       <el-row :gutter="20">
         <el-col :span="6">
-          <span class="info-item__label">用户名称</span>:
-          <span class="info-item__content">{{userName}}</span>
+          <div class="info-item">
+            <span class="info-item__label">用户名称</span>:
+            <span class="info-item__content">{{userName}}</span>
+          </div>
         </el-col>
         <el-col :span="6">
-          <span class="info-item__label">用户电话</span>:
-          <span class="info-item__content">{{userPhone}}</span>
+          <div class="info-item">
+            <span class="info-item__label">用户电话</span>:
+            <span class="info-item__content">{{userPhone}}</span>
+          </div>
         </el-col>
       </el-row>
       
@@ -181,20 +185,27 @@ export default {
         <span class="info-item__label">当日症状</span>:
         <span class="info-item__content">{{serviceComments}}</span>
       </div>
-      <el-tabs v-model="activeName" @tab-click="handleTab" type="border-card">
+      <el-tabs 
+        style="margin-top: 20px;width: 500px;"
+        v-model="activeName" 
+        @tab-click="handleTab" 
+        type="border-card">
         <el-tab-pane label="客户签名" name="first">
           <canvas id="userSign" class="sign-panel" ref="userSign" width="375" height="300"></canvas>
         </el-tab-pane>
         <el-tab-pane label="医生签名" name="second">
           <canvas id="doctorSign" class="sign-panel" ref="doctorSign" width="375" height="300"></canvas>
         </el-tab-pane>
-        <el-tab-pane label="用户反馈" name="third">
-          <el-rate
-            v-model="feedback.serviceScore"
-            show-text
-            :colors="['#99A9BF', '#F7BA2A', '#FF9900']">
-          </el-rate>
-          <span class="info-item__content">{{!feedback.userComments?'用户没有发表评论':feedback.userComments}}</span>
+        <el-tab-pane label="用户反馈" name="third" class="flex--center">
+          <div>
+            <el-rate
+              v-model="feedback.serviceScore"
+              style="margin-bottom: 20px;"
+              show-text
+              :colors="['#99A9BF', '#F7BA2A', '#FF9900']">
+            </el-rate>
+            <span class="info-item__content" style="margin-left: 0;">{{!feedback.userComments?'用户没有发表评论':feedback.userComments}}</span>
+          </div>
         </el-tab-pane>
         <el-tab-pane label="申请作废" name="fourth">
           <div class="info-item flex-item flex--vcenter">
