@@ -135,7 +135,7 @@ public class OrderController extends TransformController {
     }
 
     @ApiOperation(value = "查询单个订单信息--admin", response = OrderVO.class)
-    @RequestMapping(value = "/admin/", method = RequestMethod.GET)
+    @RequestMapping(value = "/admin", method = RequestMethod.GET)
     @ResponseBody
     public JSONObject selectOneAdmin(
             @ApiParam(value = "订单ID", required = true) @RequestParam(value = "id", required = true) Long id) throws Exception {

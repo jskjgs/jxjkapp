@@ -28,8 +28,8 @@ public class OrderInfoPO extends PageBean {
     private Long adminUserId;
     @ApiModelProperty("用户ID")
     private Long userId;
-    @ApiModelProperty("身份证ID")
-    private String idCard;
+    @ApiModelProperty("就诊人ID")
+    private Long patientId;
     @ApiModelProperty("类型（0 服务订单 1 商品订单）")
     private Integer type;
     @ApiModelProperty("支付状态 (0 未支付订单/1 已支付订单/2 退款申请中/3 退款完毕 )")
@@ -44,6 +44,8 @@ public class OrderInfoPO extends PageBean {
     private BigDecimal amount;
     @ApiModelProperty("折扣倍数")
     private BigDecimal discount;
+    @ApiModelProperty("备注")
+    private String comment;
     @ApiModelProperty("是否显示 0:显示 1:隐藏")
     private Integer display;
 
@@ -99,6 +101,7 @@ public class OrderInfoPO extends PageBean {
         hospOrder.setUpdateDate(updateDate);
         hospOrder.setPromotionIds(promotionIds);
         hospOrder.setDiscount(this.discount);
+        hospOrder.setComment(this.comment);
         hospOrder.setDisplay(
                 display != null
                         ? ShowEnum.getByCode(display).getCode()

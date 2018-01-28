@@ -1,9 +1,11 @@
 package com.jinxin.hospHealth.controller.protocol.VO;
 
+import com.jinxin.hospHealth.dao.models.HospPatientInfo;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by zbs on 2017/12/25.
@@ -34,5 +36,8 @@ public class UserInfoVO  {
     private Date createDate;
     @ApiModelProperty("更新时间")
     private Date updateDate;
+    @ApiModelProperty("就诊人信息")
+    private List<HospPatientInfo> patientInfoList;
+
 
 }

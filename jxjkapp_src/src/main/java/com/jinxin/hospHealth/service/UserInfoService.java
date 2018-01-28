@@ -51,7 +51,6 @@ public class UserInfoService implements BaseService<HospUserInfo, UserInfoPO> {
         DPreconditions.checkState(selectOneByPhone(userInfoPO.getPhone()) == null,
                 Language.get("user.phone-repeat"),
                 true);
-        Date date = new Date();
         HospUserInfo add = userInfoPO.transform(new Date(),new Date(),UserVipEnum.NOT_VIP.getCode(),null);
         add.setHeadPortrait(
                 userInfoPO.getHeadPortrait() == null

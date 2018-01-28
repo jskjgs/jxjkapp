@@ -17,11 +17,14 @@ export default {
   },
   data () {
     this.ITEMS = [{
-      label: '用户手机号',
+      label: '病人姓名',
+      valueKey: 'name'
+    }, {
+      label: '手机号',
       valueKey: 'userPhone'
     }, {
-      label: '身份证号',
-      valueKey: 'idCardNumber'
+      label: '就诊卡号',
+      valueKey: 'patientCard'
     }, {
       label: '服务种类',
       valueKey: 'orderCategroyName'
@@ -65,7 +68,7 @@ export default {
       },
       userId: null,
       userPhone: null,
-      idCardNumber: null,
+      patientCard: null,
       isVip: false,
       state: null,
       productId: null,
@@ -123,21 +126,30 @@ export default {
       getOrderInfoApi({
         id: this.orderId
       }).then((res) => {
-        let data = res.content.list[0]
+        let data = res.content
+        if (!data) {
+          this.$message({
+            type: 'error',
+            message: '没有相关订单记录'
+          })
+          return
+        }
         this.userId = data.user.id
         this.userPhone = data.user.phone
-        this.idCardNumber = data.idCard
+        this.patientCard = data.patientInfo.patientCard
         this.isVip = data.user.isVip
         this.state = payStateFormat(data.payState)
         let product = data.orderProductList[0]
-        console.log(product)
+        console.log(this.patientCard)
+        this.orderCategroyName = product.productSkuName
+        this.orderSkuName = product.productSku.name
         this.qty = product.quantity
-        // this.discontPrice: null,
+        this.discontPrice = data.discount
         // this.comments = null,
-        // this.paymentNumber:
+        this.paymentNumber = data.paymentCode
         this.refundment.id = product.productSku.id
         this.orderSkuName = product.productSkuName
-        this.orderCategroyName = product.productSku.product.name
+        this.orderCategroyName = product.productSku.name
         this.unitPrice = product.productSku.salesPrice
         this.totalPrice = data.orderSalesPrice
         this.paymentPrice = data.orderPayPrice

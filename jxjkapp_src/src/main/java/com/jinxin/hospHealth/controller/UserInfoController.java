@@ -90,8 +90,15 @@ public class UserInfoController extends TransformController{
     @RequestMapping(value="/admin/", method = RequestMethod.GET)
     @ResponseBody
     public JSONObject selectOneAdmin(
-            @ApiParam(value = "用户ID", required = true) @RequestParam(value = "id", required = true) Long id) throws Exception {
-        return ResponseWrapperSuccess(transform(userInfoService.selectOneAdmin(id)));
+            @ApiParam(value = "用户ID", required = false) @RequestParam(value = "id", required = false) Long id,
+            @ApiParam(value = "用户手机", required = false) @RequestParam(value = "phone", required = false) String phone) throws Exception {
+        DPreconditions.checkState(
+                id != null || phone != null,
+                "ID和手机号必须填写一个.",
+                true);
+        return ResponseWrapperSuccess( id != null
+                ? transform(userInfoService.selectOneAdmin(id))
+                : transform(userInfoService.selectOneByPhone(phone)));
     }
 
     @ApiOperation(value = "查询全部用户信息---admin",response = UserInfoVO.class)
@@ -106,7 +113,7 @@ public class UserInfoController extends TransformController{
     @RequestMapping(value="/admin/query", method = RequestMethod.POST)
     @ResponseBody
     public JSONObject selectAdmin(
-            @ApiParam(value = "商品信息", required = true)  @RequestBody UserInfoPO userInfoPO) throws Exception {
+            @ApiParam(value = "用户信息", required = true)  @RequestBody UserInfoPO userInfoPO) throws Exception {
         return ResponseWrapperSuccess(transformByHospUserInfo(userInfoService.selectAdmin(userInfoPO)));
     }
 

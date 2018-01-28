@@ -7,7 +7,7 @@
 import placeholderImg from '@/assets/images/placeholder.png'
 
 import {
-  productInfoApi, orderCheckoutApi, addOrderApi, updateOrderApi
+  productInfoApi, orderCheckoutApi, addOrderApi, updateOrderApi, getPatientListApi
 } from './api'
 export default {
   name: 'orderDetail',
@@ -16,6 +16,7 @@ export default {
   data () {
     return {
       userId: this.$route.params.userId,
+      userPhone: null,
       userIdNumber: null,
       productId: null,
       qty: 0,
@@ -27,7 +28,9 @@ export default {
       paymentPrice: null,
       paymentAmount: null,
       selectSku: null,
+      selectPatient: null,
       selectCategroy: null,
+      patientList: null,
       categroyList: {}
     }
   },
@@ -43,6 +46,7 @@ export default {
       this.unitPrice = 0
       this.qty = 0
       if (val == null) { return }
+      console.log(val)
       this.productId = val.id
       this.unitPrice = val.price
     },
@@ -73,25 +77,47 @@ export default {
     },
     getOrderData () {
       let data = {
-        idCard: this.userIdNumber,
+        userId: this.userId,
+        patientId: !this.selectPatient ? null : this.selectPatient.id,
         type: 0,
         orderProductPOList: [{
           productSkuId: !this.selectSku ? null : this.selectSku.id,
           quantity: this.qty,
           discontPrice: this.discontPrice}]
       }
+      console.log(this.userId)
       return data
     },
     handleCreateOrder () {
       let data = this.getOrderData()
       addOrderApi(data).then((res) => {
-          // TODO 添加操作成功的提示
+        this.$message({
+          type: 'success',
+          message: '创建成功'
+        })
+        this.$router.push({path: '/order'})
+      })
+    },
+    handleGetPatientList () {
+      getPatientListApi({phone: this.userPhone}).then((res) => {
+        let user = res.content
+        if (!user) {
+          this.$message({
+            type: 'error',
+            message: '没有该手机号用户的信息'
+          })
+        }
+        this.userId = user.id
+        this.patientList = user.patientInfoList
       })
     },
     handleUpdateOrder () {
       let data = this.getOrderData()
       updateOrderApi(data).then((res) => {
-          // TODO 更新操作成功的提示
+        this.$message({
+          type: 'success',
+          message: '更新成功'
+        })
       })
     },
     // 请求商品列表，含每个sku的价格
@@ -103,7 +129,6 @@ export default {
           let cat = ((prodcutList) => {
             let pl = []
             prodcutList.forEach(function (product) {
-              console.log('123123', product)
               let option = Object.create(null)
               option['id'] = product.defaultSku.id
               option['name'] = product.name
@@ -134,17 +159,42 @@ export default {
         <h2> 添加订单</h2>
       </div>
     </div>
+    <div class="info-item">
+      <span class="info-item__label">
+        用户手机号
+      </span>
+      <el-input
+        class="info-item__content"
+        v-model.trim="userPhone"
+        style="width: 50%"
+        type="number"
+        placeholder="请输用户手机号">
+      </el-input>
+      <el-button
+        class="info-item"
+        type="primary"
+        style="margin-bottom: 0;"
+        @click="handleGetPatientList">查询就诊人
+      </el-button>
+    </div>
     <el-row :gutter="20">
       <el-col :span="8">
         <div class="info-item">
           <span class="info-item__label">
-            用户身份证号
+            就诊人
           </span>
-          <el-input
+          <el-select 
             class="info-item__content"
-            v-model.trim="userIdNumber"
-            placeholder="请输就诊人身份证号">
-          </el-input>
+            v-model="selectPatient" 
+            :disabled="!patientList"
+            placeholder="请选择">
+            <el-option
+              v-for="item in patientList"
+              :key="item.id"
+              :label="item.patientCard"
+              :value="item">
+            </el-option>
+          </el-select>
         </div>
       </el-col>
       <el-col :span="8">
@@ -188,7 +238,7 @@ export default {
             服务单价
           </span>
           <el-input
-            class="info-item__content">
+            class="info-item__content"
             v-model="unitPrice"
             :readonly=true
             type="number">
