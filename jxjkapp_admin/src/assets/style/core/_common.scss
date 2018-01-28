@@ -1,4 +1,5 @@
 /* 公共样式 */
+@import "./layout";
 @import "../variables/size";
 @import "../variables/theme";
 
@@ -85,5 +86,15 @@ table {
   textarea {
     height: 100px;
     resize: none;
+  }
+}
+
+.info-item {
+  @extend .flex--vcenter;
+  &__label {
+    @extend .flex-item--none;
+  }
+  &__content {
+    @extend .flex-item;
   }
 }

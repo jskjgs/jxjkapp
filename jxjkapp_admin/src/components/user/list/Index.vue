@@ -95,7 +95,6 @@
         })
       },
       openDetail (userId) {
-        console.log(userId)
         this.$router.push({name: 'user/detail_root', params: { id: userId }})
       }
     }

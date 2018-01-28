@@ -11,14 +11,33 @@ export const getOrderListApi = (data) => {
 }
 
 // 获取个人信息
-export const USER_INFO_URL = '/account/queryUserDetail'
-export const userInfoApi = (accountId) => {
+export const USER_INFO_URL = '/userInfo/admin/'
+export const userInfoApi = (params) => {
   return fetchApi({
     url: USER_INFO_URL,
     type: 'get',
-    params: {
-      accountId
-    }
+    params
   })
 }
 
+// 更新个人信息
+export const UPDATE_INFO_URL = '/userInfo/'
+export const updateInfoApi = (data) => {
+  return fetchApi({
+    url: UPDATE_INFO_URL,
+    type: 'put',
+    data
+  })
+}
+
+// 更新用户vip信息
+export const UPDATE_VIP_URL = '/userInfo/vip'
+export const updateVipApi = (id) => {
+  return fetchApi({
+    url: UPDATE_VIP_URL,
+    type: 'put',
+    params: {
+      id
+    }
+  })
+}
