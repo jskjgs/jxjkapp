@@ -110,7 +110,7 @@
       const basicColCfg = (prop) => {
         return {
           formatter (row, column) {
-            return row[prop] || '--'
+            return row[prop] === undefined ? '--' : row[prop]
           },
           'show-overflow-tooltip': true
         }

@@ -4,7 +4,7 @@
    * Date: 2017/10/20
    */
   import UserDetails from './_thumbs/Details'
-  import OrderHistory from './_thumbs/OrderHistory'
+  import OrderHistory from './_thumbs/orderHistory/Index'
   import RechargeRecord from './_thumbs/Recharge'
 
   export default {

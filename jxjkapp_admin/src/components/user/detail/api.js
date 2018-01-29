@@ -1,7 +1,7 @@
 import { fetchApi } from '@/utils/index'
 
 // 获取用户订单列表
-export const GET_ORDER_LIST_URL = '/userInfo/admin/all'
+export const GET_ORDER_LIST_URL = '/order/admin/query'
 export const getOrderListApi = (data) => {
   return fetchApi({
     url: GET_ORDER_LIST_URL,
