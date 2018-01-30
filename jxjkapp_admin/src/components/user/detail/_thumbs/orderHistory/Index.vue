@@ -23,6 +23,9 @@
       }
     },
     methods: {
+      search () {
+        this.apiKeysMap = Object.assign({}, this.apiKeysMap)
+      }
     }
   }
 </script>
@@ -43,18 +46,17 @@
               style="width: 350px;"
               placeholder="用户ID／手机号／就诊卡号／身份证号／订单ID"/>
           </div>
+          <el-button
+            type="primary"
+            style="margin-left: 20px;"
+            @click="search">
+            搜索
+          </el-button>
         </div>
         <div class="btn-wrap">
           <el-button
             type="primary"
-            @click="">
-            搜索
-          </el-button>
-          <el-button
-            type="primary"
-            @click="">
-            添加服务
-          </el-button>
+            @click="">添加订单</el-button>
         </div>
       </div>
       <el-table-column

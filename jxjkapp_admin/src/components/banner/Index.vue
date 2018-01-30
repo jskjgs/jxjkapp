@@ -208,7 +208,7 @@ export default {
 </script>
 
 <template>
-  <div id="banner">
+  <div id="page-banner">
     <div class="flex--vcenter page-top">
       <div class="page-title">
         BANNER管理
@@ -322,7 +322,7 @@ export default {
 
 <style lang="scss">
   @import "~@/assets/style/variables/index";
-  #banner {
+  #page-banner {
     .display-num-control {
       margin-left: 60px;
       .label {
@@ -336,11 +336,6 @@ export default {
     .table-tools {
       margin-top: 30px;
       justify-content: space-between;
-    }
-    .btn-wrap {
-      .el-button {
-        border-radius: 18px;
-      }
     }
     .btn--del {
       background: $bg5;

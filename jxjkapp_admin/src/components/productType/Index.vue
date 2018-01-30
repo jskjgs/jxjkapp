@@ -145,7 +145,7 @@ export default {
 </script>
 
 <template>
-  <div id="banner">
+  <div id="page-productType">
     <div class="flex--vcenter page-top">
       <div class="page-title">
         服务分类管理
@@ -234,7 +234,7 @@ export default {
 <style lang="scss">
   @import "~@/assets/style/variables/index";
 
-  #banner {
+  #page-productType {
     .display-num-control {
       margin-left: 60px;
       .label {
@@ -250,11 +250,6 @@ export default {
     .table-tools {
       margin-top: 30px;
       justify-content: space-between;
-    }
-    .btn-wrap {
-      .el-button {
-        border-radius: 18px;
-      }
     }
     .btn--del {
       background: $bg5;
