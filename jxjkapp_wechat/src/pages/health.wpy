@@ -171,10 +171,11 @@
     initPageData () {
       this.pageNum = 1
       this.initData({
-        url: '/order/all',
+        url: '/order/query',
         method: 'POST',
         data: {
-          pageSize: 5
+          pageSize: 5,
+          payState: '1'
         }
       }, (listItem, res) => {
         const hospArea = listItem.area || {}
