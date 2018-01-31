@@ -59,10 +59,10 @@
       },
       stopTouchmove () {},
       handleTouchstart ({ touches }) {
-        this.drawStroke (touches, 'start')
+        this.drawStroke(touches, 'start')
       },
       handleTouchmove ({ touches }) {
-        this.drawStroke (touches, 'move')
+        this.drawStroke(touches, 'move')
       },
       // 重写
       handleReDraw () {

@@ -78,7 +78,7 @@
         }, true).then(content => {
           this.$_syncUserData({
             token: content.token,
-            userInfo: content.adminInfoVO || content.adminInfo || {} 
+            userInfo: content.adminInfoVO || content.adminInfo || {}
           })
           wx.showToast({
             title: '登录成功'

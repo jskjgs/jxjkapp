@@ -10,12 +10,12 @@ export const getOrderInfoApi = (params) => {
   })
 }
 
-export const GET_ORDER_PAY = '/orderProduct/refundment'
-export const payOrderApi = (data) => {
+export const GET_ORDER_PAY = '/order/hisPay'
+export const payOrderApi = (params) => {
   return fetchApi({
     url: GET_ORDER_PAY,
     type: 'post',
-    data
+    params
   })
 }
 
