@@ -56,7 +56,7 @@ export default {
       return this.$refs.searchTable.currentPage
     },
     hospAreaList () {
-      return this.$_hospAreaList
+      return this.$_getters.hospAreaList || []
     }
   },
   watch: {
@@ -163,7 +163,7 @@ export default {
 </script>
 
 <template>
-  <div id="doctor">
+  <div id="page-doctor">
     <div class="flex--vcenter page-top">
       <div class="page-title">
         医护人员管理
@@ -265,7 +265,7 @@ export default {
 
 <style lang="scss">
   @import "~@/assets/style/variables/index";
-  #doctor {
+  #page-doctor {
     .display-num-control {
       margin-left: 60px;
       .label {
@@ -287,11 +287,6 @@ export default {
     }
     .search-label {
       color: $color3;
-    }
-    .btn-wrap {
-      .el-button {
-        border-radius: 18px;
-      }
     }
     .btn--del {
       background: $bg5;

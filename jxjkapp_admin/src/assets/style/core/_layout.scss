@@ -15,6 +15,11 @@
     &--vcenter {
       @extend .flex;
       align-items: center;
+
+      &--sb {
+        @extend .flex--vcenter;
+        justify-content: space-between;
+      }
     }
     // 水平垂直居中
     &--center {

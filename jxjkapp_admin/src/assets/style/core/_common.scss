@@ -1,4 +1,5 @@
 /* 公共样式 */
+@import "./layout";
 @import "../variables/size";
 @import "../variables/theme";
 
@@ -47,9 +48,6 @@
     }
   }
   .table-tools & {
-    input {
-      border-radius: 18px;
-    }
     .search-label {
       & + .el-input {
         width: 300px;
@@ -85,5 +83,15 @@ table {
   textarea {
     height: 100px;
     resize: none;
+  }
+}
+
+.info-item {
+  @extend .flex--vcenter;
+  &__label {
+    @extend .flex-item--none;
+  }
+  &__content {
+    @extend .flex-item;
   }
 }

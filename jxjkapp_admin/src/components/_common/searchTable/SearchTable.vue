@@ -110,7 +110,7 @@
       const basicColCfg = (prop) => {
         return {
           formatter (row, column) {
-            return row[prop] || '--'
+            return row[prop] === undefined ? '--' : row[prop]
           },
           'show-overflow-tooltip': true
         }
@@ -166,11 +166,6 @@
         & + .tool-item {
           margin-left: 20px;
         }
-      }
-
-      .el-button {
-        width: 80px;
-        border-radius: 18px;
       }
     }
 

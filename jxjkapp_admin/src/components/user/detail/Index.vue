@@ -3,122 +3,61 @@
    * Created by zhengji
    * Date: 2017/10/20
    */
-  import SearchTable from '@/components/_common/searchTable/SearchTable'
-  import {
-    getOrderListApi
-  } from './api'
-  import { userStateFormat } from '@/utils/index'
+  import UserDetails from './_thumbs/Details'
+  import OrderHistory from './_thumbs/orderHistory/Index'
+  import RechargeRecord from './_thumbs/Recharge'
+
   export default {
-    name: 'UserManage',
+    name: 'UserDetail',
     components: {
-      SearchTable
+      UserDetails,
+      OrderHistory,
+      RechargeRecord
     },
     data () {
-      this.tableAttrs = {
-        'props': {
-          'tooltip-effect': 'dark',
-          'style': 'width: 100%',
-          'align': 'center'
-        }
-      }
-      this.columnData = [{
-        attrs: {
-          'prop': 'userId',
-          'label': 'ID',
-          'min-width': '140'
-        }
-      }, {
-        attrs: {
-          'prop': 'userPhone',
-          'label': '手机号',
-          'min-width': '140'
-        }
-      }, {
-        attrs: {
-          'prop': 'userName',
-          'label': '姓名',
-          'min-width': '140'
-        }
-      }, {
-        attrs: {
-          'prop': 'isVip',
-          'label': '用户等级',
-          'min-width': '140'
-        }
-      }, {
-        attrs: {
-          'label': '操作',
-          'min-width': '140'
-        },
-        scopedSlots: {
-          default: (scope) => {
-            return (
-              <button type="button"
-              class="el-button el-button--text"
-              onClick={() => this.openDetail(scope.row.userId)}><span>查看详情</span></button>
-            )
-          }
-        }
-      }]
-      this.listApi = {
-        listQueryParams: {userId: this.$route.params.userId},
-        requestFn: getOrderListApi,
-        responseFn (res) {
-          const content = res.content || {}
-          const list = content.list || []
-          this.tableData = list.map(item => {
-            return {
-              userName: item.name,
-              userId: item.id,
-              userPhone: item.phone,
-              isVip: userStateFormat(item.isVip)
-            }
-          })
-          this.total = content.total || 0
-        }
+      this.tabs = {
+        UserDetails,
+        OrderHistory,
+        RechargeRecord
       }
       return {
-        activeName: 'second',
-        searchKeyword: '',
-        apiKeysMap: {
-          key: {
-            value: undefined
-          },
-          currentPage: 'pageNum'
-        }
+        activeTab: 'UserDetails'
       }
     },
     methods: {
-      handleSearch () {
-        this.apiKeysMap = Object.assign({}, this.apiKeysMap, {
-          key: {
-            value: this.searchKeyword || undefined
-          }
-        })
-      },
-      handleClick (tab, event) {
-        console.log(tab, event)
-      }
     }
   }
 </script>
 <template>
-  <div id="user-manage">
-    <div class="flex--vcenter page-top">
-      <div class="page-title">
-        用户管理
+  <div id="user-detail-wrap">
+    <!-- <div class="user-summary">
+      <div class="summary-item">
+        <span class="summary-item__label">用户姓名</span>:
+        <span class="summary-item__content"></span>
+      </div>
+    </div> -->
+    <div class="user-info-wrap">
+      <el-tabs v-model="activeTab">
+        <el-tab-pane label="详细资料" name="UserDetails"></el-tab-pane>
+        <el-tab-pane label="订单记录" name="OrderHistory"></el-tab-pane>
+        <el-tab-pane label="充值记录" name="RechargeRecord"></el-tab-pane>
+      </el-tabs>
+      <div class="activeTab-wrap">
+        <keep-alive>
+          <component :is="activeTab"></component>
+        </keep-alive>
       </div>
     </div>
-    <div style="margin-top: 30px">
-    用户姓名：
-    手机号：
-    用户性别：
-    用户ID：
-    </div>
-    <el-tabs v-model="activeName" @tab-click="handleClick" style="margin-top: 30px">
-      <el-tab-pane label="就诊卡" name="first">就诊卡</el-tab-pane>
-      <el-tab-pane label="订单记录" name="second">订单记录</el-tab-pane>
-      <el-tab-pane label="充值记录" name="third">充值记录</el-tab-pane>
-    </el-tabs>
   </div>
 </template>
+<style lang="scss">
+#user-detail-wrap {
+  .user-info-wrap {
+    margin-top: 20px;
+    border: 1px solid #ccc;
+    padding: 20px;
+    min-height: 500px;
+  }
+}
+</style>
+

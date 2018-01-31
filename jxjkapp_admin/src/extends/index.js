@@ -2,37 +2,20 @@ import Vue from 'vue'
 import {
   fetchApi
 } from './index'
-import store from '@/store'
 import {
   convertDate
 } from '@/utils/index'
 
-import {
-  UPDATE_HOSPAREALIST,
-  UPDATE_PRODUCT_TYPE_LIST
-} from '../store/global'
+import getters from './getters'
 
 Object.defineProperties(Vue.prototype, {
+  '$_getters': {
+    value: getters
+  },
+  '$_utils': {
+  },
   '$_convertDate': {
     value: convertDate
-  },
-  '$_hospAreaList': {
-    get () {
-      if (!store.state.hospAreaList || !store.state.hospAreaList.length) {
-        store.dispatch(UPDATE_HOSPAREALIST)
-      } else {
-        return store.state.hospAreaList
-      }
-    }
-  },
-  '$_productTypeList': {
-    get () {
-      if (!store.state.productTypeList || !store.state.productTypeList.length) {
-        store.dispatch(UPDATE_PRODUCT_TYPE_LIST)
-      } else {
-        return store.state.productTypeList
-      }
-    }
   },
   '$uploadFile': {
     value (data) {

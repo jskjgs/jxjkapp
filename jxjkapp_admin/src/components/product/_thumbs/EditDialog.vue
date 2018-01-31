@@ -55,10 +55,10 @@ export default {
       }
     },
     productTypeList () { // 分类列表
-      return this.$_productTypeList
+      return this.$_getters.productTypeList || []
     },
     hospAreaList () { // 院区列表
-      return this.$_hospAreaList
+      return this.$_getters.hospAreaList || []
     }
   },
   watch: {

@@ -131,6 +131,9 @@ export default {
         },
         desc: {
           value: true
+        },
+        payState: {
+          value: '1'
         }
       }
     }
@@ -187,26 +190,34 @@ export default {
       :column-data="columnData"
       :list-api="listApi"
       :api-keys-map="apiKeysMap">
-      <div class="table-tools flex--vcenter" slot="table-tools">
-        <div class="search-wrap flex--vcenter">
-          <div class="tool-item">
-            搜索关键字：
-            <el-input v-model="keyWords" style="width: auto;" placeholder="请填入关键字"></el-input>
+      <div slot="table-tools">
+        <div class="table-tools flex--vcenter">
+          <div class="search-wrap flex--vcenter">
+            <div class="tool-item">
+              搜索关键字：
+              <el-input v-model="keyWords" style="width: auto;" placeholder="请填入关键字"></el-input>
+            </div>
+            <el-button
+              class="tool-item"
+              type="primary"
+              @click="handleSearch">搜索
+            </el-button>
           </div>
-          <el-button
-            class="tool-item"
-            type="primary"
-            @click="handleSearch">搜索
-          </el-button>
+          <div class="btn-wrap">
+            <el-button
+              class="btn--add"
+              type="primary"
+              @click="newOrder()">
+              新增 <i class="el-icon-plus"></i>
+            </el-button>
+          </div>
         </div>
-        <div class="btn-wrap">
-          <el-button
-            class="btn--add"
-            type="primary"
-            @click="newOrder()">
-            新增 <i class="el-icon-plus"></i>
-          </el-button>
-        </div>
+        <el-tabs 
+          v-model="apiKeysMap.payState.value"
+          style="margin-top: 10px;">
+          <el-tab-pane label="已支付" name="1"></el-tab-pane>
+          <el-tab-pane label="未支付" name="0"></el-tab-pane>
+        </el-tabs>
       </div>
     </search-table>
   </div>

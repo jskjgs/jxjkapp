@@ -66,8 +66,11 @@
           const content = res.content || {}
           const list = content.list || []
           this.tableData = list.map(item => {
+            const patientInfoList = item.patientInfoList || []
+            const patientInfo = patientInfoList[0] || {}
             return {
               userName: item.name,
+              patientId: patientInfo.id,
               userId: item.id,
               userPhone: item.phone,
               isVip: userStateFormat(item.isVip)
@@ -95,7 +98,6 @@
         })
       },
       openDetail (userId) {
-        console.log(userId)
         this.$router.push({name: 'user/detail_root', params: { id: userId }})
       }
     }

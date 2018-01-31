@@ -35,14 +35,22 @@ export default {
       label: '订单状态',
       valueKey: 'state'
     }, {
-      label: '服务单价',
-      valueKey: 'unitPrice'
-    }, {
       label: '购买数量',
       valueKey: 'qty'
+    }]
+
+    this.priceItems = [{
+      label: '服务单价',
+      valueKey: 'unitPrice',
+      formatter (value) {
+        return value == null ? '' : `￥${value}`
+      }
     }, {
       label: '折扣金额',
-      valueKey: 'discontPrice'
+      valueKey: 'discontPrice',
+      formatter (value) {
+        return value == null ? '' : `￥${value}`
+      }
     }, {
       label: '总金额',
       valueKey: 'totalPrice',
@@ -183,7 +191,23 @@ export default {
         </div>
       </el-col>
     </el-row>
-    <div class="flex info-item" style="margin-top: 20px;">
+    <el-row :gutter="20" class="price-wrap">
+      <template 
+        v-for="(item, index) in priceItems" >
+        <el-col
+          :key="item.valueKey"
+          :span="8"
+          :style="{ clear: index === 2 ? 'left' : 'none' }">
+          <div class="info-item flex" :style="item.style || ''">
+            <span class="info-item__label flex-item--none">
+              {{ item.label }}
+            </span>:
+            <span class="info-item__content">{{ item.formatter ? item.formatter($data[item.valueKey]) : $data[item.valueKey]}}</span>
+          </div>
+        </el-col>
+      </template>
+    </el-row>
+    <div class="flex info-item" style="margin-top: 20px; align-items: flex-start;">
       <span style="width: 60px;" class="flex-item--none info-item__label">备注信息</span>:
       <el-input
         type="textarea"
@@ -194,16 +218,16 @@ export default {
       </el-input>
     </div>
     <div class="flex--vcenter info-item" style="margin-top: 20px;">
-      <div>
-        <b v-show="isVip" style="color: red">*VIP用户如果不填写缴费单号则默认使用余额进行支付</b>
-      </div>
       <span class="info-item__label">缴费单号</span>:
       <el-input
-        class="info-item__content"
+        class="info-item__content flex-item--none"
         :disabled="state === '已支付'"
         v-model="paymentNumber"
         placeholder="请输入来自HIS系统的缴费单号"
-        style="width: 300px;"/>
+        style="width: 300px;margin-right: 20px;"/>
+      <div>
+        <b v-show="isVip" style="color: red">*VIP用户如果不填写缴费单号则默认使用余额进行支付</b>
+      </div>
     </div>
     <div class="flex--vcenter"  style="margin-top: 20px;" v-show="state === '未支付'">
         <el-button
@@ -237,10 +261,16 @@ export default {
   @import "~@/assets/style/variables/index";
 
   #orderDetail {
-    .info-item-wrap {
+    .info-items {
       margin-top: 20px;
     }
+    .price-wrap {
+      border: 1px solid #ccc;
+      border-width: 1px 0;
+      padding: 20px 0 0;
+    }
     .info-item {
+      margin-bottom: 20px;
       &__label {
         width: 60px;
       }
