@@ -91,7 +91,7 @@ export default {
   },
   methods: {
     handlePaymentOrder () {
-      let data = {userId: this.userId, paymentNumber: this.paymentNumber}
+      let data = {userId: this.userId, orderId: this.orderId, paymentNumber: this.paymentNumber}
       payOrderApi(data).then((res) => {
         this.$message({
           type: 'success',
