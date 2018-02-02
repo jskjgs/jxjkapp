@@ -1,9 +1,9 @@
 <!--<?xml version="1.0" encoding="UTF-8"?>-->
 <!-- myBatis自动代码生成配置 -->
 <!DOCTYPE generatorConfiguration
-        PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
-        "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
-<generatorConfiguration>
+    PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
+    "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
+    <generatorConfiguration>
 
     <!--指定特定数据库的jdbc驱动jar包的位置 -->
     <classPathEntry
@@ -146,12 +146,15 @@
         <!--enableCountByExample="fasle" enableUpdateByExample="fasle"-->
         <!--enableDeleteByExample="fasle" enableSelectByExample="fasle"-->
         <!--selectByExampleQueryId="fasle"></table>-->
-
-        <table schema="mybatis" tableName="hosp_admin_user_info" domainObjectName="HospAdminUserInfo"
-               enableCountByExample="fasle" enableUpdateByExample="fasle"
-               enableDeleteByExample="fasle" enableSelectByExample="fasle"
-               selectByExampleQueryId="fasle"></table>
-        <table schema="mybatis" tableName="hosp_doctor_user_info" domainObjectName="HospDoctorUserInfo"
+        <!--<table schema="mybatis" tableName="hosp_admin_user_info" domainObjectName="HospAdminUserInfo"-->
+               <!--enableCountByExample="fasle" enableUpdateByExample="fasle"-->
+               <!--enableDeleteByExample="fasle" enableSelectByExample="fasle"-->
+               <!--selectByExampleQueryId="fasle"></table>-->
+        <!--<table schema="mybatis" tableName="hosp_doctor_user_info" domainObjectName="HospDoctorUserInfo"-->
+               <!--enableCountByExample="fasle" enableUpdateByExample="fasle"-->
+               <!--enableDeleteByExample="fasle" enableSelectByExample="fasle"-->
+               <!--selectByExampleQueryId="fasle"></table>-->
+        <table schema="mybatis" tableName="hosp_operation_log" domainObjectName="HospOperationLog"
                enableCountByExample="fasle" enableUpdateByExample="fasle"
                enableDeleteByExample="fasle" enableSelectByExample="fasle"
                selectByExampleQueryId="fasle"></table>
