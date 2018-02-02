@@ -167,11 +167,6 @@
           margin-left: 20px;
         }
       }
-
-      .el-button {
-        width: 80px;
-        border-radius: 18px;
-      }
     }
 
     .el-table {

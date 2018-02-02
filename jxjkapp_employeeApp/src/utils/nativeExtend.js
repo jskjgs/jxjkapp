@@ -133,7 +133,8 @@ Promise.prototype.finally = function (callback) {
             if (errMsg !== '') {
               wx.showToast({
                 image: '../assets/images/error.png',
-                title: errMsg
+                title: errMsg,
+                duration: 3000
               })
               throw new Error({
                 message: errMsg,
