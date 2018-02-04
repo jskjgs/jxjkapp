@@ -13,6 +13,7 @@ export default class extends wepy.app {
     },
     pages: [
       'pages/serviceList',
+      'pages/scanResult',
       'pages/serviceHistory',
       'pages/account',
       'pages/serviceDetail',
@@ -66,7 +67,7 @@ export default class extends wepy.app {
       enableDebug: true
     })
     // wx.reLaunch({
-    //   url: '/pages/sign'
+    //   url: '/pages/scanResult'
     // })
   }
 }

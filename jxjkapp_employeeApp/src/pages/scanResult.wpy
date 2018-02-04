@@ -1,17 +1,19 @@
 <template>
   <CustomPage :isLastPage.sync="isLastPage">
     <view id="page-service-list">
-      <view class="list-top-tools flex--vcenter--sb">
-        <view hidden>
-          <ServiceTypePicker
-            :value.sync="serviceType"/>
+      <scroll-view 
+        scroll-x
+        class="patient-list-wrap list-top-tools">
+        <view class="flex patient-list">
+          <repeat for="{{ patientList }}" key="index" item="item" index="index">
+            <view 
+              class="flex-item--none flex--center patient-item {{ activePatient === item.value ? 'active' : '' }}"
+              @tap="handlePickPatient({{ item.value }})">
+              {{ item.label }}
+            </view>
+          </repeat>
         </view>
-        <view></view>
-        <view class="scan-flex flex--vcenter">
-          <image class="scan-img" src="../assets/images/scan.png" mode="aspectFit"></image>
-          <text class="scan-text" @tap="scanQrcode">扫一扫</text>
-        </view>
-      </view>
+      </scroll-view>
       <view class="list-wrap">
         <repeat for="{{ listData }}" key="index" item="item" index="index">
           <view class="service-box">
@@ -41,26 +43,23 @@
 
 <script>
   import wepy from 'wepy'
-
-  import ServiceTypePicker from '@/components/serviceTypePicker'
   import CustomPage from '@/components/customPage'
-
   import listPageMixin from '@/mixins/listPage'
 
   export default class serviceList extends wepy.page {
     config = {
-      navigationBarTitleText: '服务派单',
+      navigationBarTitleText: '记录详情',
       enablePullDownRefresh: true
     }
     components = {
-      ServiceTypePicker,
       CustomPage
     }
 
     mixins = [listPageMixin]
 
     data = {
-      serviceType: ''
+      patientList: [],
+      activePatient: ''
     }
 
     computed = {
@@ -69,21 +68,24 @@
       }
     }
 
+    watch = {
+      patientList (newVal) {
+        if (newVal != undefined) {
+          this.activePatient = (newVal[0] || {}).value
+        }
+      },
+      activePatient (newVal) {
+        if (newVal != undefined) {
+          this.pageNum = 1
+          this.getList()
+          console.log(newVal)
+        }
+      }
+    }
+
     methods = {
-      // 扫码
-      scanQrcode () {
-        wx.scanCode({
-          onlyFromCamera: false,
-          success: (res) => {
-            // wx.showModal({
-            //   title: '扫到的内容',
-            //   content: res.result
-            // })
-            wx.navigateTo({
-              url: '/pages/scanResult'
-            })
-          }
-        })
+      handlePickPatient (value) {
+        this.activePatient = value
       },
       acceptOrder (id, item) {
         wx.showModal({
@@ -122,7 +124,26 @@
 
     initPageData () {
       this.pageNum = 1
-      this.getList()
+      this.getPatientList().then(() => {
+        this.getList()
+      })
+    }
+
+    getPatientList () {
+      return new Promise((resolve, reject) => {
+        setTimeout(() => {
+          resolve([{
+            label: '就诊人1',
+            value: 1
+          }, {
+            label: '就诊人2',
+            value: 2
+          }])
+          this.$apply()
+        }, 1000)
+      }).then(content => {
+        this.patientList = content
+      })
     }
 
     getList () {
@@ -156,15 +177,15 @@
 #page-service-list {
   padding-top: $topTools_H;
 
-  .list-top-tools {
-    .scan {
-      &-img {
-        width: 34rpx;
-        height: 30rpx;
-      }
-      &-text {
-        margin-left: 10rpx;
-        color: #9190FF;
+  .patient-list-wrap {
+    color: inherit;
+  }
+  .patient-list {
+    height: 100%;
+    .patient-item {
+      padding: 0 10px;
+      &.active {
+        color: $primaryColor;
       }
     }
   }

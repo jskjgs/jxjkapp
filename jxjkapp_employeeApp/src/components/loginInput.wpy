@@ -23,6 +23,7 @@
         <view class="input-group">
           <AccountInput
             class="input-group__inner"
+            type="number"
             :value.sync="account" 
             placeholder="请输入员工账号"/>
         </view>
