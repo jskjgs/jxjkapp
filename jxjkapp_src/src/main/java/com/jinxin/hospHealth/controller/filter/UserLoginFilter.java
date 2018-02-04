@@ -22,7 +22,8 @@ import java.io.IOException;
         "/hospHealth/patientInfo/*",
         "/hospHealth/precontract/*",
         "/hospHealth/userBalance/*",
-        "/hospHealth/userInfo/admin/*"})
+        "/hospHealth/userInfo/admin/*",
+        "/hospHealth/orderService/*"})
 @Log4j
 public class UserLoginFilter implements Filter {
 

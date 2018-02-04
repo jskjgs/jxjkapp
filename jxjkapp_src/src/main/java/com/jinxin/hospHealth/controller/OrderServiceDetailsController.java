@@ -66,7 +66,7 @@ public class OrderServiceDetailsController extends TransformController{
         return ResponseWrapperSuccess(null);
     }
 
-    @ApiOperation(value = "接受订单服务详情 ---docker")
+    @ApiOperation(value = "接受订单服务详情 ---admin")
     @RequestMapping(value = "/admin/accept", method = RequestMethod.POST)
     @ResponseBody
     public JSONObject accept(
