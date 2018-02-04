@@ -89,6 +89,7 @@ table {
 .info-item {
   @extend .flex--vcenter;
   &__label {
+    color: #888;
     @extend .flex-item--none;
   }
   &__content {

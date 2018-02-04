@@ -1,8 +1,6 @@
 import Vue from 'vue'
 import {
-  fetchApi
-} from './index'
-import {
+  fetchApi,
   convertDate
 } from '@/utils/index'
 
