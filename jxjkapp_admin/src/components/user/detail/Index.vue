@@ -21,7 +21,22 @@
         RechargeRecord
       }
       return {
-        activeTab: 'UserDetails'
+      }
+    },
+    computed: {
+      activeTab: {
+        get () {
+          return this.$route.query.tab || 'UserDetails'
+        },
+        set (val) {
+          this.$router.replace({
+            ...this.$route,
+            query: {
+              ...this.$route.query,
+              tab: val
+            }
+          })
+        }
       }
     },
     methods: {

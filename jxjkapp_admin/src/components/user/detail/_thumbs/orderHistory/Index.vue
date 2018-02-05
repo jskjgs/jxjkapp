@@ -3,6 +3,11 @@
    * Created by zhengji
    * Date: 2017/10/20
    */
+  import {
+    ORDER_ADD,
+    ORDER_DETAIL,
+    ORDER_RECORD
+  } from '@/components/user/detail/_consts/routers'
   import SearchTable from '@/components/_common/searchTable/SearchTable'
   import tableCfgMaker from './tableCfgMaker'
   export default {
@@ -25,6 +30,28 @@
     methods: {
       search () {
         this.apiKeysMap = Object.assign({}, this.apiKeysMap)
+      },
+      toOrderAdd () {
+        console.log('ORDER_ADD.path', ORDER_ADD.path)
+        this.$router.push(ORDER_ADD)
+      },
+      toDetail (orderId) {
+        this.$router.push({
+          name: ORDER_DETAIL.name,
+          params: {
+            ...this.$route.params,
+            orderId
+          }
+        })
+      },
+      toRecord (orderId) {
+        this.$router.push({
+          name: ORDER_RECORD.name,
+          params: {
+            ...this.$route.params,
+            orderId
+          }
+        })
       }
     }
   }
@@ -56,7 +83,7 @@
         <div class="btn-wrap">
           <el-button
             type="primary"
-            @click="">添加订单</el-button>
+            @click="toOrderAdd">添加订单</el-button>
         </div>
       </div>
       <el-table-column
@@ -69,14 +96,16 @@
             <span
               class="operate-item">
               <el-button 
-                type="text">
+                type="text"
+                @click="toDetail(scope.row.id)">
                 详情
               </el-button>
             </span>
             <span
               class="operate-item">
               <el-button 
-                type="text">
+                type="text"
+                @click="toRecord(scope.row.id)">
                 记录
               </el-button>
             </span>
