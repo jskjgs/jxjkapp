@@ -208,14 +208,14 @@ export default {
           <el-col :span="8">
             <el-form-item
               label="售卖价格"
-              prop="salePrice"
+              prop="salesPrice"
               class="banner-name"
               required
               :rules="[
                 { required: true, message: '售卖价格不能为空'},
                 { validator: validNum, trigger: 'change, blur'}
               ]">
-              <el-input v-model="form.salePrice" auto-complete="off"></el-input>
+              <el-input v-model="form.salesPrice" auto-complete="off"></el-input>
             </el-form-item>
           </el-col>
         </el-row>
