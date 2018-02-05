@@ -24,8 +24,6 @@ public class HospProductSku extends PageBean{
     private String name;
     @ApiModelProperty("图片些，使用逗号分隔")
     private String images;
-    @ApiModelProperty("院区ID")
-    private Long areaId;
     @ApiModelProperty("描述")
     private String description;
     @ApiModelProperty("默认服务数量")
@@ -45,14 +43,13 @@ public class HospProductSku extends PageBean{
                 : this.field;
     }
 
-    public ProductSkuVO transform(ProductVO product,HospArea area){
+    public ProductSkuVO transform(ProductVO product){
         ProductSkuVO productSkuVO = new ProductSkuVO();
         productSkuVO.setId(this.id);
         productSkuVO.setProduct(product);
         productSkuVO.setName(this.name);
         productSkuVO.setImages(this.images);
         productSkuVO.setDescription(this.description);
-        productSkuVO.setArea(area);
         productSkuVO.setServiceQuantity(this.serviceQuantity);
         productSkuVO.setSalesPrice(this.salesPrice);
         productSkuVO.setShowPrice(this.showPrice);

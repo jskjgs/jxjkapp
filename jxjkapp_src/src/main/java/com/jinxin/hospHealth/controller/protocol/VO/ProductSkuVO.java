@@ -23,8 +23,6 @@ public class ProductSkuVO {
     private String name;
     @ApiModelProperty("图片些，使用逗号分隔")
     private String images;
-    @ApiModelProperty("院区信息")
-    private HospArea area;
     @ApiModelProperty("描述")
     private String description;
     @ApiModelProperty("默认服务数量")

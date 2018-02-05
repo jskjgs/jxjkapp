@@ -1,15 +1,10 @@
 package com.jinxin.hospHealth.controller.protocol.VO;
 
-import com.jinxin.hospHealth.dao.models.HospProduct;
 import com.jinxin.hospHealth.dao.models.HospProductSku;
 import com.jinxin.hospHealth.dao.models.HospProductType;
-import com.jinxin.hospHealth.service.ProductTypeService;
-import com.jinxin.hospHealth.service.SkuService;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Configurable;
 
 import java.util.Date;
 
@@ -29,6 +24,8 @@ public class ProductVO {
     private HospProductType productType;
     @ApiModelProperty("排序")
     private Integer sortNumber;
+    @ApiModelProperty("院区ID")
+    private Long areaId;
     @ApiModelProperty("默认sku信息")
     private HospProductSku defaultSku;
     @ApiModelProperty("商品图片些，使用逗号分隔")

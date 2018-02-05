@@ -67,10 +67,6 @@ public class SkuService implements BaseService<HospProductSku, HospProductSku> {
                 productService.selectOne(hospProductSku.getProductId()),
                 "商品SKU挂载的商品不存在.",
                 true);
-        DPreconditions.checkNotNull(
-                hospProductSku.getAreaId(),
-                "商品SKU的院区不能为空.",
-                true);
         Date date = new Date();
         if (hospProductSku.getServiceQuantity() == null)
             hospProductSku.setServiceQuantity(1);
