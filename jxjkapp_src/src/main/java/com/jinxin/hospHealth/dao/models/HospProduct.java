@@ -2,7 +2,6 @@ package com.jinxin.hospHealth.dao.models;
 
 import com.doraemon.base.controller.bean.PageBean;
 import com.jinxin.hospHealth.controller.protocol.VO.ProductVO;
-import com.jinxin.hospHealth.dao.modelsEnum.EnableEnum;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -23,6 +22,8 @@ public class HospProduct extends PageBean{
     private Long productTypeId;
     @ApiModelProperty("排序")
     private Integer sortNumber;
+    @ApiModelProperty("院区ID")
+    private Long areaId;
     @ApiModelProperty("默认skuID")
     private Long defaultSkuId;
     @ApiModelProperty("商品图片些，使用逗号分隔")
@@ -57,6 +58,7 @@ public class HospProduct extends PageBean{
         productVO.setProductType(productType);
         productVO.setDefaultSku(defaultSku);
         productVO.setEnable(this.getEnable());
+        productVO.setAreaId(this.getAreaId());
         return productVO;
     }
 }

@@ -152,11 +152,7 @@ public class TransformController extends MyBaseController {
                 hospProduct != null
                         ? transform(hospProduct)
                         : null;
-        HospArea hospArea =
-                hospProductSku.getAreaId() != null
-                        ? hospAreaService.selectOne(hospProductSku.getAreaId())
-                        : null;
-        return hospProductSku.transform(productVO, hospArea);
+        return hospProductSku.transform(productVO);
     }
 
     public DoctorUserInfoVO transform(HospDoctorUserInfo hospDoctorUserInfo) {

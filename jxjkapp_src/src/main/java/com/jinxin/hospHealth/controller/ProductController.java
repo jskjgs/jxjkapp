@@ -3,6 +3,7 @@ package com.jinxin.hospHealth.controller;
 import com.alibaba.fastjson.JSONObject;
 import com.doraemon.base.controller.bean.PageBean;
 import com.github.pagehelper.PageInfo;
+import com.jinxin.hospHealth.controller.protocol.PO.ProductPO;
 import com.jinxin.hospHealth.controller.protocol.VO.ProductVO;
 import com.jinxin.hospHealth.dao.models.HospProduct;
 import com.jinxin.hospHealth.service.ProductService;
@@ -37,23 +38,23 @@ public class ProductController extends TransformController{
     @Autowired
     ProductTypeService productTypeService;
 
-    @ApiOperation(value = "新增商品信息")
-    @RequestMapping(value="/", method = RequestMethod.POST)
+    @ApiOperation(value = "新增商品和默认SKU信息")
+    @RequestMapping(value="/productAndSku", method = RequestMethod.POST)
     @ResponseBody
     public JSONObject add(
-            @ApiParam(value = "商品信息", required = true) @RequestBody HospProduct product) throws Exception {
+            @ApiParam(value = "商品信息", required = true) @RequestBody ProductPO product) throws Exception {
         Map<String,Long> map = new HashMap<>();
-        productService.add(product);
-        map.put("id",product.getId());
+        HospProduct req = productService.addProductAndSku(product);
+        map.put("id",req.getId());
         return ResponseWrapperSuccess(map);
     }
 
-    @ApiOperation(value = "更新商品信息")
-    @RequestMapping(value="/", method = RequestMethod.PUT)
+    @ApiOperation(value = "更新商品和默认SKU信息")
+    @RequestMapping(value="/productAndSku", method = RequestMethod.PUT)
     @ResponseBody
     public JSONObject update(
-            @ApiParam(value = "商品信息", required = true)  @RequestBody HospProduct product) throws Exception {
-        productService.update(product);
+            @ApiParam(value = "商品信息", required = true)  @RequestBody ProductPO product) throws Exception {
+        productService.updateProductAndSku(product);
         return ResponseWrapperSuccess(null);
     }
 
