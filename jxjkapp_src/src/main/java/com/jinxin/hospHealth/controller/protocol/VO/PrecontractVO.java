@@ -1,9 +1,6 @@
 package com.jinxin.hospHealth.controller.protocol.VO;
 
-import com.jinxin.hospHealth.dao.models.HospArea;
-import com.jinxin.hospHealth.dao.models.HospPrecontract;
-import com.jinxin.hospHealth.dao.models.HospProduct;
-import com.jinxin.hospHealth.dao.models.HospProductSku;
+import com.jinxin.hospHealth.dao.models.*;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -20,6 +17,8 @@ public class PrecontractVO {
     private Long id;
     @ApiModelProperty("院区")
     private HospArea area;
+    @ApiModelProperty("就诊人信息")
+    private HospPatientInfo patientInfo;
     @ApiModelProperty("用户信息")
     private UserInfoVO userInfoVO;
     @ApiModelProperty("预约时间")

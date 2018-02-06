@@ -98,7 +98,11 @@ public class TransformController extends MyBaseController {
                 precontract.getProductSkuId() != null
                         ? transform(skuService.selectOne(precontract.getProductSkuId()))
                         : null;
-        return precontract.transform(area, userInfoVO, productSkuVO);
+        HospPatientInfo hospPatientInfo =
+                precontract.getPatientId() != null
+                        ? patientInfoService.selectOne(precontract.getPatientId())
+                        : null;
+        return precontract.transform(area, userInfoVO, productSkuVO,hospPatientInfo);
     }
 
     public OrderProductVO transform(HospOrderProduct hospOrderProduct) throws Exception {

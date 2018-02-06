@@ -194,10 +194,7 @@ public class BannerService implements BaseService<HospBanner,HospBanner>{
             PageHelper.orderBy(hospBanner.getField());
         else
             PageHelper.orderBy(HospBanner.getDefaultSort());
-        HospBanner select = new HospBanner();
-        select.setName(hospBanner.getName());
-        select.setDisplay(hospBanner.getDisplay());
-        return new PageInfo(hospBannerMapper.select(select));
+        return new PageInfo(hospBannerMapper.selectByExampleByFuzzy(hospBanner));
     }
 
     /**
