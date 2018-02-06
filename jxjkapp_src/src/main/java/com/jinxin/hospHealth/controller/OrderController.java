@@ -208,7 +208,7 @@ public class OrderController extends TransformController {
                 true);
         OrderInfoPO orderInfoPO = new OrderInfoPO();
         orderInfoPO.setId(orderId);
-        if(paymentNumber == null && "".equals(paymentNumber)) {
+        if(paymentNumber != null && !"".equals(paymentNumber)) {
             orderInfoPO.setPaymentType(OrderPayTypeEnum.HIS.getCode());
             orderInfoPO.setPaymentCode(DPreconditions.checkNotNullAndEmpty(paymentNumber, "his缴费单号不能为空.", true));
             orderService.pay(orderInfoPO);
