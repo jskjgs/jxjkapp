@@ -134,8 +134,6 @@ public class BannerService implements BaseService<HospBanner,HospBanner>{
         PageHelper.startPage(hospBanner.getPageNum(), hospBanner.getPageSize());
         if (StringUtil.isNotEmpty(hospBanner.getField()))
             PageHelper.orderBy(hospBanner.getField());
-        else
-            PageHelper.orderBy(HospBanner.getDefaultSort());
         HospBanner select = new HospBanner();
         select.setName(hospBanner.getName());
         select.setId(hospBanner.getId());
@@ -156,8 +154,6 @@ public class BannerService implements BaseService<HospBanner,HospBanner>{
         PageHelper.startPage(pageBean.getPageNum(), pageBean.getPageSize());
         if (StringUtil.isNotEmpty(pageBean.getField()))
             PageHelper.orderBy(pageBean.getField());
-        else
-            PageHelper.orderBy(HospBanner.getDefaultSort());
         HospBanner select = new HospBanner();
         select.setDisplay(ShowEnum.DISPLAY.getCode());
         return new PageInfo(hospBannerMapper.select(select));
@@ -192,8 +188,6 @@ public class BannerService implements BaseService<HospBanner,HospBanner>{
         PageHelper.startPage(hospBanner.getPageNum(), hospBanner.getPageSize());
         if (StringUtil.isNotEmpty(hospBanner.getField()))
             PageHelper.orderBy(hospBanner.getField());
-        else
-            PageHelper.orderBy(HospBanner.getDefaultSort());
         return new PageInfo(hospBannerMapper.selectByExampleByFuzzy(hospBanner));
     }
 
@@ -210,8 +204,6 @@ public class BannerService implements BaseService<HospBanner,HospBanner>{
         PageHelper.startPage(pageBean.getPageNum(), pageBean.getPageSize());
         if (StringUtil.isNotEmpty(pageBean.getField()))
             PageHelper.orderBy(pageBean.getField());
-        else
-            PageHelper.orderBy(HospBanner.getDefaultSort());
         return new PageInfo(hospBannerMapper.selectAll());
     }
 
