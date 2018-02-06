@@ -77,7 +77,7 @@
       :pickeds.sync="pickeds">
       <button 
         slot="submitBtn"
-        disabled="{{ !(pickeds.hospital != undefined && pickeds.orderDate != undefined) }}"
+        disabled="{{ !(pickeds.hospital != undefined && pickeds.orderDate != undefined && pickeds.patient != undefined) }}"
         class="submit-btn primary-btn"
         @tap="submit">
         确认提交
@@ -133,12 +133,14 @@
       name: '', // 项目名称
       lists: {
         hospitalList: [],
-        orderDateList: []
+        orderDateList: [],
+        patientList: []
       },
       pickeds: {
         projectName: undefined,
         hospital: undefined,
-        orderDate: undefined
+        orderDate: undefined,
+        patient: undefined
       },
       successDialogVisible: false
     }
@@ -155,6 +157,7 @@
           data: {
             productSkuId: this.skuId,
             precontractDate: pickeds.orderDate,
+            patientId: pickeds.patient,
             areaId: pickeds.hospital
           }
         }, {showLoading: false}).then(content => {
