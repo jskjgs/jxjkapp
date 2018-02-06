@@ -60,15 +60,11 @@ public class PrecontractService implements BaseService<HospPrecontract, HospPrec
                 hospPrecontract.getAreaId(),
                 Language.get("precontract.area-null"),
                 true);
-        HospPrecontract precontract = new HospPrecontract();
-        precontract.setPrecontractDate(hospPrecontract.getPrecontractDate());
-        precontract.setProductSkuId(hospPrecontract.getProductSkuId());
-        precontract.setUserId(hospPrecontract.getUserId());
-        precontract.setStatus(PrecontractEnum.NORMAL.getCode());
-        DPreconditions.checkState(hospPrecontractMapper.insertSelectiveReturnId(precontract) == 1,
+        hospPrecontract.setStatus(PrecontractEnum.NORMAL.getCode());
+        DPreconditions.checkState(hospPrecontractMapper.insertSelectiveReturnId(hospPrecontract) == 1,
                 Language.get("service.save-failure"),
                 true);
-        return precontract;
+        return hospPrecontract;
     }
 
     /**
