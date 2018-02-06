@@ -11,7 +11,7 @@ export const getListApi = (data) => {
 }
 
 // 修改商品信息
-export const UPDATE_PRODUCT_URL = '/product/'
+export const UPDATE_PRODUCT_URL = '/product/productAndSku'
 export const updateProductApi = (data) => {
   return fetchApi({
     url: UPDATE_PRODUCT_URL,
@@ -21,7 +21,7 @@ export const updateProductApi = (data) => {
 }
 
 // 新增商品信息
-export const CREATE_PRODUCT_URL = '/product/'
+export const CREATE_PRODUCT_URL = '/product/productAndSku'
 export const createProductApi = (data) => {
   return fetchApi({
     url: CREATE_PRODUCT_URL,

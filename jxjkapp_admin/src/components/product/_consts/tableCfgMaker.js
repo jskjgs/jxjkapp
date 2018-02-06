@@ -11,18 +11,17 @@ export default function () {
         this.tableData = (content.list || []).map((item) => {
           const productType = item.productType || {}
           const defaultSku = item.defaultSku || {}
-          const area = defaultSku.area || {}
           return {
             no: item.sortNumber,
             id: item.id,
-            name: item.name,
-            cover: item.images,
+            name: defaultSku.name,
+            cover: defaultSku.images,
             type: productType.name,
             typeId: productType.id + '',
-            description: item.description,
+            description: defaultSku.description,
             showPrice: defaultSku.showPrice,
-            salePrice: defaultSku.salesPrice,
-            areaId: area.id
+            salesPrice: defaultSku.salesPrice,
+            areaId: item.areaId
           }
         })
         this.total = content.total || 0

@@ -129,16 +129,14 @@ export default {
       const uploadForm = (imageUrl) => {
         let sendData = {
           id: data.id,
+          areaId: data.areaId,
           name: data.name,
           description: data.description,
           information: data.description,
           images: imageUrl,
           productTypeId: data.typeId,
-          defaultSku: {
-            showPrice: data.showPrice,
-            salePrice: data.salePrice,
-            areaId: data.areaId
-          }
+          showPrice: data.showPrice,
+          salesPrice: data.salesPrice
         }
         let requestFn = adding ? createProductApi : updateProductApi
         return requestFn(sendData).then(res => {
