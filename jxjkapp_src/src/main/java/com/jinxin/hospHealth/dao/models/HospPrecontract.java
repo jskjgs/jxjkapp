@@ -27,6 +27,8 @@ public class HospPrecontract extends PageBean{
     private Long areaId;
     @ApiModelProperty("用户ID")
     private Long userId;
+    @ApiModelProperty("就诊人ID")
+    private Long patientId;
     @ApiModelProperty("预约时间")
     private Date precontractDate;
     @ApiModelProperty("状态 0:正常 1:取消  2:已使用 3:过期")
@@ -46,11 +48,12 @@ public class HospPrecontract extends PageBean{
     @ApiModelProperty("时间区间-结束时间  YYYY-MM-DD  HH:mm:ss")
     private String stopTime;
 
-    public PrecontractVO transform(HospArea area,UserInfoVO userInfoVO,ProductSkuVO productSkuVO){
+    public PrecontractVO transform(HospArea area,UserInfoVO userInfoVO,ProductSkuVO productSkuVO,HospPatientInfo hospPatientInfo){
         PrecontractVO precontractVO = new PrecontractVO();
         precontractVO.setId(this.id);
         precontractVO.setPrecontractDate(this.precontractDate);
         precontractVO.setStatus(this.status);
+        precontractVO.setPatientInfo(hospPatientInfo);
         precontractVO.setArea(area);
         precontractVO.setUserInfoVO(userInfoVO);
         precontractVO.setSku(productSkuVO);
