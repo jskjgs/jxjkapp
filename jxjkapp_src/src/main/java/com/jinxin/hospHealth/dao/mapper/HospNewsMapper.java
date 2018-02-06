@@ -3,8 +3,7 @@ package com.jinxin.hospHealth.dao.mapper;
 import com.doraemon.base.dao.base.MyMapper;
 import com.jinxin.hospHealth.dao.models.HospNews;
 import org.apache.ibatis.annotations.Select;
-import org.springframework.data.repository.query.Param;
-
+import org.apache.ibatis.annotations.Param;
 import java.util.List;
 
 
