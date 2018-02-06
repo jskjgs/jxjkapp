@@ -163,10 +163,10 @@ public class OrderService implements BaseService<HospOrder, OrderInfoPO> {
         DPreconditions.checkNotNull(orderInfoPO.getPaymentType(),
                 Language.get("order.payment-type-null"),
                 true);
-        DPreconditions.checkState(orderInfoPO.getAmount() != null
-                        && orderInfoPO.getAmount().compareTo(BigDecimal.ZERO) > 0,
-                Language.get("order.amount-null"),
-                true);
+//        DPreconditions.checkState(orderInfoPO.getAmount() != null
+//                        && orderInfoPO.getAmount().compareTo(BigDecimal.ZERO) > 0,
+//                Language.get("order.amount-null"),
+//                true);
         //todo:不做金额校验
 //        DPreconditions.checkState(
 //                order.getOrderPayPrice().compareTo(orderInfoPO.getAmount()) == 0,
