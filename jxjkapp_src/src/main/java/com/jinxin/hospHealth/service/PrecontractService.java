@@ -85,11 +85,8 @@ public class PrecontractService implements BaseService<HospPrecontract, HospPrec
         DPreconditions.checkNotNull(selectOne(hospPrecontract.getId()),
                 "该ID的预约未查询到.",
                 true);
-        HospPrecontract update = new HospPrecontract();
-        update.setId(hospPrecontract.getId());
-        update.setStatus(hospPrecontract.getStatus());
-        DPreconditions.checkState(hospPrecontractMapper.updateByPrimaryKeySelective(update) == 1,
-                "更新医生信息失败.",
+        DPreconditions.checkState(hospPrecontractMapper.updateByPrimaryKeySelective(hospPrecontract) == 1,
+                "更新信息失败.",
                 true);
     }
 
