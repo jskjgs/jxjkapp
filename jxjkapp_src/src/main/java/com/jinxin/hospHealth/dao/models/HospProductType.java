@@ -20,6 +20,8 @@ public class HospProductType extends PageBean{
     private Long id;
     @ApiModelProperty("商品类别的名称")
     private String name;
+    @ApiModelProperty("排序")
+    private Integer sortNumber;
     @ApiModelProperty("商品类别的图片")
     private String images;
     @ApiModelProperty("商品类别的描述D")
@@ -30,5 +32,11 @@ public class HospProductType extends PageBean{
     @Transient
     @ApiModelProperty("商品信息")
     private List<ProductVO> productVO;
+
+    public String getField(){
+        return this.field == null
+                ? "sort_number asc"
+                : this.field;
+    }
 
 }

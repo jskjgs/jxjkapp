@@ -167,10 +167,11 @@ public class OrderService implements BaseService<HospOrder, OrderInfoPO> {
                         && orderInfoPO.getAmount().compareTo(BigDecimal.ZERO) > 0,
                 Language.get("order.amount-null"),
                 true);
-        DPreconditions.checkState(
-                order.getOrderPayPrice().compareTo(orderInfoPO.getAmount()) == 0,
-                Language.get("order.pay-price-not-equal"),
-                true);
+        //todo:不做金额校验
+//        DPreconditions.checkState(
+//                order.getOrderPayPrice().compareTo(orderInfoPO.getAmount()) == 0,
+//                Language.get("order.pay-price-not-equal"),
+//                true);
         OrderPayTypeEnum.getByCode(orderInfoPO.getPaymentType());
         HospOrder update = new HospOrder();
         if (orderInfoPO.getPaymentType().equals(OrderPayTypeEnum.WECHAT.getCode())) {
@@ -183,7 +184,7 @@ public class OrderService implements BaseService<HospOrder, OrderInfoPO> {
         if (orderInfoPO.getPaymentType().equals(OrderPayTypeEnum.BALANCE.getCode())) {
             HospUserBalance userBalance = new HospUserBalance();
             userBalance.setUserId(orderInfoPO.getUserId());
-            userBalance.setBalance(DBigDecimal.upsideDown(orderInfoPO.getAmount()));
+            userBalance.setBalance(DBigDecimal.upsideDown(order.getOrderPayPrice()));
             userBalanceService.update(userBalance);
         }
         //如果是his支付
