@@ -2,6 +2,7 @@ package com.jinxin.hospHealth.dao.mapper;
 
 import com.doraemon.base.dao.base.MyMapper;
 import com.jinxin.hospHealth.controller.protocol.PO.OrderServiceDetailsPO;
+import com.jinxin.hospHealth.dao.models.HospOrderProduct;
 import com.jinxin.hospHealth.dao.models.HospOrderServiceDetails;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
@@ -49,6 +50,7 @@ public interface HospOrderServiceDetailsMapper extends MyMapper<HospOrderService
 
     /**
      * 统计已经使用的数量
+     *
      * @param orderProductId
      * @param state
      * @return
@@ -56,10 +58,12 @@ public interface HospOrderServiceDetailsMapper extends MyMapper<HospOrderService
     @Select({"select count(*) from hosp_order_service_details" +
             " where order_product_id = #{orderProductId} " +
             " and state != #{state};"})
-    int countUseNumber(@Param("orderProductId") Long orderProductId,@Param("state") Integer state);
+    int countUseNumber(@Param("orderProductId") Long orderProductId, @Param("state") Integer state);
 
     @Select({"select a.* from hosp_order_service_details as a , hosp_order as b, hosp_order_product as c" +
             " where b.id = #{orderId}   and c.order_id = b.id and a.order_product_id = c.id"})
     List<HospOrderServiceDetails> queryByOrderId(@Param("orderId") Long orderId);
+
+
 
 }

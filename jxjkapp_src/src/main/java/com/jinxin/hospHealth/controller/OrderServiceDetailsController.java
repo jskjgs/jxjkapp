@@ -15,7 +15,10 @@ import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -42,7 +45,8 @@ public class OrderServiceDetailsController extends TransformController{
     ProductService productService;
     @Autowired
     ProductTypeService productTypeService;
-
+    @Autowired
+    PatientInfoService patientInfoService;
 
     @ApiOperation(value = "新增订单服务详情信息 ---admin")
     @RequestMapping(value = "/", method = RequestMethod.POST)
@@ -163,4 +167,34 @@ public class OrderServiceDetailsController extends TransformController{
         return ResponseWrapperSuccess(transformByHospOrderServiceDetails(pageInfo));
     }
 
+    @ApiOperation(value = "根据用户ID查询订单服务---admin", response = OrderServiceDetailsVO.class)
+    @RequestMapping(value = "/admin/queryByUserId", method = RequestMethod.POST)
+    @ResponseBody
+    public JSONObject selectByUserAdmin(
+            @ApiParam(value = "用户ID", required = true) @RequestParam(value = "userId", required = true) Long userId) throws Exception {
+        Long adminUserId = DPreconditions.checkNotNull(
+                getAdminUserId(),
+                "admin账号ID不能为空",
+                true);
+        HospPatientInfo selectPatient = new HospPatientInfo();
+        selectPatient.setUserId(userId);
+        PageInfo<HospPatientInfo>  page = patientInfoService.select(selectPatient);
+        if(page.getList() == null || page.getList().size()<1)
+            return ResponseWrapperSuccess(null);
+        List req = new ArrayList<>();
+        for(HospPatientInfo hospPatientInfo : page.getList()){
+            Map map = new HashMap<>();
+            List<HospOrderProduct> productList = orderProductService.queryByPatientId(hospPatientInfo.getId());
+            List orderProductList = new ArrayList<>();
+            for(HospOrderProduct product : productList){
+                if(orderServiceDetailsService.remainingServiceNumber(product.getId())>0){
+                    orderProductList.add(product);
+                }
+            }
+            map.put("patientInfo",hospPatientInfo);
+            map.put("orderService",orderProductList);
+            req.add(map);
+        }
+        return ResponseWrapperSuccess(req);
+    }
 }
