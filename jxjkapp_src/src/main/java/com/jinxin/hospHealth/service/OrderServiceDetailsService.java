@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by zbs on 2018/1/11.
@@ -33,7 +34,7 @@ public class OrderServiceDetailsService implements BaseService<HospOrderServiceD
     OrderProductService orderProductService;
     @Autowired
     OrderService orderService;
-//    @Autowired
+    //    @Autowired
 //    DoctorUserInfoService doctorUserInfoService;
     @Autowired
     AdminUserInfoService adminUserInfoService;
@@ -262,10 +263,11 @@ public class OrderServiceDetailsService implements BaseService<HospOrderServiceD
 
     /**
      * 进行作废操作
+     *
      * @param id
      * @param adminUserId
      */
-    public void cancellation(Long id,Long adminUserId) throws Exception {
+    public void cancellation(Long id, Long adminUserId) throws Exception {
         HospOrderServiceDetails hospOrderServiceDetails = DPreconditions.checkNotNull(
                 selectOne(id),
                 "服务订单未查询到.",
@@ -323,12 +325,13 @@ public class OrderServiceDetailsService implements BaseService<HospOrderServiceD
 
     /**
      * 根据order id查询所有的订单服务详情列表
+     *
      * @param pageBean
      * @param orderId
      * @return
      * @throws Exception
      */
-    public PageInfo<HospOrderServiceDetails> queryByOrderId(PageBean pageBean,Long orderId) throws Exception {
+    public PageInfo<HospOrderServiceDetails> queryByOrderId(PageBean pageBean, Long orderId) throws Exception {
         if (pageBean == null || orderId == null)
             pageBean = new PageBean();
         PageHelper.startPage(pageBean.getPageNum(), pageBean.getPageSize());

@@ -184,7 +184,7 @@ public class NewsService implements BaseService<HospNews, HospNews> {
         PageHelper.startPage(hospNews.getPageNum(), hospNews.getPageSize());
         if (StringUtil.isNotEmpty(hospNews.getField()))
             PageHelper.orderBy(hospNews.getField());
-        return new PageInfo(hospNewsMapper.select(hospNews));
+        return new PageInfo(hospNewsMapper.selectByExampleByFuzzy(hospNews));
     }
 
     /**

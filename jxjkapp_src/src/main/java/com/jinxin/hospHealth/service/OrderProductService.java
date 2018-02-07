@@ -266,4 +266,15 @@ public class OrderProductService implements BaseService<HospOrderProduct, OrderP
             pageBean = new PageBean();
         return selectAll(pageBean);
     }
+
+    /**
+     * 查询根据就诊人查询订单商品信息 --- admin
+     *
+     * @param patientId
+     * @return
+     * @throws Exception
+     */
+    public List<HospOrderProduct> queryByPatientId(Long patientId){
+        return hospOrderProductMapper.queryByPatientId(patientId);
+    }
 }

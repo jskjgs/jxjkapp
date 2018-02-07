@@ -8,6 +8,7 @@ import lombok.Data;
 
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import java.util.Date;
 
 @Data
@@ -31,6 +32,12 @@ public class HospNews extends PageBean {
     private Date createDate;
     @ApiModelProperty("0:正常 1:禁用  99:删除")
     private Integer enable;
+    @Transient
+    @ApiModelProperty("时间区间-开始时间  YYYY-MM-DD  HH:mm:ss")
+    private String startTime;
+    @Transient
+    @ApiModelProperty("时间区间-结束时间  YYYY-MM-DD  HH:mm:ss")
+    private String stopTime;
 
     public String getField(){
         return this.field == null

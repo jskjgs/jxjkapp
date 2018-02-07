@@ -199,13 +199,23 @@ public class OrderController extends TransformController {
     @RequestMapping(value = "/hisPay", method = RequestMethod.POST)
     @ResponseBody
     public JSONObject hisPay(
-            @ApiParam(value = "订单ID", required = true) @RequestParam(value = "id", required = true) Long id,
-            @ApiParam(value = "支付的金额", required = true) @RequestParam(value = "amount", required = true) double amount) throws Exception {
+            @ApiParam(value = "订单ID", required = true) @RequestParam(value = "orderId", required = true) Long orderId,
+            @ApiParam(value = "用户ID", required = true) @RequestParam(value = "userId", required = true) Long userId,
+            @ApiParam(value = "缴费单号", required = false) @RequestParam(value = "paymentNumber", required = false) String paymentNumber) throws Exception {
+        Long adminUserId = DPreconditions.checkNotNull(
+                getAdminUserId(),
+                "admin账号ID不能为空",
+                true);
         OrderInfoPO orderInfoPO = new OrderInfoPO();
-        orderInfoPO.setId(id);
-        orderInfoPO.setAmount(BigDecimal.valueOf(amount));
-        orderInfoPO.setPaymentType(OrderPayTypeEnum.HIS.getCode());
-        orderService.pay(orderInfoPO);
+        orderInfoPO.setId(orderId);
+        if(paymentNumber != null && !"".equals(paymentNumber)) {
+            orderInfoPO.setPaymentType(OrderPayTypeEnum.HIS.getCode());
+            orderInfoPO.setPaymentCode(DPreconditions.checkNotNullAndEmpty(paymentNumber, "his缴费单号不能为空.", true));
+            orderService.pay(orderInfoPO);
+        }else {
+            orderInfoPO.setPaymentType(OrderPayTypeEnum.BALANCE.getCode());
+            orderService.pay(orderInfoPO);
+        }
         return ResponseWrapperSuccess(null);
     }
 

@@ -43,14 +43,14 @@ public class OrderGradeController extends MyBaseController{
                 orderServiceDetailsService.selectOne(hospOrderGrade.getOrderServiceDetailsId()),
                 Language.get("order-product-service.select-not-exist"),
                 true);
-        HospOrder order = DPreconditions.checkNotNull(
-                orderService.selectOneByOrderProductServiceDetailsId(hosd.getOrderProductId()),
-                Language.get("order.select-not-exist"),
-                true);
-        DPreconditions.checkState(
-                order.getUserId() == userId,
-                "只能对自己的订单进行评价",
-                true);
+//        HospOrder order = DPreconditions.checkNotNull(
+//                orderService.selectOneByOrderProductServiceDetailsId(hosd.getOrderProductId()),
+//                Language.get("order.select-not-exist"),
+//                true);
+//        DPreconditions.checkState(
+//                order.getUserId() == userId,
+//                "只能对自己的订单进行评价",
+//                true);
         HospOrderGrade add = orderGradeService.add(hospOrderGrade);
         return ResponseWrapperSuccess(add);
     }

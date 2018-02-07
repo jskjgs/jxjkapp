@@ -29,7 +29,9 @@ public class HospBanner extends PageBean{
     @ApiModelProperty("显示和隐藏的标志  0显示，1隐藏")
     private Integer display = ShowEnum.DISPLAY.getCode();
 
-    public static String getDefaultSort(){
-        return "order_number asc";
+    public String getField(){
+            return this.field == null
+                    ? "order_number asc"
+                    : this.field;
     }
 }
