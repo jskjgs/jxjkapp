@@ -75,13 +75,18 @@
         wx.scanCode({
           onlyFromCamera: false,
           success: (res) => {
-            // wx.showModal({
-            //   title: '扫到的内容',
-            //   content: res.result
-            // })
-            wx.navigateTo({
-              url: '/pages/scanResult'
-            })
+            console.log('扫码结果', res.result)
+            if (res.result && typeof +res.result === 'number') {
+              wx.navigateTo({
+                url: `/pages/scanResult?id=${res.result}`
+              })
+            } else {
+              wx.showToast({
+                image: '../assets/images/error.png',
+                title: '二维码错误',
+                duration: 2000
+              })
+            }
           }
         })
       },
