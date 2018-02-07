@@ -90,7 +90,7 @@
 
     onShow () {
       if (this.$_checkLogin()) {
-        this.drawQrcode('1222')
+        this.drawQrcode(this.userInfo.id + '')
       }
     }
 

@@ -354,13 +354,21 @@
         }
       },
       toComment (id, item) {
+        const orderInfo = {
+          productName: this.orderInfo.productName,
+          productImage: encodeURIComponent(this.orderInfo.productImage)
+        }
         wx.navigateTo({
-          url: `/pages/health_comment?id=${id}&orderProductId=${this.orderProductId}&orderInfo=${JSON.stringify(this.orderInfo)}` + (item.grade ? `&grade=${JSON.stringify(item.grade)}` : '') 
+          url: `/pages/health_comment?id=${id}&orderProductId=${this.orderProductId}&orderInfo=${JSON.stringify(orderInfo)}` + (item.grade ? `&grade=${JSON.stringify(item.grade)}` : '') 
         })
       },
       toCancel (id, item) {
+        const orderInfo = {
+          productName: this.orderInfo.productName,
+          productImage: encodeURIComponent(this.orderInfo.productImage)
+        }
         wx.navigateTo({
-          url: `/pages/health_cancel?id=${id}&orderInfo=${JSON.stringify(this.orderInfo)}` + (item.state + '' === '98' ? `&cancelData=${JSON.stringify({account: item.account})}` : '')
+          url: `/pages/health_cancel?id=${id}&orderInfo=${JSON.stringify(orderInfo)}` + (item.state + '' === '98' ? `&cancelData=${JSON.stringify({account: item.account})}` : '')
         })
       }
     }
@@ -449,7 +457,7 @@
           _symptomSpread: undefined,
           id: listItem.id,
           createDate: this.$_convertDate(listItem.createDate, 'Y-M-D h:m:s'),
-          doctorName: doctorUserInfo.name || '',
+          doctorName: doctorUserInfo.name || doctorUserInfo.nickname || '',
           doctorComment: listItem.doctorComment || '', // 症状 
           grade: listItem.grade || '', // 用户评价
           state: listItem.state || '', // 状态（申请作废中）
