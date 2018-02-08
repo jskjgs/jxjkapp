@@ -6,7 +6,10 @@ export const getListApi = (data = {}) => {
   return fetchApi({
     url: GET_LIST_URL,
     type: 'post',
-    data
+    data: {
+      field: 'precontract_date  desc',
+      ...data
+    }
   })
 }
 

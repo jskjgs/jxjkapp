@@ -14,6 +14,7 @@ export default function () {
           const area = item.area || {}
           const user = item.userInfoVO || item.userInfo || {}
           return {
+            id: item.id,
             areaName: area.name,
             productName: sku.name,
             reserveDate: item.precontractDate,
