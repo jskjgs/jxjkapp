@@ -30,13 +30,44 @@ export default {
       selectSku: null,
       selectPatient: null,
       selectCategroy: null,
-      patientList: null,
-      categroyList: {}
+      patientList: null
+      // categroyList: {}
     }
   },
   created () {
     this.placeholderImg = placeholderImg
-    this.initProductInfo()
+    // this.initProductInfo()
+  },
+  computed: {
+     // 请求商品列表，含每个sku的价格
+    categroyList () {
+      productInfoApi().then((res) => {
+        let data = res.content
+        let categroyList = Object.create(null)
+        data.forEach(function (value) {
+          let cat = ((prodcutList) => {
+            let pl = []
+            prodcutList.forEach(function (product) {
+              // console.log(product)
+              let option = Object.create(null)
+              option['id'] = product.defaultSku.id
+              option['name'] = product.name
+              option['price'] = product.defaultSku.salesPrice
+              pl.push(option)
+            })
+            return pl
+          })(value.productVO)
+          if (cat.length > 0) {
+            categroyList[value.name] = cat
+          }
+        })
+        // console.log(categroyList)
+        return this.$.getters.categroyList || []
+        // 以下是测试数据
+        // return this.$.getters.categroyList = {'A': [{'name': '小六1', 'id': 1, 'price': 100.00}, {'name': '小六3', 'id': 3, 'price': 300.00}],
+        //   'B': [{'name': '小六2', 'id': 2, 'price': 200.00}, {'name': '小六4', 'id': 4, 'price': 400.00}]}
+      })
+    }
   },
   watch: {
     selectCategroy (val) {
@@ -119,34 +150,6 @@ export default {
           message: '更新成功'
         })
       })
-    },
-    // 请求商品列表，含每个sku的价格
-    initProductInfo () {
-      productInfoApi().then((res) => {
-        let data = res.content
-        let categroyList = Object.create(null)
-        data.forEach(function (value) {
-          let cat = ((prodcutList) => {
-            let pl = []
-            prodcutList.forEach(function (product) {
-              let option = Object.create(null)
-              option['id'] = product.defaultSku.id
-              option['name'] = product.name
-              option['price'] = product.defaultSku.salesPrice
-              pl.push(option)
-            })
-            return pl
-          })(value.productVO)
-          if (cat.length > 0) {
-            categroyList[value.name] = cat
-          }
-        })
-        // console.log(categroyList)
-        this.categroyList = categroyList
-      })
-      // 以下是测试数据
-      // this.categroyList = {'A': [{'name': '小六1', 'id': 1, 'price': 100.00}, {'name': '小六3', 'id': 3, 'price': 300.00}],
-      //   'B': [{'name': '小六2', 'id': 2, 'price': 200.00}, {'name': '小六4', 'id': 4, 'price': 400.00}]}
     }
   }
 }
