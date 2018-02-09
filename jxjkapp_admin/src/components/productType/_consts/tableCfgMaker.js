@@ -9,7 +9,7 @@ export default function () {
       responseFn (data) {
         let content = data.content || {}
         this.tableData = (content.list || []).map((item) => ({
-          no: item.orderNumber,
+          no: item.sortNumber,
           id: item.id,
           name: item.name,
           cover: item.images
