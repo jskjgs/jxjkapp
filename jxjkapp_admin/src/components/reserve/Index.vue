@@ -54,7 +54,6 @@
         project: undefined, // 项目id
         createTimeRange: [], // 预约时间
         hospArea: undefined, // 院区
-        productList: [], // 项目列表
         searchKeyword: ''
       }
     },
@@ -62,7 +61,11 @@
     },
     computed: {
       productTypeList () {
-        return this.$_getters.productTypeList
+        return this.$_getters.productTypeList || []
+      },
+      productList () {
+        let productType = this.productTypeList.find(item => item.value === this.productType) || {}
+        return productType.list || []
       },
       hospAreaList () {
         return this.$_getters.hospAreaList
