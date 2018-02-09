@@ -7,7 +7,7 @@
 import placeholderImg from '@/assets/images/placeholder.png'
 
 import {
-  productInfoApi, orderCheckoutApi, addOrderApi, updateOrderApi, getPatientListApi
+  orderCheckoutApi, addOrderApi, updateOrderApi, getPatientListApi
 } from './api'
 export default {
   name: 'orderDetail',
@@ -39,34 +39,12 @@ export default {
     // this.initProductInfo()
   },
   computed: {
-     // 请求商品列表，含每个sku的价格
     categroyList () {
-      productInfoApi().then((res) => {
-        let data = res.content
-        let categroyList = Object.create(null)
-        data.forEach(function (value) {
-          let cat = ((prodcutList) => {
-            let pl = []
-            prodcutList.forEach(function (product) {
-              // console.log(product)
-              let option = Object.create(null)
-              option['id'] = product.defaultSku.id
-              option['name'] = product.name
-              option['price'] = product.defaultSku.salesPrice
-              pl.push(option)
-            })
-            return pl
-          })(value.productVO)
-          if (cat.length > 0) {
-            categroyList[value.name] = cat
-          }
-        })
-        // console.log(categroyList)
-        return this.$.getters.categroyList || []
-        // 以下是测试数据
-        // return this.$.getters.categroyList = {'A': [{'name': '小六1', 'id': 1, 'price': 100.00}, {'name': '小六3', 'id': 3, 'price': 300.00}],
-        //   'B': [{'name': '小六2', 'id': 2, 'price': 200.00}, {'name': '小六4', 'id': 4, 'price': 400.00}]}
-      })
+      return this.$_getters.productTypeList || []
+    },
+    productList () {
+      let selectCategroy = this.categroyList.find(item => item.value === this.selectCategroy) || {}
+      return selectCategroy.list || []
     }
   },
   watch: {
@@ -92,14 +70,6 @@ export default {
     }
   },
   methods: {
-    // 根据选定的服务种类构造项目列表
-    productList () {
-      let key = this.selectCategroy
-      if (key == null) {
-        return []
-      }
-      return this.categroyList[this.selectCategroy]
-    },
     handleGetPaymentPrice () {
       let data = this.getOrderData()
       orderCheckoutApi(data).then((res) => {
@@ -215,10 +185,10 @@ export default {
               v-model="selectCategroy" 
               placeholder="请选择">
               <el-option
-                v-for="(key, value) in categroyList"
-                :key="key"
-                :label="value"
-                :value="value">
+                v-for="categroy in categroyList"
+                :key="categroy.value"
+                :label="categroy.label"
+                :value="categroy.value">
               </el-option>
             </el-select>
           </div>
@@ -230,12 +200,13 @@ export default {
             </span>
             <el-select 
               class="info-item__content"
-              v-model="selectSku" placeholder="请选择">
+              v-model="selectSku" placeholder="请选择"
+              :disabled="selectCategroy == null">
               <el-option
-                v-for="product in productList()"
-                :key="product.id"
-                :label="product.name"
-                :value="product">
+                v-for="product in productList"
+                :key="product.value"
+                :label="product.label"
+                :value="product.value">
               </el-option>
             </el-select>
           </div>

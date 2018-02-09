@@ -34,7 +34,7 @@ const state = {
   auth: Array.from({length: 8 - 1 + 1}).map((item, index) => `m_0${index + 1}`),
   accountInfo: getAccountInfo() || {},
   hospAreaList: null, // 院区列表
-  productTypeList: null // 服务分类
+  productTypeList: null // 服务分类（分类下挂载了商品列表）
 }
 
 const mutations = {
@@ -87,12 +87,17 @@ const actions = {
       'pageNum': 1,
       'pageSize': 1000
     }).then(res => {
-      const content = res.content || {}
-      let list = content.list || []
+      let list = res.content || []
       list = list.map(item => {
         return {
           label: item.name,
-          value: item.id
+          value: item.id,
+          list: (item.productVO || item.product || []).map(product => {
+            return {
+              label: product.name,
+              value: product.id
+            }
+          })
         }
       })
       commit(UPDATE_PRODUCT_TYPE_LIST, list)
