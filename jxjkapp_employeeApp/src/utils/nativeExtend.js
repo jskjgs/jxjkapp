@@ -113,14 +113,14 @@ Promise.prototype.finally = function (callback) {
               case 200:
                 const content = data.content
                 resolve(content, data)
-                break
+                return
               case 400:
                 errMsg = '操作失败'
                 break
               case 401:
                 errMsg = '未登陆'
-                wx[toLoginFn]({
-                  url: '/pages/login'
+                wx.switchTab({
+                  url: '/pages/account'
                 })
                 this.$_syncUserData({
                   token: null,

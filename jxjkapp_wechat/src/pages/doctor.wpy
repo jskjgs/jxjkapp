@@ -219,7 +219,9 @@ $search_h: 88rpx;
               index="index">
               <view class="doctor-item main-bg" @tap="handleItemTap({{ item.id }})">
                 <view class="avatar-wrap flex--center">
-                  <image src="../assets/images/doctor-avatar.png"></image>
+                  <image 
+                    mode="aspectFill"
+                    src="{{ item.headPortrait }}"></image>
                 </view>
                 <view class="name-wrap">
                   <text>{{ item.name }}</text>
@@ -411,7 +413,8 @@ $search_h: 88rpx;
           avatar: listItem.headPortrait,
           name: listItem.name,
           intro: listItem.description,
-          id: listItem.id
+          id: listItem.id,
+          headPortrait: listItem.headPortrait
         }
       })
     }

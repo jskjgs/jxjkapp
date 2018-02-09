@@ -41,3 +41,15 @@ export const updateVipApi = (id) => {
     }
   })
 }
+
+// 充值
+export const RECHARGE_URL = '/userInfo/vip'
+export const rechargeApi = (amount) => {
+  return fetchApi({
+    url: RECHARGE_URL,
+    type: 'post',
+    params: {
+      amount
+    }
+  })
+}

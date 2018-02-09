@@ -131,12 +131,16 @@
     }
 
     getList () {
+      console.log(this.$_convertDate(new Date().getTime()), 9999)
+      const date = this.$_convertDate(new Date().getTime())
+      const timeStamp = new Date(date).getTime()
       return this.initData({
         url: '/orderService/admin/query',
         method: 'POST',
         data: {
           pageSize: 5,
-          states: [0]
+          states: [0],
+          startTime: date + ' 00:00:00'
         }
       }, (listItem) => {
         const orderProduct = listItem.orderProduct || {}
