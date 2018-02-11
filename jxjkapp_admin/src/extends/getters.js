@@ -15,7 +15,13 @@ const asyncGetterMaker = ({ store = {}, stateKey = '', dispatchFn = '' }) => {
           fetching = false
         })
       }
-      return store.state[stateKey]
+      let result = store.state[stateKey]
+      if (result && typeof result === 'object') {
+        result.update = () => { // 挂载更新数据方法
+          return store.dispatch(dispatchFn)
+        }
+      }
+      return result
     }
   }
 }
