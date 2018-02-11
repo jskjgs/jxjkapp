@@ -143,7 +143,6 @@ export default {
               class="info-item__content"
               v-model.trim="userPhone"
               style="width: 50%"
-              type="number"
               placeholder="请输用户手机号">
             </el-input>
             <el-button

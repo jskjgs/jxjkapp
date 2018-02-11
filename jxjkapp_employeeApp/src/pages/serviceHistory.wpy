@@ -68,7 +68,7 @@
 
   export default class serviceHistory extends wepy.page {
     config = {
-      navigationBarTitleText: '历史记录',
+      navigationBarTitleText: '我的接单',
       enablePullDownRefresh: true
     }
     components = {
