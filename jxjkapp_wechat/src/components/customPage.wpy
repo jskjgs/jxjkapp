@@ -1,7 +1,9 @@
 <style lang="scss">
 .comp-custom-page {
-  min-height: 100vh;
+  // min-height: 100vh;
+  height: 100vh;
   flex-direction: column;
+  flex-wrap: nowrap;
 
   .fail-tip {
     width: 100vw;
