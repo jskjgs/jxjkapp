@@ -158,7 +158,7 @@
       this.orderProductId = orderProductId
       orderInfo = JSON.parse(orderInfo)
       this.productName = orderInfo.productName
-      this.productImage = orderInfo.productImage
+      this.productImage = decodeURIComponent(orderInfo.productImage)
       if (grade) {
         this.canComment = false
         grade = JSON.parse(grade)

@@ -11,7 +11,8 @@
         :pickeds.sync="pickeds">
         <button 
           class="primary-btn" 
-          slot="submitBtn">
+          slot="submitBtn"
+          @tap="submit">
           确认修改
         </button>
       </OrderInfo>
@@ -41,12 +42,14 @@
     data = {
       lists: {
         hospitalList: [],
-        orderDateList: []
+        orderDateList: [],
+        patientList: []
       },
       pickeds: {
         hospital: '',
         projectName: '',
-        orderDate: ''
+        orderDate: '',
+        patient: ''
       }
     }
 
@@ -60,6 +63,35 @@
     }
 
     methods = {
+      submit () {
+        const pickeds = this.pickeds
+        this.$_request({
+          url: '/precontract/',
+          method: 'PUT',
+          data: {
+            id: this.id,
+            productSkuId: this.skuId,
+            precontractDate: pickeds.orderDate,
+            patientId: pickeds.patient,
+            areaId: pickeds.hospital
+          }
+        }, {showLoading: false}).then(content => {
+          wx.showToast({
+            title: '修改成功'
+          })
+          setTimeout(() => {
+            wx.redirectTo({
+              url: '/pages/my_vip'
+            })
+          }, 1000)
+        }).catch(() => {
+          wx.showToast({
+            image: '../assets/images/error.png',
+            title: '提交失败'
+          })
+          this.$apply()
+        })
+      }
     }
 
     events = {
@@ -68,40 +100,6 @@
     onLoad({id}) {
       this.id = id
       this.initPageData()
-      // setTimeout(() => {
-      //   this.lists = {
-      //     hospitalList: [{
-      //       value: 0,
-      //       label: '医院一'
-      //     }, {
-      //       value: 1,
-      //       label: '医院二'
-      //     }],
-      //     projectList: [{
-      //       value: 0,
-      //       label: '项目一'
-      //     }, {
-      //       value: 1,
-      //       label: '项目二'
-      //     }],
-      //     orderDateList: [{
-      //       value: 0,
-      //       label: '2017-12-1'
-      //     }, {
-      //       value: 1,
-      //       label: '2017-12-2'
-      //     }, {
-      //       value: 2,
-      //       label: '2017-12-3'
-      //     }]
-      //   }
-      //   this.pickeds = {
-      //     hospital: '医院二',
-      //     projectName: '项目二',
-      //     orderDate: '2017-12-1'
-      //   }
-      //   this.$apply()
-      // }, 1000)
     }
 
     initPageData () {
@@ -112,10 +110,13 @@
         content = content || {}
         const area = content.area || {}
         const sku = content.sku || {}
+        const patientInfo = content.patientInfo || {}
+        this.skuId = sku.id
         this.pickeds = {
           hospital: area.id,
           projectName: sku.name,
-          orderDate: this.$_convertDate(content.precontractDate)
+          orderDate: this.$_convertDate(content.precontractDate),
+          patient: patientInfo.id
         }
         this.$apply()
       })

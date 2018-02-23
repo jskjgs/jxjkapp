@@ -29,19 +29,24 @@
 </style>
 
 <template>
-<view id="page-sign" @touchmove="handlePageTouchmove">
+<view id="page-sign">
   <scroll-view style="width: 100%;height: 100%;" scroll-x="{{ false }}" scroll-y="{{ false }}">
     <view class="top-btn-wrap flex--vcenter--sb">
       <view class="rewrite-btn" @tap="handleReDraw">重写</view>
       <view class="save-btn" @tap="handleSubmitDraw">保存</view>
     </view>
-    <canvas 
-      class="sign-panel" 
-      style="height: calc(100vh - 90rpx);"
-      canvas-id="myCanvasId"
-      @touchstart="handleTouchstart"
-      @touchmove="handleTouchmove">
-    </canvas>
+    <view 
+      @touchmove.stop="handlePageTouchmove"
+      @touchstart.stop="handlePageTouchmove"
+      @touchend.stop="handlePageTouchmove">
+      <canvas 
+        class="sign-panel" 
+        style="height: calc(100vh - 90rpx);"
+        canvas-id="myCanvasId"
+        @touchstart="handleTouchstart"
+        @touchmove="handleTouchmove">
+      </canvas>
+    </view>
   </scroll-view>
 </view>
 </template>

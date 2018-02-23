@@ -1,12 +1,19 @@
 <template>
   <CustomPage :isLastPage.sync="isLastPage">
     <view id="page-service-history">
-      <view class="flex--vcenter--sb list-top-tools" hidden>
-        <ServiceTypePicker :value.sync="serviceType"/>
-        <picker mode="date">
-          <view class="date-flex flex--vcenter">
-            <image class="date-img" src="../assets/images/calendar.png" mode="aspectFit" />
-            <text class="date-text" style="margin: 0 10rpx;">2017-12</text>
+      <view class="flex--vcenter--sb list-top-tools">
+        <view hidden>
+          <ServiceTypePicker :value.sync="serviceType"/>
+        </view>
+        <view></view>
+        <picker 
+          bindchange="bindPickerChange" 
+          value="{{stateIndex}}" 
+          range="{{states}}">
+          <view class="flex--vcenter">
+            <view class="picker">
+              状态：{{states[stateIndex]}}
+            </view>
             <image class="img-arrow" src="../assets/images/arrow.png" />
           </view>
         </picker>
@@ -61,7 +68,7 @@
 
   export default class serviceHistory extends wepy.page {
     config = {
-      navigationBarTitleText: '历史记录',
+      navigationBarTitleText: '我的接单',
       enablePullDownRefresh: true
     }
     components = {
@@ -72,6 +79,8 @@
     mixins = [listPageMixin]
 
     data = {
+      stateIndex: 0,
+      states: ['全部', '待服务', '已完成'],
       serviceType: ''
     }
 
@@ -81,6 +90,12 @@
       },
       userInfo () {
         return this.$parent.globalData.userInfo || {}
+      }
+    }
+
+    watch = {
+      stateIndex () {
+        this.initPageData()
       }
     }
 
@@ -96,6 +111,9 @@
             url: `/pages/serviceRecord?id=${item.id}&userInfo=${JSON.stringify(item.userInfo)}&orderProductName=${item.orderProductName}`
           })
         }
+      },
+      bindPickerChange ({detail}) {
+        this.stateIndex = detail.value || 0
       }
     }
 
@@ -123,7 +141,7 @@
         url: '/orderService/query',
         method: 'POST',
         data: {
-          states: [1, 2]
+          states: this.stateIndex === 0 ? [1, 2] : [this.stateIndex]
         }
       }, (listItem) => {
         const orderProduct = listItem.orderProduct || {}
@@ -147,7 +165,7 @@
 @import '../assets/style/variables/size.scss';
 
 #page-service-history {
-  // padding-top: $topTools_H;
+  padding-top: $topTools_H;
 
   .list-top-tools {
     .date {

@@ -3,8 +3,6 @@
  * Created by zhengji
  * Date: 2017/8/29
  */
-import placeholderImg from '@/assets/images/placeholder.png'
-
 import SearchTable from '@/components/_common/searchTable/SearchTable'
 
 import {
@@ -60,7 +58,12 @@ export default {
     }
   },
   created () {
-    this.placeholderImg = placeholderImg
+    this.updated = false // 标示列表是否做了修改（增、删、改）
+  },
+  beforeDestroy () {
+    if (this.updated) {
+      this.productTypeList.update && this.productTypeList.update()
+    }
   },
   computed: {
     productTypeList () {
@@ -115,6 +118,7 @@ export default {
                 type: 'success',
                 message: '删除成功'
               })
+              this.updated = true
               this.$refs.searchTable.getList()
             })
           } else {
@@ -144,6 +148,7 @@ export default {
             type: 'success',
             message: adding ? '添加成功' : '修改成功'
           })
+          this.updated = true
           this.editDialogVisible = false
           this.$refs.searchTable.init()
           respondCb(true)

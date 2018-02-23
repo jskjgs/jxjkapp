@@ -75,13 +75,18 @@
         wx.scanCode({
           onlyFromCamera: false,
           success: (res) => {
-            // wx.showModal({
-            //   title: '扫到的内容',
-            //   content: res.result
-            // })
-            wx.navigateTo({
-              url: '/pages/scanResult'
-            })
+            console.log('扫码结果', res.result)
+            if (res.result && typeof +res.result === 'number') {
+              wx.navigateTo({
+                url: `/pages/scanResult?id=${res.result}`
+              })
+            } else {
+              wx.showToast({
+                image: '../assets/images/error.png',
+                title: '二维码错误',
+                duration: 2000
+              })
+            }
           }
         })
       },
@@ -126,12 +131,16 @@
     }
 
     getList () {
+      console.log(this.$_convertDate(new Date().getTime()), 9999)
+      const date = this.$_convertDate(new Date().getTime())
+      const timeStamp = new Date(date).getTime()
       return this.initData({
         url: '/orderService/admin/query',
         method: 'POST',
         data: {
           pageSize: 5,
-          states: [0]
+          states: [0],
+          startTime: date + ' 00:00:00'
         }
       }, (listItem) => {
         const orderProduct = listItem.orderProduct || {}

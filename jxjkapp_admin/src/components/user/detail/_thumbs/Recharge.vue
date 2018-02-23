@@ -1,6 +1,9 @@
 <script>
   import SearchTable from '@/components/_common/searchTable/SearchTable'
   import DialogWrap from '@/components/_common/dialogWrap/Index'
+  import {
+    rechargeApi
+  } from '@/components/user/detail/api'
 
   export default {
     name: 'RechargeRecord',
@@ -72,6 +75,12 @@
         this.dialogVisible = true
       },
       handleRechargeFormSubmit () {
+        return rechargeApi(this.rechargeForm.amount).then(() => {
+          this.$message({
+            type: 'success',
+            message: '充值成功'
+          })
+        })
       }
     }
   }

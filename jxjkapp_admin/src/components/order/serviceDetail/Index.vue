@@ -200,10 +200,14 @@ export default {
           <div>
             <el-rate
               v-model="feedback.serviceScore"
-              style="margin-bottom: 20px;"
-              show-text
+              style="margin-bottom: 10px;text-align: center;"
+              :max="3"
+              :show-text="false"
+              disabled
+              :texts="['差评', '一般', '满意']"
               :colors="['#99A9BF', '#F7BA2A', '#FF9900']">
             </el-rate>
+            <div class="text-center">{{ ['差评', '一般', '满意'][feedback.serviceScore - 1] || '' }}</div>
             <span class="info-item__content" style="margin-left: 0;">{{!feedback.userComments?'用户没有发表评论':feedback.userComments}}</span>
           </div>
         </el-tab-pane>

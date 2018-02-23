@@ -45,12 +45,6 @@ export default function () {
       }
     }, {
       attrs: {
-        'prop': 'no',
-        'label': '排序',
-        'min-width': '80'
-      }
-    }, {
-      attrs: {
         'prop': 'name',
         'label': '项目名称',
         'min-width': '140',

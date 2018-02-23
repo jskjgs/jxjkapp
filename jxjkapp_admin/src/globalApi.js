@@ -21,7 +21,7 @@ export const queryHospAreaApi = (data) => {
 }
 
 // 获取服务分类
-export const GET_PRODUCT_TYPE_URL = '/productType/admin/all'
+export const GET_PRODUCT_TYPE_URL = '/productType/allProductAndType'
 export const getProductTypeApi = (data) => {
   return fetchApi({
     url: GET_PRODUCT_TYPE_URL,

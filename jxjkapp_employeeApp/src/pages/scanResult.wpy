@@ -1,35 +1,25 @@
 <template>
-  <CustomPage :isLastPage.sync="isLastPage">
+  <CustomPage>
     <view id="page-service-list">
       <scroll-view 
         scroll-x
         class="patient-list-wrap list-top-tools">
         <view class="flex patient-list">
-          <repeat for="{{ patientList }}" key="index" item="item" index="index">
+          <repeat for="{{ listData }}" key="index" item="item" index="index">
             <view 
-              class="flex-item--none flex--center patient-item {{ activePatient === item.value ? 'active' : '' }}"
-              @tap="handlePickPatient({{ item.value }})">
-              {{ item.label }}
+              class="flex-item--none flex--center patient-item {{ activePatient.id === item.patientInfo.id ? 'active' : '' }}"
+              @tap="handlePickPatient({{ item.patientInfo }})">
+              {{ item.patientInfo && item.patientInfo.name }}
             </view>
           </repeat>
         </view>
       </scroll-view>
       <view class="list-wrap">
-        <repeat for="{{ listData }}" key="index" item="item" index="index">
+        <repeat for="{{ orderList }}" key="index" item="item" index="index">
           <view class="service-box">
             <view class="service-head">
-              <text class="service-name">{{ item.orderProductName }}</text>
+              <text class="service-name">{{ item.productSkuName }}</text>
               <text class="service-time">派单时间：{{ item.createDate }}</text>
-            </view>
-            <view class="service-msg">
-              <view class="service-user">
-                <text class="service-user-title">用户姓名</text>
-                <text class="service-user-title">手机号</text>
-              </view>
-              <view class="service-user">
-                <text class="service-user-title">：{{ item.userName }}</text>
-                <text class="service-user-title">：{{ item.userTel }}</text>
-              </view>
             </view>
             <view class="service-bto">
               <view class="service-btn" @tap="acceptOrder({{item.id}}, {{ item }})">接单</view>
@@ -44,7 +34,7 @@
 <script>
   import wepy from 'wepy'
   import CustomPage from '@/components/customPage'
-  import listPageMixin from '@/mixins/listPage'
+  import pageMixin from '@/mixins/page'
 
   export default class serviceList extends wepy.page {
     config = {
@@ -55,31 +45,29 @@
       CustomPage
     }
 
-    mixins = [listPageMixin]
+    mixins = [pageMixin]
 
     data = {
-      patientList: [],
-      activePatient: ''
+      listData: [],
+      activePatient: '',
+      orderList: []
     }
 
     computed = {
       userInfo () {
         return this.$parent.globalData.userInfo
+      },
+      orderList () {
+        return (this.listData.find(item => {
+          return item.patientInfo === this.activePatient
+        }) || this.listData[0] || {}).orderService || []
       }
     }
 
     watch = {
-      patientList (newVal) {
-        if (newVal != undefined) {
-          this.activePatient = (newVal[0] || {}).value
-        }
-      },
-      activePatient (newVal) {
-        if (newVal != undefined) {
-          this.pageNum = 1
-          this.getList()
-          console.log(newVal)
-        }
+      listData (newVal) {
+        // patientInfo  orderService
+        this.activePatient = newVal[0].patientInfo
       }
     }
 
@@ -115,56 +103,21 @@
         })
       }
     }
-
-    onShow () {
+    
+    onLoad ({id}) {
+      this.id = id
       this.$_onPageShow(this, () => {
         this.initPageData()
       })
     }
 
     initPageData () {
-      this.pageNum = 1
-      this.getPatientList().then(() => {
-        this.getList()
-      })
-    }
-
-    getPatientList () {
-      return new Promise((resolve, reject) => {
-        setTimeout(() => {
-          resolve([{
-            label: '就诊人1',
-            value: 1
-          }, {
-            label: '就诊人2',
-            value: 2
-          }])
-          this.$apply()
-        }, 1000)
-      }).then(content => {
-        this.patientList = content
-      })
-    }
-
-    getList () {
       return this.initData({
-        url: '/orderService/admin/query',
-        method: 'POST',
-        data: {
-          pageSize: 5,
-          states: [0]
-        }
-      }, (listItem) => {
-        const orderProduct = listItem.orderProduct || {}
-        const userInfo = listItem.userInfo || {}
-        return {
-          id: listItem.id,
-          userInfo: userInfo,
-          userName: userInfo.name,
-          userTel: userInfo.phone,
-          createDate: this.$_convertDate(listItem.createDate, 'Y-M-D h:m:s'),
-          orderProductName: orderProduct.productSkuName
-        }
+        url: `/orderService/admin/queryByUserId?userId=${this.id}`,
+        method: 'POST'
+      }).then((content) => {
+        this.listData = content
+        this.$apply()
       })
     }
   }
