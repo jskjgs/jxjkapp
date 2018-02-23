@@ -89,6 +89,7 @@ export default {
           value: this.productTypeId || undefined
         }
       })
+      console.log(this.apiKeysMap)
     },
     // 多选
     handleSelectionChange (val) {
@@ -112,7 +113,7 @@ export default {
         type: 'warning',
         beforeClose: (action, instance, done) => {
           if (action === 'confirm') {
-            delProductApi(rowData.id).then(res => {
+            delProductApi({ids: [rowData.id]}).then(res => {
               done()
               this.$message({
                 type: 'success',
@@ -136,9 +137,8 @@ export default {
           areaId: data.areaId,
           name: data.name,
           description: data.description,
-          information: data.description,
           images: imageUrl,
-          productTypeId: data.typeId,
+          categoryId: data.typeId,
           showPrice: data.showPrice,
           salesPrice: data.salesPrice
         }

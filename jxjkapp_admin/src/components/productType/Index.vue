@@ -100,7 +100,7 @@ export default {
         type: 'warning',
         beforeClose: (action, instance, done) => {
           if (action === 'confirm') {
-            delTypeApi(rowData.id).then(res => {
+            delTypeApi({ids: [rowData.id]}).then(res => {
               done()
               this.$message({
                 type: 'success',
@@ -125,7 +125,7 @@ export default {
           id: data.id,
           name: data.name,
           images: imageUrl,
-          sortNumber: data.no,
+          sort: data.no,
           description: '不需要描述'
         }
         let requestFn = adding ? createTypeApi : updateTypeApi

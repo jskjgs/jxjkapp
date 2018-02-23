@@ -72,7 +72,7 @@ const actions = {
       'pageSize': 1000
     }).then(res => {
       const content = res.content || {}
-      let list = content.list || []
+      let list = content.records || []
       list = list.map(item => {
         return {
           label: item.name,
@@ -87,7 +87,7 @@ const actions = {
       'pageNum': 1,
       'pageSize': 1000
     }).then(res => {
-      let list = res.content || []
+      let list = res.content.records || []
       list = list.map(item => {
         return {
           label: item.name,

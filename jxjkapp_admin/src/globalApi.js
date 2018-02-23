@@ -1,12 +1,12 @@
 import { fetchApi } from '@/utils/index'
 
 // 获取院区列表
-export const GET_HOSPAREA_URL = '/hospArea/admin/all'
-export const getHospAreaApi = (data) => {
+export const GET_HOSPAREA_URL = '/area/list'
+export const getHospAreaApi = (params) => {
   return fetchApi({
     url: GET_HOSPAREA_URL,
-    type: 'post',
-    data
+    type: 'get',
+    params
   })
 }
 
@@ -21,11 +21,11 @@ export const queryHospAreaApi = (data) => {
 }
 
 // 获取服务分类
-export const GET_PRODUCT_TYPE_URL = '/productType/allProductAndType'
-export const getProductTypeApi = (data) => {
+export const GET_PRODUCT_TYPE_URL = '/category/list'
+export const getProductTypeApi = (params) => {
   return fetchApi({
     url: GET_PRODUCT_TYPE_URL,
-    type: 'post',
-    data
+    type: 'get',
+    params
   })
 }

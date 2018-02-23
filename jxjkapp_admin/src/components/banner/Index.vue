@@ -7,7 +7,6 @@ import placeholderImg from '@/assets/images/placeholder.png'
 import SearchTable from '@/components/_common/searchTable/SearchTable'
 import {
   deleteBannerApi,
-  deleteBannerBatchApi,
   addBanenrApi,
   modifyBannerApi,
   switchVisibleApi
@@ -126,7 +125,7 @@ export default {
         beforeClose: (action, instance, done) => {
           if (action === 'confirm') {
             deleteBannerApi({
-              id: row.id
+              ids: [row.id]
             }).then(res => {
               this.$message({
                 type: 'success',
@@ -144,7 +143,7 @@ export default {
     },
     // 批量删除
     batchRemove () {
-      deleteBannerBatchApi({
+      deleteBannerApi({
         ids: this.multipleSelection.map(item => item.id).join(',')
       }).then(res => {
         this.$message({
@@ -304,12 +303,11 @@ export default {
             </span>
             <span class="operate-item visible-switch flex--vcenter">
               <el-switch
-                on-text=""
-                off-text=""
+                on-text="显示"
+                off-text="隐藏"
                 v-model="scope.row.visible"
                 @change="switchVisible(scope.row)">
               </el-switch>
-              {{ scope.row.visible ? '显示' : '隐藏' }}
             </span>
           </div>     
         </template>

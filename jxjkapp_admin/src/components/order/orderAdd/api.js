@@ -1,15 +1,5 @@
 import { fetchApi } from '@/utils/index'
 
-// 初始化类目信息
-export const INIT_PRODUCT_INOF = '/productType/allProductAndType'
-export const productInfoApi = (data) => {
-  return fetchApi({
-    url: INIT_PRODUCT_INOF,
-    type: 'post',
-    data
-  })
-}
-
 // 增加order
 export const ADD_ORDER_URL = '/order/admin'
 export const addOrderApi = (data) => {

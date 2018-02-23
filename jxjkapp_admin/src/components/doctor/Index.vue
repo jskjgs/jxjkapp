@@ -10,7 +10,6 @@ import SearchTable from '@/components/_common/searchTable/SearchTable'
 import {
   modifyDoctorApi,
   addDoctorApi,
-  topDoctorApi,
   delDoctorApi
 } from './api'
 import tableCfgMaker from './_consts/tableCfgMaker'
@@ -71,7 +70,7 @@ export default {
     // 搜索
     handleSearch () {
       this.apiKeysMap = Object.assign({}, this.apiKeysMap, {
-        hospAreaId: {
+        areaId: {
           value: this.pickedHospAreaId || undefined
         },
         name: {
@@ -93,7 +92,7 @@ export default {
         type: 'warning',
         beforeClose: (action, instance, done) => {
           if (action === 'confirm') {
-            delDoctorApi(id).then(() => {
+            delDoctorApi({ids: [id]}).then(() => {
               this.$message({
                 type: 'success',
                 message: '删除成功'
@@ -119,7 +118,7 @@ export default {
           headPortrait: imageUrl || data.avatar,
           id: data.id,
           description: data.description,
-          hospAreaId: data.hospAreaId,
+          hospAreaId: data.areaId,
           doctorTypeId: data.doctorTypeId
         }
         const requestFn = adding ? addDoctorApi : modifyDoctorApi
@@ -147,7 +146,7 @@ export default {
     },
     // 切换置顶状态
     switchTop (rowData) {
-      topDoctorApi({
+      modifyDoctorApi({
         doctorId: rowData.id
       }).then(res => {
         this.$message({

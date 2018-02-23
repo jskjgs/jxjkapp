@@ -8,19 +8,16 @@ export default function () {
       requestFn: getListApi,
       responseFn (data) {
         let content = data.content || {}
-        this.tableData = (content.list || []).map((item) => {
-          const productType = item.productType || {}
-          const defaultSku = item.defaultSku || {}
+        this.tableData = (content.records || []).map((item) => {
           return {
-            no: item.sortNumber,
             id: item.id,
-            name: defaultSku.name,
-            cover: defaultSku.images,
-            type: productType.name,
-            typeId: productType.id + '',
-            description: defaultSku.description,
-            showPrice: defaultSku.showPrice,
-            salesPrice: defaultSku.salesPrice,
+            name: item.name,
+            cover: item.images,
+            type: item.categoryName,
+            typeId: item.categoryId + '',
+            description: item.description,
+            showPrice: item.showPrice,
+            salesPrice: item.salesPrice,
             areaId: item.areaId
           }
         })

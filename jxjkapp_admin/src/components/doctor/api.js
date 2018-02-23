@@ -1,39 +1,37 @@
 import { fetchApi } from '@/utils/index'
 
 // 获取医生列表
-export const GET_LIST_URL = '/doctorInfo/admin/query'
-export const getListApi = (data) => {
+export const GET_LIST_URL = '/doctor/list'
+export const getListApi = (params) => {
   return fetchApi({
     url: GET_LIST_URL,
+    type: 'get',
+    params
+  })
+}
+
+// 修改医生信息
+export const MODIFY_DOCTOR_URL = '/doctor/update'
+export const modifyDoctorApi = (data) => {
+  return fetchApi({
+    url: MODIFY_DOCTOR_URL,
     type: 'post',
     data
   })
 }
 
-// 修改医生信息
-export const MODIFY_DOCTOR_URL = '/doctorInfo/'
-export const modifyDoctorApi = (data) => {
+// 删除医生
+export const DEL_DOCTOR_URL = '/doctor/delete'
+export const delDoctorApi = (data) => {
   return fetchApi({
-    url: MODIFY_DOCTOR_URL,
-    type: 'put',
+    url: DEL_DOCTOR_URL,
+    type: 'post',
     data
   })
 }
 
-// 删除医生
-export const DEL_DOCTOR_URL = '/doctorInfo/'
-export const delDoctorApi = (id) => {
-  return fetchApi({
-    url: DEL_DOCTOR_URL,
-    type: 'delete',
-    params: {
-      id
-    }
-  })
-}
-
 // 新增医生信息
-export const ADD_DOCTOR_URL = '/doctorInfo/'
+export const ADD_DOCTOR_URL = '/doctor/create'
 export const addDoctorApi = (data) => {
   return fetchApi({
     url: ADD_DOCTOR_URL,
@@ -43,24 +41,14 @@ export const addDoctorApi = (data) => {
 }
 
 //  查询医生类别
-export const GET_DOCTOR_TYPE_LIST_URL = '/doctorType/all'
+export const GET_DOCTOR_TYPE_LIST_URL = '/doctorType/list'
 export const getDoctorTypeListApi = () => {
   return fetchApi({
     url: GET_DOCTOR_TYPE_LIST_URL,
-    type: 'post',
-    data: {
+    type: 'get',
+    params: {
       pageNum: '1',
       pageSize: 10000
     }
-  })
-}
-
-// 置顶医生
-export const TOP_DOCTOR_URL = '/doctor_i/topDoctor'
-export const topDoctorApi = (data) => {
-  return fetchApi({
-    url: TOP_DOCTOR_URL,
-    type: 'post',
-    data
   })
 }

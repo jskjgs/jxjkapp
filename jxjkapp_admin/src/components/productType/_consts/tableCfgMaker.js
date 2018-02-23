@@ -8,8 +8,8 @@ export default function () {
       requestFn: getListApi,
       responseFn (data) {
         let content = data.content || {}
-        this.tableData = (content.list || []).map((item) => ({
-          no: item.sortNumber,
+        this.tableData = (content.records || []).map((item) => ({
+          no: item.sort,
           id: item.id,
           name: item.name,
           cover: item.images

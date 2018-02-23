@@ -46,15 +46,15 @@ export default function () {
       requestFn: getListApi,
       responseFn (data) {
         let content = data.content || {}
-        this.tableData = (content.list || []).map((item) => {
+        this.tableData = (content.records || []).map((item) => {
           return {
             id: item.id,
             doctorTypeId: (item.doctorType || {}).id,
-            doctorType: (item.doctorType || {}).name,
+            doctorType: item.doctorTypeName,
             name: item.name,
             avatar: item.headPortrait,
-            hospAreaId: (item.hospArea || {}).id,
-            hospAreaName: (item.hospArea || {}).name,
+            areaId: item.hospArea,
+            hospAreaName: item.areaName,
             description: item.description
           }
         })

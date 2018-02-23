@@ -18,7 +18,7 @@ const initData = {
 const formInitData = {
   name: '',
   hospAreaName: '',
-  hospAreaId: '',
+  areaId: '',
   doctorTypeId: '',
   avatar: '',
   description: ''
@@ -76,7 +76,7 @@ export default {
     getDoctorTypeList () {
       return getDoctorTypeListApi().then(res => {
         const content = res.content || {}
-        const list = content.list || {}
+        const list = content.records || {}
         this.doctorTypeList = list.map(item => {
           return {
             label: item.name,
@@ -97,9 +97,10 @@ export default {
         if (valid) {
           checkFileExist.then(() => {
             this.submitLoading = true
-            this.$emit('submit', Object.assign({}, this.form, {
+            console.log(Object.assign({}, this.form, {
               file: fileObj
-            }), (success) => {
+            }))
+            this.$emit('submit', this.form, (success) => {
               this.submitLoading = false
               if (success) {
                 this.visible = false
@@ -151,7 +152,7 @@ export default {
           </el-col>
           <el-col :span="8">
             <el-form-item class="doctor-hospArea" label="院区：">
-              <el-select v-model="form.hospAreaId" placeholder="选择院区">
+              <el-select v-model="form.areaId" placeholder="选择院区">
                 <el-option
                   v-for="item in hospAreaList"
                   :key="item.value"

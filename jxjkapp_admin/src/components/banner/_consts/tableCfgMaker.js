@@ -14,7 +14,7 @@ export default function () {
           name: item.name,
           cover: item.imageUrl,
           bannerUrl: item.bannerUrl,
-          visible: !item.isDisplay  // display: 0表示显示 1表示隐藏
+          visible: item.display // display: 0表示显示 1表示隐藏
         }))
         this.total = content.total || 0
       }

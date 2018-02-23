@@ -30,22 +30,11 @@ export const addBanenrApi = (data) => {
   })
 }
 
-// 删除banner (单个)
+// 删除banner
 export const DELETE_BANNER_URL = '/banner/delete'
 export const deleteBannerApi = (data) => {
   return fetchApi({
     url: DELETE_BANNER_URL,
-    type: 'post',
-    data
-  })
-}
-
-// 删除banner (批量)
-export const DELETE_BANNER_BATCH_URL = '/banner/'
-export const deleteBannerBatchApi = (data) => {
-  console.log(data)
-  return fetchApi({
-    url: DELETE_BANNER_BATCH_URL,
     type: 'post',
     data
   })
