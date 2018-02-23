@@ -10,8 +10,7 @@ import { Message } from 'element-ui'
 import promiseFinally from 'promise.prototype.finally'
 promiseFinally.shim()
 
-setAuthorization(Cookie.get('login'))
-axios.defaults.headers.post['Content-Type'] = 'application/json'
+Cookie.get('login') && setAuthorization(Cookie.get('login'))
 // 全局的 axios 默认transformRequest配置
 // 序列化数据
 // axios.defaults.transformRequest = [function (data) {
