@@ -8,13 +8,13 @@ export default function () {
       requestFn: getListApi,
       responseFn (data) {
         let content = data.content || {}
-        this.tableData = (content.list || []).map((item) => ({
-          no: item.orderNumber,
+        this.tableData = (content.records || []).map((item) => ({
+          no: item.sort,
           id: item.id,
           name: item.name,
-          cover: item.bannerUrl,
-          jumpUrl: item.jumpUrl,
-          visible: !item.display  // display: 0表示显示 1表示隐藏
+          cover: item.imageUrl,
+          bannerUrl: item.bannerUrl,
+          visible: !item.isDisplay  // display: 0表示显示 1表示隐藏
         }))
         this.total = content.total || 0
       }
@@ -56,11 +56,11 @@ export default function () {
       slotName: 'column-cover'
     }, /* {
       attrs: {
-        'prop': 'jumpUrl',
+        'prop': 'bannerUrl',
         'min-width': '120',
         'label': '跳转链接'
       },
-      slotName: 'column-jumpUrl'
+      slotName: 'column-bannerUrl'
     }, */ {
       attrs: {
         'label': '操作'

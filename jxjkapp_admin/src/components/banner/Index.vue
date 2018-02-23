@@ -9,7 +9,8 @@ import {
   deleteBannerApi,
   deleteBannerBatchApi,
   addBanenrApi,
-  modifyBannerApi
+  modifyBannerApi,
+  switchVisibleApi
 } from './api'
 let adding = false
 
@@ -144,7 +145,7 @@ export default {
     // 批量删除
     batchRemove () {
       deleteBannerBatchApi({
-        bannerIdList: this.multipleSelection.map(item => item.id).join(',')
+        ids: this.multipleSelection.map(item => item.id).join(',')
       }).then(res => {
         this.$message({
           type: 'success',
@@ -160,9 +161,9 @@ export default {
       const uploadForm = (imageUrl) => {
         let sendData = {
           name: data.name,
-          bannerUrl: imageUrl || '',
-          jumpUrl: data.link || 'https://www.baidu.com',
-          orderNumber: data.no,
+          imageUrl: imageUrl || '',
+          bannerUrl: data.link || 'https://www.baidu.com',
+          sort: data.no,
           id: data.id
         }
         let requestFn = adding ? addBanenrApi : modifyBannerApi
@@ -191,13 +192,14 @@ export default {
     },
     // 显示／隐藏
     switchVisible (rowData) {
-      modifyBannerApi({
+      console.log(rowData)
+      switchVisibleApi({
         id: rowData.id,
-        display: rowData.visible ? 1 : 0
+        isDisplay: rowData.visible ? 0 : 1
       }).then(res => {
         this.$message({
           type: 'success',
-          message: rowData.visible ? '显示成功' : '隐藏成功'
+          message: rowData.isDisplay ? '显示成功' : '隐藏成功'
         })
       }).finally(() => {
         this.$refs.searchTable.getList()

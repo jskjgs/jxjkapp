@@ -11,12 +11,12 @@ export default function () {
       requestFn: getListApi,
       responseFn (data) {
         let content = data.content || {}
-        this.tableData = (content.list || []).map((item) => ({
+        this.tableData = (content.records || []).map((item) => ({
           id: item.id,
           title: item.title, // 标题
           cover: item.images, // 封面图
           createDate: item.createDate, // 创建日期
-          sortNumber: item.sortNumber,
+          sortNumber: item.sort,
           content: item.content
         }))
         this.total = content.total || 0

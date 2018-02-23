@@ -14,25 +14,26 @@ setAuthorization(Cookie.get('login'))
 axios.defaults.headers.post['Content-Type'] = 'application/json'
 // 全局的 axios 默认transformRequest配置
 // 序列化数据
-// axios.defaults.transformRequest = [function (data) {
-//   if (data instanceof FormData) {
-//     return data
-//   } else {
-//     let stringifyStr = ''
-//     for (let key in data) {
-//       if (data.hasOwnProperty(key)) {
-//         if (data[key] !== undefined) {
-//           stringifyStr += key + '=' + data[key] + '&'
-//         }
-//       }
-//     }
-//     return stringifyStr.slice(0, -1)
-//   }
-// }]
+axios.defaults.transformRequest = [function (data) {
+  if (data instanceof FormData) {
+    return data
+  } else {
+    let stringifyStr = ''
+    for (let key in data) {
+      if (data.hasOwnProperty(key)) {
+        if (data[key] !== undefined) {
+          stringifyStr += key + '=' + data[key] + '&'
+        }
+      }
+    }
+    return stringifyStr.slice(0, -1)
+  }
+}]
 
 /* ajax拦截器 */
 // 添加请求拦截器
 axios.interceptors.request.use(function (config) {
+  config.headers['Content-Type'] = config.jsonData ? 'application/json' : 'application/x-www-form-urlencoded;charset=UTF-8'
   // get请求加上timestamp
   if (config.method === 'get') {
     let delimiter = ''
@@ -43,7 +44,7 @@ axios.interceptors.request.use(function (config) {
     }
     config.url += delimiter + new Date().getTime()
   }
-  config.url = '/hospHealth' + config.url
+  config.url = '/jxjk/admin' + config.url
   return config
 }, function (error) {
   return Promise.reject(error)

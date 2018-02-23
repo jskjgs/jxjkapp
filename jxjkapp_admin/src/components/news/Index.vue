@@ -106,7 +106,7 @@ export default {
         type: 'warning',
         beforeClose: (action, instance, done) => {
           if (action === 'confirm') {
-            deleteNewsApi(row.id).then(res => {
+            deleteNewsApi({ids: [row.id]}).then(res => {
               done()
               this.$message({
                 type: 'success',
@@ -139,9 +139,9 @@ export default {
       const uploadForm = (imageUrl) => {
         let sendData = {
           title: data.name,
-          sortNumber: data.no,
+          sort: data.no,
           id: data.id,
-          images: imageUrl || '',
+          imageUrl: imageUrl || '',
           content: data.richText // 内容
         }
         let requestFn = adding ? addNewsApi : modifyNewsApi
@@ -180,25 +180,11 @@ export default {
         this.$refs.searchTable.getList()
       })
     },
-    // 切换置顶状态
-    switchTop (rowData) {
-      const topDoctorApi = ''
-      topDoctorApi({
-        doctorId: rowData.id
-      }).then(res => {
-        this.$message({
-          type: 'success',
-          message: rowData.top ? '置顶成功' : '取消置顶成功'
-        })
-      }).finally(() => {
-        this.$refs.searchTable.init()
-      })
-    },
     // 置顶
     toTop (rowData) {
       modifyNewsApi({
         id: rowData.id,
-        sortNumber: 1
+        sort: 1
       }).then(() => {
         this.$message({
           type: 'success',
