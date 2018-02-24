@@ -1,17 +1,17 @@
 import { fetchApi } from '@/utils/index'
 
 // 获取用户订单列表
-export const GET_ORDER_LIST_URL = '/order/admin/query'
-export const getOrderListApi = (data) => {
+export const GET_ORDER_LIST_URL = '/order/lis'
+export const getOrderListApi = (params) => {
   return fetchApi({
     url: GET_ORDER_LIST_URL,
-    type: 'post',
-    data
+    type: 'get',
+    params
   })
 }
 
 // 获取个人信息
-export const USER_INFO_URL = '/userInfo/admin/'
+export const USER_INFO_URL = '/user/detail'
 export const userInfoApi = (params) => {
   return fetchApi({
     url: USER_INFO_URL,
@@ -21,11 +21,11 @@ export const userInfoApi = (params) => {
 }
 
 // 更新个人信息
-export const UPDATE_INFO_URL = '/userInfo/'
+export const UPDATE_INFO_URL = '/user/update'
 export const updateInfoApi = (data) => {
   return fetchApi({
     url: UPDATE_INFO_URL,
-    type: 'put',
+    type: 'post',
     data
   })
 }
@@ -35,7 +35,7 @@ export const UPDATE_VIP_URL = '/userInfo/vip'
 export const updateVipApi = (id) => {
   return fetchApi({
     url: UPDATE_VIP_URL,
-    type: 'put',
+    type: 'post',
     params: {
       id
     }

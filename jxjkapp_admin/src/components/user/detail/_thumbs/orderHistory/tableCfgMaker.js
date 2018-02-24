@@ -8,7 +8,7 @@ export default function () {
       requestFn: getOrderListApi,
       responseFn (data) {
         let content = data.content || {}
-        this.tableData = (content.list || []).map((item) => {
+        this.tableData = (content.records || []).map((item) => {
           const orderProductList = item.orderProductList || {}
           const orderProduct = orderProductList[0] || {}
           return {
