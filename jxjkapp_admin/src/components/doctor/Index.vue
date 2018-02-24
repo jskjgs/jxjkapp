@@ -118,7 +118,7 @@ export default {
           headPortrait: imageUrl || data.avatar,
           id: data.id,
           description: data.description,
-          hospAreaId: data.areaId,
+          areaId: data.areaId,
           doctorTypeId: data.doctorTypeId
         }
         const requestFn = adding ? addDoctorApi : modifyDoctorApi

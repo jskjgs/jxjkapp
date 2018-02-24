@@ -49,11 +49,11 @@ export default function () {
         this.tableData = (content.records || []).map((item) => {
           return {
             id: item.id,
-            doctorTypeId: (item.doctorType || {}).id,
+            doctorTypeId: item.doctorTypeId,
             doctorType: item.doctorTypeName,
             name: item.name,
             avatar: item.headPortrait,
-            areaId: item.hospArea,
+            areaId: item.areaId,
             hospAreaName: item.areaName,
             description: item.description
           }

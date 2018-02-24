@@ -69,6 +69,7 @@ export default {
     }
   },
   created () {
+    console.log(this.form)
     this.getDoctorTypeList()
   },
   methods: {

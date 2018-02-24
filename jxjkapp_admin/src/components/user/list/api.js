@@ -1,32 +1,20 @@
 import { fetchApi } from '@/utils/index'
 
 // 获取用户列表
-export const GET_LIST_URL = '/userInfo/admin/all'
+export const GET_LIST_URL = '/user/list'
 export const getListApi = (data) => {
   return fetchApi({
     url: GET_LIST_URL,
-    type: 'post',
+    type: 'get',
     data
   })
 }
 
 // 获取个人信息
-export const USER_INFO_URL = '/account/queryUserDetail'
-export const userInfoApi = (accountId) => {
+export const USER_INFO_URL = '/user/detail'
+export const userInfoApi = (params) => {
   return fetchApi({
     url: USER_INFO_URL,
-    type: 'get',
-    params: {
-      accountId
-    }
-  })
-}
-
-// 获取用户日记
-export const USER_LOG_URL = '/diary/queryByAccountId'
-export const userLogApi = (params) => {
-  return fetchApi({
-    url: USER_LOG_URL,
     type: 'get',
     params
   })

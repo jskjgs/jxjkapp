@@ -1,6 +1,6 @@
 module.exports =  {
   '/jxjk': {
-    target: 'http://192.168.31.173:9002',
+    target: 'http://182.92.78.118:9002',
     changeOrigin: true,
     // pathRewrite: {
     //   '^/admin': '/admin'

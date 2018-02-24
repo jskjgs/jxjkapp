@@ -64,16 +64,13 @@
         requestFn: getListApi,
         responseFn (res) {
           const content = res.content || {}
-          const list = content.list || []
+          const list = content.records || []
           this.tableData = list.map(item => {
-            const patientInfoList = item.patientInfoList || []
-            const patientInfo = patientInfoList[0] || {}
             return {
               userName: item.name,
-              patientId: patientInfo.id,
               userId: item.id,
               userPhone: item.phone,
-              isVip: userStateFormat(item.isVip)
+              isVip: userStateFormat(item.type)
             }
           })
           this.total = content.total || 0
