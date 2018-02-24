@@ -105,7 +105,7 @@ export default {
       responseFn (data) {
         let content = data.content || {}
         console.log(content.list)
-        this.tableData = (content.list || []).map((item) => ({
+        this.tableData = (content.records || []).map((item) => ({
           orderId: item.id,
           orderCode: item.code,
           orderAmount: ('￥' + item.orderSalesPrice),

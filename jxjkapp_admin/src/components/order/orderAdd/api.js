@@ -10,7 +10,7 @@ export const addOrderApi = (data) => {
   })
 }
 
-// 增加order
+// 更改order
 export const UPDATE_ORDER_URL = '/order/admin'
 export const updateOrderApi = (data) => {
   return fetchApi({
@@ -21,7 +21,7 @@ export const updateOrderApi = (data) => {
 }
 
 // 计算订单价格
-export const ORDER_CHECKOUT = '/order/checkout'
+export const ORDER_CHECKOUT = '/order/computePayAmount'
 export const orderCheckoutApi = (data) => {
   return fetchApi({
     url: ORDER_CHECKOUT,

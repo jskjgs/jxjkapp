@@ -93,7 +93,7 @@ export default {
         type: 'warning',
         beforeClose: (action, instance, done) => {
           if (action === 'confirm') {
-            delEmployeeApi(id).then((res) => {
+            delEmployeeApi({ids: [id]}).then((res) => {
               this.$message({
                 type: 'success',
                 message: '删除成功'

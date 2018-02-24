@@ -1,12 +1,12 @@
 import { fetchApi } from '@/utils/index'
 
 // 获取排队列表
-export const LIST_URL = '/call/admin/selectAll'
-export const getListApi = (data) => {
+export const LIST_URL = '/queue/select/today'
+export const getListApi = (params) => {
   return fetchApi({
     url: LIST_URL,
-    type: 'post',
-    data
+    type: 'get',
+    params
   })
 }
 

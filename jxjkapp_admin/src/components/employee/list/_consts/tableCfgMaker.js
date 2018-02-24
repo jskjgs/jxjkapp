@@ -8,20 +8,18 @@ export default function () {
       requestFn: getListApi,
       responseFn (data) {
         let content = data.content || {}
-        console.log(content.list)
-        this.tableData = (content.list || []).map((item) => {
-          const area = item.area || {}
+        this.tableData = (content.records || []).map((item) => {
           return {
             id: item.id,
             account: item.account,
-            no: item.id,
+            no: item.idCard,
             name: item.nickname,
-            area: area.name,
-            areaId: area.id,
+            area: item.areaName,
+            areaId: item.areaId,
             phone: item.phone,
             title: item.title,
-            author: authorFormat(item.authorId),
-            authorId: item.authorId,
+            author: authorFormat(item.author),
+            authorId: item.author,
             sex: item.sex
           }
         })

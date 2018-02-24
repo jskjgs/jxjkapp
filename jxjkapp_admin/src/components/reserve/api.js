@@ -1,15 +1,12 @@
 import { fetchApi } from '@/utils/index'
 
 // 获取预约列表
-export const GET_LIST_URL = '/precontract/admin/query'
-export const getListApi = (data = {}) => {
+export const GET_LIST_URL = '/precontract/list'
+export const getListApi = (params) => {
   return fetchApi({
     url: GET_LIST_URL,
-    type: 'post',
-    data: {
-      field: 'precontract_date  desc',
-      ...data
-    }
+    type: 'get',
+    params
   })
 }
 

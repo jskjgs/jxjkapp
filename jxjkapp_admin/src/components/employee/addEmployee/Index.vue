@@ -20,6 +20,7 @@ export default {
         password: null,
         areaId: null,
         author: null,
+        title: null,
         sex: null,
         nickname: null
       },
@@ -46,6 +47,7 @@ export default {
         this.fromData.areaId = info.area.id
         this.fromData.author = info.authorId
         this.fromData.sex = info.sex
+        this.fromData.title = info.title
         this.fromData.nickname = info.nickname
         console.log(res)
       })

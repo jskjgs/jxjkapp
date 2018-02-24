@@ -8,7 +8,7 @@ export default function () {
       requestFn: getListApi,
       responseFn (data) {
         const content = data.content || {}
-        const list = content.list || []
+        const list = content.records || []
         this.tableData = list.map(item => {
           const sku = item.sku || {}
           const area = item.area || {}

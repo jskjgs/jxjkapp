@@ -86,7 +86,6 @@ export default {
           quantity: this.qty,
           discontPrice: this.discontPrice}]
       }
-      console.log(this.userId)
       return data
     },
     handleCreateOrder () {

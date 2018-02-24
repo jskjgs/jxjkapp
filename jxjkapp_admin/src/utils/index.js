@@ -209,8 +209,9 @@ export const authorFormat = (author) => {
     case 0: { return '医生' }
     case 1: { return '医院主管' }
     case 2: { return '集团领导' }
+    case 3: { return '超级用户' }
   }
-  return author
+  return '权限异常'
 }
 
 /**
