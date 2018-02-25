@@ -57,12 +57,8 @@ export default {
         this.total = content.total || 0
       }
     }
-    this.apiKeysMap = {
-      currentPage: 'pageNum'
-    }
     return {
       apiKeysMap: {
-        currentPage: 'pageNum'
       },
       editDialogVisible: false,
       editData: null
@@ -74,17 +70,9 @@ export default {
         this.editData = null
         adding = false
       }
-    },
-    currentPage (newPageNum) {
-      this.getList({
-        pageNum: newPageNum
-      })
     }
   },
   methods: {
-    getList (params) {
-      this.tableLoading = true
-    },
     // 刷新列表
     refreshList () {
       this.apiKeysMap = Object.assign({}, this.apiKeysMap)

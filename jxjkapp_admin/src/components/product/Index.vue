@@ -34,26 +34,18 @@ export default {
     return {
       searchKeyword: '',
       productTypeId: '',
-      currentPage: 1,
-      pageSize: 10,
-      total: 0,
       multipleSelection: [],
       editDialogVisible: false,
       reverseInfoDialogVisible: false,
       editData: null,
       reverseInfoData: null,
       apiKeysMap: {
-        pageSize: {
-          value: 10,
-          innerKey: 'pageSize' // searchTable组件内部映射的key
-        },
         name: {
           value: undefined
         },
         productTypeId: {
           value: undefined
-        },
-        currentPage: 'pageNum'
+        }
       }
     }
   },

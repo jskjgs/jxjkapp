@@ -34,17 +34,12 @@ export default {
       editDialogVisible: false,
       editData: {},
       apiKeysMap: {
-        pageSize: {
-          value: 10,
-          innerKey: 'pageSize' // searchTable组件内部映射的key
-        },
         hospAreaId: {
           value: undefined
         },
         name: {
           value: undefined
-        },
-        currentPage: 'pageNum'
+        }
       }
     }
   },

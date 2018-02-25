@@ -68,8 +68,8 @@ const mutations = {
 const actions = {
   [UPDATE_HOSPAREALIST] ({commit}) {
     return getHospAreaApi({
-      'pageNum': 1,
-      'pageSize': 1000
+      'current': 1,
+      'size': 1000
     }).then(res => {
       const content = res.content || {}
       let list = content.records || []
@@ -84,8 +84,8 @@ const actions = {
   },
   [UPDATE_PRODUCT_TYPE_LIST] ({commit}) {
     return getProductTypeApi({
-      'pageNum': 1,
-      'pageSize': 1000
+      'current': 1,
+      'size': 1000
     }).then(res => {
       let list = res.content.records || []
       list = list.map(item => {

@@ -30,24 +30,17 @@ export default {
     this.listApi = tableCfg.listApi
     return {
       searchKeyword: '',
-      pageSize: 10,
-      total: 0,
       multipleSelection: [],
       editDialogVisible: false,
       editData: null,
       createTimeRange: undefined,
       apiKeysMap: {
-        pageSize: {
-          value: 10,
-          innerKey: 'pageSize' // searchTable组件内部映射的key
-        },
         title: {
           value: undefined
         },
         createTimeRange: {
           value: undefined
-        },
-        currentPage: 'pageNum'
+        }
       }
     }
   },

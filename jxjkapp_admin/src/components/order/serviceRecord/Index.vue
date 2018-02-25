@@ -105,14 +105,9 @@ export default {
       userName: this.$route.params.userName,
       userPhone: this.$route.params.userPhone,
       apiKeysMap: {
-        pageSize: {
-          value: 10,
-          innerKey: 'pageSize' // searchTable组件内部映射的key
-        },
         orderId: {
           value: this.$route.params.orderId
         },
-        currentPage: 'pageNum',
         orderBy: {
           value: 'stop_time'
         },

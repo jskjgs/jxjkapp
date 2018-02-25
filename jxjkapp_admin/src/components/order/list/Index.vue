@@ -121,11 +121,6 @@ export default {
     return {
       keyWords: '',
       apiKeysMap: {
-        pageSize: {
-          value: 10,
-          innerKey: 'pageSize' // searchTable组件内部映射的key
-        },
-        currentPage: 'pageNum',
         orderBy: {
           value: 'create_time'
         },
@@ -146,11 +141,6 @@ export default {
       if (!val) {
         this.editData = null
       }
-    },
-    currentPage (newPageNum) {
-      this.getList({
-        pageNum: newPageNum
-      })
     }
   },
   methods: {
