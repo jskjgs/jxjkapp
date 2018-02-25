@@ -222,16 +222,23 @@ export default {
       :list-api="listApi"
       :api-keys-map="apiKeysMap">
       <div class="table-tools flex--vcenter" slot="table-tools">
-        <div class="search-wrap">
-          <span class="search-label">搜索关键字：</span>
-          <el-input
-            class="inline-block search-input"
-            placeholder="请在此输入名称／ID"
-            icon="search"
-            v-model="searchKeyword"
-            @keyup.enter.native="handleSearch"
-            :on-icon-click="handleSearch">
-          </el-input>
+        <div class="search-wrap flex--vcenter">
+          <div class="tool-item">
+            <span class="search-label">搜索关键字：</span>
+            <el-input
+              class="inline-block search-input"
+              placeholder="请在此输入名称／ID"
+              v-model="searchKeyword"
+              @keyup.enter.native="handleSearch">
+            </el-input>
+          </div>
+          <div class="tool-item">
+            <el-button
+              class="tool-item"
+              type="primary"
+              @click="handleSearch">搜索
+            </el-button>
+          </div>
         </div>
         <div class="btn-wrap">
           <el-button

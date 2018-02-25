@@ -182,7 +182,10 @@ export default {
         <div class="search-wrap flex--vcenter">
           <div class="tool-item">
             项目名称：
-            <el-input v-model="searchKeyword" style="width: auto;"></el-input>
+            <el-input 
+              v-model="searchKeyword" 
+              style="width: auto;"
+              @keyup.enter.native="handleSearch" />
           </div>
           <div class="tool-item">
             分类名称：

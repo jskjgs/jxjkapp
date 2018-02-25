@@ -2,11 +2,11 @@ import { fetchApi } from '@/utils/index'
 
 // 获取商品列表
 export const GET_LIST_URL = '/product/list'
-export const getListApi = (data) => {
+export const getListApi = (params) => {
   return fetchApi({
     url: GET_LIST_URL,
     type: 'get',
-    data
+    params
   })
 }
 

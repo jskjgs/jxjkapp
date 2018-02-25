@@ -60,20 +60,6 @@ export default {
       this.visible = false
       this.$emit('cancel')
     },
-    // 验证基本信息表单
-    validForm () {
-      return new Promise((resolve, reject) => {
-        this.$refs.ruleForm.validate((valid) => {
-          // 验证上传图片
-          let checkFileExist = this.$refs.imgUploader.checkFileExist(fileObj)
-          if (valid) {
-            checkFileExist.then(resolve).catch(reject)
-          } else {
-            reject()
-          }
-        })
-      })
-    },
     handleSubmit () {
       this.$refs.ruleForm.validate((valid) => {
         let checkFileExist = this.$refs.imgUploader.checkFileExist(fileObj)
@@ -112,9 +98,6 @@ export default {
     },
     // 下一步
     toNext () {
-      // this.validForm().then(() => {
-      //   this.activePanelIndex = 1
-      // })
       this.activePanelIndex = 1
     }
   }
@@ -122,12 +105,23 @@ export default {
 </script>
 
 <template>
-  <div class="edit-dialog">
+  <div class="edit-dialog news__edit-dialog">
     <el-dialog
       class="dialog--center"
       :title="`${data ? '修改' : '新增'}新闻`"
       :visible.sync="visible"
       @close="handleClose">
+      <div v-show="activePanelIndex === 0">
+        <h4 style="margin-top: 0;">新闻内容</h4>
+        <div class="flex--hcenter">
+          <!-- <rich-text 
+            style="width: 375px;"
+            v-model="form.richText"
+            upload-img-server="/upload">
+          </rich-text> -->
+          <el-input type="textarea" v-model="form.richText" class="content-textarea"/>
+        </div>
+      </div>
       <el-form
         v-show="activePanelIndex === 1"
         ref="ruleForm"
@@ -148,7 +142,7 @@ export default {
               <span class="text-length">{{ form.name ? form.name.length : 0 }}/30</span>
             </el-form-item>
           </el-col>
-          <el-col :span="8">
+          <!-- <el-col :span="8">
             <el-form-item
               label="排序"
               prop="no"
@@ -163,7 +157,7 @@ export default {
                 placeholder="请输入1-1000之间的数字">
               </el-input>
             </el-form-item>
-          </el-col>
+          </el-col> -->
         </el-row>
         <!-- <el-form-item
           label="跳转链接"
@@ -186,17 +180,6 @@ export default {
             @file-change="handleFileChange"></img-uploader>
         </el-form-item>
       </el-form>
-      <div v-show="activePanelIndex === 0">
-        <h4 style="margin-top: 0;">新闻内容</h4>
-        <div class="flex--hcenter">
-          <!-- <rich-text 
-            style="width: 375px;"
-            v-model="form.richText"
-            upload-img-server="/upload">
-          </rich-text> -->
-          <el-input type="textarea" v-model="form.richText" class="content-textarea"/>
-        </div>
-      </div>
       <div slot="footer" class="dialog-footer">
         <template v-if="activePanelIndex === 0">
           <el-button
@@ -206,6 +189,7 @@ export default {
           </el-button>
           <el-button 
             type="primary"
+            :disabled="!form.richText.trim()"
             @click="toNext">
             下一步
           </el-button>
@@ -230,7 +214,7 @@ export default {
 
 <style lang="scss">
   @import "~@/assets/style/variables/index";
-  .edit-dialog {
+  .news__edit-dialog {
     .el-dialog {
       min-width: 720px;
     }
