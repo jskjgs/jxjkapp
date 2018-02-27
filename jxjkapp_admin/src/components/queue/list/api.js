@@ -1,7 +1,7 @@
 import { fetchApi } from '@/utils/index'
 
 // 获取排队列表
-export const LIST_URL = '/queue/select/today'
+export const LIST_URL = '/queue/today'
 export const getListApi = (params) => {
   return fetchApi({
     url: LIST_URL,

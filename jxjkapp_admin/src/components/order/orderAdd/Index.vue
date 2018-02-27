@@ -79,7 +79,7 @@ export default {
     getOrderData () {
       let data = {
         userId: this.userId,
-        patientId: !this.selectPatient ? null : this.selectPatient.id,
+        patientInfoId: !this.selectPatient ? null : this.selectPatient.id,
         type: 0,
         orderProductPOList: [{
           productSkuId: !this.selectSku ? null : this.selectSku.id,
@@ -107,8 +107,8 @@ export default {
             message: '没有该手机号用户的信息'
           })
         }
-        this.userId = user.id
-        this.patientList = user.patientInfoList
+        // this.userId = user.id
+        this.patientList = user.records
       })
     },
     handleUpdateOrder () {

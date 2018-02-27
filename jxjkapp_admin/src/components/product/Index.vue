@@ -89,7 +89,6 @@ export default {
           value: this.productTypeId || undefined
         }
       })
-      console.log(this.apiKeysMap)
     },
     // 多选
     handleSelectionChange (val) {

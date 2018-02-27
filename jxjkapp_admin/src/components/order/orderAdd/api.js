@@ -31,7 +31,7 @@ export const orderCheckoutApi = (data) => {
 }
 
 // 查询用户信息
-export const PATIENT_INFO = '/userInfo/admin/'
+export const PATIENT_INFO = '/patient/list'
 export const getPatientListApi = (params) => {
   return fetchApi({
     url: PATIENT_INFO,
