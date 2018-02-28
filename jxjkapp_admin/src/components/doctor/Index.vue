@@ -34,17 +34,12 @@ export default {
       editDialogVisible: false,
       editData: {},
       apiKeysMap: {
-        pageSize: {
-          value: 10,
-          innerKey: 'pageSize' // searchTable组件内部映射的key
-        },
         hospAreaId: {
           value: undefined
         },
         name: {
           value: undefined
-        },
-        currentPage: 'pageNum'
+        }
       }
     }
   },
@@ -189,7 +184,10 @@ export default {
           </div>
           <div class="tool-item">
             医生姓名：
-            <el-input v-model="doctorName" style="width: auto;"></el-input>
+            <el-input 
+              v-model="doctorName" 
+              style="width: auto;"
+              @keyup.enter.native="handleSearch" />
           </div>
           <el-button
             class="tool-item"

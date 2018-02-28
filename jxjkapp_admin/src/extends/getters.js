@@ -1,40 +1,66 @@
-import store from '@/store'
+import Vue from 'vue'
 import {
-  UPDATE_HOSPAREALIST,
-  UPDATE_PRODUCT_TYPE_LIST
-} from '@/store/global'
+  getHospAreaApi,
+  getProductTypeApi
+} from '@/globalApi'
 
-// 依赖store的getter的构造方法
-const asyncGetterMaker = ({ store = {}, stateKey = '', dispatchFn = '' }) => {
-  let fetching = false
+const getterMaker = function (getVal, defaultVal) {
   return {
-    get () {
-      if (!fetching && !store.state[stateKey]) {
-        fetching = true
-        store.dispatch(dispatchFn).finally(() => {
-          fetching = false
-        })
-      }
-      let result = store.state[stateKey]
-      if (result && typeof result === 'object') {
-        result.update = () => { // 挂载更新数据方法
-          return store.dispatch(dispatchFn)
+    get: (() => {
+      let vm = new Vue({
+        data: {
+          data: null
         }
+      })
+      return () => {
+        if (vm.data === null) {
+          getVal((val) => {
+            vm.data = val
+          })
+        }
+        return vm.data === null ? defaultVal : vm.data
       }
-      return result
-    }
+    })()
   }
 }
 
 export default Object.defineProperties({}, {
-  hospAreaList: asyncGetterMaker({
-    store,
-    stateKey: 'hospAreaList',
-    dispatchFn: UPDATE_HOSPAREALIST
-  }),
-  productTypeList: asyncGetterMaker({
-    store,
-    stateKey: 'productTypeList',
-    dispatchFn: UPDATE_PRODUCT_TYPE_LIST
-  })
+  hospAreaList: getterMaker((syncData) => {
+    getHospAreaApi({
+      'current': 1,
+      'size': 1000
+    }).then(res => {
+      const content = res.content || {}
+      let list = content.records || []
+      list = list.map(item => {
+        return {
+          label: item.name,
+          value: item.id
+        }
+      })
+      syncData(list)
+    })
+  }, []),
+  productTypeList: getterMaker((syncData) => {
+    getProductTypeApi({
+      'current': 1,
+      'size': 1000
+    }).then(res => {
+      const content = res.content || {}
+      let list = content.records || []
+      list = list.map(item => {
+        return {
+          label: item.name,
+          value: item.id,
+          list: (item.productVO || item.product || []).map(product => {
+            return {
+              label: product.name,
+              value: product.id
+            }
+          })
+        }
+      })
+      syncData(list)
+    })
+  }, [])
 })

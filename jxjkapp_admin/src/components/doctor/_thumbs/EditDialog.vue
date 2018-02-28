@@ -163,7 +163,7 @@ export default {
               </el-select>
             </el-form-item>
           </el-col>
-          <el-col :span="8">
+          <!-- <el-col :span="8">
             <el-form-item class="doctor-name" label="类别：">
               <el-select v-model="form.doctorTypeId" placeholder="选择类别">
                 <el-option
@@ -174,7 +174,7 @@ export default {
                 </el-option>
               </el-select>
             </el-form-item>
-          </el-col>
+          </el-col> -->
         </el-row>
         <el-row>
           <el-col :span="16">
@@ -186,7 +186,11 @@ export default {
                 { required: true, message: '描述不能为空'},
                 { pattern: /^\s*.{0,30}\s*$/, message: '字数不能超30', trigger: 'blur'}
               ]">
-              <el-input type="textarea" v-model="form.description" class="content-textarea"/>
+              <el-input 
+                class="content-textarea"
+                type="textarea" 
+                v-model="form.description" 
+                :maxlength="100"/>
             </el-form-item>
           </el-col>
         </el-row>

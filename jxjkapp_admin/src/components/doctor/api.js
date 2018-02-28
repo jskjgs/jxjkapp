@@ -47,8 +47,8 @@ export const getDoctorTypeListApi = () => {
     url: GET_DOCTOR_TYPE_LIST_URL,
     type: 'get',
     params: {
-      pageNum: '1',
-      pageSize: 10000
+      current: '1',
+      size: 10000
     }
   })
 }

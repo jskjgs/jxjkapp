@@ -13,11 +13,6 @@ export const UPDATE_HOSPAREALIST = 'global/UPDATE_HOSPAREALIST'
 export const UPDATE_PRODUCT_TYPE_LIST = 'global/UPDATE_PRODUCT_TYPE_LIST'
 
 import {
-  getHospAreaApi,
-  getProductTypeApi
-} from '@/globalApi'
-
-import {
   getAccountInfo
 } from '@/utils/index'
 
@@ -32,9 +27,7 @@ const state = {
   keepAlive: 'no-match',
   // todo: 删除`Array.from({length: 8 - 1 + 1}).map((item, index) => `m_0${index + 1}`) &&`
   auth: Array.from({length: 8 - 1 + 1}).map((item, index) => `m_0${index + 1}`),
-  accountInfo: getAccountInfo() || {},
-  hospAreaList: null, // 院区列表
-  productTypeList: null // 服务分类（分类下挂载了商品列表）
+  accountInfo: getAccountInfo() || {}
 }
 
 const mutations = {
@@ -57,52 +50,9 @@ const mutations = {
     accountInfo = accountInfo || {}
     state.accountInfo = accountInfo
     state.auth = accountInfo.permissionList || Array.from({length: 8 - 1 + 1}).map((item, index) => `m_0${index + 1}`)
-  },
-  [UPDATE_HOSPAREALIST] (state, list) {
-    state.hospAreaList = list
-  },
-  [UPDATE_PRODUCT_TYPE_LIST] (state, list) {
-    state.productTypeList = list
   }
 }
 const actions = {
-  [UPDATE_HOSPAREALIST] ({commit}) {
-    return getHospAreaApi({
-      'pageNum': 1,
-      'pageSize': 1000
-    }).then(res => {
-      const content = res.content || {}
-      let list = content.records || []
-      list = list.map(item => {
-        return {
-          label: item.name,
-          value: item.id
-        }
-      })
-      commit(UPDATE_HOSPAREALIST, list)
-    })
-  },
-  [UPDATE_PRODUCT_TYPE_LIST] ({commit}) {
-    return getProductTypeApi({
-      'pageNum': 1,
-      'pageSize': 1000
-    }).then(res => {
-      let list = res.content.records || []
-      list = list.map(item => {
-        return {
-          label: item.name,
-          value: item.id,
-          list: (item.productVO || item.product || []).map(product => {
-            return {
-              label: product.name,
-              value: product.id
-            }
-          })
-        }
-      })
-      commit(UPDATE_PRODUCT_TYPE_LIST, list)
-    })
-  }
 }
 
 export default {

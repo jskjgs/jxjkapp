@@ -35,7 +35,7 @@
     data () {
       return {
         loading: false,
-        currentPage: 1, // 默认映射到后台api的参数为：pageNum
+        currentPage: 1, // 默认映射到后台api的参数为：current
         pageSize: 10,
         total: 0,
         tableData: []
@@ -58,8 +58,8 @@
     computed: {
       apiKeys () {
         return Object.assign({}, {
-          currentPage: 'pageNum',
-          pageSize: 'pageSize'
+          currentPage: 'current',
+          pageSize: 'size'
         }, this.apiKeysMap)
       },
       listQueryParams () {

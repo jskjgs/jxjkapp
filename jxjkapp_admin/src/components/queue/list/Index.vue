@@ -60,17 +60,12 @@ export default {
     return {
       currentInfo: null,
       apiKeysMap: {
-        pageSize: {
-          value: 10,
-          innerKey: 'pageSize' // searchTable组件内部映射的key
-        },
         departmentId: {
           value: undefined
         },
         doctorName: {
           value: ''
         },
-        currentPage: 'pageNum',
         orderBy: {
           value: 'order_number'
         },
@@ -82,13 +77,6 @@ export default {
   },
   created () {
     this.getCurrent()
-  },
-  watch: {
-    currentPage (newPageNum) {
-      this.getList({
-        pageNum: newPageNum
-      })
-    }
   },
   methods: {
     // 跳过排队

@@ -31,17 +31,12 @@ export default {
       editDialogVisible: false,
       keyWords: null,
       apiKeysMap: {
-        pageSize: {
-          value: 10,
-          innerKey: 'pageSize' // searchTable组件内部映射的key
-        },
         id: {
           value: undefined
         },
         keyWords: {
           value: ''
         },
-        currentPage: 'pageNum',
         orderBy: {
           value: 'order_number'
         },
@@ -59,11 +54,6 @@ export default {
         this.editData = null
         adding = false
       }
-    },
-    currentPage (newPageNum) {
-      this.getList({
-        pageNum: newPageNum
-      })
     }
   },
   methods: {

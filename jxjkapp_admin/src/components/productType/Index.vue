@@ -33,21 +33,13 @@ export default {
 
     return {
       searchKeyword: '',
-      currentPage: 1,
-      pageSize: 10,
-      total: 0,
       multipleSelection: [],
       editDialogVisible: false,
       editData: null,
       apiKeysMap: {
-        pageSize: {
-          value: 10,
-          innerKey: 'pageSize' // searchTable组件内部映射的key
-        },
         name: {
           value: undefined
-        },
-        currentPage: 'pageNum'
+        }
       }
     }
   },
@@ -171,16 +163,23 @@ export default {
       :list-api="listApi"
       :api-keys-map="apiKeysMap">
       <div class="table-tools flex--vcenter" slot="table-tools">
-        <div class="search-wrap">
+        <div class="search-wrap flex--vcenter">
+          <div class="tool-item">
           <span class="search-label">搜索关键字：</span>
-          <el-input
-            class="inline-block search-input"
-            placeholder="请在此输入关键字"
-            icon="search"
-            v-model="searchKeyword"
-            @keyup.enter.native="handleSearch"
-            :on-icon-click="handleSearch">
-          </el-input>
+            <el-input
+              class="inline-block search-input"
+              placeholder="请在此输入关键字"
+              v-model="searchKeyword"
+              @keyup.enter.native="handleSearch">
+            </el-input>
+          </div>
+          <div class="tool-item">
+            <el-button
+              class="tool-item"
+              type="primary"
+              @click="handleSearch">搜索
+            </el-button>
+          </div>
         </div>
         <div class="btn-wrap">
           <el-button

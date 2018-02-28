@@ -81,8 +81,7 @@
         apiKeysMap: {
           key: {
             value: undefined
-          },
-          currentPage: 'pageNum'
+          }
         }
       }
     },

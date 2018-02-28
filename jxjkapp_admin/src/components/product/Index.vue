@@ -34,26 +34,18 @@ export default {
     return {
       searchKeyword: '',
       productTypeId: '',
-      currentPage: 1,
-      pageSize: 10,
-      total: 0,
       multipleSelection: [],
       editDialogVisible: false,
       reverseInfoDialogVisible: false,
       editData: null,
       reverseInfoData: null,
       apiKeysMap: {
-        pageSize: {
-          value: 10,
-          innerKey: 'pageSize' // searchTable组件内部映射的key
-        },
         name: {
           value: undefined
         },
         productTypeId: {
           value: undefined
-        },
-        currentPage: 'pageNum'
+        }
       }
     }
   },
@@ -189,7 +181,10 @@ export default {
         <div class="search-wrap flex--vcenter">
           <div class="tool-item">
             项目名称：
-            <el-input v-model="searchKeyword" style="width: auto;"></el-input>
+            <el-input 
+              v-model="searchKeyword" 
+              style="width: auto;"
+              @keyup.enter.native="handleSearch" />
           </div>
           <div class="tool-item">
             分类名称：

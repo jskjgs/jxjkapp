@@ -47,8 +47,7 @@
           },
           departmentId: {
             value: undefined
-          },
-          currentPage: 'pageNum'
+          }
         },
         productType: undefined, // 服务类型
         project: undefined, // 项目id

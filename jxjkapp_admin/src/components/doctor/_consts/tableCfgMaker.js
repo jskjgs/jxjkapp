@@ -29,13 +29,13 @@ export default function () {
         'label': '院区',
         'min-width': '160'
       }
-    }, {
+    }, /* {
       attrs: {
         'prop': 'doctorType',
         'label': '类别',
         'min-width': '160'
       }
-    }, {
+    }, */ {
       attrs: {
         'min-width': '180',
         'label': '操作'

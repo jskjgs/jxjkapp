@@ -222,8 +222,7 @@
           },
           desc: {
             value: true
-          },
-          currentPage: 'pageNum'
+          }
         },
         createTimeRange: '',
         searchKeyword: '',

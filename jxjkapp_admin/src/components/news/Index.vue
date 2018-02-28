@@ -30,24 +30,17 @@ export default {
     this.listApi = tableCfg.listApi
     return {
       searchKeyword: '',
-      pageSize: 10,
-      total: 0,
       multipleSelection: [],
       editDialogVisible: false,
       editData: null,
       createTimeRange: undefined,
       apiKeysMap: {
-        pageSize: {
-          value: 10,
-          innerKey: 'pageSize' // searchTable组件内部映射的key
-        },
         title: {
           value: undefined
         },
         createTimeRange: {
           value: undefined
-        },
-        currentPage: 'pageNum'
+        }
       }
     }
   },
@@ -217,10 +210,8 @@ export default {
             <el-input
               class="inline-block search-input"
               placeholder="请在此输入关键字"
-              icon="search"
               v-model="searchKeyword"
-              @keyup.enter.native="handleSearch"
-              :on-icon-click="handleSearch">
+              @keyup.enter.native="handleSearch">
             </el-input>
           </div>
           <div class="tool-item">
@@ -231,6 +222,13 @@ export default {
               style="width: 230px;"
               placeholder="选择日期范围">
             </el-date-picker>
+          </div>
+          <div class="tool-item">
+            <el-button
+              class="tool-item"
+              type="primary"
+              @click="handleSearch">搜索
+            </el-button>
           </div>
         </div>
         <div class="btn-wrap">
