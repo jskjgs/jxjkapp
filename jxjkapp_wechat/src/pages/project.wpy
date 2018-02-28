@@ -105,17 +105,18 @@
     }
 
     initPageData () {
-      this.pageNum = 1
+      this.current = 1
       this.getList()
     }
 
     getList (params) {
       this.initData({
-        url: '/product/query',
+        url: '/product/list',
         method: 'POST',
         data: Object.assign({}, params, {
-          pageSize: 10,
-          productTypeId: this.typeId
+          size: 10,
+          categoryId: this.typeId,
+          areaId: undefined
         })
       }, (listItem, res) => {
         const sku = listItem.defaultSku || {}

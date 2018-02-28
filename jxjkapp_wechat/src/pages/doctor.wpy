@@ -353,7 +353,7 @@ $search_h: 88rpx;
     }
     // 固定方法
     initPageData () {
-      this.pageNum = 1
+      this.current = 1
       this.getList()
       this.getHospAreaList()
       this.getDoctorTypeList()
@@ -361,12 +361,12 @@ $search_h: 88rpx;
     // 获取院区列表
     getHospAreaList () {
       return this.$_request({
-        url: '/hospArea/all',
-        method: 'POST',
+        url: '/area/list',
+        method: 'GET',
         data: {}
       }).then(content => {
         content = content || {}
-        const list = content.list
+        const list = content.records
         this.hospAreaList = list.map(item => {
           return {
             name: item.name,
@@ -382,12 +382,12 @@ $search_h: 88rpx;
     // 获取医生类型列表
     getDoctorTypeList () {
       return this.$_request({
-        url: '/doctorType/all',
-        method: 'POST',
+        url: '/doctorType/list',
+        method: 'GET',
         data: {}
       }).then(content => {
         content = content || {}
-        const list = content.list
+        const list = content.records
         this.doctorTypeList = list.map(item => {
           return {
             name: item.name,
@@ -403,10 +403,11 @@ $search_h: 88rpx;
 
     getList (params) {
       this.initData({
-        url: '/doctorInfo/query',
-        method: 'POST',
+        url: '/doctor/list',
+        method: 'GET',
         data: Object.assign({}, params, {
-          pageSize: 10
+          size: 10,
+          areaId: 1
         })
       }, (listItem, res) => {
         return {

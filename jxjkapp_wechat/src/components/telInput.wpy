@@ -100,7 +100,7 @@
       getCode () {
         console.log('getCode')
         this.$_request({
-          url: `/other/sendCode?phone=${this.phone}&type=${this.codeType}`,
+          url: `/home/send?phone=${this.phone}&type=${this.codeType}`,
           method: 'POST'
         }).then(() => {
           wx.showToast({

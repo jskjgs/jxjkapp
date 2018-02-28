@@ -138,11 +138,11 @@
         url: '/hospArea/all',
         method: 'POST',
         data: {
-          pageNum: 1
+          current: 1
         }
       }).then(content => {
         content = content || {}
-        const list = content.list || []
+        const list = content.records || []
         this.hospitaAreaList = list.map(item => {
           return {
             label: item.name,
@@ -160,7 +160,7 @@
         method: 'POST'
       }).then(content => {
         content = content || {}
-        const list = content.list || []
+        const list = content.records || []
         this.patientList = list.map(item => {
           return {
             label: item.name,

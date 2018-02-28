@@ -71,9 +71,9 @@
     }
 
     initPageData () {
-      this.pageNum = 1
+      this.current = 1
       return this.$_request({
-        url: `/news/`,
+        url: '/news/detail',
         data: {
           id: this.id
         }

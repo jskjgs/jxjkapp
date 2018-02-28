@@ -23,7 +23,7 @@ Promise.prototype.finally = function (callback) {
       value (newData) {
         if (newData) {
           const {token, userInfo} = newData
-          let globalData = $_getApp(this).globalData
+          const globalData = $_getApp(this).globalData
           if (token && userInfo) {
             Object.assign(globalData, {
               token,
@@ -67,6 +67,49 @@ Promise.prototype.finally = function (callback) {
         return true
       }
     },
+    // 选择院区 
+    '$_pickArea': {
+      value () {
+        let hospAreaList = []
+        const showActionSheet = (itemList) => {
+          wx.showActionSheet({
+            itemList,
+            success: (res) => {
+              const globalData = $_getApp(this).globalData
+              const pickItem = hospAreaList[res.tapIndex]
+              console.log('pickItem', pickItem)
+              globalData.area = pickItem || null
+              this.$apply()
+            },
+            fail: function(res) {
+              console.log(res.errMsg)
+              showActionSheet(itemList)
+            }
+          })
+        }
+
+        const getHospAreaList = () => {
+          return this.$_request({
+            url: '/area/list',
+            method: 'GET',
+            data: {}
+          }).then(content => {
+            content = content || {}
+            const list = content.records
+            hospAreaList = list.map(item => {
+              return {
+                name: item.name,
+                id: item.id
+              }
+            })
+
+            showActionSheet(hospAreaList.map(item => item.name))
+          })
+        }
+
+        getHospAreaList()
+      }
+    },
     // 处理页面进入的逻辑（判断是否登陆）
     '$_onPageShow': {
       value (vm, next, checkLoginRouteFn) {
@@ -93,7 +136,7 @@ Promise.prototype.finally = function (callback) {
             mask: true
           })
         }
-        cfg.url = 'http://182.92.78.118:9001/hospHealth' + cfg.url
+        cfg.url = 'http://182.92.78.118:9003/jxjk/applet' + cfg.url
         return new Promise((resolve, reject) => {
           wepy.request(cfg).then(res => {
             console.log('res1', res, typeof res, typeof res.data)

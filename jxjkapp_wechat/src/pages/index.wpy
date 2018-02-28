@@ -273,6 +273,9 @@
     }
 
     computed = {
+      globalData () {
+        return this.$parent.globalData
+      },
       userInfo () {
         return this.$parent.globalData.userInfo
       }
@@ -302,8 +305,14 @@
       }
     }
 
-    onLoad() {
+    onLoad () {
       this.initPageData()
+    }
+
+    onShow () {
+      if (this.globalData.area === null) {
+        this.$_pickArea()
+      }
     }
 
     onPullDownRefresh () {
@@ -319,18 +328,18 @@
     // 获取banner数据
     getBanner () {
       return this.$_request({
-        url: '/banner/all',
+        url: '/banner/list',
         method: 'GET',
         data: {
-          pageNum: 1
+          current: 1
         }
       }).then(content => {
         content = content || {}
-        const list = content.list || []
+        const list = content.records || []
         this.bannerList = list.map(item => ({
-          bannerUrl: item.bannerUrl,
+          bannerUrl: item.imageUrl,
           id: item.id,
-          jumpUrl: item.jumpUrl
+          jumpUrl: item.bannerUrl
         }))
         this.$apply()
       }).finally(() => {
@@ -340,12 +349,12 @@
     // 获取项目分类
     getProjectType () {
       return this.$_request({
-        url: '/productType/all',
-        method: 'POST',
+        url: '/category/list',
+        method: 'GET',
         data: {}
       }).then(content => {
         content = content || {}
-        this.projectTypeList = (content.list || []).map(item => {
+        this.projectTypeList = (content.records || []).map(item => {
           return {
             name: item.name,
             image: item.images,
@@ -359,12 +368,12 @@
     // 获取院区列表
     getHospAreaList () {
       return this.$_request({
-        url: '/hospArea/all',
-        method: 'POST',
+        url: '/area/list',
+        method: 'GET',
         data: {}
       }).then(content => {
         content = content || {}
-        const list = content.list
+        const list = content.records
         this.hospAreaList = list.map(item => {
           return {
             name: item.name,
@@ -379,8 +388,8 @@
     getQueueInfo () {
       if (this.$_checkLogin(null, false)) {
         return this.$_request({
-          url: `/call/select?areaId=${this.pickedHospAreaId}`,
-          method: 'POST'
+          url: `/queue/current?areaId=${this.pickedHospAreaId}`,
+          method: 'GET'
         }).then(content => {
           content = content || {}
           const orderProduct = content.orderProduct || {}
