@@ -81,10 +81,10 @@ export default {
         userId: this.userId,
         patientInfoId: !this.selectPatient ? null : this.selectPatient.id,
         type: 0,
-        orderProductPOList: [{
-          productSkuId: !this.selectSku ? null : this.selectSku.id,
-          quantity: this.qty,
-          discontPrice: this.discontPrice}]
+        discontPrice: this.discontPrice,
+        orderSkus: [{
+          skuId: !this.selectSku ? null : this.selectSku.id,
+          qty: this.qty}]
       }
       return data
     },
