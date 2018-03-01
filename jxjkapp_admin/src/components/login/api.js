@@ -10,9 +10,6 @@ export default (data) => {
     data: data,
     success (data) {
       if (data.code === 200) {
-        console.log(data.content)
-        // 标识已登陆
-        document.cookie = ('login=' + data.content)
         Message({
           type: 'success',
           message: '登录成功'

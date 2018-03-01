@@ -4,8 +4,6 @@
  * Date: 2017/8/29
  */
 
-import placeholderImg from '@/assets/images/placeholder.png'
-
 import {
   orderCheckoutApi, addOrderApi, updateOrderApi, getPatientListApi
 } from './api'
@@ -15,6 +13,7 @@ export default {
   },
   data () {
     return {
+      categroyList: [],
       userId: this.$route.params.userId,
       userPhone: null,
       userIdNumber: null,
@@ -31,17 +30,15 @@ export default {
       selectPatient: null,
       selectCategroy: null,
       patientList: null
-      // categroyList: {}
     }
   },
   created () {
-    this.placeholderImg = placeholderImg
     // this.initProductInfo()
+    this.$_getProductTypeList().then(list => {
+      this.categroyList = list
+    })
   },
   computed: {
-    categroyList () {
-      return this.$_getters.productTypeList || []
-    },
     productList () {
       let selectCategroy = this.categroyList.find(item => item.value === this.selectCategroy) || {}
       return selectCategroy.list || []
@@ -82,9 +79,9 @@ export default {
         patientInfoId: !this.selectPatient ? null : this.selectPatient.id,
         type: 0,
         discontPrice: this.discontPrice,
-        orderSkus: [{
+        orderSkus: JSON.stringify([{
           skuId: !this.selectSku ? null : this.selectSku.id,
-          qty: this.qty}]
+          qty: this.qty}])
       }
       return data
     },

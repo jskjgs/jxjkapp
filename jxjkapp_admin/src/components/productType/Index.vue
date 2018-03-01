@@ -44,17 +44,8 @@ export default {
     }
   },
   created () {
-    this.updated = false // 标示列表是否做了修改（增、删、改）
-  },
-  beforeDestroy () {
-    if (this.updated) {
-      this.productTypeList.update && this.productTypeList.update()
-    }
   },
   computed: {
-    productTypeList () {
-      return this.$_getters.productTypeList || []
-    }
   },
   watch: {
     editDialogVisible (val) {

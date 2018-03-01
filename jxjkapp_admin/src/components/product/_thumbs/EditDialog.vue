@@ -31,6 +31,10 @@ export default {
     },
     data: {
       type: Object
+    },
+    typeList: {
+      type: Array,
+      default: []
     }
   },
   components: {
@@ -46,6 +50,7 @@ export default {
     }
   },
   computed: {
+    hospAreaList: [],
     visible: {
       get () {
         return this.value
@@ -53,13 +58,12 @@ export default {
       set (val) {
         this.$emit('input', val)
       }
-    },
-    productTypeList () { // 分类列表
-      return this.$_getters.productTypeList || []
-    },
-    hospAreaList () { // 院区列表
-      return this.$_getters.hospAreaList || []
     }
+  },
+  created () {
+    this.$_getAreaList().then(list => {
+      this.hospAreaList = list
+    })
   },
   watch: {
     data (val) {
@@ -170,7 +174,7 @@ export default {
               ]">
               <el-select v-model="form.typeId" placeholder="请选择">
                 <el-option
-                  v-for="item in productTypeList"
+                  v-for="item in typeList"
                   :key="item.value"
                   :label="item.label"
                   :value="item.value + ''">

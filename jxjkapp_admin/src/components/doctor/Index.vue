@@ -29,6 +29,7 @@ export default {
     this.listApi = tableCfg.listApi
 
     return {
+      hospAreaList: [],
       pickedHospAreaId: '', // 选择的院区id
       doctorName: '',
       editDialogVisible: false,
@@ -44,13 +45,13 @@ export default {
     }
   },
   created () {
+    this.$_getAreaList().then(list => {
+      this.hospAreaList = list
+    })
   },
   computed: {
     currentPage () {
       return this.$refs.searchTable.currentPage
-    },
-    hospAreaList () {
-      return this.$_getters.hospAreaList || []
     }
   },
   watch: {
@@ -255,6 +256,7 @@ export default {
     </search-table>
     <edit-dialog
       v-model="editDialogVisible"
+      :areaList="hospAreaList"
       :data="editData"
       @submit="handleEditSubmit" />
   </div>

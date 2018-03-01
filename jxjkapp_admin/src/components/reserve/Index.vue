@@ -26,6 +26,8 @@
       this.listApi = tableCfg.listApi
 
       return {
+        hospAreaList: [],
+        productTypeList: [],
         apiKeysMap: {
           projectId: {
             value: undefined
@@ -57,17 +59,17 @@
       }
     },
     created () {
+      this.$_getAreaList().then(list => {
+        this.hospAreaList = list
+      })
+      this.$_getProductTypeList().then(list => {
+        this.productTypeList = list
+      })
     },
     computed: {
-      productTypeList () {
-        return this.$_getters.productTypeList || []
-      },
       productList () {
         let productType = this.productTypeList.find(item => item.value === this.productType) || {}
         return productType.list || []
-      },
-      hospAreaList () {
-        return this.$_getters.hospAreaList
       }
     },
     watch: {

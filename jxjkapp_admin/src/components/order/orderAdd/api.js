@@ -1,7 +1,7 @@
 import { fetchApi } from '@/utils/index'
 
 // 增加order
-export const ADD_ORDER_URL = '/order/admin'
+export const ADD_ORDER_URL = '/order/create'
 export const addOrderApi = (data) => {
   return fetchApi({
     url: ADD_ORDER_URL,

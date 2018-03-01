@@ -32,6 +32,7 @@ export default {
     this.listApi = tableCfg.listApi
 
     return {
+      productTypeList: [],
       searchKeyword: '',
       productTypeId: '',
       multipleSelection: [],
@@ -50,17 +51,11 @@ export default {
     }
   },
   created () {
-    this.updated = false // 标示列表是否做了修改（增、删、改）
-  },
-  beforeDestroy () {
-    if (this.updated) {
-      this.productTypeList.update && this.productTypeList.update()
-    }
+    this.$_getProductTypeList().then(list => {
+      this.productTypeList = list
+    })
   },
   computed: {
-    productTypeList () {
-      return this.$_getters.productTypeList || []
-    }
   },
   watch: {
     editDialogVisible (val) {
@@ -258,6 +253,7 @@ export default {
     </search-table>
     <edit-dialog
       v-model="editDialogVisible"
+      :typeList="productTypeList"
       :data="editData"
       @submit="handleEditSubmit">
     </edit-dialog>
