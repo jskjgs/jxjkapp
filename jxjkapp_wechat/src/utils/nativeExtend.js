@@ -125,6 +125,14 @@ Promise.prototype.finally = function (callback) {
     // api请求
     '$_request': {
       value (cfg, {showLoading = true, toLoginFn = 'redirectTo'} = {}) {
+        if (cfg.data) {
+          Object.keys(cfg.data).forEach(key => {
+            const val = cfg.data[key]
+            if (val === undefined) {
+              delete cfg.data[key]
+            }
+          })
+        }
         cfg = Object.assign({}, {
           header: {
             Authorization: wx.getStorageSync('token')
