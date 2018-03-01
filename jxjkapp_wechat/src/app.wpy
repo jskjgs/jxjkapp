@@ -86,7 +86,7 @@ export default class extends wepy.app {
       enableDebug: true
     })
     // wx.reLaunch({
-    //   url: '/pages/health'
+    //   url: '/pages/signup_info'
     // })
   }
 }

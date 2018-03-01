@@ -24,6 +24,7 @@ Promise.prototype.finally = function (callback) {
         if (newData) {
           const {token, userInfo} = newData
           const globalData = $_getApp(this).globalData
+          console.log('globalData', globalData)
           if (token && userInfo) {
             Object.assign(globalData, {
               token,
@@ -67,6 +68,25 @@ Promise.prototype.finally = function (callback) {
         return true
       }
     },
+    // 获取院区列表
+    '$_getAreaList': {
+      value () {
+        return this.$_request({
+          url: '/area/list',
+          method: 'GET',
+          data: {}
+        }).then(content => {
+          content = content || {}
+          const list = content.records
+          return list.map(item => {
+            return {
+              name: item.name,
+              id: item.id
+            }
+          })
+        })
+      }
+    },
     // 选择院区 
     '$_pickArea': {
       value () {
@@ -88,26 +108,10 @@ Promise.prototype.finally = function (callback) {
           })
         }
 
-        const getHospAreaList = () => {
-          return this.$_request({
-            url: '/area/list',
-            method: 'GET',
-            data: {}
-          }).then(content => {
-            content = content || {}
-            const list = content.records
-            hospAreaList = list.map(item => {
-              return {
-                name: item.name,
-                id: item.id
-              }
-            })
-
-            showActionSheet(hospAreaList.map(item => item.name))
-          })
-        }
-
-        getHospAreaList()
+        this.$_getAreaList().then(list => {
+          hospAreaList = list
+          showActionSheet(list.map(item => item.name))
+        })
       }
     },
     // 处理页面进入的逻辑（判断是否登陆）
@@ -135,7 +139,8 @@ Promise.prototype.finally = function (callback) {
         }
         cfg = Object.assign({}, {
           header: {
-            Authorization: wx.getStorageSync('token')
+            'content-type': 'application/x-www-form-urlencoded',
+            'Authorization': wx.getStorageSync('token')
           }
         }, cfg)
         if (showLoading) {

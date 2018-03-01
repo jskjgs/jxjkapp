@@ -214,12 +214,13 @@
         </navigator>
       </view>
     </view>
+    <!--
     <picker 
       @change="handleHospAreaChange" 
       value="{{ pickedHospAreaIndex }}" 
       range="{{ hospAreaList }}"
       range-key="name"
-      disabled="{{ queueNoticeSpread }}">
+      disabled="{{ queueNoticeSpread }}"> -->
       <view 
         class="queue-notice-wrap flex--vcenter {{ queueNoticeSpread ? 'spread' : '' }}"
         @tap="handleQueueTap">
@@ -245,7 +246,7 @@
           <text>请登陆后查看排号信息！</text>
         </view>
       </view>
-    </picker>
+    <!-- </picker> -->
   </view>
 </template>
 

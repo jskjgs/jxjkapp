@@ -55,11 +55,19 @@
           url: `/home/login?phone=${this.formData.phone}&code=${this.formData.code}`,
           method: 'POST'
         }, {showLoading: false}).then(content => {
-          content = content || {}
+          console.log('content', content)
+          // content = content || {}
+          // this.$_syncUserData({
+          //   token: content.token,
+          //   userInfo: content.userInfo
+          // })
           this.$_syncUserData({
-            token: content.token,
-            userInfo: content.userInfo
+            token: content,
+            userInfo: {
+              name: 'oigo'
+            }
           })
+          this.$apply()
           if (content.empty) {
             wx.navigateBack()
           } else {

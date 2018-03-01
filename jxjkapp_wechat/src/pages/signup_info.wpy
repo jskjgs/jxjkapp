@@ -45,7 +45,7 @@
       },
       handleSubmit (formData) {
         this.$_request({
-          url: '/patientInfo/',
+          url: '/patient/create',
           method: 'POST',
           data: {
             ...this.formData

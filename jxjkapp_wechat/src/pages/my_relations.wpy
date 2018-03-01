@@ -92,9 +92,10 @@
 
     getList () {
       return this.initData({
-        url: '/patientInfo/all',
-        method: 'POST',
+        url: '/patient/list',
+        method: 'GET',
         data: {
+          areaId: this.$parent.globalData.area.id,
           current: 1,
           size: 10
         }

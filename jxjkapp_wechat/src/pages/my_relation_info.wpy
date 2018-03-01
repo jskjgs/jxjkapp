@@ -50,8 +50,8 @@
       // 编辑提交
       handleEditSubmit () {
         this.$_request({
-          url: '/patientInfo/',
-          method: 'PUT',
+          url: '/patient/update',
+          method: 'POST',
           data: {
             id: this.id,
             ...this.formData
@@ -85,7 +85,7 @@
       // 新增提交
       handleSubmit () {
         this.$_request({
-          url: '/patientInfo/',
+          url: '/patient/create',
           method: 'POST',
           data: {
             type: this.type,
@@ -126,7 +126,7 @@
 
     getPatientInfo () {
       return this.$_request({
-        url: '/patientInfo/',
+        url: '/patient/detail',
         data: {
           id: this.id
         }
@@ -134,6 +134,8 @@
         content = content || {}
         this.isMaster = content.type === 0
         this.$invoke('PersonInfo', 'syncFormData', {
+          name: content.name,
+          areaId: content.areaId,
           patientCard: content.patientCard || '', // 卡号
           cardId: content.cardId || '', // 身份证号
           allergies: content.allergies || '', // 过敏史

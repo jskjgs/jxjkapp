@@ -42,6 +42,10 @@
       }
     }
   }
+  .info-item.area-picker .comp-picker-list .menu--default__item {
+    padding: 0;
+    border: 0;
+  }
 
   .info-item {
 
@@ -128,6 +132,23 @@
             wx:if="{{ !readonly }}"
             class="item-input__tip flex--vcenter"><icon type="warn" size="14" color="#B8B8B8"/>只能绑定18岁以{{ isMaster ? '上的' : '下的未' }}成年人</view>
         </view>
+      </view>
+      <view class="info-item required flex--sb">
+        <view class="item-label flex-item--none">姓名</view>
+        <view class="item-input flex-item">
+          <NameInput
+            type="idcard"
+            class="item-input__inner"
+            :disabled.sync="readonly" 
+            :value.sync="name" />
+        </view>
+      </view>
+      <view class="info-item required area-picker">
+        <AreaPicker 
+          :readonly.sync="readonly"
+          :ITEMS="AREA_ITEM"
+          :lists.sync="areaPicker"
+          :pickeds.sync="pickerPickeds"/>
       </view>
     </view>
     <view class="info-group main-bg">
@@ -218,8 +239,10 @@
   }]
   export default class CustomCard extends wepy.component {
     components = {
+      AreaPicker: PickerList,
       PickerList,
       IdInput: CustomInput,
+      NameInput: CustomInput,
       CardIdInput: CustomInput,
       AllergiesInput: CustomInput,
       DiseaseInput: CustomInput,
@@ -251,10 +274,22 @@
       canSubmit: false,
       patientCard: '', // 卡号
       cardId: '', // 身份证号
+      name: '', // 姓名
+      areaId: '', // 院区
       allergies: '', // 过敏史
       disease: '', // 疾病史
       address: '', // 联系地址
+      AREA_ITEM: [{
+        label: '院区',
+        picker: {
+          valueBind: 'areaId',
+          rangeBind: 'areaId'
+        }
+      }],
       PICKER_ITEMS,
+      areaPicker: {
+        areaId: []
+      },
       pickerLists: {
         deliveryInfo: [{
           value: '顺利',
@@ -288,6 +323,7 @@
           type: this.isMaster ? 0 : 1,
           patientCard: this.patientCard,
           cardId: this.cardId,
+          name: this.name,
           allergies: this.allergies,
           disease: this.disease,
           address: this.address,
@@ -300,7 +336,7 @@
       formData (newVal) {
         const patientCard = newVal.patientCard && (newVal.patientCard + '').trim()
         const cardId = newVal.cardId && newVal.cardId.trim()
-        if (patientCard && validCardId(cardId)) {
+        if (patientCard && validCardId(cardId) && newVal.name && (newVal.areaId !== '' && newVal.areaId != null)) {
           this.canSubmit = true
         } else {
           this.canSubmit = false
@@ -330,12 +366,20 @@
     }
 
     onLoad() {
+      this.$_getAreaList().then(list => {
+        this.areaPicker.areaId = list.map(item => ({
+          value: item.id,
+          label: item.name
+        }))
+        this.$apply()
+      })
     }
 
     syncFormData (formData) {
-      const {patientCard, cardId, allergies, disease, address, ...pickerPickeds} = formData
+      const {patientCard, cardId, allergies, disease, address, name, ...pickerPickeds} = formData
       this.patientCard = patientCard
       this.cardId = cardId
+      this.name = name
       this.allergies = allergies
       this.disease = disease
       this.address = address
