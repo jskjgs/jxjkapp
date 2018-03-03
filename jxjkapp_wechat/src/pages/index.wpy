@@ -265,7 +265,7 @@
 
     data = {
       hospAreaList: [], // 院区列表
-      pickedHospAreaId: '', //  选择的院区id
+      // pickedHospAreaId: '', //  选择的院区id
       pickedHospAreaIndex: '', //  picker组件选择的院区index
       bannerList: [], // banner列表
       projectTypeList: [], // 项目分类
@@ -279,6 +279,9 @@
       },
       userInfo () {
         return this.$parent.globalData.userInfo
+      },
+      pickedHospAreaId () {
+        return (this.globalData.area || {}).id
       }
     }
 
@@ -300,7 +303,15 @@
       },
       // (展开的)排队信息点击
       handleQueueTap () {
-        if (this.queueNoticeSpread) {
+        // if (this.queueNoticeSpread) {
+        //   this.queueNoticeSpread = false
+        // }
+        if (this.queueNoticeSpread === false) {
+          this.getQueueInfo().then(() => {
+            this.queueNoticeSpread = true
+            this.$apply()
+          })
+        } else {
           this.queueNoticeSpread = false
         }
       }
@@ -393,16 +404,10 @@
           method: 'GET'
         }).then(content => {
           content = content || {}
-          const orderProduct = content.orderProduct || {}
-          const productSkuName = orderProduct.productSkuName
-          if (!productSkuName && !content.number && !content.beforeNumber) {
-            this.queueNotice = null
-          } else {
-            this.queueNotice = {
-              project: productSkuName,
-              NO: content.number,
-              waitNum: content.beforeNumber
-            }
+          this.queueNotice = {
+            project: content.serviceName || '',
+            NO: content.number || '',
+            waitNum: content.beforeNumber || ''
           }
         })
       } else {

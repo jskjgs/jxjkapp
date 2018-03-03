@@ -342,6 +342,13 @@
           this.canSubmit = false
         }
         this.$apply()
+        newVal = Object.assign({}, newVal)
+        Object.keys(newVal).forEach(key => {
+          const val = newVal[key]
+          if (val === '') {
+            delete newVal[key]
+          }
+        })
         this.$emit('formDataChange', newVal)
       }
     }

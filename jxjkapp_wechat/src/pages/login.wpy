@@ -55,17 +55,11 @@
           url: `/home/login?phone=${this.formData.phone}&code=${this.formData.code}`,
           method: 'POST'
         }, {showLoading: false}).then(content => {
-          console.log('content', content)
-          // content = content || {}
-          // this.$_syncUserData({
-          //   token: content.token,
-          //   userInfo: content.userInfo
-          // })
+          content = content || {}
+          const { token, ...userInfo } = content
           this.$_syncUserData({
-            token: content,
-            userInfo: {
-              name: 'oigo'
-            }
+            token: token,
+            userInfo: userInfo
           })
           this.$apply()
           if (content.empty) {

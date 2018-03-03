@@ -149,7 +149,7 @@
       }
     }, {
       icon: '../assets/images/icon-vip.png',
-      label: 'VIP用户管理',
+      label: 'VIP预约管理',
       handlerTap () {
         wx.navigateTo({
           url: '/pages/my_vip'

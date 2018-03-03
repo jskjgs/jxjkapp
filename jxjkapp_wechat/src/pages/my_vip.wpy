@@ -143,7 +143,8 @@
     // 获取余额
     getBalance () {
       this.$_request({
-        url: '/userBalance/'
+        url: '/balance/query',
+        method: 'POST'
       }).then((content) => {
         content = content || {}
         let balance = content.balance
@@ -154,16 +155,16 @@
     // 固定方法
     initPageData () {
       this.current = 1
-      this.getBalance()
+      // this.getBalance()
       this.getList()
     }
 
     getList () {
       return this.initData({
-        url: '/precontract/all',
-        method: 'POST',
+        url: '/precontract/list',
+        method: 'GET',
         data: {
-          field: 'precontract_date desc'
+          current: 1
         }
       }, (listItem, res) => {
         const skuData = listItem.sku || {}

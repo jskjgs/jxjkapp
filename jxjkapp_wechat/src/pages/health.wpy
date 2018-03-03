@@ -177,11 +177,11 @@
     initPageData () {
       this.current = 1
       this.initData({
-        url: '/order/query',
-        method: 'POST',
+        url: '/order/list',
+        method: 'GET',
         data: {
           size: 5,
-          payState: '1'
+          paymentState: '1'
         }
       }, (listItem, res) => {
         const hospArea = listItem.area || {}
