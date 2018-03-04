@@ -2,28 +2,28 @@ import wepy from 'wepy'
 
 export default class ListPageMixin extends wepy.mixin {
   data = {
-    pageNum: 1,
+    current: 1,
     isLastPage: false, // 是否最后一页
     listData: []
   }
 
   // 下拉刷新
   onPullDownRefresh () {
-    if (this.pageNum === 1) {
+    if (this.current === 1) {
       this.initData()
     } else {
-      this.pageNum = 1
+      this.current = 1
     }
   }
   // 页面上拉触底加载更多
   onReachBottom () {
     if (this.isLastPage === false) {
-      this.pageNum++
+      this.current++
     }
   }
 
   watch = {
-    pageNum (newVal) {
+    current (newVal) {
       wx.stopPullDownRefresh()
       this.initData()
     }
@@ -38,10 +38,10 @@ export default class ListPageMixin extends wepy.mixin {
     }
     reqParams = reqParams || this.initFnAgrs.reqParams
     resCb = resCb || this.initFnAgrs.resCb
-    const pageNum = this.pageNum || 1
-    reqParams.data.pageNum = pageNum
+    const current = this.current || 1
+    reqParams.data.current = current
     console.log('reqParams', reqParams, 'toLoginFn', toLoginFn)
-    if (pageNum === 1) {
+    if (current === 1) {
       this.$invoke('CustomPage', 'initPage', {
         noData: false,
         dataInited: false,
@@ -51,8 +51,8 @@ export default class ListPageMixin extends wepy.mixin {
     return this.$_request(reqParams, {toLoginFn}).then(content => {
       content = content || {}
       this.isLastPage = !!content.isLastPage
-      const list = content.list || []
-      if (pageNum > 1) { // 下滑翻页
+      const list = content.records || []
+      if (current > 1) { // 下滑翻页
         this.listData = this.listData.concat(list.map((item, index) => {
           return resCb(item, index, content)
         }))
@@ -71,7 +71,7 @@ export default class ListPageMixin extends wepy.mixin {
       })
     }).catch((e) => {
       console.log(e)
-      if (pageNum > 1) {
+      if (current > 1) {
         wx.showToast({
           image: '../assets/images/error.png',
           title: '加载失败'

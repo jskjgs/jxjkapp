@@ -97,7 +97,7 @@ Promise.prototype.finally = function (callback) {
             mask: true
           })
         }
-        cfg.url = 'http://182.92.78.118:9001/hospHealth' + cfg.url
+        cfg.url = 'http://182.92.78.118:9002/jxjk/admin' + cfg.url
         return new Promise((resolve, reject) => {
           wepy.request(cfg).then(res => {
             console.log('res1', res, typeof res, typeof res.data)
