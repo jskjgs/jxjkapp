@@ -5,7 +5,8 @@ import {
 } from '@/utils/index'
 import {
   getHospAreaApi,
-  getProductTypeApi
+  getProductTypeApi,
+  getProductListApi
 } from '@/globalApi'
 
 import getters from './getters'
@@ -63,7 +64,7 @@ Object.defineProperties(Vue.prototype, {
         'size': 1000
       }).then(res => {
         const content = res.content || {}
-        let list = content.records || []
+        const list = content.records || []
         return list.map(item => {
           return {
             label: item.name,
@@ -80,7 +81,7 @@ Object.defineProperties(Vue.prototype, {
         'size': 1000
       }).then(res => {
         const content = res.content || {}
-        let list = content.records || []
+        const list = content.records || []
         return list.map(item => {
           return {
             label: item.name,
@@ -93,6 +94,15 @@ Object.defineProperties(Vue.prototype, {
             })
           }
         })
+      })
+    }
+  },
+  '$_getProductList': {
+    value (params) {
+      return getProductListApi(params).then(res => {
+        const content = res.content || {}
+        const list = content.records || []
+        return list
       })
     }
   }
