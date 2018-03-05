@@ -53,7 +53,7 @@
           url: '/patient/update',
           method: 'POST',
           data: {
-            id: this.id,
+            ID: this.id,
             ...this.formData
           }
         }).then(content => {
