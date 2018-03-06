@@ -104,16 +104,16 @@ export default {
       requestFn: queryOrderApi,
       responseFn (data) {
         let content = data.content || {}
-        console.log(content.list)
+        console.log(1)
         this.tableData = (content.records || []).map((item) => ({
           orderId: item.id,
           orderCode: item.code,
-          orderAmount: ('￥' + item.orderSalesPrice),
+          orderAmount: ('￥' + item.price),
           createTime: item.createDate,
-          orderState: payStateFormat(item.payState),
-          userName: item.user.name,
-          phoneNumber: item.user.phone,
-          userLevel: userStateFormat(item.user.isVip)
+          orderState: payStateFormat(item.paymentState),
+          userName: item.name,
+          phoneNumber: item.phone,
+          userLevel: userStateFormat(item.isVip)
         }))
         this.total = content.total || 0
       }

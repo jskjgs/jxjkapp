@@ -1,7 +1,7 @@
 import { fetchApi } from '@/utils/index'
 
 // 获取用户订单列表
-export const GET_ORDER_LIST_URL = '/order/lis'
+export const GET_ORDER_LIST_URL = '/order/list'
 export const getOrderListApi = (params) => {
   return fetchApi({
     url: GET_ORDER_LIST_URL,
@@ -51,5 +51,15 @@ export const rechargeApi = (amount) => {
     params: {
       amount
     }
+  })
+}
+
+// 充值
+export const RECHARGE_LIST_URL = '/userInfo/vip'
+export const getRechargeListApi = (params) => {
+  return fetchApi({
+    url: RECHARGE_LIST_URL,
+    type: 'get',
+    params
   })
 }

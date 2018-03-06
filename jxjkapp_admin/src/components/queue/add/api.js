@@ -1,18 +1,18 @@
 import { fetchApi } from '@/utils/index'
 
-// 订单管理
+// 添加排队
 
 // 查询用户信息
-export const QUERY_USER_URL = '/userInfo/admin/query'
-export const getUserInfoApi = (data) => {
+export const QUERY_USER_URL = '/user/detail'
+export const getUserInfoApi = (params) => {
   return fetchApi({
     url: QUERY_USER_URL,
-    type: 'post',
-    data
+    type: 'get',
+    params
   })
 }
 
-// 查询用户订单信息
+// 添加排队
 export const ADD_QUEUE_URL = '/call/admin/add'
 export const addToQueueApi = (data) => {
   return fetchApi({
@@ -23,11 +23,11 @@ export const addToQueueApi = (data) => {
 }
 
 // 查询用户订单信息
-export const QUERY_ORDER_URL = '/order/admin/query'
-export const getUserOrdersApi = (data) => {
+export const QUERY_ORDER_URL = '/service/list'
+export const getServiceListApi = (params) => {
   return fetchApi({
-    url: QUERY_ORDER_URL,
-    type: 'post',
-    data
+    url: QUERY_USER_URL,
+    type: 'get',
+    params
   })
 }

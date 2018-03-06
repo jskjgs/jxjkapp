@@ -65,7 +65,7 @@
       :list-api="listApi"
       :api-keys-map="apiKeysMap">
       <div class="table-tools flex--vcenter--sb" slot="table-tools">
-        <div class="search-wrap flex--vcenter">
+        <!-- <div class="search-wrap flex--vcenter">
           <div class="tool-item">
             搜索关键字：
             <el-input 
@@ -79,7 +79,7 @@
             @click="search">
             搜索
           </el-button>
-        </div>
+        </div> -->
         <div class="btn-wrap">
           <el-button
             type="primary"

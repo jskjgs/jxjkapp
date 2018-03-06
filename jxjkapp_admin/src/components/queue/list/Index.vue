@@ -21,20 +21,16 @@ export default {
     this.listApi = {
       requestFn: getListApi,
       responseFn (res) {
-        const content = res.content || []
-        // const list = content.list || []
-        const list = content
+        const list = res.content.records || []
         this.tableData = list.map((item) => {
-          const userInfo = item.userInfo || {}
-          const orderProduct = item.orderProduct || {}
           return {
             id: item.id,
             queueNum: item.number,
-            userName: userInfo.name,
-            userId: userInfo.id,
-            phone: userInfo.phone,
-            serviceName: orderProduct.productSkuName,
-            serviceId: orderProduct.id
+            userName: item.userName,
+            userId: item.userId,
+            phone: item.userPhone,
+            serviceName: item.serviceName,
+            serviceId: item.id
           }
         })
       }
@@ -106,13 +102,11 @@ export default {
       return getCurrentApi().then((res) => {
         const data = res.content
         if (data) {
-          const userInfo = data.userInfo || {}
-          const orderProduct = data.orderProduct || {}
           this.currentInfo = {
-            userName: userInfo.name,
-            userId: userInfo.id,
-            userPhone: userInfo.phone,
-            serviceName: orderProduct.productSkuName,
+            userName: data.userName,
+            userId: data.id,
+            userPhone: data.userPhone,
+            serviceName: data.serviceName,
             number: data.number
           }
         } else {

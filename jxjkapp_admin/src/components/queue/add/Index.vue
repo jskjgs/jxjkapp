@@ -10,7 +10,7 @@ import { userStateFormat } from '@/utils/index'
 import {
   getUserInfoApi,
   addToQueueApi,
-  getUserOrdersApi
+  getServiceListApi
 } from './api'
 
 export default {
@@ -92,7 +92,6 @@ export default {
   methods: {
     handleSearch () {
       getUserInfoApi({phone: this.keyWords}).then((res) => {
-        console.log(res.content)
         let user = res.content.list[0]
         if (!user) {
           this.$message({
@@ -105,10 +104,9 @@ export default {
         this.userName = user.name
         this.userPhone = user.phone
         this.userType = userStateFormat(user.isVip)
-        getUserOrdersApi({userId: user.id}).then((res) => {
-          console.log(res.content.list)
+        getServiceListApi({userId: user.id}).then((res) => {
           const content = res.content || {}
-          const list = content.list || []
+          const list = content.records || []
           this.tableData = list.map(item => {
             const product = item.orderProductList ? (item.orderProductList[0]) || {} : {}
             const userinfo = item.user || {}

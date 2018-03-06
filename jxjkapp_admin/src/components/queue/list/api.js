@@ -11,7 +11,7 @@ export const getListApi = (params) => {
 }
 
 // 呼叫下一位
-export const CALL_NEXT = '/call/admin/next'
+export const CALL_NEXT = '/queue/complete'
 export const callNext = (data) => {
   return fetchApi({
     url: CALL_NEXT,
@@ -31,11 +31,11 @@ export const JumpQueue = (data) => {
 }
 
 // 获取排队列表
-export const CURRENT_CALL = '/call/admin/selecCurrentt'
-export const getCurrentApi = (data) => {
+export const CURRENT_CALL = '/queue/current'
+export const getCurrentApi = (params) => {
   return fetchApi({
     url: CURRENT_CALL,
-    type: 'post',
-    data
+    type: 'get',
+    params
   })
 }

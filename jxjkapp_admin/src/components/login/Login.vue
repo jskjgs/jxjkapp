@@ -37,7 +37,8 @@
               const accountInfoJson = encodeURIComponent(JSON.stringify(accountInfo))
               localStorage.setItem('accountInfo', accountInfoJson)
               this.updateAccountInfo(accountInfo)
-              setAuthorization(accountInfo)
+              console.log(accountInfo)
+              setAuthorization(accountInfo.token)
               this.$router.push('/')
             }).finally(() => {
               this.loginLoading = false

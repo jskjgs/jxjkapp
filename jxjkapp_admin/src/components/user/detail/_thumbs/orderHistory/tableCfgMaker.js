@@ -2,6 +2,10 @@ import {
   getOrderListApi
 } from '../../api'
 
+import {
+  convertDate, payStateFormat
+} from '@/utils/index'
+
 export default function () {
   return {
     listApi: {
@@ -9,15 +13,12 @@ export default function () {
       responseFn (data) {
         let content = data.content || {}
         this.tableData = (content.records || []).map((item) => {
-          const orderProductList = item.orderProductList || {}
-          const orderProduct = orderProductList[0] || {}
           return {
-            id: item.id,
-            orderPayPrice: item.orderPayPrice,
-            productName: orderProduct.productSkuName,
-            quantity: orderProduct.serviceQuantity,
-            usedQuantity: orderProduct.serviceQuantity - orderProduct.remainingServiceNumber,
-            payState: item.payState
+            id: item.code,
+            orderPayPrice: item.price,
+            createDate: item.createDate,
+            payState: payStateFormat(item.paymentState),
+            employeeName: item.employeeName
           }
         })
         this.total = content.total || 0
@@ -44,37 +45,24 @@ export default function () {
       }
     }, {
       attrs: {
-        'prop': 'productName',
+        'prop': 'createDate',
         'min-width': '120',
-        'label': '项目名称'
+        'label': '创建时间',
+        'formatter' (row, col) {
+          return convertDate(row.createDate) || '--'
+        }
       }
     }, {
       attrs: {
-        'prop': 'quantity',
-        'label': '购买次数',
-        'min-width': '160'
-      }
-    }, {
-      attrs: {
-        'prop': 'usedQuantity',
-        'label': '已用次数',
+        'prop': 'employeeName',
+        'label': '操作人员',
         'min-width': '160'
       }
     }, {
       attrs: {
         'prop': 'payState',
         'label': '状态',
-        'min-width': '160',
-        'formatter' (row) {
-          const dict = {
-            0: '未支付订单',
-            1: '已支付订单',
-            2: '退款申请中',
-            3: '退款完毕'
-          }
-          const payState = row.payState
-          return payState === undefined ? '--' : dict[payState]
-        }
+        'min-width': '160'
       }
     }, {
       attrs: {

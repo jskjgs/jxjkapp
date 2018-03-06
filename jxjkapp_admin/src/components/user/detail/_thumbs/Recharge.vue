@@ -2,7 +2,7 @@
   import SearchTable from '@/components/_common/searchTable/SearchTable'
   import DialogWrap from '@/components/_common/dialogWrap/Index'
   import {
-    rechargeApi
+    rechargeApi, getRechargeListApi
   } from '@/components/user/detail/api'
 
   export default {
@@ -12,15 +12,12 @@
       DialogWrap
     },
     data () {
-      const getListApi = function () {
-        return Promise.reject()
-      }
       this.tableCfg = {
         listApi: {
-          requestFn: getListApi,
+          requestFn: getRechargeListApi,
           responseFn (data) {
             let content = data.content || {}
-            this.tableData = (content.list || []).map((item) => ({
+            this.tableData = (content.records || []).map((item) => ({
               no: item.orderNumber,
               id: item.id,
               name: item.name,

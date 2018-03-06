@@ -66,13 +66,13 @@ export default {
   },
   methods: {
     // 搜索banner
-    handleSearch (e) {
-      this.apiKeysMap = Object.assign({}, this.apiKeysMap, {
-        name: {
-          value: this.searchKeyword || undefined
-        }
-      })
-    },
+    // handleSearch (e) {
+    //   this.apiKeysMap = Object.assign({}, this.apiKeysMap, {
+    //     name: {
+    //       value: this.searchKeyword || undefined
+    //     }
+    //   })
+    // },
     // 多选
     handleSelectionChange (val) {
       console.log('handleSelectionChange')
@@ -163,7 +163,7 @@ export default {
       :list-api="listApi"
       :api-keys-map="apiKeysMap">
       <div class="table-tools flex--vcenter" slot="table-tools">
-        <div class="search-wrap flex--vcenter">
+        <!-- <div class="search-wrap flex--vcenter">
           <div class="tool-item">
           <span class="search-label">搜索关键字：</span>
             <el-input
@@ -180,7 +180,7 @@ export default {
               @click="handleSearch">搜索
             </el-button>
           </div>
-        </div>
+        </div> -->
         <div class="btn-wrap">
           <el-button
             class="btn--add"
