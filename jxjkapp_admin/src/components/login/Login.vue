@@ -37,11 +37,7 @@
               const accountInfoJson = encodeURIComponent(JSON.stringify(accountInfo))
               localStorage.setItem('accountInfo', accountInfoJson)
               this.updateAccountInfo(accountInfo)
-<<<<<<< HEAD
-              console.log(accountInfo)
-=======
               document.cookie = `login=${accountInfo.token}`
->>>>>>> 07a95f40752e74a5694f64fa910bfe622ad1f5ce
               setAuthorization(accountInfo.token)
               this.$router.push('/')
             }).finally(() => {
