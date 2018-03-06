@@ -86,21 +86,22 @@
     }
 
     initPageData () {
-      this.pageNum = 1
+      this.current = 1
       this.getList()
     }
 
     getList () {
       return this.initData({
-        url: '/patientInfo/all',
-        method: 'POST',
+        url: '/patient/list',
+        method: 'GET',
         data: {
-          pageNum: 1,
-          pageSize: 10
+          areaId: this.$parent.globalData.area.id,
+          current: 1,
+          size: 10
         }
       }).then(content => {
         content = content || {}
-        const list = content.list || []
+        const list = content.records || []
         this.list = list.map(item => {
           return {
             type: item.type,

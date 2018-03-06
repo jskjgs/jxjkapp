@@ -214,12 +214,13 @@
         </navigator>
       </view>
     </view>
+    <!--
     <picker 
       @change="handleHospAreaChange" 
       value="{{ pickedHospAreaIndex }}" 
       range="{{ hospAreaList }}"
       range-key="name"
-      disabled="{{ queueNoticeSpread }}">
+      disabled="{{ queueNoticeSpread }}"> -->
       <view 
         class="queue-notice-wrap flex--vcenter {{ queueNoticeSpread ? 'spread' : '' }}"
         @tap="handleQueueTap">
@@ -245,7 +246,7 @@
           <text>请登陆后查看排号信息！</text>
         </view>
       </view>
-    </picker>
+    <!-- </picker> -->
   </view>
 </template>
 
@@ -264,7 +265,7 @@
 
     data = {
       hospAreaList: [], // 院区列表
-      pickedHospAreaId: '', //  选择的院区id
+      // pickedHospAreaId: '', //  选择的院区id
       pickedHospAreaIndex: '', //  picker组件选择的院区index
       bannerList: [], // banner列表
       projectTypeList: [], // 项目分类
@@ -273,8 +274,14 @@
     }
 
     computed = {
+      globalData () {
+        return this.$parent.globalData
+      },
       userInfo () {
         return this.$parent.globalData.userInfo
+      },
+      pickedHospAreaId () {
+        return (this.globalData.area || {}).id
       }
     }
 
@@ -296,14 +303,28 @@
       },
       // (展开的)排队信息点击
       handleQueueTap () {
-        if (this.queueNoticeSpread) {
+        // if (this.queueNoticeSpread) {
+        //   this.queueNoticeSpread = false
+        // }
+        if (this.queueNoticeSpread === false) {
+          this.getQueueInfo().then(() => {
+            this.queueNoticeSpread = true
+            this.$apply()
+          })
+        } else {
           this.queueNoticeSpread = false
         }
       }
     }
 
-    onLoad() {
+    onLoad () {
       this.initPageData()
+    }
+
+    onShow () {
+      if (this.globalData.area === null) {
+        this.$_pickArea()
+      }
     }
 
     onPullDownRefresh () {
@@ -319,18 +340,18 @@
     // 获取banner数据
     getBanner () {
       return this.$_request({
-        url: '/banner/all',
+        url: '/banner/list',
         method: 'GET',
         data: {
-          pageNum: 1
+          current: 1
         }
       }).then(content => {
         content = content || {}
-        const list = content.list || []
+        const list = content.records || []
         this.bannerList = list.map(item => ({
-          bannerUrl: item.bannerUrl,
+          bannerUrl: item.imageUrl,
           id: item.id,
-          jumpUrl: item.jumpUrl
+          jumpUrl: item.bannerUrl
         }))
         this.$apply()
       }).finally(() => {
@@ -340,12 +361,12 @@
     // 获取项目分类
     getProjectType () {
       return this.$_request({
-        url: '/productType/all',
-        method: 'POST',
+        url: '/category/list',
+        method: 'GET',
         data: {}
       }).then(content => {
         content = content || {}
-        this.projectTypeList = (content.list || []).map(item => {
+        this.projectTypeList = (content.records || []).map(item => {
           return {
             name: item.name,
             image: item.images,
@@ -359,12 +380,12 @@
     // 获取院区列表
     getHospAreaList () {
       return this.$_request({
-        url: '/hospArea/all',
-        method: 'POST',
+        url: '/area/list',
+        method: 'GET',
         data: {}
       }).then(content => {
         content = content || {}
-        const list = content.list
+        const list = content.records
         this.hospAreaList = list.map(item => {
           return {
             name: item.name,
@@ -379,20 +400,14 @@
     getQueueInfo () {
       if (this.$_checkLogin(null, false)) {
         return this.$_request({
-          url: `/call/select?areaId=${this.pickedHospAreaId}`,
-          method: 'POST'
+          url: `/queue/current?areaId=${this.pickedHospAreaId}`,
+          method: 'GET'
         }).then(content => {
           content = content || {}
-          const orderProduct = content.orderProduct || {}
-          const productSkuName = orderProduct.productSkuName
-          if (!productSkuName && !content.number && !content.beforeNumber) {
-            this.queueNotice = null
-          } else {
-            this.queueNotice = {
-              project: productSkuName,
-              NO: content.number,
-              waitNum: content.beforeNumber
-            }
+          this.queueNotice = {
+            project: content.serviceName || '',
+            NO: content.number || '',
+            waitNum: content.beforeNumber || ''
           }
         })
       } else {

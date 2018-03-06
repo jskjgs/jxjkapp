@@ -177,6 +177,7 @@ $search_h: 88rpx;
       <view class="filter-box" hidden="{{ !filterVisible || onSearch }}">
         <view class="box-inner main-bg">
           <view class="filter-items">
+            <!--
             <view class="filter-sort flex">
               <view class="sort-label flex-item--none">院区选择：</view>
               <view class="sort-items flex-item flex">
@@ -187,6 +188,7 @@ $search_h: 88rpx;
                 </repeat>
               </view>
             </view>
+            -->
             <view class="filter-sort flex">
               <view class="sort-label flex-item--none">医生类别：</view>
               <view class="sort-items flex-item flex">
@@ -268,6 +270,9 @@ $search_h: 88rpx;
     }
 
     computed = {
+      globalData () {
+        return this.$parent.globalData
+      }
     }
 
     watch = {
@@ -318,7 +323,7 @@ $search_h: 88rpx;
       },
       submitFilters () {
         this.filterVisible = false
-        this.searchParams.hospAreaId = this.hospAreaList.find(item => item.picked).id
+        // this.searchParams.hospAreaId = this.hospAreaList.find(item => item.picked).id
         this.searchParams.doctorTypeId = this.doctorTypeList.find(item => item.picked).id
       },
       handleSearch ({ detail }) {
@@ -353,20 +358,20 @@ $search_h: 88rpx;
     }
     // 固定方法
     initPageData () {
-      this.pageNum = 1
+      this.current = 1
       this.getList()
-      this.getHospAreaList()
+      // this.getHospAreaList()
       this.getDoctorTypeList()
     }
     // 获取院区列表
-    getHospAreaList () {
+    /* getHospAreaList () {
       return this.$_request({
-        url: '/hospArea/all',
-        method: 'POST',
+        url: '/area/list',
+        method: 'GET',
         data: {}
       }).then(content => {
         content = content || {}
-        const list = content.list
+        const list = content.records
         this.hospAreaList = list.map(item => {
           return {
             name: item.name,
@@ -379,15 +384,17 @@ $search_h: 88rpx;
         }].concat(this.hospAreaList)
       })
     }
+    */
+    
     // 获取医生类型列表
     getDoctorTypeList () {
       return this.$_request({
-        url: '/doctorType/all',
-        method: 'POST',
+        url: '/doctorType/list',
+        method: 'GET',
         data: {}
       }).then(content => {
         content = content || {}
-        const list = content.list
+        const list = content.records
         this.doctorTypeList = list.map(item => {
           return {
             name: item.name,
@@ -403,10 +410,11 @@ $search_h: 88rpx;
 
     getList (params) {
       this.initData({
-        url: '/doctorInfo/query',
-        method: 'POST',
+        url: '/doctor/list',
+        method: 'GET',
         data: Object.assign({}, params, {
-          pageSize: 10
+          size: 10,
+          areaId: this.globalData.area.id
         })
       }, (listItem, res) => {
         return {

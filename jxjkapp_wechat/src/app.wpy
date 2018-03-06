@@ -67,8 +67,9 @@ export default class extends wepy.app {
   }
 
   globalData = {
-    userInfo: null,
-    token: null
+    userInfo: null, // 用户信息
+    token: null,
+    area: null // 选择的院区信息
   }
 
   constructor () {
@@ -85,7 +86,7 @@ export default class extends wepy.app {
       enableDebug: true
     })
     // wx.reLaunch({
-    //   url: '/pages/health'
+    //   url: '/pages/signup_info'
     // })
   }
 }

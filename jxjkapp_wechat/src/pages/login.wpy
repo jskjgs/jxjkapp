@@ -52,14 +52,16 @@
     methods = {
       handleSumbit () {
         this.$_request({
-          url: `/other/loginByCode?phone=${this.formData.phone}&code=${this.formData.code}`,
+          url: `/home/login?phone=${this.formData.phone}&code=${this.formData.code}`,
           method: 'POST'
         }, {showLoading: false}).then(content => {
           content = content || {}
+          const { token, ...userInfo } = content
           this.$_syncUserData({
-            token: content.token,
-            userInfo: content.userInfo
+            token: token,
+            userInfo: userInfo
           })
+          this.$apply()
           if (content.empty) {
             wx.navigateBack()
           } else {

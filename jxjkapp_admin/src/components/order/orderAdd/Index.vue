@@ -4,8 +4,6 @@
  * Date: 2017/8/29
  */
 
-import placeholderImg from '@/assets/images/placeholder.png'
-
 import {
   orderCheckoutApi, addOrderApi, updateOrderApi, getPatientListApi
 } from './api'
@@ -15,41 +13,50 @@ export default {
   },
   data () {
     return {
+      categroyList: [],
+      productList: [],
       userId: this.$route.params.userId,
       userPhone: null,
       userIdNumber: null,
       productId: null,
-      qty: 0,
-      discontPrice: null,
+      qty: null,
+      discount: null,
       comments: null,
       paymentNumber: null,
-      totalPrice: 0.00,
-      unitPrice: 0.00,
+      unitPrice: null,
       paymentPrice: null,
       paymentAmount: null,
       selectSku: null,
       selectPatient: null,
       selectCategroy: null,
       patientList: null
-      // categroyList: {}
     }
   },
   created () {
-    this.placeholderImg = placeholderImg
     // this.initProductInfo()
+    this.$_getProductTypeList().then(list => {
+      this.categroyList = list
+    })
   },
   computed: {
-    categroyList () {
-      return this.$_getters.productTypeList || []
-    },
-    productList () {
-      let selectCategroy = this.categroyList.find(item => item.value === this.selectCategroy) || {}
-      return selectCategroy.list || []
+    totalPrice () {
+      try {
+        return this.unitPrice * this.qty || ''
+      } catch (e) {
+        return ''
+      }
     }
   },
   watch: {
     selectCategroy (val) {
       this.selectSku = null
+      this.$_getProductList({
+        categoryId: val,
+        current: 1,
+        size: 100
+      }).then(list => {
+        this.productList = list
+      })
     },
     selectSku (val) {
       this.unitPrice = 0
@@ -57,15 +64,12 @@ export default {
       if (val == null) { return }
       console.log(val)
       this.productId = val.id
-      this.unitPrice = val.price
-    },
-    qty (newValue) {
-      this.totalPrice = this.unitPrice * newValue
+      this.unitPrice = val.showPrice
     },
     totalPrice (newValue) {
       this.paymentPrice = null
     },
-    discontPrice (newValue) {
+    discount (newValue) {
       this.paymentPrice = null
     }
   },
@@ -78,13 +82,13 @@ export default {
     },
     getOrderData () {
       let data = {
-        userId: this.userId,
-        patientInfoId: !this.selectPatient ? null : this.selectPatient.id,
+        patientInfoId: this.selectPatient,
         type: 0,
-        discontPrice: this.discontPrice,
-        orderSkus: [{
+        discount: this.discount,
+        orderSkus: JSON.stringify([{
           skuId: !this.selectSku ? null : this.selectSku.id,
-          qty: this.qty}]
+          qty: this.qty
+        }])
       }
       return data
     },
@@ -98,6 +102,7 @@ export default {
         this.$router.push({path: '/order'})
       })
     },
+    // 获取就诊人列表
     handleGetPatientList () {
       getPatientListApi({phone: this.userPhone}).then((res) => {
         let user = res.content
@@ -107,8 +112,10 @@ export default {
             message: '没有该手机号用户的信息'
           })
         }
-        // this.userId = user.id
-        this.patientList = user.records
+        this.patientList = user.records.map(item => ({
+          name: item.name,
+          id: item.id
+        }))
       })
     },
     handleUpdateOrder () {
@@ -167,8 +174,8 @@ export default {
               <el-option
                 v-for="item in patientList"
                 :key="item.id"
-                :label="item.patientCard"
-                :value="item">
+                :label="item.name"
+                :value="item.id">
               </el-option>
             </el-select>
           </div>
@@ -202,9 +209,9 @@ export default {
               :disabled="selectCategroy == null">
               <el-option
                 v-for="product in productList"
-                :key="product.value"
-                :label="product.label"
-                :value="product.value">
+                :key="product.id"
+                :label="product.name"
+                :value="product">
               </el-option>
             </el-select>
           </div>
@@ -241,13 +248,13 @@ export default {
           <el-col :span="8">
             <div class="info-item">
               <span class="info-item__label">
-                折扣金额
+                折扣
               </span>
               <el-input
                 class="info-item__content"
-                v-model="discontPrice"
+                v-model="discount"
                 :disabled="!qty"
-                placeholder="打折请慎重"
+                placeholder="0～1（打折请慎重）"
                 type="number">
               </el-input>
             </div>

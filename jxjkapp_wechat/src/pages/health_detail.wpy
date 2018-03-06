@@ -413,7 +413,7 @@
 
     // 固定方法
     initPageData () {
-      this.pageNum = 1
+      this.current = 1
       this.getOrderProductInfo().then(() => {
         this.getList().then(() => {
           this.initSymptom()

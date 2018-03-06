@@ -231,7 +231,7 @@
           }
         }).then(content => {
           content = content || {}
-          const list = content.list || []
+          const list = content.records || []
           if (list.length === 0) {
             wx.showToast({
               image: '../assets/images/error.png',

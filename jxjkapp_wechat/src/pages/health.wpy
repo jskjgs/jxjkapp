@@ -135,6 +135,9 @@
     }
 
     computed = {
+      globalData () {
+        return this.$parent.globalData
+      } 
     }
 
     methods = {
@@ -151,6 +154,9 @@
         this.toLogined = false
       } else {
         if (this.$_checkLogin('navigateTo')) {
+          if (this.globalData.area === null) {
+            this.$_pickArea()
+          }
           this.initPageData()
         } else {
           this.toLogined = true
@@ -169,13 +175,13 @@
     }
 
     initPageData () {
-      this.pageNum = 1
+      this.current = 1
       this.initData({
-        url: '/order/query',
-        method: 'POST',
+        url: '/order/list',
+        method: 'GET',
         data: {
-          pageSize: 5,
-          payState: '1'
+          size: 5,
+          paymentState: '1'
         }
       }, (listItem, res) => {
         const hospArea = listItem.area || {}

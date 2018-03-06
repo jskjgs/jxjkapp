@@ -36,6 +36,10 @@ export default {
     },
     data: {
       type: Object
+    },
+    areaList: {
+      type: Array,
+      default: []
     }
   },
   data () {
@@ -54,9 +58,6 @@ export default {
       set (val) {
         this.$emit('input', val)
       }
-    },
-    hospAreaList () {
-      return this.$_getters.hospAreaList || []
     }
   },
   watch: {
@@ -155,7 +156,7 @@ export default {
             <el-form-item class="doctor-hospArea" label="院区：">
               <el-select v-model="form.areaId" placeholder="选择院区">
                 <el-option
-                  v-for="item in hospAreaList"
+                  v-for="item in areaList"
                   :key="item.value"
                   :label="item.label"
                   :value="item.value">

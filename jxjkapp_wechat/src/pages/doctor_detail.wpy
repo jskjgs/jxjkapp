@@ -54,7 +54,7 @@
 
     onLoad({ id }) {
       this.$_request({
-        url: '/doctorInfo/',
+        url: '/doctor/detail',
         data: {
           id
         }

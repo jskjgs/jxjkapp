@@ -23,7 +23,8 @@ Promise.prototype.finally = function (callback) {
       value (newData) {
         if (newData) {
           const {token, userInfo} = newData
-          let globalData = $_getApp(this).globalData
+          const globalData = $_getApp(this).globalData
+          console.log('globalData', globalData)
           if (token && userInfo) {
             Object.assign(globalData, {
               token,
@@ -67,6 +68,52 @@ Promise.prototype.finally = function (callback) {
         return true
       }
     },
+    // 获取院区列表
+    '$_getAreaList': {
+      value () {
+        return this.$_request({
+          url: '/area/list',
+          method: 'GET',
+          data: {}
+        }).then(content => {
+          content = content || {}
+          const list = content.records
+          return list.map(item => {
+            return {
+              name: item.name,
+              id: item.id
+            }
+          })
+        })
+      }
+    },
+    // 选择院区 
+    '$_pickArea': {
+      value () {
+        let hospAreaList = []
+        const showActionSheet = (itemList) => {
+          wx.showActionSheet({
+            itemList,
+            success: (res) => {
+              const globalData = $_getApp(this).globalData
+              const pickItem = hospAreaList[res.tapIndex]
+              console.log('pickItem', pickItem)
+              globalData.area = pickItem || null
+              this.$apply()
+            },
+            fail: function(res) {
+              console.log(res.errMsg)
+              showActionSheet(itemList)
+            }
+          })
+        }
+
+        this.$_getAreaList().then(list => {
+          hospAreaList = list
+          showActionSheet(list.map(item => item.name))
+        })
+      }
+    },
     // 处理页面进入的逻辑（判断是否登陆）
     '$_onPageShow': {
       value (vm, next, checkLoginRouteFn) {
@@ -82,9 +129,18 @@ Promise.prototype.finally = function (callback) {
     // api请求
     '$_request': {
       value (cfg, {showLoading = true, toLoginFn = 'redirectTo'} = {}) {
+        if (cfg.data) {
+          Object.keys(cfg.data).forEach(key => {
+            const val = cfg.data[key]
+            if (val === undefined) {
+              delete cfg.data[key]
+            }
+          })
+        }
         cfg = Object.assign({}, {
           header: {
-            Authorization: wx.getStorageSync('token')
+            'content-type': 'application/x-www-form-urlencoded',
+            'Authorization': wx.getStorageSync('token')
           }
         }, cfg)
         if (showLoading) {
@@ -93,7 +149,7 @@ Promise.prototype.finally = function (callback) {
             mask: true
           })
         }
-        cfg.url = 'http://182.92.78.118:9001/hospHealth' + cfg.url
+        cfg.url = 'http://182.92.78.118:9003/jxjk/applet' + cfg.url
         return new Promise((resolve, reject) => {
           wepy.request(cfg).then(res => {
             console.log('res1', res, typeof res, typeof res.data)

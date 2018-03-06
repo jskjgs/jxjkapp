@@ -50,7 +50,7 @@
     methods = {
       handleSumbit () {
         this.$_request({
-          url: `/userInfo/updatePhone?phone=${this.formData.phone}&code=${this.formData.code}`,
+          url: `/home/send?phone=${this.formData.phone}&code=${this.formData.code}`,
           method: 'POST'
         }).then(content => {
           if (content) {

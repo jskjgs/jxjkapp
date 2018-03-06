@@ -126,7 +126,7 @@
     }
 
     initPageData () {
-      this.pageNum = 1
+      this.current = 1
       this.getList()
     }
 
@@ -135,23 +135,18 @@
       const date = this.$_convertDate(new Date().getTime())
       const timeStamp = new Date(date).getTime()
       return this.initData({
-        url: '/orderService/admin/query',
-        method: 'POST',
+        url: '/service/list',
+        method: 'GET',
         data: {
-          pageSize: 5,
-          states: [0],
-          startTime: date + ' 00:00:00'
+          size: 5
         }
       }, (listItem) => {
-        const orderProduct = listItem.orderProduct || {}
-        const userInfo = listItem.userInfo || {}
         return {
           id: listItem.id,
-          userInfo: userInfo,
-          userName: userInfo.name,
-          userTel: userInfo.phone,
+          userName: listItem.name,
+          userTel: listItem.phone,
           createDate: this.$_convertDate(listItem.createDate, 'Y-M-D h:m:s'),
-          orderProductName: orderProduct.productSkuName
+          orderProductName: listItem.skuName
         }
       })
     }

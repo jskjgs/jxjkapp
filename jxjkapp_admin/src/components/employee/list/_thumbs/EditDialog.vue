@@ -33,6 +33,7 @@ export default {
   },
   data () {
     return {
+      hospAreaList: [],
       form: {
         ...formInitData
       },
@@ -48,10 +49,12 @@ export default {
       set (val) {
         this.$emit('input', val)
       }
-    },
-    hospAreaList () {
-      return this.$_getters.hospAreaList || []
     }
+  },
+  created () {
+    this.$_getAreaList().then(list => {
+      this.hospAreaList = list
+    })
   },
   watch: {
     data (val) {

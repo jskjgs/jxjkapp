@@ -92,12 +92,12 @@
     }
 
     initPageData () {
-      this.pageNum = 1
+      this.current = 1
       this.initData({
-        url: '/news/all',
-        method: 'POST',
+        url: '/news/list',
+        method: 'GET',
         data: {
-          pageSize: 5
+          size: 5
         }
       }, (listItem, res) => {
         return {

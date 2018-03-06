@@ -3,6 +3,11 @@ import {
   fetchApi,
   convertDate
 } from '@/utils/index'
+import {
+  getHospAreaApi,
+  getProductTypeApi,
+  getProductListApi
+} from '@/globalApi'
 
 import getters from './getters'
 
@@ -39,8 +44,8 @@ Object.defineProperties(Vue.prototype, {
       })
     }
   },
-  '$api': {
-    value: function ({success = true, duration = 1000, res} = {}) {
+  '$_api': {
+    value ({success = true, duration = 1000, res} = {}) {
       return new Promise(function (resolve, reject) {
         setTimeout(() => {
           if (success) {
@@ -49,6 +54,55 @@ Object.defineProperties(Vue.prototype, {
             reject()
           }
         }, duration)
+      })
+    }
+  },
+  '$_getAreaList': {
+    value () {
+      return getHospAreaApi({
+        'current': 1,
+        'size': 1000
+      }).then(res => {
+        const content = res.content || {}
+        const list = content.records || []
+        return list.map(item => {
+          return {
+            label: item.name,
+            value: item.id
+          }
+        })
+      })
+    }
+  },
+  '$_getProductTypeList': {
+    value () {
+      return getProductTypeApi({
+        'current': 1,
+        'size': 1000
+      }).then(res => {
+        const content = res.content || {}
+        const list = content.records || []
+        return list.map(item => {
+          return {
+            label: item.name,
+            value: item.id,
+            list: (item.productList || []).map(product => {
+              return {
+                label: product.name,
+                value: product.id
+              }
+            })
+          }
+        })
+      })
+    }
+  },
+  '$_getProductList': {
+    value (params) {
+      return getProductListApi(params).then(res => {
+        const content = res.content || {}
+        const list = content.records || []
+        return list
       })
     }
   }

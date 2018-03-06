@@ -33,7 +33,7 @@
       visible: !!this.userInfo,
       handlerTap () {
         this.$_request({
-          url: '/userInfo/logout',
+          url: '/home/logout',
           method: 'POST'
         }, {showLoading: false}).then(() => {
           wx.showToast({

@@ -121,21 +121,22 @@
     events = {
     }
 
-    onLoad({ id }) {
-      this.id = id
+    onLoad({ skuId, productId }) {
+      this.skuId = skuId
+      this.productId = productId
       this.initPageData()
     }
 
     initPageData () {
-      this.pageNum = 1
+      this.current = 1
       return this.initData({
-        url: '/product/',
+        url: '/product/detail',
         data: {
-          id: this.id
+          skuId: this.skuId,
+          productId: this.productId
         }
       }).then(content => {
-        content = content || {}
-        const sku = content.defaultSku || {}
+        const sku = content || {}
         this.skuId = sku.id
         this.photo = sku.images || ''
         this.name = sku.name || ''

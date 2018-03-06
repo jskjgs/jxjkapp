@@ -48,7 +48,7 @@
         <view class="list flex">
           <repeat for="{{listData}}" key="index" item="item" index="index">
             <navigator 
-              url="{{ '/pages/project_order?id=' + item.id }}" 
+              url="{{ '/pages/project_order?skuId=' + item.skuId + '&productId=' + item.productId}}" 
               class="list-item flex-item--none"
               style="background-image: url({{item.bg}});">
               <view class="list-item__inner">
@@ -105,25 +105,26 @@
     }
 
     initPageData () {
-      this.pageNum = 1
+      this.current = 1
       this.getList()
     }
 
     getList (params) {
       this.initData({
-        url: '/product/query',
-        method: 'POST',
+        url: '/product/list',
+        method: 'GET',
         data: Object.assign({}, params, {
-          pageSize: 10,
-          productTypeId: this.typeId
+          size: 10,
+          categoryId: this.typeId,
+          areaId: this.$parent.globalData.area.id
         })
       }, (listItem, res) => {
-        const sku = listItem.defaultSku || {}
         return {
-          bg: sku.images,
-          name: sku.name,
-          description: sku.description,
-          skuId: sku.id,
+          bg: listItem.images,
+          name: listItem.name,
+          description: listItem.description,
+          skuId: listItem.id,
+          productId: listItem.productId,
           id: listItem.id
         }
       })

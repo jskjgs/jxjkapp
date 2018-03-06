@@ -29,3 +29,13 @@ export const getProductTypeApi = (params) => {
     params
   })
 }
+
+// 获取商品列表
+export const GET_PRODUCT_URL = '/product/list'
+export const getProductListApi = (params) => {
+  return fetchApi({
+    url: GET_PRODUCT_URL,
+    type: 'get',
+    params
+  })
+}

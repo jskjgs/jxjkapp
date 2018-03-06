@@ -50,7 +50,7 @@
         }
       }).then(content => {
         try {
-          const data = content.list[0]
+          const data = content.records[0]
           const orderProduct = data.orderProduct || {}
           const userInfo = data.userInfo || {}
           this.initData = Object.assign({}, this.initData, {

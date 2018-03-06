@@ -149,7 +149,7 @@
       }
     }, {
       icon: '../assets/images/icon-vip.png',
-      label: 'VIP用户管理',
+      label: 'VIP预约管理',
       handlerTap () {
         wx.navigateTo({
           url: '/pages/my_vip'
@@ -221,11 +221,6 @@
       itemClick (index) {
         const handlerTap = this.myItems[index].handlerTap
         handlerTap.call(this)
-      },
-      callPhone () {
-        wx.makePhoneCall({
-          phoneNumber: '44323423432'
-        })
       }
     }
 
