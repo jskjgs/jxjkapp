@@ -41,6 +41,11 @@
         margin-top: 30rpx;
       }
     }
+    .area-btn {
+      color: $primaryColor;
+      text-decoration: underline;
+    }
+
     // 项目选项
     .project-items {
       padding: 30rpx 20rpx;
@@ -172,7 +177,14 @@
     </view>
     <!-- 项目选项 -->
     <view class="panel project-items">
-      <view class="panel__title">项目分类</view>
+      <view class="panel__title flex--vcenter--sb">
+        <span>项目分类</span>
+        <span 
+          class="area-btn"
+          @tap="pickArea">
+          {{ globalData.area ? globalData.area.name : ''}}
+        </span>
+      </view>
       <view class="panel__body" style="padding: {{ projectTypeList.length > 5 ? '0 20rpx;' : ';' }}">
         <scroll-view scroll-x style="width: 100%;">
           <view class="project-items-wrap flex--vcenter">
@@ -314,6 +326,10 @@
         } else {
           this.queueNoticeSpread = false
         }
+      },
+      // 切换院区
+      pickArea () {
+        this.$_pickArea()
       }
     }
 
