@@ -1,7 +1,7 @@
 <template>
   <CustomPage :isLastPage.sync="isLastPage">
     <view id="page-service-list">
-      <view class="list-top-tools flex--vcenter--sb">
+      <!-- <view class="list-top-tools flex--vcenter--sb">
         <view hidden>
           <ServiceTypePicker
             :value.sync="serviceType"/>
@@ -11,13 +11,13 @@
           <image class="scan-img" src="../assets/images/scan.png" mode="aspectFit"></image>
           <text class="scan-text" @tap="scanQrcode">扫一扫</text>
         </view>
-      </view>
+      </view> -->
       <view class="list-wrap">
         <repeat for="{{ listData }}" key="index" item="item" index="index">
           <view class="service-box">
             <view class="service-head">
               <text class="service-name">{{ item.orderProductName }}</text>
-              <text class="service-time">派单时间：{{ item.createDate }}</text>
+              <text class="service-time">{{ item.createDate ? '派单时间：' + item.createDate : '' }}</text>
             </view>
             <view class="service-msg">
               <view class="service-user">
@@ -42,7 +42,7 @@
 <script>
   import wepy from 'wepy'
 
-  import ServiceTypePicker from '@/components/serviceTypePicker'
+  // import ServiceTypePicker from '@/components/serviceTypePicker'
   import CustomPage from '@/components/customPage'
 
   import listPageMixin from '@/mixins/listPage'
@@ -53,7 +53,7 @@
       enablePullDownRefresh: true
     }
     components = {
-      ServiceTypePicker,
+      // ServiceTypePicker,
       CustomPage
     }
 
@@ -98,8 +98,8 @@
           success: (res) => {
             if (res.confirm) {
               this.$_request({
-                url: '/orderService/admin/accept',
-                method: 'POST',
+                url: '/serviceRecord/create',
+                method: 'GET',
                 data: {
                   id
                 }
@@ -131,22 +131,20 @@
     }
 
     getList () {
-      console.log(this.$_convertDate(new Date().getTime()), 9999)
-      const date = this.$_convertDate(new Date().getTime())
-      const timeStamp = new Date(date).getTime()
       return this.initData({
-        url: '/service/list',
+        url: '/queue/today',
         method: 'GET',
         data: {
+          current: 1,
           size: 5
         }
       }, (listItem) => {
         return {
           id: listItem.id,
-          userName: listItem.name,
-          userTel: listItem.phone,
-          createDate: this.$_convertDate(listItem.createDate, 'Y-M-D h:m:s'),
-          orderProductName: listItem.skuName
+          userName: listItem.userName,
+          userTel: listItem.userPhone,
+          // createDate: this.$_convertDate(listItem.createDate, 'Y-M-D h:m:s'),
+          orderProductName: listItem.serviceName
         }
       })
     }
@@ -158,7 +156,7 @@
 @import '../assets/style/variables/size.scss';
 
 #page-service-list {
-  padding-top: $topTools_H;
+  // padding-top: $topTools_H;
 
   .list-top-tools {
     .scan {
