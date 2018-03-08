@@ -134,11 +134,10 @@
     // 获取余额
     getBalance () {
       this.$_request({
-        url: '/balance/query',
+        url: '/user/queryBalance',
         method: 'POST'
       }).then((content) => {
-        content = content || {}
-        let balance = content.balance
+        let balance = content
         this.balance = balance == undefined ? '' : balance
         this.$apply()
       })
@@ -146,7 +145,7 @@
     // 固定方法
     initPageData () {
       this.current = 1
-      // this.getBalance()
+      this.getBalance()
       this.getList()
     }
 

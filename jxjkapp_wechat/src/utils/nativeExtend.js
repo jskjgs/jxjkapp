@@ -87,15 +87,40 @@ Promise.prototype.finally = function (callback) {
         })
       }
     },
-    // 选择院区 
+    // 获取相关就诊人列表
+    '$_getRelations': {
+      value (areaId) {
+        const globalData = $_getApp(this).globalData
+        return this.$_request({
+          url: '/patient/list',
+          method: 'GET',
+          data: {
+            areaId: areaId === undefined ? globalData.area && globalData.area.id : areaId,
+            current: 1,
+            size: 10
+          }
+        }).then(content => {
+          content = content || {}
+          const list = content.records || []
+          return list.map(item => {
+            return {
+              type: item.type,
+              name: item.name,
+              id: item.id
+            }
+          })
+        })
+      }
+    },
+    // 选择院区
     '$_pickArea': {
       value () {
+        const globalData = $_getApp(this).globalData
         let hospAreaList = []
         const showActionSheet = (itemList) => {
           wx.showActionSheet({
             itemList,
             success: (res) => {
-              const globalData = $_getApp(this).globalData
               const pickItem = hospAreaList[res.tapIndex]
               console.log('pickItem', pickItem)
               globalData.area = pickItem || null
@@ -103,7 +128,9 @@ Promise.prototype.finally = function (callback) {
             },
             fail: function(res) {
               console.log(res.errMsg)
-              showActionSheet(itemList)
+              if (!globalData.area) {
+                showActionSheet(itemList)
+              }
             }
           })
         }

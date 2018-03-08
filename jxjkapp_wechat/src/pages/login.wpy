@@ -59,7 +59,10 @@
           const { token, ...userInfo } = content
           this.$_syncUserData({
             token: token,
-            userInfo: userInfo
+            userInfo: {
+              isVip: userInfo.type === 'VIP' || userInfo.type === 1,
+              ...userInfo
+            }
           })
           this.$apply()
           if (content.empty) {

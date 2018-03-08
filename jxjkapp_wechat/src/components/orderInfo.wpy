@@ -120,6 +120,14 @@
       }
     }
 
+    watch = {
+      pickeds (newVal, oldVal) {
+        if (newVal.hospital !== oldVal.hospital) {
+          this.getPatientList(newVal.hospital)
+        }
+      }
+    }
+
     methods = {
       handlePickerChange (valueBind, rangeBind, { detail }) {
         const index = detail.value
@@ -134,15 +142,7 @@
 
     // 获取院区列表
     getAllHospArea () {
-      return this.$_request({
-        url: '/hospArea/all',
-        method: 'POST',
-        data: {
-          current: 1
-        }
-      }).then(content => {
-        content = content || {}
-        const list = content.records || []
+      return this.$_getAreaList().then(list => {
         this.hospitaAreaList = list.map(item => {
           return {
             label: item.name,
@@ -154,26 +154,19 @@
     }
 
     // 获取就诊人列表
-    getPatientList () {
-      return this.$_request({
-        url: '/patientInfo/all',
-        method: 'POST'
-      }).then(content => {
-        content = content || {}
-        const list = content.records || []
-        this.patientList = list.map(item => {
+    getPatientList (areaId) {
+      if (this.pickeds.hospital != undefined) {
+        return this.$_getRelations(areaId).then(list => {
           return {
             label: item.name,
             value: item.id
           }
         })
-        this.$apply()
-      })
+      }
     }
 
     onLoad () {
       this.getAllHospArea()
-      this.getPatientList()
     }
   }
 </script>
