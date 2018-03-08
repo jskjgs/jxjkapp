@@ -142,11 +142,6 @@ export default {
 
 <template>
   <div id="page-productType">
-    <div class="flex--vcenter page-top">
-      <div class="page-title">
-        服务分类管理
-      </div>
-    </div>
     <search-table
       ref="searchTable"
       :table-attrs="tableAttrs"

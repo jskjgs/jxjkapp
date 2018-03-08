@@ -75,12 +75,23 @@ export const isEmptyObj = (obj, hasFn) => {
  * @returns {Promise}
  */
 import axios from 'axios'
-
+import store from '@/store'
 export const fetchApi = (opts) => {
   const {type, ...cfg} = opts
+  let areaId
+  if (store.state.accountInfo.author === 3) {
+    areaId = store.state.pickedArea.id
+  }
   return axios(Object.assign({}, cfg, {
     method: type || 'get',
-    params: cfg.params
+    params: cfg.params && {
+      areaId,
+      ...cfg.params
+    },
+    data: cfg.data && {
+      areaId,
+      ...cfg.data
+    }
   }))
   .then((response) => {
     let successCb = opts.success

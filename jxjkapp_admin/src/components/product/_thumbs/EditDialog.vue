@@ -46,11 +46,11 @@ export default {
       form: {
         ...formInitData
       },
-      ...initData
+      ...initData,
+      hospAreaList: []
     }
   },
   computed: {
-    hospAreaList: [],
     visible: {
       get () {
         return this.value

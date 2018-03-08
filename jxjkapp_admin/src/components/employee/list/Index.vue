@@ -123,11 +123,6 @@ export default {
 
 <template>
   <div id="doctor">
-    <div class="flex--vcenter page-top">
-      <div class="page-title">
-        员工管理
-      </div>
-    </div>
     <search-table
       ref="searchTable"
       :table-attrs="tableAttrs"

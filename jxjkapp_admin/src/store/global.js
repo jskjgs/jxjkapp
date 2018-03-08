@@ -1,3 +1,10 @@
+import {
+  getAccountInfo
+} from '@/utils/index'
+import {
+  getHospAreaApi
+} from '@/globalApi'
+
 export const STASH = 'global/stash'
 export const CLEAR_STASH = 'global/clear_stash'
 
@@ -12,10 +19,14 @@ export const UPDATE_HOSPAREALIST = 'global/UPDATE_HOSPAREALIST'
 
 export const UPDATE_PRODUCT_TYPE_LIST = 'global/UPDATE_PRODUCT_TYPE_LIST'
 
-import {
-  getAccountInfo
-} from '@/utils/index'
+export const UPDATE_AREALIST = 'global/UPDATE_AREALIST'
+export const UPDATE_AREA = 'global/UPDATE_AREA'
 
+// const initAccountInfo = getAccountInfo() || {}
+const initAccountInfo = {
+  ...(getAccountInfo() || {}),
+  author: 3
+}
 const state = {
   // 暂存的数据
   stash: {
@@ -27,7 +38,12 @@ const state = {
   keepAlive: 'no-match',
   // todo: 删除`Array.from({length: 8 - 1 + 1}).map((item, index) => `m_0${index + 1}`) &&`
   auth: Array.from({length: 8 - 1 + 1}).map((item, index) => `m_0${index + 1}`),
-  accountInfo: getAccountInfo() || {}
+  accountInfo: initAccountInfo,
+  areaList: [],
+  pickedArea: {
+    id: initAccountInfo.areaId,
+    name: initAccountInfo.areaName
+  }
 }
 
 const mutations = {
@@ -47,12 +63,27 @@ const mutations = {
     state.auth = auth
   },
   [UPDATE_ACCOUNTINFO] (state, accountInfo) {
-    accountInfo = accountInfo || {}
-    state.accountInfo = accountInfo
+    state.accountInfo = accountInfo || {}
     state.auth = accountInfo.permissionList || Array.from({length: 8 - 1 + 1}).map((item, index) => `m_0${index + 1}`)
+  },
+  [UPDATE_AREALIST] (state, areaList) {
+    state.areaList = areaList || []
+  },
+  [UPDATE_AREA] (state, area) {
+    state.pickedArea = area || {}
   }
 }
 const actions = {
+  [UPDATE_AREALIST] ({ commit }) {
+    return getHospAreaApi({
+      current: 1,
+      size: 100
+    }).then(res => {
+      const content = res.content || {}
+      const list = content.records || []
+      commit(UPDATE_AREALIST, list)
+    })
+  }
 }
 
 export default {

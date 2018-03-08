@@ -3,6 +3,10 @@
   import TopBar from '@/components/_common/topBar/TopBar'
   // 左侧导航
   import LeftNav from '@/components/_common/leftNav/LeftNav'
+  import { mapState } from 'vuex'
+  import {
+    UPDATE_AREALIST
+  } from '@/store/global'
   export default {
     name: 'App',
     components: {
@@ -14,9 +18,18 @@
       }
     },
     computed: {
+      ...mapState({
+        author: (state) => state.accountInfo.author
+      }),
       showFixedBar () {
         let route = this.$route
         return route.path !== '/' && route.name !== 'Login' && route.name !== 'NotFound'
+      }
+    },
+    created () {
+      // 超级管理员获取院区列表
+      if (this.author === 3) {
+        this.$store.dispatch(UPDATE_AREALIST)
       }
     }
   }

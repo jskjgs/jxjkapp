@@ -30,7 +30,7 @@ export default {
 
     return {
       hospAreaList: [],
-      pickedHospAreaId: '', // 选择的院区id
+      pickedHospAreaId: this.$store.state.pickedArea.id, // 选择的院区id
       doctorName: '',
       editDialogVisible: false,
       editData: {},
@@ -45,13 +45,25 @@ export default {
     }
   },
   created () {
-    this.$_getAreaList().then(list => {
-      this.hospAreaList = list
-    })
+    if (this.userType !== 3) {
+      this.$_getAreaList().then(list => {
+        this.hospAreaList = list.map(item => ({
+          id: item.value,
+          name: item.label
+        }))
+      })
+    }
   },
   computed: {
+    userType () {
+      return this.$store.state.accountInfo.author
+    },
     currentPage () {
       return this.$refs.searchTable.currentPage
+    },
+    areaList () {
+      const state = this.$store.state
+      return this.userType === 3 ? state.areaList : this.hospAreaList
     }
   },
   watch: {
@@ -159,11 +171,6 @@ export default {
 
 <template>
   <div id="page-doctor">
-    <div class="flex--vcenter page-top">
-      <div class="page-title">
-        医护人员管理
-      </div>
-    </div>
     <search-table
       ref="searchTable"
       :table-attrs="tableAttrs"
@@ -172,14 +179,14 @@ export default {
       :api-keys-map="apiKeysMap">
       <div class="table-tools flex--vcenter" slot="table-tools">
         <div class="search-wrap flex--vcenter">
-          <div class="tool-item">
+          <div class="tool-item" v-if="userType !== 3">
             院区：
             <el-select v-model="pickedHospAreaId" placeholder="选择院区">
               <el-option
-                v-for="item in hospAreaList"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value">
+                v-for="item in areaList"
+                :key="item.id"
+                :label="item.name"
+                :value="item.id">
               </el-option>
             </el-select>
           </div>

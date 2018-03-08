@@ -10,12 +10,9 @@
   import {
     delReserveApi
   } from './api'
-  import {
-    getListApi as getProductListApi
-  } from '@/components/product/api'
 
   export default {
-    name: 'Diary',
+    name: 'Reverse',
     components: {
       SearchTable
     },
@@ -28,6 +25,7 @@
       return {
         hospAreaList: [],
         productTypeList: [],
+        productList: [],
         apiKeysMap: {
           projectId: {
             value: undefined
@@ -54,22 +52,27 @@
         productType: undefined, // 服务类型
         project: undefined, // 项目id
         createTimeRange: [], // 预约时间
-        hospArea: undefined, // 院区
+        hospArea: this.$store.state.pickedArea.id, // 院区
         searchKeyword: ''
       }
     },
     created () {
-      this.$_getAreaList().then(list => {
-        this.hospAreaList = list
-      })
+      if (this.userType !== 3) {
+        this.$_getAreaList().then(list => {
+          this.hospAreaList = list
+        })
+      }
       this.$_getProductTypeList().then(list => {
         this.productTypeList = list
       })
     },
     computed: {
-      productList () {
-        let productType = this.productTypeList.find(item => item.value === this.productType) || {}
-        return productType.list || []
+      userType () {
+        return this.$store.state.accountInfo.author
+      },
+      areaList () {
+        const state = this.$store.state
+        return this.userType === 3 ? state.areaList : this.hospAreaList
       }
     },
     watch: {
@@ -79,19 +82,10 @@
     },
     methods: {
       getProductList (type) {
-        return getProductListApi({
+        return this.$_getProductList({
           productTypeId: type || this.productType
-        }).then((res) => {
-          const content = res.content || {}
-          const list = content.list || []
-          this.productList = list.map(item => {
-            const sku = item.defaultSku || {}
-            return {
-              label: sku.name,
-              value: sku.id
-            }
-          })
-          console.log('content', content)
+        }).then(list => {
+          this.productList = list
         })
       },
       handleSearch () {
@@ -139,11 +133,6 @@
 
 <template>
   <div id="reverse-manage">
-    <div class="flex--vcenter page-top">
-      <div class="page-title">
-        预约管理
-      </div>
-    </div>
     <search-table
       ref="searchTable"
       :table-attrs="tableAttrs"
@@ -180,9 +169,9 @@
                 clearable>
                 <el-option
                   v-for="item in productList"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value">
+                  :key="item.id"
+                  :label="item.productName"
+                  :value="item.id">
                 </el-option>
               </el-select>
             </div>
@@ -202,7 +191,7 @@
         </el-row>
         <el-row :gutter="20" style="margin-top: 20px;">
           <el-col :span="8">
-            <div class="tool-item">
+            <div class="tool-item" v-if="userType !== 3">
               <span class="tool-item__label">院区</span>：
               <el-select 
                 class="tool-item__content"

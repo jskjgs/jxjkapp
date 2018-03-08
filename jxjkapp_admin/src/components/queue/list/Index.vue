@@ -136,11 +136,6 @@ export default {
 
 <template>
   <div id="page-queue">
-    <div class="flex--vcenter page-top">
-      <div class="page-title">
-        排队管理
-      </div>
-    </div>
     <div class="top-box flex--vcenter">
       <div class="btn-wrap flex-item--none">
         <el-button type="primary" @click="add"  style="width: 120px;border-radius: 4px;margin-top: 20px;">新增排队</el-button>

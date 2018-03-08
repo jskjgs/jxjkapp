@@ -2,7 +2,8 @@
   import { Cookie } from '@/utils/index'
   import { mapState, mapMutations } from 'vuex'
   import {
-    UPDATE_ACCOUNTINFO
+    UPDATE_ACCOUNTINFO,
+    UPDATE_AREA
   } from '@/store/global'
   
   import ResetPsdDialog from './ResetPsdDialog'
@@ -25,8 +26,19 @@
     computed: {
       ...mapState({
         // 用户名
-        userName: state => (state.accountInfo.adminInfoVO || state.accountInfo.adminInfo || {}).account
-      })
+        userName: state => (state.accountInfo || {}).account,
+        areaList: 'areaList'
+      }),
+      pickedAreaId: {
+        get () {
+          return (this.$store.state.pickedArea || {}).id
+        },
+        set (val) {
+          this.$store.commit(UPDATE_AREA, this.areaList.find(item => item.id === val))
+        }
+      }
+    },
+    created () {
     },
     methods: {
       ...mapMutations({
@@ -76,19 +88,37 @@
 </script>
 
 <template>
-  <div id="top-bar" class="clr">
-    <div class="user flex--vcenter rt">
-      <i class="icon-user2"></i>
-      <el-dropdown>
-        <span class="el-dropdown-link">
-          {{ userName }}
-          <i class="el-icon-caret-bottom el-icon--right"></i>
-        </span>
-        <el-dropdown-menu slot="dropdown">
-          <el-dropdown-item @click.native="logout">退出登录</el-dropdown-item>
-          <el-dropdown-item @click.native="openResetPsdDialog">修改密码</el-dropdown-item>
-        </el-dropdown-menu>
-      </el-dropdown>
+  <div id="top-bar" class="flex--vcenter--sb">
+    <div class="page-title">
+      {{ $route.meta.label }}
+    </div>
+    <div class="flex--vcenter">
+      <div class="tool-item" v-if="$store.state.accountInfo.author === 3">
+        院区：
+        <el-select 
+          v-model="pickedAreaId" 
+          placeholder="选择院区">
+          <el-option
+            v-for="item in areaList"
+            :key="item.id"
+            :label="item.name"
+            :value="item.id">
+          </el-option>
+        </el-select>
+      </div>
+      <div class="user flex--vcenter" style="margin-left: 20px;">
+        <i class="icon-user2"></i>
+        <el-dropdown>
+          <span class="el-dropdown-link">
+            {{ userName }}
+            <i class="el-icon-caret-bottom el-icon--right"></i>
+          </span>
+          <el-dropdown-menu slot="dropdown">
+            <el-dropdown-item @click.native="openResetPsdDialog">修改密码</el-dropdown-item>
+            <el-dropdown-item @click.native="logout">退出登录</el-dropdown-item>
+          </el-dropdown-menu>
+        </el-dropdown>
+      </div>
     </div>
     <ResetPsdDialog 
       v-model="resetPsdDialogVisible"

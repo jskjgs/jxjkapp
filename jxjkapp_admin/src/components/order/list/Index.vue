@@ -169,11 +169,6 @@ export default {
 
 <template>
   <div id="order">
-    <div class="flex--vcenter page-top">
-      <div class="page-title">
-        订单管理
-      </div>
-    </div>
     <search-table
       ref="searchTable"
       :table-attrs="tableAttrs"

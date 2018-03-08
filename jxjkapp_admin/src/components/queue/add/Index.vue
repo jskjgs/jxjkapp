@@ -140,11 +140,6 @@ export default {
 
 <template>
   <div id="order">
-    <div class="flex--vcenter page-top">
-      <div class="page-title">
-        新增排队
-      </div>
-    </div>
     <div class="top-box flex--vcenter" style="margin-top: 20px;">
       <div class="tool-item">
         搜索关键字：
