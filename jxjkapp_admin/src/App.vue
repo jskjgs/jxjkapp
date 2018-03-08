@@ -40,11 +40,13 @@
     <template v-if="showFixedBar">
       <div class="flex body-wrap">
         <left-nav class="flex-item--none"></left-nav>
-        <div id="page-content" class="flex-item">
-          <top-bar></top-bar>
-          <keep-alive :include="$store.state.keepAlive">
-            <router-view></router-view>
-          </keep-alive>
+        <div class="flex-item" id="content-wrap">
+          <top-bar id="top-bar"></top-bar>
+          <div id="page-content">
+            <keep-alive :include="$store.state.keepAlive">
+              <router-view></router-view>
+            </keep-alive>
+          </div>
         </div>
       </div>
     </template>
@@ -68,10 +70,15 @@
       height: 100%;
 
       @at-root {
+        #content-wrap {
+          height: 100vhl
+        }
+        #top-bar {
+        }
         #page-content {
           overflow-y: auto;
           padding: 30px;
-          height: 100%;
+          height: calc(100vh - #{$topBar_h});
         }
       }
     }

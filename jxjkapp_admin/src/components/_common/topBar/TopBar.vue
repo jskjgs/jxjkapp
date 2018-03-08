@@ -130,8 +130,10 @@
   @import "../../../assets/style/variables/index";
 
   #top-bar {
+    padding: 0 20px;
     width: 100%;
     height: $topBar_h;
+    box-shadow: 0 8px 16px 0 rgba(7, 17, 27, 0.2);
 
     .icon-user2 {
       font-size: 18px;
