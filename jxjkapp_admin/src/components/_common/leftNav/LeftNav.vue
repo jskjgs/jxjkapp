@@ -78,7 +78,7 @@
     overflow-y: auto;
     border-radius: 2px;
     width: 200px;
-    height: 100%;
+    height: 100vh;
 
     background: $bg1;
 

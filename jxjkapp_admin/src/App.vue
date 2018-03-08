@@ -71,7 +71,7 @@
 
       @at-root {
         #content-wrap {
-          height: 100vhl
+          height: 100vh;
         }
         #top-bar {
         }
