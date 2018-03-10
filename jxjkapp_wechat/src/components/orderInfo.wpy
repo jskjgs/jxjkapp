@@ -157,10 +157,13 @@
     getPatientList (areaId) {
       if (this.pickeds.hospital != undefined) {
         return this.$_getRelations(areaId).then(list => {
-          return {
-            label: item.name,
-            value: item.id
-          }
+          this.patientList = list.map(item => {
+            return {
+              label: item.name,
+              value: item.id
+            }
+          })
+          this.$apply()
         })
       }
     }
