@@ -45,6 +45,7 @@ export default {
   },
   created () {
     this.placeholderImg = placeholderImg
+    console.log(this.$route.params)
     if (this.$route.params.serviceId) {
       this.getServiceDetail()
     }
@@ -97,7 +98,7 @@ export default {
     },
     getServiceDetail () {
       queryServiceRecordApi({id: this.$route.params.serviceId}).then((res) => {
-        let data = res.content.list[0]
+        let data = res.content
         console.log(data)
         this.serviceName = data.serviceName
         this.recordNumber = data.recordNumber

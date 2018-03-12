@@ -90,7 +90,7 @@ export default {
       responseFn (data) {
         let content = data.content || {}
         console.log(content.list)
-        this.tableData = (content.list || []).map((item) => ({
+        this.tableData = (content.records || []).map((item) => ({
           createDate: item.createDate,
           serviceId: item.id,
           provider: !item.adminInfo ? '' : item.adminInfo.name,
@@ -124,6 +124,7 @@ export default {
   },
   methods: {
     openDetail (rowData) {
+      console.log(rowData)
       rowData = !rowData ? {} : rowData
       this.$router.push({name: 'order/serviceDetail_root', params: { serviceId: rowData.serviceId }})
     }
