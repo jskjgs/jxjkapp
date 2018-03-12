@@ -50,8 +50,8 @@
     methods = {
       handleSumbit () {
         this.$_request({
-          url: `/home/send?phone=${this.formData.phone}&code=${this.formData.code}`,
-          method: 'POST'
+          url: `/user/changePhone?phone=${this.formData.phone}&code=${this.formData.code}`,
+          method: 'GET'
         }).then(content => {
           if (content) {
             wx.showToast({

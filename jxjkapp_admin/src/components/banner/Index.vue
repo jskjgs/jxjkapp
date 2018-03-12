@@ -202,19 +202,6 @@ export default {
 
 <template>
   <div id="page-banner">
-    <div class="flex--vcenter page-top">
-      <div class="page-title">
-        BANNER管理
-      </div>
-      <!-- <div class="display-num-control">
-        <span class="label">展示数量 ：</span>
-        <span class="display-num">4个</span>
-        <span
-          class="el-icon-edit"
-          @click="changeDisplayNum">
-        </span>
-      </div> -->
-    </div>
     <search-table
       ref="searchTable"
       :table-attrs="tableAttrs"

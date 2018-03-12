@@ -102,11 +102,6 @@
 
 <template>
   <div id="user-manage">
-    <div class="flex--vcenter page-top">
-      <div class="page-title">
-        用户管理
-      </div>
-    </div>
     <search-table
       ref="searchTable"
       :table-attrs="tableAttrs"

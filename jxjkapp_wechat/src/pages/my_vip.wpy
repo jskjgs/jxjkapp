@@ -78,7 +78,7 @@
 
   export default class Index extends wepy.page {
     config = {
-      navigationBarTitleText: 'VIP用户管理',
+      navigationBarTitleText: 'VIP预约管理',
       enablePullDownRefresh: true
     }
     components = {
@@ -88,15 +88,6 @@
     mixins = [listPageMixin]
 
     data = {
-      listData2: [{
-        date: '2018-01-01',
-        productName: 'Thermage 热玛吉',
-        hospital: '锦江附属医院'
-      }, {
-        date: '2018-01-01',
-        productName: 'Thermage 热玛吉',
-        hospital: '锦江附属医院'
-      }],
       balance: '' // 余额
     }
 
@@ -143,11 +134,10 @@
     // 获取余额
     getBalance () {
       this.$_request({
-        url: '/balance/query',
+        url: '/user/queryBalance',
         method: 'POST'
       }).then((content) => {
-        content = content || {}
-        let balance = content.balance
+        let balance = content
         this.balance = balance == undefined ? '' : balance
         this.$apply()
       })
@@ -155,7 +145,7 @@
     // 固定方法
     initPageData () {
       this.current = 1
-      // this.getBalance()
+      this.getBalance()
       this.getList()
     }
 

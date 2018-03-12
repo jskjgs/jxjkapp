@@ -138,22 +138,26 @@
 
     getList () {
       return this.initData({
-        url: '/orderService/query',
-        method: 'POST',
+        url: '/serviceRecord/list',
+        method: 'GET',
         data: {
-          states: this.stateIndex === 0 ? [1, 2] : [this.stateIndex]
+          current: 1,
+          size: 5
         }
       }, (listItem) => {
-        const orderProduct = listItem.orderProduct || {}
-        const userInfo = listItem.userInfo || {}
+        // const orderProduct = listItem.orderProduct || {}
+        // const userInfo = listItem.userInfo || {}
         return {
-          status: listItem.state === 1 ? 'inUse' : 'finish',
+          // status: listItem.state === 1 ? 'inUse' : 'finish',
           id: listItem.id,
-          userInfo: userInfo,
-          userName: userInfo.name,
-          userTel: userInfo.phone,
+          userInfo: {
+            name: listItem.name,
+            phone: listItem.phone
+          },
+          userName: listItem.name,
+          userTel: listItem.phone,
           updateDate: this.$_convertDate(listItem.updateDate, 'Y-M-D h:m:s'),
-          orderProductName: orderProduct.productSkuName
+          orderProductName: listItem.skuName
         }
       })
     }

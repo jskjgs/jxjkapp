@@ -13,20 +13,20 @@
 
 <template>
   <view id="page-login">
-    <view wx:if="{{ !token }}">
+    <block wx:if="{{ !token }}">
       <LoginInput 
         title="登录"
         submitBtnText="确认登录" 
         :value.sync="formData"
         @submit.user="handleLogin"/>
-    </view>
-    <view wx:else>
+    </block>
+    <block wx:else>
       <Logout 
-        :userName.sync="userPhone"
+        :userName.sync="account"
         submitBtnText="退出登录" 
         :value.sync="formData"
         @submit.user="handleLogout"/>
-    </view>
+    </block>
   </view>
 </template>
 
@@ -53,8 +53,8 @@
       token () {
         return this.$parent.globalData.token
       },
-      userPhone () {
-        return (this.$parent.globalData.userInfo || {}).phone || ''
+      account () {
+        return (this.$parent.globalData.userInfo || {}).account || ''
       }
     }
 

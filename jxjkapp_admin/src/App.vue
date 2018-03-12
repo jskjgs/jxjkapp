@@ -3,6 +3,10 @@
   import TopBar from '@/components/_common/topBar/TopBar'
   // 左侧导航
   import LeftNav from '@/components/_common/leftNav/LeftNav'
+  import { mapState } from 'vuex'
+  import {
+    UPDATE_AREALIST
+  } from '@/store/global'
   export default {
     name: 'App',
     components: {
@@ -14,9 +18,18 @@
       }
     },
     computed: {
+      ...mapState({
+        author: (state) => state.accountInfo.author
+      }),
       showFixedBar () {
         let route = this.$route
         return route.path !== '/' && route.name !== 'Login' && route.name !== 'NotFound'
+      }
+    },
+    created () {
+      // 超级管理员获取院区列表
+      if (this.author === 3) {
+        this.$store.dispatch(UPDATE_AREALIST)
       }
     }
   }
@@ -27,11 +40,13 @@
     <template v-if="showFixedBar">
       <div class="flex body-wrap">
         <left-nav class="flex-item--none"></left-nav>
-        <div id="page-content" class="flex-item">
-          <top-bar></top-bar>
-          <keep-alive :include="$store.state.keepAlive">
-            <router-view></router-view>
-          </keep-alive>
+        <div class="flex-item" id="content-wrap">
+          <top-bar id="top-bar"></top-bar>
+          <div id="page-content">
+            <keep-alive :include="$store.state.keepAlive">
+              <router-view></router-view>
+            </keep-alive>
+          </div>
         </div>
       </div>
     </template>
@@ -55,10 +70,15 @@
       height: 100%;
 
       @at-root {
+        #content-wrap {
+          height: 100vh;
+        }
+        #top-bar {
+        }
         #page-content {
           overflow-y: auto;
           padding: 30px;
-          height: 100%;
+          height: calc(100vh - #{$topBar_h});
         }
       }
     }

@@ -31,7 +31,7 @@
           </view>
         </repeat>
       </view>
-      <view class="flex--hcenter">
+      <view class="flex--hcenter" style="margin-bottom: 20rpx;">
         <button class="primary-btn add-btn" @tap="toRelationInfo('', {{ list.length }})">
           {{ list.length ? '添加就诊人' : '完善个人信息' }}
         </button>

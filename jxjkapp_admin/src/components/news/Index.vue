@@ -192,11 +192,6 @@ export default {
 
 <template>
   <div id="page-news">
-    <div class="flex--vcenter page-top">
-      <div class="page-title">
-        新闻管理
-      </div>
-    </div>
     <search-table
       ref="searchTable"
       :table-attrs="tableAttrs"

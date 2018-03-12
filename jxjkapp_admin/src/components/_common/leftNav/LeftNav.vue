@@ -24,8 +24,8 @@
     methods: {
       handleSelect (index) {
         if (!this.activePath || this.activePath !== index) {
-          this.activePath = index
           this.$refs.elMenu.openedMenus = [] // 关闭打开的子菜单
+          this.activePath = index
         }
       }
     }
@@ -78,7 +78,7 @@
     overflow-y: auto;
     border-radius: 2px;
     width: 200px;
-    height: 100%;
+    height: 100vh;
 
     background: $bg1;
 

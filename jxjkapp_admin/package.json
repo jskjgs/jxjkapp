@@ -11,6 +11,7 @@
     "build": "node build/build.js noserver",
     "build:server": "node build/build.js server",
     "build:report": "npm run build --report",
+    "deploy": "./deploy.sh",
     "lint": "eslint --ext .js,.vue src"
   },
   "dependencies": {

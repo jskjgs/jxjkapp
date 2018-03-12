@@ -161,11 +161,6 @@ export default {
 
 <template>
   <div id="page-product">
-    <div class="flex--vcenter page-top">
-      <div class="page-title">
-        项目管理
-      </div>
-    </div>
     <search-table
       ref="searchTable"
       :table-attrs="tableAttrs"
