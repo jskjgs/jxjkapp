@@ -67,11 +67,13 @@
     height: calc(100vh - #{ $scollbar_w });
 
     .body-wrap {
+      width: 100%;
       height: 100%;
 
       @at-root {
         #content-wrap {
-          height: 100vh;
+          overflow: hidden;
+          height: 100%;
         }
         #top-bar {
         }
