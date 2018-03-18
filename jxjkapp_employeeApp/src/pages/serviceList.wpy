@@ -1,17 +1,17 @@
 <template>
   <CustomPage :isLastPage.sync="isLastPage">
     <view id="page-service-list">
-      <!-- <view class="list-top-tools flex--vcenter--sb">
-        <view hidden>
+      <view class="list-top-tools flex--vcenter--sb">
+        <!-- <view hidden>
           <ServiceTypePicker
             :value.sync="serviceType"/>
-        </view>
+        </view> -->
         <view></view>
         <view class="scan-flex flex--vcenter">
-          <image class="scan-img" src="../assets/images/scan.png" mode="aspectFit"></image>
+          <image class="scan-img" src="../assets/images/scan.png" mode="aspectFit"/>
           <text class="scan-text" @tap="scanQrcode">扫一扫</text>
         </view>
-      </view> -->
+      </view>
       <view class="list-wrap">
         <repeat for="{{ listData }}" key="index" item="item" index="index">
           <view class="service-box">
@@ -101,7 +101,8 @@
                 url: '/serviceRecord/create',
                 method: 'GET',
                 data: {
-                  id
+                  orderDetailId: item.orderDetailId,
+                  areaId: (this.$parent.globalData.userInfo || {}).areaId
                 }
               }).then(() => {
                 wx.showToast({
@@ -142,9 +143,10 @@
         return {
           id: listItem.id,
           userName: listItem.userName,
-          userTel: listItem.userPhone,
+          userTel: listItem.phone,
           // createDate: this.$_convertDate(listItem.createDate, 'Y-M-D h:m:s'),
-          orderProductName: listItem.serviceName
+          orderProductName: listItem.skuName,
+          orderDetailId: listItem.orderDetailId
         }
       })
     }
@@ -156,7 +158,7 @@
 @import '../assets/style/variables/size.scss';
 
 #page-service-list {
-  // padding-top: $topTools_H;
+  padding-top: $topTools_H;
 
   .list-top-tools {
     .scan {

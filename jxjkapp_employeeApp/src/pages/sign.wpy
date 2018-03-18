@@ -58,6 +58,16 @@
       touchList: []
     }
 
+    watch = {
+      touchList (newVal, oldVal) {
+        if (oldVal.length === 0) {
+          newVal.forEach((touch, index) => {
+            this.drawStroke([touch], index === 0 ? 'start' : 'move')
+          })
+        }
+      }
+    }
+
     methods = {
       handlePageTouchmove () {
         console.log(arguments)
@@ -81,6 +91,7 @@
     }
 
     onLoad ({readonly, type, title, touchList}) {
+      console.log('touchList', touchList)
       this.readonly = JSON.parse(readonly || 'false')
       this.type = type
       wx.setNavigationBarTitle({
@@ -88,6 +99,7 @@
       })
       this.canvasCtx = wx.createCanvasContext('myCanvasId')
       this.touchList = JSON.parse(touchList || '[]')
+      this.$apply()
     }
 
     // 记录画笔历史节点

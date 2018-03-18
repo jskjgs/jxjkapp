@@ -98,6 +98,18 @@ Promise.prototype.finally = function (callback) {
           })
         }
         cfg.url = 'http://182.92.78.118:9002/jxjk/admin' + cfg.url
+        // 删除值为undefined的字段
+        cfg.data = (() => {
+          const data = {
+            ...cfg.data
+          }
+          Object.keys(data).forEach(key => {
+            if (data[key] === undefined) {
+              delete data[key]
+            }
+          })
+          return data
+        })()
         return new Promise((resolve, reject) => {
           wepy.request(cfg).then(res => {
             console.log('res1', res, typeof res, typeof res.data)
@@ -167,8 +179,8 @@ Promise.prototype.finally = function (callback) {
     },
     // 转换时间
     '$_convertDate': {
-      value (timeStamp) {
-        return convertDate(timeStamp)
+      value (...args) {
+        return convertDate(...args)
       }
     }
   })

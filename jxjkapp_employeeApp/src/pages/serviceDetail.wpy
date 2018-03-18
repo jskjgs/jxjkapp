@@ -43,25 +43,23 @@
 
     initPageData () {
       this.$_request({
-        url: '/orderService/query',
-        method: 'POST',
+        url: '/serviceRecord/detail',
+        method: 'GET',
         data: {
           id: this.id
         }
       }).then(content => {
         try {
-          const data = content.records[0]
-          const orderProduct = data.orderProduct || {}
-          const userInfo = data.userInfo || {}
+          const data = content || {}
           this.initData = Object.assign({}, this.initData, {
-            serviceName: orderProduct.productSkuName,
-            userName: userInfo.name,
-            userTel: userInfo.phone,
-            partnerId: data.associates,
-            doctorSignTouchList: JSON.parse(data.doctorSign) || [],
+            serviceName: data.skuName,
+            userName: data.name,
+            userTel: data.phone,
+            partnerId: data.associatesId,
+            doctorSignTouchList: JSON.parse(data.doctorSign || null) || [],
             templateContent: data.doctorComment,
             consumeInfo: data.consumptionNote,
-            userSignTouchList: JSON.parse(data.userSign) || [],
+            userSignTouchList: JSON.parse(data.userSign || null) || [],
             purchaseInfo: data.buyNote
           })
           console.log(this.initData, 'this.initData')

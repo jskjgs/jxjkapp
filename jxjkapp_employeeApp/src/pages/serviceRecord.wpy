@@ -37,6 +37,7 @@
     methods = {
       handleSubmit (formData) {
         const sendData = {
+          // orderDetailId: this.orderDetailId,
           id: this.id,
           associatesId: formData.partnerId === -1 ? undefined : formData.partnerId,
           doctorSign: JSON.stringify(formData.doctorSignTouchList),
@@ -46,7 +47,7 @@
           buyNote: formData.purchaseInfo
         }
         this.$_request({
-          url: '/orderService/admin/confirm',
+          url: '/serviceRecord/update',
           method: 'POST',
           data: sendData
         }).then(res => {
@@ -63,10 +64,11 @@
 
     events = {
     }
-    onLoad ({id, userInfo, orderProductName}) {
+    onLoad ({id, userInfo, orderProductName, orderDetailId}) {
       this.id = id
+      this.orderDetailId = orderDetailId
       userInfo = JSON.parse(userInfo)
-      this.initData = Object.assign({}, this.initData, {
+      Object.assign(this.initData, {
         serviceName: orderProductName,
         userName: userInfo.name,
         userTel: userInfo.phone

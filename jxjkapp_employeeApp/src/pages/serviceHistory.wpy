@@ -28,11 +28,11 @@
             <view class="history-msg">
               <view class="history-user">
                 <text class="history-user-title">用户姓名</text>
-                <text class="history-user-title">治疗时间</text>
+                <text class="history-user-title">{{ item.status === 'inUse' ? '接单时间' : '治疗时间' }}</text>
               </view>
               <view class="history-user">
                 <text class="history-user-title">：{{ item.userName }}</text>
-                <text class="history-user-title">：{{ item.userTel }}</text>
+                <text class="history-user-title">：{{ item.updateDate }}</text>
               </view>
             </view>
           </view>
@@ -108,7 +108,7 @@
           })
         } else {
           wx.navigateTo({
-            url: `/pages/serviceRecord?id=${item.id}&userInfo=${JSON.stringify(item.userInfo)}&orderProductName=${item.orderProductName}`
+            url: `/pages/serviceRecord?orderDetailId=${item.orderDetailId}&id=${item.id}&userInfo=${JSON.stringify(item.userInfo)}&orderProductName=${item.orderProductName}`
           })
         }
       },
@@ -142,13 +142,14 @@
         method: 'GET',
         data: {
           current: 1,
-          size: 5
+          size: 5,
+          isComplete: ([undefined, 0, 1])[this.stateIndex]
         }
       }, (listItem) => {
         // const orderProduct = listItem.orderProduct || {}
         // const userInfo = listItem.userInfo || {}
         return {
-          // status: listItem.state === 1 ? 'inUse' : 'finish',
+          status: listItem.isComplete === 1 ? 'finish' : 'inUse',
           id: listItem.id,
           userInfo: {
             name: listItem.name,
@@ -157,7 +158,8 @@
           userName: listItem.name,
           userTel: listItem.phone,
           updateDate: this.$_convertDate(listItem.updateDate, 'Y-M-D h:m:s'),
-          orderProductName: listItem.skuName
+          orderProductName: listItem.skuName,
+          orderDetailId: listItem.orderDetailId
         }
       })
     }

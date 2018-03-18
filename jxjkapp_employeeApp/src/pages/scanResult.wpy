@@ -113,10 +113,10 @@
 
     initPageData () {
       return this.initData({
-        url: `/orderService/admin/queryByUserId?userId=${this.id}`,
-        method: 'POST'
+        url: `/service/listByUserId?userId=${this.id}`,
+        method: 'GET'
       }).then((content) => {
-        this.listData = content
+        this.listData = content.records || []
         this.$apply()
       })
     }
