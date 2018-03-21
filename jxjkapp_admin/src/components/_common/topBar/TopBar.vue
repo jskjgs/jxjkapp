@@ -3,7 +3,8 @@
   import { mapState, mapMutations } from 'vuex'
   import {
     UPDATE_ACCOUNTINFO,
-    UPDATE_AREA
+    UPDATE_AREA,
+    UPDATE_AREALIST
   } from '@/store/global'
   
   import ResetPsdDialog from './ResetPsdDialog'
@@ -26,9 +27,17 @@
     computed: {
       ...mapState({
         // 用户名
-        userName: state => (state.accountInfo || {}).account,
-        areaList: 'areaList'
+        userName: state => (state.accountInfo || {}).account
       }),
+      areaList () {
+        const areaList = this.$store.state.areaList
+        if (areaList && areaList.length > 0) {
+          return areaList
+        } else {
+          this.$store.dispatch(UPDATE_AREALIST)
+          return []
+        }
+      },
       pickedAreaId: {
         get () {
           return (this.$store.state.pickedArea || {}).id

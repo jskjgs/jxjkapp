@@ -23,10 +23,7 @@ export const UPDATE_AREALIST = 'global/UPDATE_AREALIST'
 export const UPDATE_AREA = 'global/UPDATE_AREA'
 
 // const initAccountInfo = getAccountInfo() || {}
-const initAccountInfo = {
-  ...(getAccountInfo() || {}),
-  author: 3
-}
+const initAccountInfo = getAccountInfo() || {}
 const state = {
   // 暂存的数据
   stash: {
