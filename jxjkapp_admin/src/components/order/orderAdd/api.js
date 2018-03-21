@@ -6,6 +6,9 @@ export const addOrderApi = (data) => {
   return fetchApi({
     url: ADD_ORDER_URL,
     type: 'post',
+    headers: {
+      'Content-Type': 'application/json'
+    },
     data
   })
 }
@@ -26,6 +29,9 @@ export const orderCheckoutApi = (data) => {
   return fetchApi({
     url: ORDER_CHECKOUT,
     type: 'post',
+    headers: {
+      'Content-Type': 'application/json'
+    },
     data
   })
 }

@@ -82,16 +82,31 @@ export const fetchApi = (opts) => {
   if (store.state.accountInfo.author === 3) {
     areaId = store.state.pickedArea.id
   }
+  let sendData
+  switch (cfg.headers && cfg.headers['Content-Type']) {
+    case 'application/json':
+      sendData = JSON.stringify({
+        areaId,
+        ...cfg.data
+      })
+      break
+    default:
+      if (cfg.data instanceof FormData) {
+        sendData = cfg.data
+      } else {
+        sendData = {
+          areaId,
+          ...cfg.data
+        }
+      }
+  }
   return axios(Object.assign({}, cfg, {
     method: type || 'get',
     params: cfg.params && {
       areaId,
       ...cfg.params
     },
-    data: cfg.data && {
-      areaId,
-      ...cfg.data
-    }
+    data: sendData
   }))
   .then((response) => {
     let successCb = opts.success

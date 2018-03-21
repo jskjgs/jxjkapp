@@ -17,22 +17,26 @@ axios.defaults.transformRequest = [function (data) {
   if (data instanceof FormData) {
     return data
   } else {
-    let stringifyStr = ''
-    for (let key in data) {
-      if (data.hasOwnProperty(key)) {
-        if (data[key] !== undefined) {
-          stringifyStr += key + '=' + data[key] + '&'
+    try {
+      JSON.parse(data)
+      return data
+    } catch (e) {
+      let stringifyStr = ''
+      for (let key in data) {
+        if (data.hasOwnProperty(key)) {
+          if (data[key] !== undefined) {
+            stringifyStr += key + '=' + data[key] + '&'
+          }
         }
       }
+      return stringifyStr.slice(0, -1)
     }
-    return stringifyStr.slice(0, -1)
   }
 }]
 
 /* ajax拦截器 */
 // 添加请求拦截器
 axios.interceptors.request.use(function (config) {
-  config.headers['Content-Type'] = config.jsonData ? 'application/json' : 'application/x-www-form-urlencoded;charset=UTF-8'
   // get请求加上timestamp
   if (config.method === 'get') {
     let delimiter = ''

@@ -77,18 +77,18 @@ export default {
     handleGetPaymentPrice () {
       let data = this.getOrderData()
       orderCheckoutApi(data).then((res) => {
-        this.paymentPrice = !res.content ? 0 : res.content.orderPayPrice
+        this.paymentPrice = res.content || 0
       })
     },
     getOrderData () {
       let data = {
         patientInfoId: this.selectPatient,
         type: 0,
-        discount: this.discount,
-        orderSkus: JSON.stringify([{
+        discount: +this.discount || undefined,
+        orderSkus: [{
           skuId: !this.selectSku ? null : this.selectSku.id,
           qty: this.qty
-        }])
+        }]
       }
       return data
     },
