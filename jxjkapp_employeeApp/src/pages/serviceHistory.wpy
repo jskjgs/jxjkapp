@@ -65,7 +65,7 @@
       color: '#FFB400'
     }
   }
-
+  const mixins = new listPageMixin()
   export default class serviceHistory extends wepy.page {
     config = {
       navigationBarTitleText: '我的接单',
@@ -93,7 +93,9 @@
       }
     }
 
+    // mixin的watch是覆盖
     watch = {
+      ...mixins.watch,
       stateIndex () {
         this.initPageData()
       }

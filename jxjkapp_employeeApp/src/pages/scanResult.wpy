@@ -83,10 +83,11 @@
           success: (res) => {
             if (res.confirm) {
               this.$_request({
-                url: '/orderService/admin/accept',
+                url: `/serviceRecord/create?orderDetailId=${id}&areaId=${(this.$parent.globalData.userInfo || {}).areaId}`,
                 method: 'POST',
                 data: {
-                  id
+                  orderDetailId: id,
+                  areaId: (this.$parent.globalData.userInfo || {}).areaId
                 }
               }).then(() => {
                 wx.showToast({
@@ -116,7 +117,31 @@
         url: `/service/listByUserId?userId=${this.id}`,
         method: 'GET'
       }).then((content) => {
-        this.listData = content.records || []
+        const patients = []
+        const records = content.records || []
+        records.forEach(item => {
+          const patient = patients.find(patientItem => patientItem.patientInfo.id === item.patientInfoId)
+          if (patient) {
+            patient.orderService.push({
+              productSkuName: item.skuName,
+              createDate: item.createDate,
+              id: item.orderId
+            })
+          } else {
+            patients.push({
+              patientInfo: {
+                id: item.patientInfoId,
+                name: item.patientName
+              },
+              orderService: [{
+                productSkuName: item.skuName,
+                createDate: item.createDate,
+                id: item.orderId
+              }]
+            })
+          }
+        })
+        this.listData = patients
         this.$apply()
       })
     }

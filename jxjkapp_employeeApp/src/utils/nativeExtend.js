@@ -88,6 +88,7 @@ Promise.prototype.finally = function (callback) {
       value (cfg, {showLoading = true, toLoginFn = 'redirectTo'} = {}) {
         cfg = Object.assign({}, {
           header: {
+            // 'content-type': 'application/x-www-form-urlencoded',
             Authorization: wx.getStorageSync('token')
           }
         }, cfg)

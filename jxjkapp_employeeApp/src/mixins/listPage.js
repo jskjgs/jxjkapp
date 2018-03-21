@@ -19,6 +19,7 @@ export default class ListPageMixin extends wepy.mixin {
   onReachBottom () {
     if (this.isLastPage === false) {
       this.current++
+      this.$apply()
     }
   }
 
@@ -50,7 +51,7 @@ export default class ListPageMixin extends wepy.mixin {
     }
     return this.$_request(reqParams, {toLoginFn}).then(content => {
       content = content || {}
-      this.isLastPage = !!content.isLastPage
+      this.isLastPage = content.current === content.pages
       const list = content.records || []
       if (current > 1) { // 下滑翻页
         this.listData = this.listData.concat(list.map((item, index) => {

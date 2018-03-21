@@ -98,8 +98,8 @@
           success: (res) => {
             if (res.confirm) {
               this.$_request({
-                url: '/serviceRecord/create',
-                method: 'GET',
+                url: `/serviceRecord/create?orderDetailId=${item.orderDetailId}&areaId=${(this.$parent.globalData.userInfo || {}).areaId}`,
+                method: 'POST',
                 data: {
                   orderDetailId: item.orderDetailId,
                   areaId: (this.$parent.globalData.userInfo || {}).areaId
@@ -108,11 +108,13 @@
                 wx.showToast({
                   title: '接单成功'
                 })
-                this.initPageData()
                 this.$_eventBus.emit('serviceHistory:init')
                 wx.switchTab({
                   url: '/pages/serviceHistory'
                 })
+                setTimeout(() => {
+                  this.initPageData()
+                }, 1000)
               })
             }
           }
