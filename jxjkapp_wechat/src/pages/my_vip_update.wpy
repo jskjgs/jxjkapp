@@ -66,13 +66,12 @@
       submit () {
         const pickeds = this.pickeds
         this.$_request({
-          url: '/precontract/',
-          method: 'PUT',
+          url: '/precontract/update',
+          method: 'POST',
           data: {
             id: this.id,
-            productSkuId: this.skuId,
-            precontractDate: pickeds.orderDate,
-            patientId: pickeds.patient,
+            date: new Date(pickeds.orderDate).getTime(),
+            skuId: this.skuId,
             areaId: pickeds.hospital
           }
         }, {showLoading: false}).then(content => {
@@ -105,18 +104,14 @@
     initPageData () {
       this.current = 1
       this.initData({
-        url: `/precontract/?id=${this.id}`
+        url: `/precontract/detail?id=${this.id}`
       }).then(content => {
         content = content || {}
-        const area = content.area || {}
-        const sku = content.sku || {}
-        const patientInfo = content.patientInfo || {}
-        this.skuId = sku.id
+        this.skuId = content.skuId
         this.pickeds = {
-          hospital: area.id,
-          projectName: sku.name,
-          orderDate: this.$_convertDate(content.precontractDate),
-          patient: patientInfo.id
+          hospital: content.areaId,
+          projectName: content.skuName,
+          orderDate: this.$_convertDate(content.precontractDate)
         }
         this.$apply()
       })

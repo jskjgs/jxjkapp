@@ -77,7 +77,7 @@
       :pickeds.sync="pickeds">
       <button 
         slot="submitBtn"
-        disabled="{{ !(pickeds.hospital != undefined && pickeds.orderDate != undefined && pickeds.patient != undefined) }}"
+        disabled="{{ !(pickeds.hospital != undefined && pickeds.orderDate != undefined) }}"
         class="submit-btn primary-btn"
         @tap="submit">
         确认提交
@@ -152,12 +152,12 @@
       submit () {
         const pickeds = this.pickeds
         this.$_request({
-          url: '/precontract/',
+          url: '/precontract/create',
           method: 'POST',
           data: {
-            productSkuId: this.skuId,
-            precontractDate: pickeds.orderDate,
-            patientId: pickeds.patient,
+            skuId: this.skuId,
+            date: new Date(pickeds.orderDate).getTime(),
+            // patientId: pickeds.patient,
             areaId: pickeds.hospital
           }
         }, {showLoading: false}).then(content => {

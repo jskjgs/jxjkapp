@@ -55,7 +55,7 @@
             </view>
             <view class="row flex--vcenter--sb" style="margin-top: 30rpx;">
               <view>
-                <view class="order-patient">就诊人：{{ item.patientName }}</view>
+                <!-- <view class="order-patient">就诊人：{{ item.patientName }}</view> -->
                 <view class="order-hospital">预约院区：{{ item.hospital }}</view>
                 <view class="order-date">预约时间：{{ item.date }}</view>
               </view>
@@ -104,8 +104,8 @@
           success: (res) => {
             if (res.confirm) {
               this.$_request({
-                url: `/precontract/?id=${id}`,
-                method: 'DELETE'
+                url: `/precontract/delete?id=${id}`,
+                method: 'POST'
               }).then(() => {
                 wx.showToast({
                   title: '删除成功!'
@@ -157,16 +157,16 @@
           current: 1
         }
       }, (listItem, res) => {
-        const skuData = listItem.sku || {}
-        const area = listItem.area || {}
-        const patientInfo = listItem.patientInfo || {}
+        // const skuData = listItem.sku || {}
+        // const area = listItem.area || {}
+        // const patientInfo = listItem.patientInfo || {}
         return {
           id: listItem.id,
           date: this.$_convertDate(listItem.precontractDate),
-          productName: skuData.name,
-          hospital: area.name,
-          patient: patientInfo.id,
-          patientName: patientInfo.name
+          productName: listItem.skuName,
+          hospital: listItem.areaName
+          // patient: patientInfo.id,
+          // patientName: patientInfo.name
         }
       })
     }

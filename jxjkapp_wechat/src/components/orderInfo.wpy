@@ -58,13 +58,13 @@
       valueBind: 'orderDate',
       rangeBind: 'orderDateList'
     }
-  }, {
+  }/*, {
     label: '就诊人',
     picker: {
       valueBind: 'patient',
       rangeBind: 'patientList'
     }
-  }]
+  }*/]
   
   export default class OrderInfo extends wepy.component {
     components = {
