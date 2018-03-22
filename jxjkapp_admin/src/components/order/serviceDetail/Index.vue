@@ -17,6 +17,7 @@ export default {
   },
   data () {
     return {
+      state: null,
       activeName: 'first',
       serviceId: this.$route.params.serviceId,
       serviceName: null,
@@ -99,6 +100,7 @@ export default {
     getServiceDetail () {
       queryServiceRecordApi(this.$route.params.id).then((res) => {
         let data = res.content || {}
+        this.state = data.state
         this.serviceName = data.serviceName
         this.recordNumber = data.recordNumber
         this.userName = data.name
@@ -112,9 +114,10 @@ export default {
         this.providerAutograph = data.doctorSign
 
         this.feedback.userComments = data.comment
+        this.feedback.serviceScore = data.level
         this.reject.rejectComments = data.rollbackComment
-        this.reject.rejectState = ['申请中', '同意退', '不同意退'][data.state]
-        // this.reject.rejectDate = data.serviceRollback.updateDate
+        this.reject.rejectState = data.state
+        this.reject.rejectDate = data.updateDate
         const userSignEl = this.$refs.userSign
         const doctorSignEl = this.$refs.doctorSignEl
         if (userSignEl) {
@@ -211,15 +214,15 @@ export default {
           <div class="info-item flex-item flex--vcenter">
             <span class="info-item__label">作废理由</span>:
             <span class="info-item__content">
-              {{reject.rejectComments}}
+              {{reject.rejectComments || '--'}}
             </span>
           </div>
           <div class="info-item flex-item flex--vcenter">
             <span class="info-item__label">审核状态</span>:
             <span class="info-item__content">
-              <el-select v-model="reject.rejectState"  :disabled="serviceState == 99" placeholder="请选择">
+              <el-select v-model="reject.rejectState"  :disabled="reject.rejectState == 1" placeholder="请选择">
                 <el-option
-                  v-for="(item,key,value) in reject.state"
+                  v-for="(value, key, index) in reject.state"
                   :key="key"
                   :label="key"
                   :value="value">
@@ -230,12 +233,12 @@ export default {
           <div class="info-item flex-item flex--vcenter">
             <span class="info-item__label">审核时间</span>:
             <span class="info-item__content">
-              {{reject.rejectDate}}
+              {{ typeof state === 'number' ? this.$_convertDate(reject.rejectDate) : '--'}}
             </span>
           </div>
           <el-button
             style="margin-top: 20px;"
-            v-show="serviceState == 98"
+            v-show="serviceState != 1"
             type="primary"
             @click="rejcetService">提交
           </el-button>
