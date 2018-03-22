@@ -4,10 +4,10 @@ import { fetchApi } from '@/utils/index'
 
 // 获取所有订单
 export const QUERY_ORDER_URL = '/order/list'
-export const queryOrderApi = (param) => {
+export const queryOrderApi = (params) => {
   return fetchApi({
     url: QUERY_ORDER_URL,
     type: 'get',
-    param
+    params
   })
 }

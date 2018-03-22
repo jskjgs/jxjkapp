@@ -20,12 +20,6 @@ export default {
       label: '病人姓名',
       valueKey: 'name'
     }, {
-      label: '手机号',
-      valueKey: 'userPhone'
-    }, {
-      label: '就诊卡号',
-      valueKey: 'patientCard'
-    }, {
       label: '服务种类',
       valueKey: 'orderCategroyName'
     }, {
@@ -142,9 +136,9 @@ export default {
           })
           return
         }
-        this.userId = data.user.id
-        this.userPhone = data.user.phone
-        this.patientCard = data.patientInfo.patientCard
+        data = data || {}
+        this.userId = data.userId
+        // this.userPhone = data.user.phone
         this.isVip = data.user.isVip
         this.state = payStateFormat(data.payState)
         let product = data.orderProductList[0]
@@ -208,7 +202,7 @@ export default {
       </template>
     </el-row>
     <div class="flex info-item" style="margin-top: 20px; align-items: flex-start;">
-      <span style="width: 60px;" class="flex-item--none info-item__label">备注信息</span>:
+      <span class="flex-item--none info-item__label">备注信息</span>:
       <el-input
         type="textarea"
         class="info-item__content"

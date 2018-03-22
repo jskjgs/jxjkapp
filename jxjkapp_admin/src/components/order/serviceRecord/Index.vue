@@ -11,6 +11,9 @@ import { convertDate } from '@/utils/index'
 import {
   queryServiceRecordApi
 } from './api'
+import {
+  INDEX as SERVICE_DETAIL_INDEX
+} from '../serviceDetail/_consts/routers'
 
 export default {
   name: 'ServiceRecord',
@@ -76,7 +79,7 @@ export default {
                 class="operate-item">
                 <el-button
                   type="text"
-                  onClick={() => this.openDetail(scope.row)}>
+                  onClick={() => this.openDetail(scope.row.id)}>
                   查看详情
                 </el-button>
               </span>
@@ -132,10 +135,8 @@ export default {
   watch: {
   },
   methods: {
-    openDetail (rowData) {
-      console.log(rowData)
-      rowData = !rowData ? {} : rowData
-      this.$router.push({name: 'order/serviceDetail_root', params: { serviceId: rowData.serviceId }})
+    openDetail (id) {
+      this.$router.push({name: SERVICE_DETAIL_INDEX.name, params: {id}})
     }
   }
 }

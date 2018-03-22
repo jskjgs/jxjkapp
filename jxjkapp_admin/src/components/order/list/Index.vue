@@ -108,7 +108,7 @@ export default {
         this.tableData = (content.records || []).map((item) => ({
           orderId: item.id,
           orderCode: item.code,
-          orderAmount: ('￥' + item.price),
+          orderAmount: ('￥' + item.payPrice),
           createTime: item.createDate,
           orderState: payStateFormat(item.paymentState),
           userName: item.name,
@@ -121,13 +121,7 @@ export default {
     return {
       keyWords: '',
       apiKeysMap: {
-        orderBy: {
-          value: 'create_time'
-        },
-        desc: {
-          value: true
-        },
-        payState: {
+        paymentState: {
           value: '1'
         }
       }
@@ -198,7 +192,7 @@ export default {
           </div>
         </div>
         <el-tabs 
-          v-model="apiKeysMap.payState.value"
+          v-model="apiKeysMap.paymentState.value"
           style="margin-top: 10px;">
           <el-tab-pane label="已支付" name="1"></el-tab-pane>
           <el-tab-pane label="未支付" name="0"></el-tab-pane>

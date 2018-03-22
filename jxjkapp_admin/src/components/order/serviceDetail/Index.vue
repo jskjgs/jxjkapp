@@ -5,7 +5,7 @@
  */
 import placeholderImg from '@/assets/images/placeholder.png'
 
-import { convertDate, convertServiceState } from '@/utils/index'
+import { convertServiceState } from '@/utils/index'
 import {
   queryServiceRecordApi,
   rejcetServiceApi
@@ -46,7 +46,7 @@ export default {
   created () {
     this.placeholderImg = placeholderImg
     console.log(this.$route.params)
-    if (this.$route.params.serviceId) {
+    if (this.$route.params.id) {
       this.getServiceDetail()
     }
   },
@@ -97,36 +97,31 @@ export default {
       })
     },
     getServiceDetail () {
-      queryServiceRecordApi({id: this.$route.params.serviceId}).then((res) => {
-        let data = res.content
-        console.log(data)
+      queryServiceRecordApi(this.$route.params.id).then((res) => {
+        let data = res.content || {}
         this.serviceName = data.serviceName
         this.recordNumber = data.recordNumber
-        this.userName = data.userInfo.name
-        this.userPhone = data.userInfo.phone
-        this.providerName = data.adminInfo ? data.adminInfo.name : null
-        this.serviceDate = convertDate(data.createDate)
-        this.serviceState = data.state
+        this.userName = data.name
+        this.userPhone = data.phone
+        this.providerName = data.employeeName
+        this.serviceDate = data.isComplete ? '--' : this.$_convertDate(data.updateDate, 'Y-M-D h:m')
+        this.serviceState = data.isComplete
         this.stateToString = convertServiceState(data.state)
-        this.serviceComments = data.doctorComment
+        this.serviceComments = data.doctorComment || '--'
         this.userAutograph = data.userSign
-
         this.providerAutograph = data.doctorSign
 
-        this.feedback.serviceScore = data.grade ? data.grade.level : 0
-        this.feedback.userComments = data.grade ? data.grade.comment : null
-        if (data.serviceRollback) {
-          this.reject.rejectComments = data.serviceRollback.comment
-          this.reject.rejectState = data.serviceRollback.state
-          this.reject.rejectDate = data.serviceRollback.updateDate
-        }
+        this.feedback.userComments = data.comment
+        this.reject.rejectComments = data.rollbackComment
+        this.reject.rejectState = ['申请中', '同意退', '不同意退'][data.state]
+        // this.reject.rejectDate = data.serviceRollback.updateDate
         const userSignEl = this.$refs.userSign
         const doctorSignEl = this.$refs.doctorSignEl
         if (userSignEl) {
           this.drawSign(userSignEl.getContext('2d'), JSON.parse(data.userSign))
         }
         if (doctorSignEl) {
-          this.drawSign(userSignEl.getContext('2d'), JSON.parse(data.doctorSign))
+          this.drawSign(doctorSignEl.getContext('2d'), JSON.parse(data.doctorSign))
         }
       })
     },
@@ -180,7 +175,7 @@ export default {
       </div>
       <div class="info-item flex--vcenter">
         <span class="info-item__label">状态</span>:
-        <span class="info-item__content">{{stateToString}}</span>
+        <span class="info-item__content">{{ serviceState ? '已完成' : '待服务' }}</span>
       </div>
       <div class="info-item flex--vcenter">
         <span class="info-item__label">当日症状</span>:
@@ -191,11 +186,11 @@ export default {
         v-model="activeName" 
         @tab-click="handleTab" 
         type="border-card">
-        <el-tab-pane label="客户签名" name="first">
-          <canvas id="userSign" class="sign-panel" ref="userSign" width="375" height="300"></canvas>
+        <el-tab-pane label="客户签名" name="first" class="flex--center">
+          <canvas id="userSign" class="sign-panel" ref="userSign"></canvas>
         </el-tab-pane>
-        <el-tab-pane label="医生签名" name="second">
-          <canvas id="doctorSign" class="sign-panel" ref="doctorSign" width="375" height="300"></canvas>
+        <el-tab-pane label="医生签名" name="second"  class="flex--center">
+          <canvas id="doctorSign" class="sign-panel" ref="doctorSign"></canvas>
         </el-tab-pane>
         <el-tab-pane label="用户反馈" name="third" class="flex--center">
           <div>
@@ -265,14 +260,13 @@ export default {
     }
   }
 
-  .sign-panel-wrap {
-    width: 190px;
+  .el-tab-pane {
     height: 300px;
-    overflow: hidden;
   }
+
   .sign-panel {
-    transform-origin: left top;
-    transform: scale(0.5);
+    width: 375px;
+    height: 100%;
   }
 }
 </style>

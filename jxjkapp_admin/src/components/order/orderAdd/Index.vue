@@ -64,7 +64,7 @@ export default {
       if (val == null) { return }
       console.log(val)
       this.productId = val.id
-      this.unitPrice = val.showPrice
+      this.unitPrice = val.salesPrice
     },
     totalPrice (newValue) {
       this.paymentPrice = null
