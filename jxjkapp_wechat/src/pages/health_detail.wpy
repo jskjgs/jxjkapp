@@ -133,6 +133,10 @@
     }
   }
 
+  .list-no-data {
+    height: calc(100vh - #{$topBox_H + 20rpx});
+  }
+
   .process-list {
     margin-top: $topBox_H + 20rpx;
     background: #fff;
@@ -219,7 +223,7 @@
 
 <template>
   <CustomPage :isLastPage.sync="isLastPage">
-    <view id="page-health-detail" wx:if="{{ listData.length }}">
+    <view id="page-health-detail">
       <view class="top-box flex--hcenter flex--col">
         <view class="top-box__image">
           <image src="../assets/images/health-bg.png" mode="aspectFill"/>
@@ -288,14 +292,17 @@
             <view class="item-btn-wrap flex">
               <button 
                 @tap="toCancel({{ item.id }}, {{ item }})" 
-                class="cancel-btn {{ item.state + '' === '98' ? 'canceling' : '' }}">{{ item.state + '' === '98' ? '处理中' : '申请作废' }}</button>
+                class="cancel-btn {{ item.state === 0 ? 'canceling' : '' }}">{{ item.state === 0 ? '处理中' : '申请作废' }}</button>
               <button 
                 @tap="toComment({{ item.id }}, {{ item }})" 
-                class="comment-btn {{ !!item.grade ? 'commented' : '' }}"
-                disabled="{{ !!item.grade }}">{{ !!item.grade ? '已' : '' }}评价</button>
+                class="comment-btn {{ !!item.gradeid ? 'commented' : '' }}"
+                disabled="{{ !!item.gradeid }}">{{ !!item.gradeid ? '已' : '' }}评价</button>
             </view>
           </view>
         </repeat>
+        <view wx:if="{{ listData.length === 0 }}" class="list-no-data flex--center">
+          暂无记录
+        </view>
       </view>
     </view>
   </CustomPage>
@@ -359,7 +366,7 @@
           productImage: encodeURIComponent(this.orderInfo.productImage)
         }
         wx.navigateTo({
-          url: `/pages/health_comment?id=${id}&orderProductId=${this.orderProductId}&orderInfo=${JSON.stringify(orderInfo)}` + (item.grade ? `&grade=${JSON.stringify(item.grade)}` : '') 
+          url: `/pages/health_comment?id=${id}&orderInfo=${JSON.stringify(orderInfo)}` + (item.gradeid ? `&gradeid=${item.gradeid}` : '') 
         })
       },
       toCancel (id, item) {
@@ -368,7 +375,7 @@
           productImage: encodeURIComponent(this.orderInfo.productImage)
         }
         wx.navigateTo({
-          url: `/pages/health_cancel?id=${id}&orderInfo=${JSON.stringify(orderInfo)}` + (item.state + '' === '98' ? `&cancelData=${JSON.stringify({account: item.account})}` : '')
+          url: `/pages/health_cancel?id=${id}&orderInfo=${JSON.stringify(orderInfo)}` + (item.state === 0 ? `&cancelData=${item.rollbackComment || ''}` : '')
         })
       }
     }
@@ -376,8 +383,8 @@
     events = {
     }
 
-    onLoad({orderProductId}) {
-      this.orderProductId = orderProductId
+    onLoad({orderDetailId}) {
+      this.orderDetailId = orderDetailId
     }
 
     onReady () {
@@ -414,17 +421,37 @@
     // 固定方法
     initPageData () {
       this.current = 1
-      this.getOrderProductInfo().then(() => {
-        this.getList().then(() => {
-          this.initSymptom()
-        })
+      // this.getOrderProductInfo().then(() => {
+      //   this.getList().then(() => {
+      //     this.initSymptom()
+      //   })
+      // })
+      this.getList().then(() => {
+        this.initSymptom()
+        this.$apply()
+      })
+    }
+
+    getServiceDetail () {
+      return this.$_request({
+        url: `/service/detail?orderDetailId=${this.orderDetailId}`
+      }).then(content => {
+        content = content || {}
+        this.orderInfo = {
+          serviceQuantity: content.totalNumber,
+          usedQuantity: content.useQty,
+          productName: content.skuName,
+          productImage: content.images,
+          description: ''
+        }
+        this.$apply()
       })
     }
 
     // 获取订单商品的基本信息
     getOrderProductInfo () {
       return this.$_request({
-        url: `/orderProduct/?id=${this.orderProductId}`
+        url: `/orderProduct/?id=${this.orderDetailId}`
       }).then(content => {
         if (!content) {
           throw new Error()
@@ -445,10 +472,10 @@
     // 获取记录列表
     getList () {
       return this.initData({
-        url: '/orderService/query',
-        method: 'POST',
+        url: '/serviceRecord/list',
+        method: 'GET',
         data: {
-          orderProductId: this.orderProductId
+          orderDetailId: this.orderDetailId
         }
       }, (listItem, index, content) => {
         const orderProduct = listItem.orderProduct || {}
@@ -459,13 +486,13 @@
           _symptomSpread: undefined,
           id: listItem.id,
           createDate: this.$_convertDate(listItem.createDate, 'Y-M-D h:m:s'),
-          doctorName: doctorUserInfo.name || doctorUserInfo.nickname || '',
+          doctorName: listItem.employeeName,
           doctorComment: listItem.doctorComment || '', // 症状 
-          grade: listItem.grade || '', // 用户评价
+          gradeid: listItem.gradeid,
           state: listItem.state || '', // 状态（申请作废中）
-          account: listItem.account // 作废理由
+          rollbackComment: listItem.rollbackComment
         }
-      })
+      }, undefined, this.getServiceDetail.bind(this))
     }
   }
 </script>

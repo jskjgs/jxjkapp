@@ -29,7 +29,7 @@ export default class ListPageMixin extends wepy.mixin {
     }
   }
 
-  initData (reqParams, resCb, toLoginFn = 'redirectTo') {
+  initData (reqParams, resCb, toLoginFn = 'redirectTo', otherPromise = Promise.reject) {
     if (reqParams) { // 暂存传入的参数
       this.initFnAgrs = {
         reqParams,
@@ -61,11 +61,16 @@ export default class ListPageMixin extends wepy.mixin {
           return resCb(item, index, content)
         })
         if (list.length === 0) { // 无数据
-          this.$invoke('CustomPage', 'initPage', {
-            noData: true
+          otherPromise().catch(() => {
+            this.$invoke('CustomPage', 'initPage', {
+              noData: true
+            })
           })
+        } else {
+          otherPromise().catch(() => {})
         }
       }
+
       this.$invoke('CustomPage', 'initPage', {
         dataInited: true
       })
@@ -76,8 +81,14 @@ export default class ListPageMixin extends wepy.mixin {
           title: '加载失败'
         })
       } else {
-        this.$invoke('CustomPage', 'initPage', {
-          noServer: true
+        otherPromise().then(() => {
+          this.$invoke('CustomPage', 'initPage', {
+            dataInited: true
+          })
+        }).catch(() => {
+          this.$invoke('CustomPage', 'initPage', {
+            noServer: true
+          })
         })
       }
     }).finally(() => {

@@ -115,11 +115,12 @@
       },
       submit () {
         this.$_request({
-          url: `/orderService/applyCancellation`,
+          url: `/Rollback/apply`,
           method: 'POST',
           data: {
-            id: this.id,
-            account: this.textareaValue
+            comment: this.textareaValue,
+            targetId: this.id,
+            type: 0
           }
         }).then(res => {
           this.readonly = true
@@ -134,9 +135,8 @@
       this.productName = orderInfo.productName
       this.productImage = decodeURIComponent(orderInfo.productImage)
       if (cancelData) {
-        cancelData = JSON.parse(cancelData)
         this.readonly = true
-        this.textareaValue = cancelData.account
+        this.textareaValue = cancelData
       } else {
         this.readonly = false
       }
