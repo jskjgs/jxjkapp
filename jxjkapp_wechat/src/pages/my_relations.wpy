@@ -22,7 +22,7 @@
           <view 
             class="menu--default__item"
             @tap="toRelationInfo({{ item.id }})">
-            <text class="item-label">{{ item.type === 0 ? '本人' : '就诊人' + index }}
+            <text class="item-label">{{ item.type === '主就诊人' ? '主就诊人' : item.type + index }}
             </text>
             <view class="item-value">
               <text>{{ item.name || '' }}</text>

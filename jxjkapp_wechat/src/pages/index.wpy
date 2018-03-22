@@ -423,7 +423,7 @@
           this.queueNotice = {
             project: content.serviceName || '',
             NO: content.number || '',
-            waitNum: content.beforeNumber || ''
+            waitNum: content.top || ''
           }
         })
       } else {
