@@ -7,7 +7,7 @@ import placeholderImg from '@/assets/images/placeholder.png'
 
 import SearchTable from '@/components/_common/searchTable/SearchTable'
 
-import { convertDate, convertServiceState } from '@/utils/index'
+import { convertDate } from '@/utils/index'
 import {
   queryServiceRecordApi
 } from './api'
@@ -18,6 +18,7 @@ export default {
     SearchTable
   },
   data () {
+    const vm = this
     this.tableAttrs = {
       'props': {
         'tooltip-effect': 'dark',
@@ -27,7 +28,7 @@ export default {
     }
     this.columnData = [{
       attrs: {
-        'prop': 'provider',
+        'prop': 'employeeName',
         'label': '服务人员',
         'min-width': '100',
         'show-overflow-tooltip': true
@@ -49,7 +50,7 @@ export default {
         'min-width': '100',
         'show-overflow-tooltip': true,
         'formatter' (row, col) {
-          return row.completeTime ? convertDate(row.completeTime, 'Y-M-D h:m') : '--'
+          return row.isComplete ? convertDate(row.updateDate, 'Y-M-D h:m') : '--'
         }
       }
     }, {
@@ -59,7 +60,7 @@ export default {
         'min-width': '100',
         'show-overflow-tooltip': true,
         'formatter' (row, col) {
-          return convertServiceState(row.serviceState)
+          return row.isComplete ? '已完成' : '待服务'
         }
       }
     }, {
@@ -89,14 +90,22 @@ export default {
       requestFn: queryServiceRecordApi,
       responseFn (data) {
         let content = data.content || {}
-        console.log(content.list)
-        this.tableData = (content.records || []).map((item) => ({
-          createDate: item.createDate,
-          serviceId: item.id,
-          provider: !item.adminInfo ? '' : item.adminInfo.name,
-          completeTime: !item.adminInfo ? null : item.adminInfo.updateDate,
-          serviceState: item.state
-        }))
+        this.tableData = (content.records || []).map((item) => {
+          vm.userName = item.name
+          vm.userPhone = item.phone
+          return {
+            createDate: item.createDate,
+            updateDate: item.updateDate,
+            orderDetailId: item.orderDetailId,
+            id: item.id,
+            patientId: item.userId,
+            patientName: item.name,
+            patientPhone: item.phone,
+            employeeName: item.employeeName,
+            employeeId: item.employeeId,
+            isComplete: item.isComplete !== 0
+          }
+        })
         this.total = content.total || 0
       }
     }
