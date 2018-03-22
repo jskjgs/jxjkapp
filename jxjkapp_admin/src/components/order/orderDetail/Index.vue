@@ -6,8 +6,6 @@
 
 import placeholderImg from '@/assets/images/placeholder.png'
 
-import { payStateFormat } from '@/utils/index'
-
 import {
   getOrderInfoApi, orderRefundmentApi, payOrderApi
 } from './api'
@@ -20,14 +18,21 @@ export default {
       label: '病人姓名',
       valueKey: 'name'
     }, {
-      label: '服务种类',
-      valueKey: 'orderCategroyName'
-    }, {
       label: '项目名称',
       valueKey: 'orderSkuName'
     }, {
       label: '订单状态',
-      valueKey: 'state'
+      valueKey: 'paymentState',
+      formatter (value) {
+        const DICT = {
+          0: '未支付',
+          1: '支付',
+          2: '申请中',
+          3: '申请通过',
+          99: '未申请通过'
+        }
+        return DICT[value]
+      }
     }, {
       label: '购买数量',
       valueKey: 'qty'
@@ -40,11 +45,8 @@ export default {
         return value == null ? '' : `￥${value}`
       }
     }, {
-      label: '折扣金额',
-      valueKey: 'discontPrice',
-      formatter (value) {
-        return value == null ? '' : `￥${value}`
-      }
+      label: '折扣',
+      valueKey: 'discount'
     }, {
       label: '总金额',
       valueKey: 'totalPrice',
@@ -68,11 +70,12 @@ export default {
         comment: '',
         isRefund: false
       },
+      discount: null,
       userId: null,
       userPhone: null,
       patientCard: null,
       isVip: false,
-      state: null,
+      paymentState: null,
       productId: null,
       qty: 0,
       discontPrice: 0,
@@ -137,24 +140,25 @@ export default {
           return
         }
         data = data || {}
+        this.name = data.userName
         this.userId = data.userId
-        // this.userPhone = data.user.phone
-        this.isVip = data.user.isVip
-        this.state = payStateFormat(data.payState)
-        let product = data.orderProductList[0]
-        console.log(this.patientCard)
-        this.orderCategroyName = product.productSkuName
-        this.orderSkuName = product.productSku.name
-        this.qty = product.quantity
-        this.discontPrice = data.discount
-        // this.comments = null,
-        this.paymentNumber = data.paymentCode
-        this.refundment.id = product.productSku.id
-        this.orderSkuName = product.productSkuName
-        this.orderCategroyName = product.productSku.name
-        this.unitPrice = product.productSku.salesPrice
-        this.totalPrice = data.orderSalesPrice
-        this.paymentPrice = data.orderPayPrice
+        this.orderSkuName = data.skuName
+        this.paymentState = data.paymentState
+        this.qty = data.quantity
+        this.unitPrice = data.salesPrice
+        this.discount = data.discount
+        this.totalPrice = data.price
+        this.paymentPrice = data.payPrice
+        // this.qty = product.quantity
+        // this.discontPrice = data.discount
+        // // this.comments = null,
+        // this.paymentNumber = data.paymentCode
+        // this.refundment.id = product.productSku.id
+        // this.orderSkuName = product.productSkuName
+        // this.orderCategroyName = product.productSku.name
+        // this.unitPrice = product.productSku.salesPrice
+        // this.totalPrice = data.orderSalesPrice
+        // this.paymentPrice = data.orderPayPrice
       }).catch((err) => {
         console.log(err)
       }).finally(() => {
@@ -167,11 +171,6 @@ export default {
 
 <template>
   <div id="orderDetail">
-    <div class="flex--vcenter page-top">
-      <div class="page-title">
-        <router-link to="/order"> 订单管理 </router-link> &gt; 订单详情
-      </div>
-    </div>
     <el-row :gutter="20" class="info-items">
       <el-col 
         v-for="item in ITEMS" :key="item.valueKey"
@@ -215,7 +214,7 @@ export default {
       <span class="info-item__label">缴费单号</span>:
       <el-input
         class="info-item__content flex-item--none"
-        :disabled="state === '已支付'"
+        :disabled="paymentState === 1"
         v-model="paymentNumber"
         placeholder="请输入来自HIS系统的缴费单号"
         style="width: 300px;margin-right: 20px;"/>
@@ -223,13 +222,13 @@ export default {
         <b v-show="isVip" style="color: red">*VIP用户如果不填写缴费单号则默认使用余额进行支付</b>
       </div>
     </div>
-    <div class="flex--vcenter"  style="margin-top: 20px;" v-show="state === '未支付'">
+    <div class="flex--vcenter"  style="margin-top: 20px;" v-show="paymentState === 0">
         <el-button
           type="primary"
           @click="handlePaymentOrder">缴费
         </el-button>
     </div>
-    <div class="flex--vcenter"  style="margin-top: 20px;" v-show="state === '已支付'">
+    <div class="flex--vcenter"  style="margin-top: 20px;" v-show="paymentState === 1">
         <span v-show="refundment.isRefund" >
           <p>注意:</p>
           <p>VIP是退款会直接返回余额中</p>
