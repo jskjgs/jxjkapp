@@ -144,6 +144,11 @@
               comment: this.textareaValue
             }
           }).then(() => {
+            wx.showToast({
+              title: '评论成功',
+              icon: 'success',
+              duration: 1500
+            })
             this.canComment = false
             this.commentDate = convertDate(new Date().getTime(), 'Y-M-D h:m:s')
             this.$apply()
@@ -155,14 +160,21 @@
     events = {
     }
 
-    onLoad({id, orderInfo, gradeid}) {
+    onLoad({id, orderInfo, grade}) {
       this.id = id
       orderInfo = JSON.parse(orderInfo)
       this.productName = orderInfo.productName
       this.productImage = decodeURIComponent(orderInfo.productImage)
-      if (gradeid) {
+      if (grade) {
         this.canComment = false
-
+        try {
+          grade = JSON.parse(grade)
+        } catch (e) {
+          grade = {}
+        }
+        console.log('grade', grade)
+        this.commentStar = grade.level
+        this.textareaValue = grade.comment
       } else {
         this.canComment = true
       }

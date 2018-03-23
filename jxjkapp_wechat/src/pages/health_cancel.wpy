@@ -123,8 +123,14 @@
             type: 0
           }
         }).then(res => {
+          wx.showToast({
+            title: '申请提交成功',
+            icon: 'success',
+            duration: 1500
+          })
           this.readonly = true
           this.creatDate = convertDate(new Date().getTime(), 'Y-M-D h:m:s')
+          this.$apply()
         })
       }
     }
