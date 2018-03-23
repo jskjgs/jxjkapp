@@ -132,7 +132,7 @@ export default {
       const uploadForm = (imageUrl) => {
         let sendData = {
           title: data.name,
-          sort: data.no,
+          // sort: data.no,
           id: data.id,
           imageUrl: imageUrl || '',
           content: data.richText // 内容

@@ -26,42 +26,33 @@
         hospAreaList: [],
         productTypeList: [],
         productList: [],
+        categoryId: undefined,
+        productId: undefined,
+        createTimeRange: [], // 预约时间
+        searchKeyword: '',
         apiKeysMap: {
-          projectId: {
+          categoryId: {
             value: undefined
           },
-          key: {
+          productId: {
             value: undefined
           },
-          status: {
+          startDate: {
             value: undefined
           },
-          startTime: {
-            value: undefined
-          },
-          endTime: {
-            value: undefined
-          },
-          doctorId: {
-            value: undefined
-          },
-          departmentId: {
+          stopDate: {
             value: undefined
           }
-        },
-        productType: undefined, // 服务类型
-        project: undefined, // 项目id
-        createTimeRange: [], // 预约时间
-        hospArea: this.$store.state.pickedArea.id, // 院区
-        searchKeyword: ''
+        }
+        // areaId: this.$store.state.pickedArea.id, // 院区
       }
     },
     created () {
-      if (this.userType !== 3) {
-        this.$_getAreaList().then(list => {
-          this.hospAreaList = list
-        })
-      }
+      // if (this.userType !== 3) {
+      //   this.$_getAreaList().then(list => {
+      //     this.hospAreaList = list
+      //   })
+      // }
       this.$_getProductTypeList().then(list => {
         this.productTypeList = list
       })
@@ -76,29 +67,31 @@
       }
     },
     watch: {
-      productType (type) {
-        this.getProductList(type)
+      categoryId (id) {
+        this.productId = undefined
+        this.getProductList(id)
       }
     },
     methods: {
-      getProductList (type) {
-        return this.$_getProductList({
-          productTypeId: type || this.productType
-        }).then(list => {
+      getProductList (typeId) {
+        return this.$_getProductList(typeId || this.categoryId).then(list => {
           this.productList = list
         })
       },
       handleSearch () {
         const createTimeRange = this.createTimeRange || []
         this.apiKeysMap = Object.assign({}, this.apiKeysMap, {
-          startTime: {
+          categoryId: {
+            value: this.categoryId || undefined
+          },
+          productId: {
+            value: this.productId || undefined
+          },
+          startDate: {
             value: new Date(createTimeRange[0] || '').getTime() || undefined
           },
-          endTime: {
+          stopDate: {
             value: new Date(createTimeRange[1] || '').getTime() || undefined
-          },
-          key: {
-            value: this.searchKeyword || undefined
           }
         })
       },
@@ -146,7 +139,7 @@
               <span class="tool-item__label">服务分类</span>：
               <el-select 
                 class="tool-item__content" 
-                v-model="productType" 
+                v-model="categoryId" 
                 placeholder="选择分类"
                 clearable>
                 <el-option
@@ -162,10 +155,10 @@
             <div class="tool-item">
               <span class="tool-item__label">项目名称</span>：
               <el-select 
-                v-model="project"
+                v-model="productId"
                 class="tool-item__content"
                 placeholder="选择项目"
-                :disabled="productType === undefined || productType === ''"
+                :disabled="categoryId === undefined || categoryId === ''"
                 clearable>
                 <el-option
                   v-for="item in productList"
@@ -190,12 +183,12 @@
           </el-col>
         </el-row>
         <el-row :gutter="20" style="margin-top: 20px;">
-          <el-col :span="8">
+          <!-- <el-col :span="8">
             <div class="tool-item" v-if="userType !== 3">
               <span class="tool-item__label">院区</span>：
               <el-select 
                 class="tool-item__content"
-                v-model="hospArea" 
+                v-model="areaId" 
                 placeholder="院区"
                 clearable>
                 <el-option
@@ -206,7 +199,7 @@
                 </el-option>
               </el-select>
             </div>
-          </el-col>
+          </el-col> -->
           <el-col :span="8">
             <div class="tool-item">
               <span class="tool-item__label">搜索关键字</span>：

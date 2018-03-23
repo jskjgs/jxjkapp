@@ -10,17 +10,16 @@ export default function () {
         const content = data.content || {}
         const list = content.records || []
         this.tableData = list.map(item => {
-          const sku = item.sku || {}
-          const area = item.area || {}
-          const user = item.userInfoVO || item.userInfo || {}
           return {
             id: item.id,
-            areaName: area.name,
-            productName: sku.name,
+            categoryId: item.categoryId,
+            categoryName: item.categoryName,
+            userId: item.userId,
+            userName: item.userName,
+            areaName: item.areaName,
+            productName: item.skuName,
             reserveDate: item.precontractDate,
-            userName: user.name,
-            phone: user.phone,
-            idCard: user.idCard
+            phone: item.phone
           }
         })
         this.total = content.total || 0
@@ -34,6 +33,12 @@ export default function () {
       }
     },
     columnData: [{
+      attrs: {
+        'prop': 'categoryName',
+        'label': '服务分类',
+        'min-width': '120'
+      }
+    }, {
       attrs: {
         'prop': 'productName',
         'label': '项目名称',
@@ -56,6 +61,12 @@ export default function () {
       }
     }, {
       attrs: {
+        'prop': 'userId',
+        'label': '用户ID',
+        'min-width': '100'
+      }
+    }, {
+      attrs: {
         'prop': 'userName',
         'label': '用户姓名',
         'min-width': '120'
@@ -64,12 +75,6 @@ export default function () {
       attrs: {
         'prop': 'phone',
         'label': '手机号',
-        'min-width': '120'
-      }
-    }, {
-      attrs: {
-        'prop': 'idCard',
-        'label': '就诊卡号',
         'min-width': '120'
       }
     }, {

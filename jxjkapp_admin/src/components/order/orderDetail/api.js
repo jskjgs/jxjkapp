@@ -10,12 +10,12 @@ export const getOrderInfoApi = (params) => {
   })
 }
 
-export const GET_ORDER_PAY = '/order/hisPay'
-export const payOrderApi = (params) => {
+export const GET_ORDER_PAY = '/order/pay'
+export const payOrderApi = (data) => {
   return fetchApi({
     url: GET_ORDER_PAY,
     type: 'post',
-    params
+    data
   })
 }
 

@@ -98,7 +98,10 @@ Object.defineProperties(Vue.prototype, {
     }
   },
   '$_getProductList': {
-    value (params) {
+    value (args) {
+      const params = typeof args === 'object' ? args : {
+        categoryId: args
+      }
       return getProductListApi(params).then(res => {
         const content = res.content || {}
         const list = content.records || []

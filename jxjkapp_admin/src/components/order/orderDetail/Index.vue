@@ -96,14 +96,14 @@ export default {
   },
   methods: {
     handlePaymentOrder () {
-      let data = {userId: this.userId, orderId: this.orderId, paymentNumber: this.paymentNumber}
-      payOrderApi(data).then((res) => {
+      return payOrderApi({
+        id: this.orderId,
+        payOrder: this.paymentNumber
+      }).then((res) => {
         this.$message({
           type: 'success',
           message: '缴费成功'
         })
-      }).catch((err) => {
-        console.log(err)
       })
     },
     handleRefundment () {
