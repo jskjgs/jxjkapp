@@ -77,12 +77,12 @@ export default function () {
         'label': '手机号',
         'min-width': '120'
       }
-    }, {
+    }/*, {
       attrs: {
         'min-width': '200',
         'label': '操作'
       },
       slotName: 'column-operate'
-    }]
+    } */]
   }
 }
