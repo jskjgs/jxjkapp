@@ -102,7 +102,7 @@ export default {
   <div class="edit-dialog doctor__edit-dialog">
     <el-dialog
       class="dialog--center"
-      title="编辑信息"
+      :title="`${data ? '编辑' : '新增'}员工`"
       :visible.sync="visible"
       @close="handleClose">
       <el-form
@@ -190,24 +190,6 @@ export default {
           </el-col>
         </el-row>
         <el-row :gutter="20">
-          <el-col :span="8">
-            <el-form-item
-              label="所属院区"
-              prop="areaId"
-              required
-              :rules="[
-                { required: true, message: '所属院区不能为空'}
-              ]">
-              <el-select v-model="form.areaId" placeholder="选择所属院区">
-                <el-option
-                  v-for="item in hospAreaList"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value">
-                </el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
           <el-col :span="8">
             <el-form-item
               label="职位"

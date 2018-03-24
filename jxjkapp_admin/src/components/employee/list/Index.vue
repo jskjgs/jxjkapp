@@ -101,10 +101,15 @@ export default {
     // 提交编辑或新增
     handleEditSubmit (data, respondCb) {
       let requestFn = adding ? createEmployeeApi : modifyEmployeeApi
-      data = Object.assign({}, data, {
+      data = {
+        id: data.id,
+        account: data.account,
+        password: data.password,
+        sex: data.sex,
+        title: data.title,
         author: data.authorId,
         nickname: data.name
-      })
+      }
       return requestFn(data).then(res => {
         this.$message({
           type: 'success',
@@ -200,19 +205,8 @@ export default {
       }
     }
 
-    .search-input {
-      width: 300px;
-      input {
-        border-radius: 18px;
-      }
-    }
     .search-label {
       color: $color3;
-    }
-    .btn-wrap {
-      .el-button {
-        border-radius: 18px;
-      }
     }
     .btn--del {
       background: $bg5;

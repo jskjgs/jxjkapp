@@ -68,7 +68,7 @@ export default function () {
         'min-width': '160',
         'show-overflow-tooltip': true,
         'formatter' (row) {
-          return row.sex === 0 ? '女' : '男'
+          return ['女', '男'][row.sex]
         }
       }
     }, {
