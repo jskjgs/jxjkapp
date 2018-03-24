@@ -76,14 +76,14 @@ export default {
       adding = !!isAdd
     },
     // 删除
-    delRow (rowData) {
-      this.$confirm('是否删除该分类？', '提示', {
+    delRow (ids) {
+      this.$confirm('是否删除选中的分类？', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning',
         beforeClose: (action, instance, done) => {
           if (action === 'confirm') {
-            delTypeApi({ids: [rowData.id]}).then(res => {
+            delTypeApi({ids: ids}).then(res => {
               done()
               this.$message({
                 type: 'success',
@@ -97,6 +97,10 @@ export default {
           }
         }
       })
+    },
+    // 批量删除
+    batchRemove () {
+      this.delRow(this.multipleSelection.map(item => item.id).join(','))
     },
     handleEditCancel () {
     },
@@ -175,7 +179,8 @@ export default {
             新增 <i class="el-icon-plus"></i>
           </el-button>
           <el-button
-            :disabled="!multipleSelection.length">
+            :disabled="!multipleSelection.length"
+            @click="batchRemove">
             批量删除
           </el-button>
         </div>

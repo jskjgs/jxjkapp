@@ -29,6 +29,7 @@ export default {
     this.listApi = tableCfg.listApi
 
     return {
+      multipleSelection: [],
       hospAreaList: [],
       pickedHospAreaId: this.$store.state.pickedArea.id, // 选择的院区id
       doctorName: '',
@@ -86,6 +87,11 @@ export default {
         }
       })
     },
+    // 多选
+    handleSelectionChange (val) {
+      console.log('handleSelectionChange')
+      this.multipleSelection = val
+    },
     // 打开编辑／新增弹框
     openEditDialog (rowData, isAdd) {
       this.editDialogVisible = true
@@ -93,14 +99,14 @@ export default {
       this.editData = rowData
     },
     // 删除医生
-    delRow ({id}) {
+    delRow (ids) {
       this.$confirm('是否删除该人员？', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning',
         beforeClose: (action, instance, done) => {
           if (action === 'confirm') {
-            delDoctorApi({ids: [id]}).then(() => {
+            delDoctorApi({ids}).then(() => {
               this.$message({
                 type: 'success',
                 message: '删除成功'
@@ -114,6 +120,10 @@ export default {
           }
         }
       })
+    },
+    // 批量删除
+    batchRemove () {
+      this.delRow(this.multipleSelection.map(item => item.id).join(','))
     },
     // 置顶
     toTop ({id}) {
@@ -209,6 +219,11 @@ export default {
             @click="openEditDialog(null, true)">
             新增 <i class="el-icon-plus"></i>
           </el-button>
+          <el-button
+            :disabled="!multipleSelection.length"
+            @click="batchRemove">
+            批量删除
+          </el-button>
         </div>
       </div>
       <el-table-column
@@ -243,7 +258,7 @@ export default {
               class="operate-item">
               <el-button 
                 type="text" 
-                @click="delRow(scope.row)">
+                @click="delRow(scope.row.id)">
                 删除
               </el-button>
             </span>
@@ -336,6 +351,16 @@ export default {
     .pagination-wrap {
       margin-top: 30px;
       text-align: right;
+    }
+    .el-table__header {
+      th:first-child {
+        .cell {
+          &:after {
+            content: '全选';
+            margin-left: 5px;
+          }
+        }
+      }
     }
   }
 </style>

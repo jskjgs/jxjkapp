@@ -8,9 +8,18 @@ export default function () {
         'tooltip-effect': 'dark',
         'style': 'width: 100%',
         'align': 'center'
+      },
+      'on': {
+        'selection-change': this.handleSelectionChange.bind(this)
       }
     },
     columnData: [{
+      attrs: {
+        'type': 'selection',
+        'width': '90',
+        'align': 'left'
+      }
+    }, {
       attrs: {
         'prop': 'name',
         'label': '姓名',

@@ -109,15 +109,15 @@ export default {
       }
     },
     // 删除单个banner
-    delRow (row) {
-      this.$confirm('是否删除该信息？', '提示', {
+    delRow (ids) {
+      this.$confirm('是否删除选中的Banner？', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning',
         beforeClose: (action, instance, done) => {
           if (action === 'confirm') {
             deleteBannerApi({
-              ids: [row.id]
+              ids
             }).then(res => {
               this.$message({
                 type: 'success',
@@ -135,16 +135,7 @@ export default {
     },
     // 批量删除
     batchRemove () {
-      deleteBannerApi({
-        ids: this.multipleSelection.map(item => item.id).join(',')
-      }).then(res => {
-        this.$message({
-          type: 'success',
-          message: '删除成功'
-        })
-        this.editDialogVisible = false
-        this.$refs.searchTable.getList()
-      })
+      this.delRow(this.multipleSelection.map(item => item.id).join(','))
     },
     // 提交编辑或新增
     handleEditSubmit (data, respondCb) {
@@ -283,7 +274,7 @@ export default {
               class="operate-item">
               <el-button 
                 type="text" 
-                @click="delRow(scope.row)">
+                @click="delRow(scope.row.id)">
                 删除
               </el-button>
             </span>
