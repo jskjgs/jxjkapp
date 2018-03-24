@@ -34,7 +34,7 @@ export default {
     return {
       productTypeList: [],
       searchKeyword: '',
-      productTypeId: '',
+      categoryId: '',
       multipleSelection: [],
       editDialogVisible: false,
       reverseInfoDialogVisible: false,
@@ -44,7 +44,7 @@ export default {
         name: {
           value: undefined
         },
-        productTypeId: {
+        categoryId: {
           value: undefined
         }
       }
@@ -72,8 +72,8 @@ export default {
         name: {
           value: this.searchKeyword || undefined
         },
-        productTypeId: {
-          value: this.productTypeId || undefined
+        categoryId: {
+          value: this.categoryId || undefined
         }
       })
     },
@@ -92,14 +92,14 @@ export default {
       this.reverseInfoData = rowData
     },
     // 删除单个banner
-    delRow (rowData) {
-      this.$confirm('是否删除该信息？', '提示', {
+    delRow (ids) {
+      this.$confirm('是否删除选中项目？', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning',
         beforeClose: (action, instance, done) => {
           if (action === 'confirm') {
-            delProductApi({ids: [rowData.id]}).then(res => {
+            delProductApi({ids}).then(res => {
               done()
               this.$message({
                 type: 'success',
@@ -114,13 +114,16 @@ export default {
         }
       })
     },
+    // 批量删除
+    batchRemove () {
+      this.delRow(this.multipleSelection.map(item => item.productId).join(','))
+    },
     // 提交编辑或新增
     handleEditSubmit (data, respondCb) {
       let formData
       const uploadForm = (imageUrl) => {
         let sendData = {
-          id: data.id,
-          areaId: data.areaId,
+          id: data.productId,
           name: data.name,
           description: data.description,
           images: imageUrl,
@@ -178,7 +181,7 @@ export default {
           </div>
           <div class="tool-item">
             分类名称：
-            <el-select v-model="productTypeId" placeholder="选择分类">
+            <el-select v-model="categoryId" placeholder="选择分类">
               <el-option
                 v-for="item in productTypeList"
                 :key="item.value"
@@ -201,7 +204,8 @@ export default {
             新增 <i class="el-icon-plus"></i>
           </el-button>
           <el-button
-            :disabled="!multipleSelection.length">
+            :disabled="!multipleSelection.length"
+            @click="batchRemove">
             批量删除
           </el-button>
         </div>
@@ -238,7 +242,7 @@ export default {
               class="operate-item">
               <el-button 
                 type="text" 
-                @click="delRow(scope.row)">
+                @click="delRow(scope.row.productId)">
                 删除
               </el-button>
             </span>

@@ -16,8 +16,7 @@ const formInitData = {
   description: '',
   cover: '',
   showPrice: '',
-  salePrice: '',
-  areaId: ''
+  salePrice: ''
 }
 
 import ImgUploader from '@/components/_common/imgUploader/ImgUploader.vue'
@@ -178,18 +177,6 @@ export default {
                   :key="item.value"
                   :label="item.label"
                   :value="item.value + ''">
-                </el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item class="doctor-hospArea" label="院区：">
-              <el-select v-model="form.areaId" placeholder="选择院区">
-                <el-option
-                  v-for="item in hospAreaList"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value">
                 </el-option>
               </el-select>
             </el-form-item>

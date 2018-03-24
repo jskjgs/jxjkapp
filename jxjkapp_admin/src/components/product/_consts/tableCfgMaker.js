@@ -11,6 +11,7 @@ export default function () {
         this.tableData = (content.records || []).map((item) => {
           return {
             id: item.id,
+            productId: item.productId,
             name: item.name,
             cover: item.images,
             type: item.categoryName,
