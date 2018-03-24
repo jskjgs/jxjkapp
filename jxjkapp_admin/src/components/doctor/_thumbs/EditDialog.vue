@@ -18,7 +18,6 @@ const initData = {
 const formInitData = {
   name: '',
   hospAreaName: '',
-  areaId: '',
   doctorTypeId: '',
   avatar: '',
   description: ''
@@ -44,7 +43,9 @@ export default {
   },
   data () {
     return {
-      form: Object.assign({}, formInitData),
+      form: {
+        ...formInitData
+      },
       submitLoading: false,
       fileInputValid: true,
       doctorTypeList: [] // 医生类别列表
@@ -65,7 +66,9 @@ export default {
       if (val) {
         Object.assign(this.form, this.data)
       } else {
-        this.form = Object.assign({}, formInitData)
+        this.form = {
+          ...formInitData
+        }
       }
     }
   },
@@ -99,10 +102,10 @@ export default {
         if (valid) {
           checkFileExist.then(() => {
             this.submitLoading = true
-            console.log(Object.assign({}, this.form, {
+            this.$emit('submit', {
+              ...this.form,
               file: fileObj
-            }))
-            this.$emit('submit', this.form, (success) => {
+            }, (success) => {
               this.submitLoading = false
               if (success) {
                 this.visible = false
@@ -120,10 +123,7 @@ export default {
       })
       this.$refs.ruleForm.resetFields()
       this.form = {
-        name: '',
-        hospAreaName: '',
-        avatar: '',
-        description: ''
+        ...formInitData
       }
       this.$refs.imgUploader.clearFileInput()
     },
@@ -148,24 +148,24 @@ export default {
         label-position="top">
         <el-row :gutter="20">
           <el-col :span="8">
-            <el-form-item class="doctor-name" label="姓名：">
+            <el-form-item 
+              class="doctor-name" 
+              label="姓名："
+              prop="name"
+              :rules="[
+                { required: true, message: '请输入姓名'}
+              ]">
               <el-input v-model="form.name" />
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item class="doctor-hospArea" label="院区：">
-              <el-select v-model="form.areaId" placeholder="选择院区">
-                <el-option
-                  v-for="item in areaList"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value">
-                </el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <!-- <el-col :span="8">
-            <el-form-item class="doctor-name" label="类别：">
+            <el-form-item 
+              class="doctor-name" 
+              label="类别："
+              prop="doctorTypeId"
+              :rules="[
+                { required: true, message: '请选择医生分类'}
+              ]">
               <el-select v-model="form.doctorTypeId" placeholder="选择类别">
                 <el-option
                   v-for="item in doctorTypeList"
@@ -175,7 +175,7 @@ export default {
                 </el-option>
               </el-select>
             </el-form-item>
-          </el-col> -->
+          </el-col>
         </el-row>
         <el-row>
           <el-col :span="16">

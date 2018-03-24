@@ -126,7 +126,6 @@ export default {
           headPortrait: imageUrl || data.avatar,
           id: data.id,
           description: data.description,
-          areaId: data.areaId,
           doctorTypeId: data.doctorTypeId
         }
         const requestFn = adding ? addDoctorApi : modifyDoctorApi
@@ -179,7 +178,7 @@ export default {
       :api-keys-map="apiKeysMap">
       <div class="table-tools flex--vcenter" slot="table-tools">
         <div class="search-wrap flex--vcenter">
-          <div class="tool-item" v-if="userType !== 3">
+          <!-- <div class="tool-item" v-if="userType !== 3">
             院区：
             <el-select v-model="pickedHospAreaId" placeholder="选择院区">
               <el-option
@@ -189,7 +188,7 @@ export default {
                 :value="item.id">
               </el-option>
             </el-select>
-          </div>
+          </div> -->
           <div class="tool-item">
             医生姓名：
             <el-input 
@@ -248,7 +247,7 @@ export default {
                 删除
               </el-button>
             </span>
-            <span
+            <!-- <span
               class="operate-item">
               <el-button 
                 type="text" 
@@ -256,7 +255,7 @@ export default {
                 @click="toTop(scope.row)">
                 置顶
               </el-button>
-            </span>
+            </span> -->
           </div>     
         </template>
       </el-table-column>
