@@ -4,13 +4,14 @@
    * Date: 2017/10/20
    */
   import {
-    userInfoApi,
-    updateInfoApi,
-    updateVipApi
+    getPaientInfoApi
   } from '../api'
 
   export default {
     name: 'UserDetails',
+    props: {
+      patientId: null
+    },
     components: {
     },
     data () {
@@ -44,8 +45,8 @@
       }]
 
       return {
-        userInfo: {},
-        patientInfo: {},
+        basicInfo: {},
+        formInfo: {},
         datePickerOptions: {
           disabledDate (time) {
             return time.getTime() >= Date.now() - 8.64e7
@@ -54,51 +55,31 @@
       }
     },
     created () {
-      this.getUserInfo()
+      if (+this.patientId) {
+        this.getPatientInfo()
+      }
     },
     watch: {
+      patientId (newId) {
+        if (+newId) {
+          this.getPatientInfo(newId)
+        }
+      }
     },
     methods: {
-      getUserInfo () {
-        const params = this.$route.params
-        const id = params.id
-        return userInfoApi({
-          id
-        }).then(res => {
+      getPatientInfo (id) {
+        return getPaientInfoApi(id || this.patientId).then((res) => {
           const content = res.content || {}
-          const { patientInfoList, ...userInfo } = content
-          this.userInfo = userInfo
-          this.patientInfo = (patientInfoList || [])[0] || {}
-          if (this.unwatchVip) {
-            this.unwatchVip()
+          const {phone, sex, patientCard, ...formInfo} = content
+          this.basicInfo = {
+            phone,
+            sex,
+            patientCard
           }
-          this.unwatchVip = this.$watch('userInfo.isVip', (newVal) => {
-            this.updateVipStatus(newVal)
-          })
-        })
-      },
-      updateVipStatus (isVip) {
-        const params = this.$route.params
-        const id = params.id
-        return updateVipApi(id).then(res => {
-          this.$message({
-            type: 'success',
-            message: `当前用户改为${isVip === 0 ? '普通用户' : 'VIP用户'}`
-          })
+          this.formInfo = formInfo
         })
       },
       updateInfo () {
-        return updateInfoApi({
-          ...this.userInfo,
-          patientInfoList: [{
-            ...this.patientInfo
-          }]
-        }).then(res => {
-          this.$message({
-            type: 'success',
-            message: '更新成功'
-          })
-        })
       }
     }
   }
@@ -109,28 +90,14 @@
       <el-row :gutter="20">
         <el-col :span="8">
           <div class="info-item">
-            <span class="info-item__label">用户姓名</span>
-            <span class="info-item__content">{{ userInfo.name }}</span>
-          </div>
-        </el-col>
-        <el-col :span="8">
-          <div class="info-item">
             <span class="info-item__label">手机号</span>
-            <span class="info-item__content">{{ userInfo.phone }}</span>
-          </div>
-        </el-col>
-      </el-row>
-      <el-row :gutter="20">
-        <el-col :span="8">
-          <div class="info-item">
-            <span class="info-item__label">用户性别</span>
-            <span class="info-item__content">{{ userInfo.sex === 0 ? '女' : '男' }}</span>
+            <span class="info-item__content">{{ basicInfo.phone }}</span>
           </div>
         </el-col>
         <el-col :span="8">
           <div class="info-item">
-            <span class="info-item__label">用户ID</span>
-            <span class="info-item__content">{{ userInfo.id }}</span>
+            <span class="info-item__label">性别</span>
+            <span class="info-item__content">{{ basicInfo.sex === 0 ? '女' : '男' }}</span>
           </div>
         </el-col>
       </el-row>
@@ -138,23 +105,14 @@
         <el-col :span="8">
           <div class="info-item">
             <span class="info-item__label">就诊卡号</span>
-            <span class="info-item__content">{{ patientInfo.patientCard }}</span>
+            <span class="info-item__content">{{ basicInfo.patientCard }}</span>
           </div>
         </el-col>
       </el-row>
     </div>
-    <div class="block-item auth-block flex--vcenter">
-      <div class="info-item">
-        <span class="info-item__label">权限</span>
-        <span class="info-item__content">
-          <el-radio class="radio" v-model="userInfo.isVip" :label="0">普通用户</el-radio>
-          <el-radio class="radio" v-model="userInfo.isVip" :label="1">VIP</el-radio>
-        </span>
-      </div>
-    </div>
     <div class="block-item form-block">
       <el-form 
-        :model="patientInfo" 
+        :model="formInfo" 
         ref="ruleForm" 
         label-position="left"
         label-width="90px">
@@ -163,7 +121,7 @@
             <el-form-item 
               label="联系地址" 
               prop="address">
-              <el-input v-model="patientInfo.address"></el-input>
+              <el-input v-model="formInfo.address"></el-input>
             </el-form-item>
           </el-col>
         </el-row>
@@ -173,7 +131,7 @@
               label="有无过敏史" 
               prop="allergies">
               <el-input 
-                v-model="patientInfo.allergies"
+                v-model="formInfo.allergies"
                 placeholder="没有则不填写"></el-input>
             </el-form-item>
           </el-col>
@@ -182,7 +140,7 @@
               label="有无疾病史" 
               prop="disease">
               <el-input 
-                v-model="patientInfo.disease"
+                v-model="formInfo.disease"
                 placeholder="没有则不填写"></el-input>
             </el-form-item>
           </el-col>
@@ -193,7 +151,7 @@
               label="分娩日期" 
               prop="deliveryDate">
               <el-date-picker
-                v-model="patientInfo.deliveryDate"
+                v-model="formInfo.deliveryDate"
                 type="date"
                 placeholder="选择日期"
                 :picker-options="datePickerOptions">
@@ -210,7 +168,7 @@
                 <el-select 
                   class="flex-item"
                   style="margin-right: 20px;"
-                  v-model="patientInfo.deliveryInfo" 
+                  v-model="formInfo.deliveryInfo" 
                   placeholder="请选择">
                   <el-option
                     v-for="item in laborCases"
@@ -221,7 +179,7 @@
                 </el-select>
                 <el-select 
                   class="flex-item"
-                  v-model="patientInfo.babySex" 
+                  v-model="formInfo.babySex" 
                   placeholder="婴儿性别">
                   <el-option
                     v-for="item in genderList"
@@ -240,7 +198,7 @@
               label="传染病" 
               prop="type">
               <el-input 
-                v-model="patientInfo.disease"
+                v-model="formInfo.disease"
                 placeholder="没有则不填写"></el-input>
             </el-form-item>
           </el-col>
@@ -252,7 +210,7 @@
               prop="type">
               <el-select 
                 class="flex-item"
-                v-model="patientInfo.userSource" 
+                v-model="formInfo.userSource" 
                 placeholder="请选择">
                 <el-option
                   v-for="item in userSourceList"
@@ -303,6 +261,8 @@
   }
 
   .form-block {
+    margin-top: 20px;
+    border-top: 1px solid #ccc;
     .el-row {
       & + .el-row {
         margin-top: 0px;

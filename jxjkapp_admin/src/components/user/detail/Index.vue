@@ -7,12 +7,19 @@
   import OrderHistory from './_thumbs/orderHistory/Index'
   import RechargeRecord from './_thumbs/Recharge'
 
+  import {
+    getPaientsApi
+  } from './api'
+
   export default {
     name: 'UserDetail',
     components: {
       UserDetails,
       OrderHistory,
       RechargeRecord
+    },
+    created () {
+      this.getPaientList()
     },
     data () {
       this.tabs = {
@@ -21,9 +28,14 @@
         RechargeRecord
       }
       return {
+        patientList: [],
+        activePatientId: undefined
       }
     },
     computed: {
+      userId () {
+        return this.$route.params.id
+      },
       activeTab: {
         get () {
           return this.$route.query.tab || 'UserDetails'
@@ -40,26 +52,35 @@
       }
     },
     methods: {
+      // 获取就诊人列表
+      getPaientList () {
+        return getPaientsApi(this.userId).then(res => {
+          const content = res.content || {}
+          const list = content.records || []
+          this.patientList = list
+          this.activePatientId = list[0].id + ''
+        })
+      }
     }
   }
 </script>
 <template>
   <div id="user-detail-wrap">
-    <!-- <div class="user-summary">
-      <div class="summary-item">
-        <span class="summary-item__label">用户姓名</span>:
-        <span class="summary-item__content"></span>
-      </div>
-    </div> -->
+    <el-tabs class="patient-tabs" v-model="activePatientId">
+      <el-tab-pane 
+        v-for="patient in patientList"
+        :key="patient.id + ''"
+        :label="patient.name" 
+        :name="patient.id + ''" />
+    </el-tabs>
     <div class="user-info-wrap">
       <el-tabs v-model="activeTab">
         <el-tab-pane label="详细资料" name="UserDetails"></el-tab-pane>
         <el-tab-pane label="订单记录" name="OrderHistory"></el-tab-pane>
-        <el-tab-pane label="充值记录" name="RechargeRecord"></el-tab-pane>
       </el-tabs>
       <div class="activeTab-wrap">
         <keep-alive>
-          <component :is="activeTab"></component>
+          <component :is="activeTab" :patientId="activePatientId"></component>
         </keep-alive>
       </div>
     </div>
@@ -67,6 +88,12 @@
 </template>
 <style lang="scss">
 #user-detail-wrap {
+  .patient-tabs {
+    .el-tabs__active-bar {
+      display: none;
+    }
+  }
+
   .user-info-wrap {
     margin-top: 20px;
     border: 1px solid #ccc;

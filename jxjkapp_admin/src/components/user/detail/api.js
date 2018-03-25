@@ -1,5 +1,29 @@
 import { fetchApi } from '@/utils/index'
 
+// 获取就诊人列表
+export const GET_PATIENTS_URL = '/patient/list'
+export const getPaientsApi = (userId) => {
+  return fetchApi({
+    url: GET_PATIENTS_URL,
+    type: 'get',
+    params: {
+      userId
+    }
+  })
+}
+
+// 获取就诊人信息
+export const GET_PATIENT_INFO_URL = '/patient/detail'
+export const getPaientInfoApi = (id) => {
+  return fetchApi({
+    url: GET_PATIENT_INFO_URL,
+    type: 'get',
+    params: {
+      id
+    }
+  })
+}
+
 // 获取用户订单列表
 export const GET_ORDER_LIST_URL = '/order/list'
 export const getOrderListApi = (params) => {
@@ -27,18 +51,6 @@ export const updateInfoApi = (data) => {
     url: UPDATE_INFO_URL,
     type: 'post',
     data
-  })
-}
-
-// 更新用户vip信息
-export const UPDATE_VIP_URL = '/userInfo/vip'
-export const updateVipApi = (id) => {
-  return fetchApi({
-    url: UPDATE_VIP_URL,
-    type: 'post',
-    params: {
-      id
-    }
   })
 }
 
