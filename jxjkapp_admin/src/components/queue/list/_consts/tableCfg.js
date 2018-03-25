@@ -45,8 +45,14 @@ export default function () {
               <el-button
                   type="text"
                   class="operate-item"
-                  onClick={() => this.skipQueue(scope.row)}>
+                  onClick={() => this.cutQueue(scope.row.id)}>
                   插队
+              </el-button>
+              <el-button
+                  type="text"
+                  class="operate-item"
+                  onClick={() => this.missQueue(scope.row.id)}>
+                  过号
               </el-button>
             </div>
           )

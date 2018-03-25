@@ -10,32 +10,48 @@ export const getListApi = (params) => {
   })
 }
 
+// 当前排队号信息
+export const CURRENT_CALL = '/queue/current'
+export const getCurrentApi = () => {
+  return fetchApi({
+    url: CURRENT_CALL,
+    type: 'get'
+  })
+}
+
 // 呼叫下一位
-export const CALL_NEXT = '/queue/complete'
-export const callNext = (data) => {
+export const CALL_NEXT = '/queue/next'
+export const callNextApi = (id) => {
   return fetchApi({
     url: CALL_NEXT,
     type: 'post',
-    data
+    data: {
+      id
+    }
   })
 }
 
-// 呼叫下一位
-export const JUMP_QUEUE = '/call/admin/put'
-export const JumpQueue = (data) => {
+// 过号
+export const MISS_QUEUE = '/queue/miss'
+export const missQueueApi = (id) => {
   return fetchApi({
-    url: JUMP_QUEUE,
+    url: MISS_QUEUE,
     type: 'post',
-    data
+    data: {
+      id
+    }
   })
 }
 
-// 获取排队列表
-export const CURRENT_CALL = '/queue/current'
-export const getCurrentApi = (params) => {
+// 插队
+export const CUT_QUEUE = '/queue/setIndex'
+export const cutQueueApi = (id, index) => {
   return fetchApi({
-    url: CURRENT_CALL,
-    type: 'get',
-    params
+    url: CUT_QUEUE,
+    type: 'post',
+    data: {
+      id,
+      index
+    }
   })
 }

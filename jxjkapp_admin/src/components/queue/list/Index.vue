@@ -6,9 +6,13 @@
 import SearchTable from '@/components/_common/searchTable/SearchTable'
 import tableCfgMaker from './_consts/tableCfg'
 import {
-  getListApi, callNext, getCurrentApi, JumpQueue
+  getCurrentApi,
+  getListApi,
+  callNextApi,
+  cutQueueApi,
+  missQueueApi
 } from './api'
-import { Loading } from 'element-ui'
+// import { Loading } from 'element-ui'
 export default {
   name: 'Queue',
   components: {
@@ -28,9 +32,9 @@ export default {
             queueNum: item.number,
             userName: item.userName,
             userId: item.userId,
-            phone: item.userPhone,
-            serviceName: item.serviceName,
-            serviceId: item.id
+            phone: item.phone,
+            serviceName: item.skuName,
+            serviceId: item.skuId
           }
         })
       }
@@ -39,9 +43,6 @@ export default {
     this.currentInfoList = [{
       label: '用户姓名',
       valueKey: 'userName'
-    }, {
-      label: '用户ID',
-      valueKey: 'userId'
     }, {
       label: '手机号',
       valueKey: 'userPhone'
@@ -75,34 +76,12 @@ export default {
     this.getCurrent()
   },
   methods: {
-    // 跳过排队
-    skipQueue (rowData) {
-      this.$confirm('确定执行插队操作？', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning',
-        beforeClose: (action, instance, done) => {
-          if (action === 'confirm') {
-            JumpQueue({phone: rowData.phone, number: rowData.queueNum, orderProductId: rowData.serviceId, userId: rowData.userId}).then((res) => {
-              this.$message({
-                type: 'success',
-                message: '插队成功'
-              })
-              this.$refs.searchTable.getList()
-            }).finally(() => {
-              done()
-            })
-          } else {
-            done()
-          }
-        }
-      })
-    },
     getCurrent () {
       return getCurrentApi().then((res) => {
         const data = res.content
         if (data) {
           this.currentInfo = {
+            id: data.id,
             userName: data.userName,
             userId: data.id,
             userPhone: data.userPhone,
@@ -114,18 +93,53 @@ export default {
         }
       })
     },
-    next () {
-      callNext().then((res) => {
-        let loading = Loading.service({ fullscreen: true })
-        this.getCurrent().then(() => {
-          loading.close()
-        })
-        this.apiKeysMap = Object.assign({}, this.apiKeysMap)
-        // TODO 刷新当页列表
-        // this.$router.go({name: 'queue_root'})
-      }).catch((err) => {
-        console.log(err)
+    actionHanler (type, id) {
+      const DICT = {
+        'callNext': {
+          apiFn: callNextApi,
+          label: '呼叫下一位'
+        },
+        'cutQueue': {
+          apiFn: cutQueueApi,
+          label: '插队'
+        },
+        'missQueue': {
+          apiFn: missQueueApi,
+          label: '过号'
+        }
+      }
+      this.$confirm(`确定执行${DICT[type].label}操作？`, '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning',
+        beforeClose: (action, instance, done) => {
+          if (action === 'confirm') {
+            DICT[type].apiFn(id).then((res) => {
+              this.$message({
+                type: 'success',
+                message: `${DICT[type].label}成功`
+              })
+              this.$refs.searchTable.getList()
+              this.getCurrent()
+            }).finally(() => {
+              done()
+            })
+          } else {
+            done()
+          }
+        }
       })
+    },
+    callNext (id) {
+      this.actionHanler('callNext', id)
+    },
+    // 插队
+    cutQueue (id) {
+      this.actionHanler('cutQueue', id)
+    },
+    // 过号
+    missQueue (id) {
+      this.actionHanler('missQueue', id)
     },
     add () {
       this.$router.push({name: 'queue/add_root'})
@@ -154,7 +168,7 @@ export default {
         </div>
       </div>
       <div class="btn-wrap flex-item--none flex--center" style="margin-left: 20px; width: 150px;">
-        <el-button type="primary" @click="next">下一位</el-button>
+        <el-button type="primary" @click="callNext(currentInfo.id)">下一位</el-button>
       </div>
     </div>
     <search-table
