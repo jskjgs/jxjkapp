@@ -212,7 +212,7 @@ export default {
               ]">
               <el-select v-model="form.authorId" placeholder="选择权限">
                 <el-option
-                  v-for="item in [{label: '医生', value: 0}, {label: '主管', value: 1}, {label: '集团领导', value: 2}, {label: '超级用户', value: 3}]"
+                  v-for="item in [{label: '医生', value: 0}, {label: '主管', value: 1}, {label: '集团领导', value: 2}, {label: '超级管理员', value: 3}]"
                   :key="item.value"
                   :label="item.label"
                   :value="item.value">
