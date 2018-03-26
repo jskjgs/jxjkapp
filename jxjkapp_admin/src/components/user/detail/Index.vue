@@ -6,6 +6,7 @@
   import UserDetails from './_thumbs/Details'
   import OrderHistory from './_thumbs/orderHistory/Index'
   import RechargeRecord from './_thumbs/Recharge'
+  import _merge from 'lodash/merge'
 
   import {
     getPaientsApi
@@ -28,11 +29,25 @@
         RechargeRecord
       }
       return {
-        patientList: [],
-        activePatientId: undefined
+        patientList: []
       }
     },
     computed: {
+      activePatientId: {
+        get () {
+          return this.$route.query.patientId
+        },
+        set (val) {
+          if (+val) {
+            const {name, query, params} = this.$route
+            this.$router.replace(_merge({}, {name, query, params}, {
+              query: {
+                patientId: val
+              }
+            }))
+          }
+        }
+      },
       userId () {
         return this.$route.params.id
       },
@@ -58,7 +73,7 @@
           const content = res.content || {}
           const list = content.records || []
           this.patientList = list
-          this.activePatientId = list[0].id + ''
+          this.activePatientId = +this.$route.query.patientId || (list[0].id + '')
         })
       }
     }

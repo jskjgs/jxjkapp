@@ -210,11 +210,14 @@ export const getAccountInfo = (function () {
  * 订单状态
  */
 export const payStateFormat = (state) => {
-  if (state === 0) { return '未支付' }
-  if (state === 1) { return '已支付' }
-  if (state === 2) { return '退款申请中' }
-  if (state === 3) { return '退款完毕' }
-  return state
+  const DICT = {
+    '0': '未支付',
+    '1': '支付',
+    '2': '申请中',
+    '3': '申请通过',
+    '99': '未申请通过'
+  }
+  return DICT[state]
 }
 
 /**

@@ -14,7 +14,7 @@ export default function () {
         let content = data.content || {}
         this.tableData = (content.records || []).map((item) => {
           return {
-            id: item.code,
+            id: item.id,
             orderPayPrice: item.price,
             createDate: item.createDate,
             payState: payStateFormat(item.paymentState),

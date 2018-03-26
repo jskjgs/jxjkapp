@@ -24,6 +24,21 @@
       return {
         keyword: '',
         apiKeysMap: {
+          userId: {
+            value: this.$route.params.id
+          },
+          patientInfoId: {
+            value: this.$route.query.patientId
+          }
+        }
+      }
+    },
+    created () {
+    },
+    watch: {
+      '$route.query' (newQuery) {
+        if (newQuery.patitentId) {
+          this.apiKeysMap.patientInfoId = newQuery.patitentId
         }
       }
     },

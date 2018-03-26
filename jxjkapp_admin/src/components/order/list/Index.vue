@@ -224,17 +224,9 @@ export default {
 
     .search-input {
       width: 300px;
-      input {
-        border-radius: 18px;
-      }
     }
     .search-label {
       color: $color3;
-    }
-    .btn-wrap {
-      .el-button {
-        border-radius: 18px;
-      }
     }
     .btn--del {
       background: $bg5;
