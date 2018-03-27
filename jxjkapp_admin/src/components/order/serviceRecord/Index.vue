@@ -144,11 +144,6 @@ export default {
 
 <template>
   <div id="order">
-    <div class="flex--vcenter page-top">
-      <div class="page-title">
-        <router-link to="/order"> 订单管理 </router-link> > 服务记录
-      </div>
-    </div>
     <search-table
       ref="searchTable"
       :table-attrs="tableAttrs"

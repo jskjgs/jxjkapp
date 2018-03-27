@@ -146,16 +146,13 @@ export default {
       })
     },
     newOrder (rowData) {
-      rowData = !rowData ? {} : rowData
       this.$router.push({name: 'order/add_root'})
     },
     openDetail (rowData) {
-      rowData = !rowData ? {} : rowData
-      this.$router.push({name: 'order/detail_root', params: { orderId: rowData.orderId }})
+      this.$router.push({name: 'order/detail_root', params: {orderId: rowData.orderId}})
     },
     openServiceRecord (rowData) {
-      rowData = !rowData ? {} : rowData
-      this.$router.push({name: 'order/serviceRecord_root', params: { orderId: rowData.orderId, userName: rowData.userName, userPhone: rowData.phoneNumber }})
+      this.$router.push({name: 'order/serviceRecord_root', params: {orderId: rowData.orderId}})
     }
   }
 }

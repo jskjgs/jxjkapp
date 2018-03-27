@@ -34,7 +34,7 @@ export default {
 
 <template>
   <div id="user-order-detail-wrap">
-    <div class="flex--vcenter page-top" style="margin-bottom: 20px;">
+    <!-- <div class="flex--vcenter page-top" style="margin-bottom: 20px;">
       <div class="page-title">
         <router-link 
           :to="{
@@ -45,7 +45,7 @@ export default {
             }
           }"> 订单记录 </router-link> &gt; 订单详情
       </div>
-    </div>
+    </div> -->
     <div class="content-wrap">
       <OrderDetail></OrderDetail>
     </div>
