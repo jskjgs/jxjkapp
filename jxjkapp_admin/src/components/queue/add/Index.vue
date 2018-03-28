@@ -5,7 +5,6 @@
  */
 import placeholderImg from '@/assets/images/placeholder.png'
 import SearchTable from '@/components/_common/searchTable/SearchTable'
-import { userStateFormat } from '@/utils/index'
 
 import {
   getUserInfoApi,
@@ -28,7 +27,7 @@ export default {
     }
     this.columnData = [{
       attrs: {
-        'prop': 'orderCode',
+        'prop': 'orderId',
         'label': '订单号',
         'min-width': '120',
         'show-overflow-tooltip': true
@@ -92,7 +91,9 @@ export default {
   methods: {
     handleSearch () {
       getUserInfoApi({phone: this.keyWords}).then((res) => {
-        let user = res.content.list[0]
+        const content = res.content || {}
+        const list = content.records || []
+        const user = list[0]
         if (!user) {
           this.$message({
             type: 'error',
@@ -103,21 +104,20 @@ export default {
         this.userId = user.id
         this.userName = user.name
         this.userPhone = user.phone
-        this.userType = userStateFormat(user.isVip)
+        this.userType = typeof user.type === 'number' ? user.type : ['一般用户', 'VIP'].findIndex(item => item === user.type)
         getServiceListApi({userId: user.id}).then((res) => {
+          res = res || {}
           const content = res.content || {}
           const list = content.records || []
           this.tableData = list.map(item => {
-            const product = item.orderProductList ? (item.orderProductList[0]) || {} : {}
-            const userinfo = item.user || {}
             return {
-              orderId: item.id,
-              orderCode: item.code,
-              orderAmount: item.orderPayPrice,
-              storage: product.remainingServiceNumber,
-              serviceName: product.productSkuName,
-              serviceId: product.id,
-              userId: userinfo.id
+              orderId: item.orderId,
+              orderDetailId: item.orderDetailId,
+              orderAmount: item.payPrice,
+              storage: item.remainQty,
+              serviceName: item.skuName,
+              skuId: item.skuId,
+              userId: item.userId
             }
           })
           console.log(this.tableData)
@@ -125,14 +125,16 @@ export default {
       })
     },
     addToQueue (rowData) {
-      addToQueueApi({phone: this.userPhone, orderProductId: rowData.serviceId}).then((res) => {
+      addToQueueApi({
+        userId: rowData.userId,
+        orderDetailId: rowData.orderDetailId
+      }).then((res) => {
         this.$message({
           type: 'success',
           message: '排队成功'
         })
         this.$router.push({name: 'queue_root'})
       })
-      console.log(rowData.serviceId)
     }
   }
 }
@@ -156,7 +158,7 @@ export default {
       <div class="tool-item">
         <span style="margin-right:50px">用户名:{{userName}}</span>
         <span style="margin-right:50px">手机号:{{userPhone}}</span>
-        <span style="margin-right:50px">用户类型:{{userType}}</span>
+        <span style="margin-right:50px">用户类型:{{ ['VIP', '一般用户'][userType] }}</span>
       </div>
     </div>
     <div class="top-box" style="margin-top: 20px;">

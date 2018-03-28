@@ -58,14 +58,14 @@ export default {
       }
     }, {
       attrs: {
-        'prop': 'userName',
-        'label': '用户名',
+        'prop': 'userLevel',
+        'label': '权限',
         'min-width': '70'
       }
     }, {
       attrs: {
-        'prop': 'userLevel',
-        'label': '权限',
+        'prop': 'patientName',
+        'label': '就诊人',
         'min-width': '70'
       }
     }, {
@@ -112,6 +112,7 @@ export default {
           createTime: item.createDate,
           orderState: payStateFormat(item.paymentState),
           userName: item.name,
+          patientName: item.patientName,
           phoneNumber: item.phone,
           userLevel: userStateFormat(item.isVip)
         }))

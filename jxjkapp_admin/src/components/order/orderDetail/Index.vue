@@ -3,9 +3,6 @@
  * Created by zhengji
  * Date: 2017/8/29
  */
-
-import placeholderImg from '@/assets/images/placeholder.png'
-
 import {
   getOrderInfoApi, orderRefundmentApi, payOrderApi
 } from './api'
@@ -89,7 +86,6 @@ export default {
     }
   },
   created () {
-    this.placeholderImg = placeholderImg
     this.initOrderInfo()
   },
   watch: {
@@ -104,6 +100,7 @@ export default {
           type: 'success',
           message: '缴费成功'
         })
+        this.$router.go(-1)
       })
     },
     handleRefundment () {
@@ -117,6 +114,7 @@ export default {
           type: 'success',
           message: '退款成功'
         })
+        this.initOrderInfo()
       }).catch((err) => {
         console.log(err)
       })
