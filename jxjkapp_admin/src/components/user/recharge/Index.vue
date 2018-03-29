@@ -4,7 +4,8 @@ import DialogWrap from '@/components/_common/dialogWrap/Index'
 import tableCfgMaker from './_consts/tableCfgMaker'
 
 import {
-  rechargeApi
+  rechargeApi,
+  queryBalanceApi
 } from './api'
 
 export default {
@@ -41,6 +42,13 @@ export default {
       }
     }
   },
+  watch: {
+    dialogVisible (visible) {
+      if (visible) {
+        this.queryBalance()
+      }
+    }
+  },
   methods: {
     handleSearch () {
       this.apiKeysMap.startDate.value = new Date(this.timeRange[0]).getTime()
@@ -48,6 +56,12 @@ export default {
     },
     openRechargeDialog () {
       this.dialogVisible = true
+    },
+    queryBalance () {
+      return queryBalanceApi(this.$route.params.id).then((res) => {
+        const content = res.content || {}
+        this.rechargeForm.balance = content.balance || ' --'
+      })
     },
     handleRechargeFormSubmit () {
       rechargeApi({

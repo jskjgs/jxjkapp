@@ -13,6 +13,19 @@ export const getListApi = (data) => {
   })
 }
 
+// 查询用户余额
+export const QUERY_BALANCE_URL = '/user/queryBalance'
+export const queryBalanceApi = (userId) => {
+  console.log('userId', userId)
+  return fetchApi({
+    url: QUERY_BALANCE_URL,
+    type: 'get',
+    params: {
+      userId
+    }
+  })
+}
+
 // 充值
 export const RECHARGE_URL = '/user/recharge'
 export const rechargeApi = (data) => {
