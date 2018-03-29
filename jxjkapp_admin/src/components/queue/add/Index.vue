@@ -86,11 +86,26 @@ export default {
   created () {
     this.placeholderImg = placeholderImg
   },
+  computed: {
+    loginUserType () {
+      return this.$store.state.accountInfo && this.$store.state.accountInfo.author
+    },
+    listParams () {
+      return {
+        userId: this.userId,
+        areaId: this.loginUserType === 3 ? (this.$store.state.pickedArea && this.$store.state.pickedArea.id) : undefined
+      }
+    }
+  },
   watch: {
+    listParams (newParams) {
+      this.getServiceList(newParams)
+    }
   },
   methods: {
-    handleSearch () {
-      getUserInfoApi({phone: this.keyWords}).then((res) => {
+    // 查询用户信息
+    getUserInfoApi () {
+      return getUserInfoApi({phone: this.keyWords}).then((res) => {
         const content = res.content || {}
         const list = content.records || []
         const user = list[0]
@@ -105,24 +120,29 @@ export default {
         this.userName = user.name
         this.userPhone = user.phone
         this.userType = typeof user.type === 'number' ? user.type : ['一般用户', 'VIP'].findIndex(item => item === user.type)
-        getServiceListApi({userId: user.id}).then((res) => {
-          res = res || {}
-          const content = res.content || {}
-          const list = content.records || []
-          this.tableData = list.map(item => {
-            return {
-              orderId: item.orderId,
-              orderDetailId: item.orderDetailId,
-              orderAmount: item.payPrice,
-              storage: item.remainQty,
-              serviceName: item.skuName,
-              skuId: item.skuId,
-              userId: item.userId
-            }
-          })
-          console.log(this.tableData)
+      })
+    },
+    // 获取订单列表
+    getServiceList (params) {
+      return getServiceListApi(params).then((res) => {
+        res = res || {}
+        const content = res.content || {}
+        const list = content.records || []
+        this.tableData = list.map(item => {
+          return {
+            orderId: item.orderId,
+            orderDetailId: item.orderDetailId,
+            orderAmount: item.payPrice,
+            storage: item.remainQty,
+            serviceName: item.skuName,
+            skuId: item.skuId,
+            userId: item.userId
+          }
         })
       })
+    },
+    handleSearch () {
+      this.getUserInfoApi()
     },
     addToQueue (rowData) {
       addToQueueApi({

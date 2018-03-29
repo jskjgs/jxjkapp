@@ -1,0 +1,13 @@
+// 当前模块名（路由名前缀）
+export const MOUDLE_PREDIX = 'user/recharge'
+const MOUDLE_ROOT = `/${MOUDLE_PREDIX}`
+
+// 当前模块首页：模块入口
+export const INDEX = {
+  path: `${MOUDLE_ROOT}/:id`,
+  name: `${MOUDLE_PREDIX}_root`,
+  meta: {
+    permissionId: 'm_01',
+    label: '充值记录'
+  }
+}

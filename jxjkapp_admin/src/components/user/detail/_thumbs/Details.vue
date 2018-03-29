@@ -88,12 +88,12 @@
   <div id="user-details">
     <div class="block-item">
       <el-row :gutter="20">
-        <el-col :span="8">
+        <!-- <el-col :span="8">
           <div class="info-item">
             <span class="info-item__label">手机号</span>
             <span class="info-item__content">{{ basicInfo.phone }}</span>
           </div>
-        </el-col>
+        </el-col> -->
         <el-col :span="8">
           <div class="info-item">
             <span class="info-item__label">性别</span>

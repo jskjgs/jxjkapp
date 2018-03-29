@@ -38,9 +38,12 @@
           return []
         }
       },
+      pickedArea () {
+        return this.$store.state.pickedArea
+      },
       pickedAreaId: {
         get () {
-          return (this.$store.state.pickedArea || {}).id
+          return (this.pickedArea || {}).id
         },
         set (val) {
           this.$store.commit(UPDATE_AREA, this.areaList.find(item => item.id === val))
@@ -102,9 +105,10 @@
       {{ $route.meta.label }}
     </div>
     <div class="flex--vcenter">
-      <div class="tool-item" v-if="$store.state.accountInfo.author === 3">
+      <div class="tool-item">
         院区：
-        <el-select 
+        <el-select
+          v-if="$store.state.accountInfo.author === 3" 
           v-model="pickedAreaId" 
           placeholder="选择院区">
           <el-option
@@ -114,6 +118,9 @@
             :value="item.id">
           </el-option>
         </el-select>
+        <div v-else style="display: inline-block;">
+          {{ (pickedArea || {}).name }}
+        </div>
       </div>
       <div class="user flex--vcenter" style="margin-left: 20px;">
         <i class="icon-user2"></i>

@@ -62,9 +62,14 @@
         scopedSlots: {
           default: (scope) => {
             return (
-              <button type="button"
-              class="el-button el-button--text"
-              onClick={() => this.openDetail(scope.row.userId)}><span>查看详情</span></button>
+              <div>
+                <button type="button"
+                  class="el-button el-button--text"
+                  onClick={() => this.openDetail(scope.row.userId)}><span>查看</span></button>
+                <button type="button"
+                  class="el-button el-button--text"
+                  onClick={() => this.openRecharge(scope.row.userId)}><span>充值</span></button>
+              </div>
             )
           }
         }
@@ -87,6 +92,7 @@
       }
       return {
         typeDialogVisible: false,
+        rechargeDialogVisible: false,
         searchKeyword: '',
         apiKeysMap: {
           key: {
@@ -125,6 +131,9 @@
           this.pickedType = undefined
           this.$refs.searchTable.getList()
         })
+      },
+      openRecharge (userId) {
+        this.$router.push({name: 'user/recharge_root', params: { id: userId }})
       }
     }
   }
