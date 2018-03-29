@@ -82,12 +82,13 @@
           confirmColor: '#9190FF',
           success: (res) => {
             if (res.confirm) {
+              const userInfo = this.userInfo || {}
               this.$_request({
-                url: `/serviceRecord/create?orderDetailId=${id}&areaId=${(this.$parent.globalData.userInfo || {}).areaId}`,
+                url: `/serviceRecord/create?orderDetailId=${item.orderDetailId}` + (userInfo.author === 3 ? `&areaId=${userInfo.areaId}` : ''),
                 method: 'POST',
                 data: {
                   orderDetailId: id,
-                  areaId: (this.$parent.globalData.userInfo || {}).areaId
+                  areaId: userInfo.author === 3 ? userInfo.areaId : undefined
                 }
               }).then(() => {
                 wx.showToast({
