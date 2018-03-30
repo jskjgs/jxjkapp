@@ -303,7 +303,7 @@ export default {
   #orderDetail {
     .form-wrap {
       margin: 20px 0;
-      border: 1px solid #ccc;
+      // border: 1px solid #ccc;
       padding: 20px;
     }
     .price-wrap {

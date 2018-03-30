@@ -28,7 +28,9 @@
     },
     created () {
       // 超级管理员获取院区列表
-      if (this.author === 3) {
+      const route = this.$route
+      if (this.author === 3 && route.path !== '/' && route.name !== 'Login') {
+        // debugger
         this.$store.dispatch(UPDATE_AREALIST)
       }
     }

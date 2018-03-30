@@ -1,11 +1,18 @@
 <template>
-  <CustomPage :isLastPage.sync="isLastPage">
+  <view id="page-service-list">
+    <view class="scan-flex flex--center" style="height: 100vh;font-size: 15px;color: #fff;">
+      <div 
+        style="width: 240rpx;height: 240rpx;border-radius: 50%;background: #FFB400;" 
+        class="flex--center"
+        @tap="scanQrcode">
+        <image class="scan-img" src="../assets/images/scan.png" style="width: 20px;height: 20px;margin-right: 10px;" mode="aspectFit"/>
+        <text class="scan-text">扫一扫</text>
+      </div>
+    </view>
+  </view>
+  <!-- <CustomPage :isLastPage.sync="isLastPage">
     <view id="page-service-list">
       <view class="list-top-tools flex--vcenter--sb">
-        <!-- <view hidden>
-          <ServiceTypePicker
-            :value.sync="serviceType"/>
-        </view> -->
         <view></view>
         <view class="scan-flex flex--vcenter">
           <image class="scan-img" src="../assets/images/scan.png" mode="aspectFit"/>
@@ -36,7 +43,7 @@
         </repeat>
       </view>
     </view>
-  </CustomPage>
+  </CustomPage> -->
 </template>
 
 <script>
@@ -161,7 +168,7 @@
 @import '../assets/style/variables/size.scss';
 
 #page-service-list {
-  padding-top: $topTools_H;
+  // padding-top: $topTools_H;
 
   .list-top-tools {
     .scan {
