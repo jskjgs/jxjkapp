@@ -56,10 +56,19 @@
       }
     },
     computed: {
+      accountInfo () {
+        return this.$store.state.accountInfo || {}
+      },
+      pickedArea () {
+        return this.$store.state.pickedArea || {}
+      },
       apiKeys () {
         return Object.assign({}, {
           currentPage: 'current',
-          pageSize: 'size'
+          pageSize: 'size',
+          areaId: {
+            value: this.accountInfo.author === 3 ? this.pickedArea.id : undefined
+          }
         }, this.apiKeysMap)
       },
       listQueryParams () {
