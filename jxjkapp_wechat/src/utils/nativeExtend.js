@@ -176,7 +176,7 @@ Promise.prototype.finally = function (callback) {
             mask: true
           })
         }
-        cfg.url = 'https://39.108.6.29/jxjk/applet' + cfg.url
+        cfg.url = 'http://39.108.6.29/jxjk/applet' + cfg.url
         return new Promise((resolve, reject) => {
           wepy.request(cfg).then(res => {
             console.log('res1', res, typeof res, typeof res.data)

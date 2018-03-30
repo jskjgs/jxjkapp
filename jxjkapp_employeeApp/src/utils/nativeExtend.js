@@ -98,7 +98,7 @@ Promise.prototype.finally = function (callback) {
             mask: true
           })
         }
-        cfg.url = 'https://39.108.6.29/jxjk/admin' + cfg.url
+        cfg.url = 'http://39.108.6.29/jxjk/admin' + cfg.url
         // 删除值为undefined的字段
         cfg.data = (() => {
           const data = {
