@@ -132,7 +132,7 @@
 
     onShow () {
       this.$_onPageShow(this, () => {
-        this.initPageData()
+        // this.initPageData()
       })
     }
 

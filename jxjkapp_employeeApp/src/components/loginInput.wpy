@@ -89,7 +89,7 @@
 
     watch = {
       account (newVal) {
-        this.accountIsValid = validTel(newVal)
+        this.accountIsValid = !!newVal // validTel(newVal)
       },
       password (newVal) {
         this.passwordIsValid = !!newVal

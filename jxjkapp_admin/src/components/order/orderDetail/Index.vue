@@ -207,9 +207,10 @@ export default {
         placeholder="备注信息">
       </el-input>
     </div>
-    <!-- <div 
+    <div 
       class="flex--vcenter info-item" 
-      style="margin-top: 20px;">
+      style="margin-top: 20px;"
+      v-show="paymentState === 0">
       <span class="info-item__label"><span v-if="!balance" style="color: red;">*</span>缴费单号</span>:
       <el-input
         class="info-item__content flex-item--none"
@@ -220,7 +221,7 @@ export default {
       <div>
         <b v-show="isVip" style="color: red;margin-left: 20px;">*VIP用户如果不填写缴费单号则默认使用余额进行支付</b>
       </div>
-    </div> -->
+    </div>
     <div class="flex--vcenter"  style="margin-top: 20px;" v-show="paymentState === 0">
         <el-button
           type="primary"
