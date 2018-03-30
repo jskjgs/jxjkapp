@@ -4,7 +4,7 @@
  * Date: 2017/8/29
  */
 import {
-  getOrderInfoApi, orderRefundmentApi, payOrderApi
+  getOrderInfoApi, orderRefundmentApi, payOrderApi, queryBalanceApi
 } from './api'
 export default {
   name: 'orderDetail',
@@ -60,6 +60,7 @@ export default {
     }]
 
     return {
+      balance: undefined, // 余额
       orderId: this.$route.params.orderId,
       refundment: {
         id: this.$route.params.orderId,
@@ -91,6 +92,14 @@ export default {
   watch: {
   },
   methods: {
+    // 查询用户余额
+    queryBalance () {
+      return queryBalanceApi(this.userId).then((res) => {
+        const content = res.content || {}
+        this.balance = content.balance || undefined
+        this.isVip = !!(content.balance || undefined)
+      })
+    },
     handlePaymentOrder () {
       return payOrderApi({
         id: this.orderId,
@@ -147,16 +156,7 @@ export default {
         this.discount = data.discount
         this.totalPrice = data.price
         this.paymentPrice = data.payPrice
-        // this.qty = product.quantity
-        // this.discontPrice = data.discount
-        // // this.comments = null,
-        // this.paymentNumber = data.paymentCode
-        // this.refundment.id = product.productSku.id
-        // this.orderSkuName = product.productSkuName
-        // this.orderCategroyName = product.productSku.name
-        // this.unitPrice = product.productSku.salesPrice
-        // this.totalPrice = data.orderSalesPrice
-        // this.paymentPrice = data.orderPayPrice
+        this.queryBalance()
       }).catch((err) => {
         console.log(err)
       }).finally(() => {
@@ -208,21 +208,24 @@ export default {
         placeholder="备注信息">
       </el-input>
     </div>
-    <div class="flex--vcenter info-item" style="margin-top: 20px;">
-      <span class="info-item__label">缴费单号</span>:
+    <div 
+      class="flex--vcenter info-item" 
+      style="margin-top: 20px;">
+      <span class="info-item__label"><span v-if="!balance" style="color: red;">*</span>缴费单号</span>:
       <el-input
         class="info-item__content flex-item--none"
         :disabled="paymentState === 1"
         v-model="paymentNumber"
         placeholder="请输入来自HIS系统的缴费单号"
-        style="width: 300px;margin-right: 20px;"/>
+        style="width: 300px;flex:none;"/>
       <div>
-        <b v-show="isVip" style="color: red">*VIP用户如果不填写缴费单号则默认使用余额进行支付</b>
+        <b v-show="isVip" style="color: red;margin-left: 20px;">*VIP用户如果不填写缴费单号则默认使用余额进行支付</b>
       </div>
     </div>
     <div class="flex--vcenter"  style="margin-top: 20px;" v-show="paymentState === 0">
         <el-button
           type="primary"
+          :disabled="!balance && !paymentNumber"
           @click="handlePaymentOrder">缴费
         </el-button>
     </div>
@@ -263,7 +266,7 @@ export default {
     .info-item {
       margin-bottom: 20px;
       &__label {
-        width: 60px;
+        width: 70px;
       }
 
       &__content {

@@ -28,3 +28,15 @@ export const orderRefundmentApi = (data) => {
     data
   })
 }
+
+// 查询用户余额
+export const QUERY_BALANCE_URL = '/user/queryBalance'
+export const queryBalanceApi = (userId) => {
+  return fetchApi({
+    url: QUERY_BALANCE_URL,
+    type: 'get',
+    params: {
+      userId
+    }
+  })
+}

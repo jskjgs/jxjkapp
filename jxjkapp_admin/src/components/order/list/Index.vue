@@ -123,7 +123,7 @@ export default {
       keyWords: '',
       apiKeysMap: {
         paymentState: {
-          value: '1'
+          value: '0'
         }
       }
     }
@@ -192,8 +192,8 @@ export default {
         <el-tabs 
           v-model="apiKeysMap.paymentState.value"
           style="margin-top: 10px;">
-          <el-tab-pane label="已支付" name="1"></el-tab-pane>
           <el-tab-pane label="未支付" name="0"></el-tab-pane>
+          <el-tab-pane label="已支付" name="1"></el-tab-pane>
         </el-tabs>
       </div>
     </search-table>

@@ -19,8 +19,8 @@ export default {
       userPhone: null,
       userIdNumber: null,
       productId: null,
-      qty: null,
-      discount: null,
+      qty: 1,
+      discount: 1,
       comments: null,
       paymentNumber: null,
       unitPrice: null,
@@ -260,7 +260,7 @@ export default {
             </div>
           </el-col>
         </el-row>
-        <div class="flex--vcenter" style="margin-top: 20px; justify-content: space-between;">
+        <div class="flex--vcenter" style="margin-top: 20px; margin-bottom: 20px;justify-content: space-between;">
           <div>
             <b>总金额</b>
             <b>￥{{totalPrice}}</b>
