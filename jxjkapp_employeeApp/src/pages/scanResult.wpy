@@ -84,7 +84,7 @@
             if (res.confirm) {
               const userInfo = this.userInfo || {}
               this.$_request({
-                url: `/serviceRecord/create?orderDetailId=${item.orderDetailId}` + (userInfo.author === 3 ? `&areaId=${userInfo.areaId}` : ''),
+                url: `/serviceRecord/create?orderDetailId=${id}` + (userInfo.author === 3 ? `&areaId=${userInfo.areaId}` : ''),
                 method: 'POST',
                 data: {
                   orderDetailId: id,

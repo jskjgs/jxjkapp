@@ -20,12 +20,17 @@ export const payOrderApi = (data) => {
 }
 
 // 订单退款
-export const GET_ORDER_REFUNDMENT = '/orderProduct/refundment'
-export const orderRefundmentApi = (data) => {
+export const GET_ORDER_REFUNDMENT = '/Rollback/apply'
+export const orderRefundmentApi = (id, amount) => {
   return fetchApi({
     url: GET_ORDER_REFUNDMENT,
     type: 'post',
-    data
+    data: {
+      comment: '退款',
+      targetId: id,
+      type: 2,
+      amount
+    }
   })
 }
 

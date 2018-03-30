@@ -117,8 +117,7 @@ export default {
         this.refundment.isRefund = true
         return
       }
-      orderRefundmentApi(this.refundment).then((res) => {
-        console.log(res)
+      orderRefundmentApi(this.refundment.id, this.refundment.amount).then((res) => {
         this.$message({
           type: 'success',
           message: '退款成功'
@@ -208,7 +207,7 @@ export default {
         placeholder="备注信息">
       </el-input>
     </div>
-    <div 
+    <!-- <div 
       class="flex--vcenter info-item" 
       style="margin-top: 20px;">
       <span class="info-item__label"><span v-if="!balance" style="color: red;">*</span>缴费单号</span>:
@@ -221,7 +220,7 @@ export default {
       <div>
         <b v-show="isVip" style="color: red;margin-left: 20px;">*VIP用户如果不填写缴费单号则默认使用余额进行支付</b>
       </div>
-    </div>
+    </div> -->
     <div class="flex--vcenter"  style="margin-top: 20px;" v-show="paymentState === 0">
         <el-button
           type="primary"
