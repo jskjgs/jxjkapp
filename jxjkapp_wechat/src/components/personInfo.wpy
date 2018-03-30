@@ -137,7 +137,6 @@
         <view class="item-label flex-item--none">姓名</view>
         <view class="item-input flex-item">
           <NameInput
-            type="idcard"
             class="item-input__inner"
             :disabled.sync="readonly" 
             :value.sync="name" />
