@@ -103,7 +103,7 @@ export default {
     handlePaymentOrder () {
       return payOrderApi({
         id: this.orderId,
-        payOrder: this.paymentNumber
+        payOrder: this.paymentNumber || undefined
       }).then((res) => {
         this.$message({
           type: 'success',
