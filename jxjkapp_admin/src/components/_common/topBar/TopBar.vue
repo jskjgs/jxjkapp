@@ -48,6 +48,9 @@
         set (val) {
           this.$store.commit(UPDATE_AREA, this.areaList.find(item => item.id === val))
         }
+      },
+      routeCrumbs () {
+        return this.$route.meta.crumbsMaker ? this.$route.meta.crumbsMaker(this.$route) : []
       }
     },
     created () {
@@ -101,7 +104,10 @@
 
 <template>
   <div id="top-bar" class="flex--vcenter--sb">
-    <div class="page-title">
+    <div class="page-title route-crumbs">
+      <template v-for="crumb in routeCrumbs">
+        <router-link :to="crumb">{{ crumb.meta.label }}</router-link> &gt;
+      </template>
       {{ $route.meta.label }}
     </div>
     <div class="flex--vcenter">
@@ -158,6 +164,12 @@
     }
     .el-dropdown-link {
       cursor: pointer;
+    }
+
+    .route-crumbs {
+      a {
+        color: #20a0ff;
+      }
     }
   }
 </style>

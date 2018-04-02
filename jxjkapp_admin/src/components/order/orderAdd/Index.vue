@@ -133,11 +133,6 @@ export default {
 
 <template>
   <div id="orderDetail">
-    <div class="flex--vcenter page-top">
-      <div class="page-title">
-        添加订单
-      </div>
-    </div>
     <div class="form-wrap">
       <el-row :gutter="20">
         <el-col :span="8">
