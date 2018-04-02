@@ -3,6 +3,7 @@
  * Created by zhengji
  * Date: 2017/8/30
  */
+import employeeType from '@/consts/employeeType'
 const initData = {
   submitLoading: false,
   fileInputValid: true
@@ -49,6 +50,14 @@ export default {
       set (val) {
         this.$emit('input', val)
       }
+    },
+    typeList () {
+      return Object.keys(employeeType).map(key => {
+        return {
+          value: key,
+          label: employeeType[key].label
+        }
+      }).sort((a, b) => (a.value - b.value))
     }
   },
   created () {
@@ -212,7 +221,7 @@ export default {
               ]">
               <el-select v-model="form.authorId" placeholder="选择权限">
                 <el-option
-                  v-for="item in [{label: '医生', value: 0}, {label: '主管', value: 1}, {label: '集团领导', value: 2}, {label: '超级管理员', value: 3}]"
+                  v-for="item in typeList"
                   :key="item.value"
                   :label="item.label"
                   :value="item.value">

@@ -2,7 +2,7 @@ import {
   INDEX as bannerCfg
 } from '@/components/banner/_consts/routers'
 import {
-  INDEX as doctorTypeCfg
+  INDEX as employeeCfg
 } from '@/components/employee/list/_consts/routers'
 import {
   INDEX as doctorCfg
@@ -34,42 +34,42 @@ export default [{
   children: [{
     label: bannerCfg.meta.label,
     path: bannerCfg.path,
-    permissionId: bannerCfg.meta.permissionId
+    authValidator: bannerCfg.meta.authValidator
   }, {
     label: newsCfg.meta.label,
     path: newsCfg.path,
-    permissionId: newsCfg.meta.permissionId
+    authValidator: newsCfg.meta.authValidator
   }, {
     label: doctorCfg.meta.label,
     path: doctorCfg.path,
-    permissionId: doctorCfg.meta.permissionId
+    authValidator: doctorCfg.meta.authValidator
   }, {
     label: productTypeCfg.meta.label,
     path: productTypeCfg.path,
-    permissionId: productTypeCfg.meta.permissionId
+    authValidator: productTypeCfg.meta.authValidator
   }, {
     label: productCfg.meta.label,
     path: productCfg.path,
-    permissionId: productCfg.meta.permissionId
+    authValidator: productCfg.meta.authValidator
   }]
 }, {
   label: orderCfg.meta.label,
   path: orderCfg.path,
-  permissionId: orderCfg.meta.permissionId
+  authValidator: orderCfg.meta.authValidator
 }, {
   label: reserveCfg.meta.label,
   path: reserveCfg.path,
-  permissionId: reserveCfg.meta.permissionId
+  authValidator: reserveCfg.meta.authValidator
 }, {
   label: queueCfg.meta.label,
   path: queueCfg.path,
-  permissionId: queueCfg.meta.permissionId
+  authValidator: queueCfg.meta.authValidator
 }, {
-  label: doctorTypeCfg.meta.label,
-  path: doctorTypeCfg.path,
-  permissionId: doctorTypeCfg.meta.permissionId
+  label: employeeCfg.meta.label,
+  path: employeeCfg.path,
+  authValidator: employeeCfg.meta.authValidator
 }, {
   label: userCfg.meta.label,
   path: userCfg.path,
-  permissionId: userCfg.meta.permissionId
+  authValidator: userCfg.meta.authValidator
 }]

@@ -41,7 +41,7 @@ const router = new Router({
 // 全局路由验证登陆状态
 import { Cookie } from '@/utils/index'
 router.beforeEach((to, from, next) => {
-  const MY_AUTH = $store.state.auth || [] // 登陆人拥有的权限
+  const userType = ($store.state.accountInfo || {}).author // 登陆人拥有的权限
   if (to.name !== 'Login' && !Cookie.get('login')) {
     next({name: 'Login'})
   } else if (to.name === 'Login' && Cookie.get('login') === 'yes') {
@@ -52,7 +52,7 @@ router.beforeEach((to, from, next) => {
       if (nav.children) {
         nav.children.find(fn)
       } else {
-        const matched = MY_AUTH.indexOf(nav.permissionId) !== -1
+        const matched = (!nav.authValidator) || nav.authValidator(userType)
         if (matched && !redirectPath) {
           redirectPath = nav.path
         }
@@ -64,7 +64,7 @@ router.beforeEach((to, from, next) => {
     if (to.name === 'Login' || to.name === 'NotFound') {
       next()
     } else {
-      if (MY_AUTH.indexOf(to.meta.permissionId) !== -1) { // 校验权限
+      if ((!to.authValidator) || to.authValidator(userType)) {
         next()
       }
     }

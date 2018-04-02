@@ -11,7 +11,9 @@ export const INDEX = {
   path: MOUDLE_ROOT,
   name: `${MOUDLE_PREDIX}_root`,
   meta: {
-    permissionId: 'm_04',
+    authValidator (userType) {
+      return userType === 3
+    },
     label: '员工管理'
   }
 }

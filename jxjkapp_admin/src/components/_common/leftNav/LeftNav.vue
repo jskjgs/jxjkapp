@@ -2,10 +2,6 @@
   // 一级导航
   import NAVS from './NAVS'
 
-  import {
-    mapState
-  } from 'vuex'
-
   export default {
     name: 'LeftNav',
     data () {
@@ -17,9 +13,9 @@
       this.NAVS = NAVS
     },
     computed: {
-      ...mapState({
-        myAuth: 'auth'
-      })
+      userType () {
+        return (this.$store.state.accountInfo || {}).author
+      }
     },
     methods: {
       handleSelect (index) {
@@ -46,7 +42,7 @@
       </div>
       <template v-for="nav in NAVS">
         <el-submenu
-          v-if="nav.children && nav.children.find(subNav => myAuth.indexOf(subNav.permissionId) !== -1)"
+          v-if="nav.children && nav.children.find(subNav => (!subNav.authValidator) || subNav.authValidator(userType))"
           :key="nav.label"
           index="nav">
           <template slot="title">
@@ -54,7 +50,7 @@
           </template>
           <template v-for="subNav in nav.children">
             <el-menu-item
-              v-if="myAuth.indexOf(subNav.permissionId) !== -1"
+              v-if="(!subNav.authValidator) || subNav.authValidator(userType)"
               :key="subNav.label"
               :index="subNav.path">
               {{ subNav.label }}
@@ -62,7 +58,7 @@
           </template>
         </el-submenu>
         <el-menu-item
-          v-else-if="myAuth.indexOf(nav.permissionId) !== -1"
+          v-else-if="(!nav.authValidator) || nav.authValidator(userType)"
           :index="nav.path">
           <i v-if="nav.icon" class="nav-icon" :class="nav.icon"></i>{{ nav.label }}
         </el-menu-item>
