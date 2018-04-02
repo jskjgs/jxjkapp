@@ -11,7 +11,6 @@ export const INDEX = {
   path: MOUDLE_ROOT,
   name: `${MOUDLE_PREDIX}_root`,
   meta: {
-    permissionId: 'm_04',
     label: '排队管理'
   }
 }

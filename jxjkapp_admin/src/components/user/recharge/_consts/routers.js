@@ -7,7 +7,6 @@ export const INDEX = {
   path: `${MOUDLE_ROOT}/:id`,
   name: `${MOUDLE_PREDIX}_root`,
   meta: {
-    permissionId: 'm_01',
     label: '充值记录'
   }
 }
