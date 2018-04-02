@@ -135,8 +135,8 @@ export default {
           name: data.name,
           headPortrait: imageUrl || data.avatar,
           id: data.id,
-          description: data.description,
-          doctorTypeId: data.doctorTypeId
+          description: data.description
+          // doctorTypeId: data.doctorTypeId
         }
         const requestFn = adding ? addDoctorApi : modifyDoctorApi
         requestFn(sendData).then(res => {

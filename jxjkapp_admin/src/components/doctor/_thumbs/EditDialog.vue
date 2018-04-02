@@ -158,7 +158,7 @@ export default {
               <el-input v-model="form.name" />
             </el-form-item>
           </el-col>
-          <el-col :span="8">
+          <!-- <el-col :span="8">
             <el-form-item 
               class="doctor-name" 
               label="类别："
@@ -175,7 +175,7 @@ export default {
                 </el-option>
               </el-select>
             </el-form-item>
-          </el-col>
+          </el-col> -->
         </el-row>
         <el-row>
           <el-col :span="16">
