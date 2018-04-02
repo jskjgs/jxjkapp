@@ -203,10 +203,6 @@ export default {
     .table-tools {
       margin-top: 20px;
       justify-content: flex-end;
-
-      .el-button {
-        border-radius: 18px;
-      }
     }
 
     .el-table {

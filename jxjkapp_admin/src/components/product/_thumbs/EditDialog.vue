@@ -341,7 +341,6 @@ export default {
 
     .plus-btn {
       cursor: pointer;
-      border-radius: 50%;
       border: 2px solid #b2b2b2;
       color: #b2b2b2;
     }

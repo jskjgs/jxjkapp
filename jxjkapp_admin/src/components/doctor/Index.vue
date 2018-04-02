@@ -301,9 +301,6 @@ export default {
     }
     .search-input {
       width: 300px;
-      input {
-        border-radius: 18px;
-      }
     }
     .search-label {
       color: $color3;

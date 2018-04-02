@@ -278,11 +278,6 @@ export default {
       }
     }
 
-    .btn-wrap {
-      .el-button {
-        border-radius: 18px;
-      }
-    }
     .btn--del {
       background: $bg5;
       color: #fff;
