@@ -348,6 +348,8 @@
             delete newVal[key]
           }
         })
+        console.log('newVal', newVal)
+        newVal.deliveryDate = newVal.deliveryDate && (new Date(newVal.deliveryDate).getTime())
         this.$emit('formDataChange', newVal)
       }
     }
