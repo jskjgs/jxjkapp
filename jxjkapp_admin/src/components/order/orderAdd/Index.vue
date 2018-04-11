@@ -9,6 +9,9 @@ import {
 } from './api'
 export default {
   name: 'orderDetail',
+  props: {
+    submitToPath: [String, Object] // 新增成功后跳转的地址
+  },
   components: {
   },
   data () {
@@ -99,7 +102,7 @@ export default {
           type: 'success',
           message: '创建成功'
         })
-        this.$router.push({path: '/order'})
+        this.$router.push(this.submitToPath || {path: '/order'})
       })
     },
     // 获取就诊人列表

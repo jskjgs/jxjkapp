@@ -3,8 +3,6 @@
  * Created by zhengji
  * Date: 2017/8/29
  */
-import placeholderImg from '@/assets/images/placeholder.png'
-
 import SearchTable from '@/components/_common/searchTable/SearchTable'
 
 import { convertDate, payStateFormat, userStateFormat } from '@/utils/index'
@@ -127,9 +125,6 @@ export default {
         }
       }
     }
-  },
-  created () {
-    this.placeholderImg = placeholderImg
   },
   watch: {
     editDialogVisible (val) {

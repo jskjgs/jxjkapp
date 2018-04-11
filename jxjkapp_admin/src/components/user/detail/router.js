@@ -2,7 +2,8 @@ import {
   INDEX,
   ORDER_ADD,
   ORDER_DETAIL,
-  ORDER_RECORD
+  ORDER_RECORD,
+  ORDER_RECORD_DETAIL
 } from './_consts/routers'
 
 export default [{
@@ -20,4 +21,8 @@ export default [{
 {
   ...ORDER_RECORD,
   component: resolve => require(['./_thumbs/orderHistory/Record'], resolve)
+},
+{
+  ...ORDER_RECORD_DETAIL,
+  component: resolve => require(['./_thumbs/orderHistory/RecordDetail'], resolve)
 }]

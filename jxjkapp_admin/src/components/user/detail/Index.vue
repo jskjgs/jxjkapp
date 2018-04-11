@@ -5,8 +5,6 @@
    */
   import UserDetails from './_thumbs/Details'
   import OrderHistory from './_thumbs/orderHistory/Index'
-  import RechargeRecord from './_thumbs/Recharge'
-  import _merge from 'lodash/merge'
 
   import {
     getPaientsApi
@@ -15,19 +13,13 @@
   export default {
     name: 'UserDetail',
     components: {
-      UserDetails,
-      OrderHistory,
-      RechargeRecord
+      userDetails: UserDetails,
+      orderHistory: OrderHistory
     },
     created () {
       this.getPaientList()
     },
     data () {
-      this.tabs = {
-        UserDetails,
-        OrderHistory,
-        RechargeRecord
-      }
       return {
         patientList: []
       }
@@ -35,16 +27,17 @@
     computed: {
       activePatientId: {
         get () {
-          return this.$route.query.patientId
+          return this.$route.params.patientId
         },
         set (val) {
           if (+val) {
-            const {name, query, params} = this.$route
-            this.$router.replace(_merge({}, {name, query, params}, {
-              query: {
+            this.$router.replace({
+              ...this.$route,
+              params: {
+                ...this.$route.params,
                 patientId: val
               }
-            }))
+            })
           }
         }
       },
@@ -53,7 +46,7 @@
       },
       activeTab: {
         get () {
-          return this.$route.query.tab || 'UserDetails'
+          return this.$route.query.tab || 'userDetails'
         },
         set (val) {
           this.$router.replace({
@@ -73,7 +66,7 @@
           const content = res.content || {}
           const list = content.records || []
           this.patientList = list
-          this.activePatientId = +this.$route.query.patientId || (list[0].id + '')
+          this.activePatientId = +this.$route.params.patientId || (list[0].id + '')
         })
       }
     }
@@ -90,8 +83,8 @@
     </el-tabs>
     <div class="user-info-wrap">
       <el-tabs v-model="activeTab">
-        <el-tab-pane label="详细资料" name="UserDetails"></el-tab-pane>
-        <el-tab-pane label="订单记录" name="OrderHistory"></el-tab-pane>
+        <el-tab-pane label="详细资料" name="userDetails"></el-tab-pane>
+        <el-tab-pane label="订单记录" name="orderHistory"></el-tab-pane>
       </el-tabs>
       <div class="activeTab-wrap">
         <keep-alive>

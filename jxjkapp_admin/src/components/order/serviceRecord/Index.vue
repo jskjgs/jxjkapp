@@ -17,6 +17,9 @@ import {
 
 export default {
   name: 'ServiceRecord',
+  props: {
+    detailPath: Function // 详情路径
+  },
   components: {
     SearchTable
   },
@@ -136,7 +139,10 @@ export default {
   },
   methods: {
     openDetail (id) {
-      this.$router.push({name: SERVICE_DETAIL_INDEX.name, params: {id}})
+      this.$router.push(this.detailPath ? this.detailPath(id) : {
+        name: SERVICE_DETAIL_INDEX.name,
+        params: {id}
+      })
     }
   }
 }

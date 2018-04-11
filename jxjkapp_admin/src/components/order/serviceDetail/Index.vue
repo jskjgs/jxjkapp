@@ -145,13 +145,6 @@ export default {
 
 <template>
   <div id="serviceDetail">
-    <div class="flex--vcenter page-top">
-      <div class="page-title">
-        <router-link to="/order"> 订单管理 </router-link> 
-        {{serviceName ? '>'+serviceName :''}} 
-        {{recordNumber ? '>'+recordNumber :''}}
-      </div>
-    </div>
     <div style="margin-top: 20px;">
       <el-row :gutter="20">
         <el-col :span="6">
@@ -253,7 +246,7 @@ export default {
 
 #serviceDetail {
   .info-item {
-    margin-top: 20px;
+    margin-bottom: 20px;
     &__label {
       flex: none;
       width: 70px;

@@ -36,9 +36,9 @@
     created () {
     },
     watch: {
-      '$route.query' (newQuery) {
-        if (newQuery.patitentId) {
-          this.apiKeysMap.patientInfoId = newQuery.patitentId
+      '$route.params' (newParams) {
+        if (newParams.patientId) {
+          this.apiKeysMap.patientInfoId = newParams.patientId
         }
       }
     },
@@ -80,21 +80,6 @@
       :list-api="listApi"
       :api-keys-map="apiKeysMap">
       <div class="table-tools flex--vcenter--sb" slot="table-tools">
-        <!-- <div class="search-wrap flex--vcenter">
-          <div class="tool-item">
-            搜索关键字：
-            <el-input 
-              v-model="keyword" 
-              style="width: 350px;"
-              placeholder="用户ID／手机号／就诊卡号／身份证号／订单ID"/>
-          </div>
-          <el-button
-            type="primary"
-            style="margin-left: 20px;"
-            @click="search">
-            搜索
-          </el-button>
-        </div> -->
         <div class="btn-wrap">
           <el-button
             type="primary"
