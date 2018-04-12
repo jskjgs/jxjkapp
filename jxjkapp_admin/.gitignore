@@ -2,3 +2,4 @@ node_modules/
 dist/
 .idea
 *的副本
+deploy.sh
