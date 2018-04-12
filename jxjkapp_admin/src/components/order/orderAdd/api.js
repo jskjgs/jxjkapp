@@ -36,13 +36,25 @@ export const orderCheckoutApi = (data) => {
   })
 }
 
-// 查询用户信息
-export const PATIENT_INFO = '/patient/list'
+// 查询用户就诊人列表
+export const PATIENT_LIST = '/patient/list'
 export const getPatientListApi = (params) => {
+  return fetchApi({
+    url: PATIENT_LIST,
+    type: 'get',
+    params
+  })
+}
+
+// 查询就诊人详情
+export const PATIENT_INFO = '/patient/detail'
+export const getPatientInfoApi = (id) => {
   return fetchApi({
     url: PATIENT_INFO,
     type: 'get',
-    params
+    params: {
+      id
+    }
   })
 }
 

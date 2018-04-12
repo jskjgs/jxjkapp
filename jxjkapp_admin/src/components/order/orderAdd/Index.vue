@@ -5,17 +5,19 @@
  */
 
 import {
-  orderCheckoutApi, addOrderApi, updateOrderApi, getPatientListApi
+  orderCheckoutApi, addOrderApi, updateOrderApi, getPatientListApi, getPatientInfoApi
 } from './api'
 export default {
   name: 'orderDetail',
   props: {
-    submitToPath: [String, Object] // 新增成功后跳转的地址
+    submitToPath: [String, Object], // 新增成功后跳转的地址
+    patientId: [String, Number] // 就诊人id
   },
   components: {
   },
   data () {
     return {
+      patientName: '',
       categroyList: [],
       productList: [],
       userId: this.$route.params.userId,
@@ -40,6 +42,9 @@ export default {
     this.$_getProductTypeList().then(list => {
       this.categroyList = list
     })
+    if (this.patientId !== undefined) {
+      this.getPatientInfo()
+    }
   },
   computed: {
     totalPrice () {
@@ -121,6 +126,12 @@ export default {
         }))
       })
     },
+    getPatientInfo () {
+      getPatientInfoApi(this.patientId).then((res) => {
+        const content = res.content || {}
+        this.patientName = content.name
+      })
+    },
     handleUpdateOrder () {
       let data = this.getOrderData()
       updateOrderApi(data).then((res) => {
@@ -137,7 +148,7 @@ export default {
 <template>
   <div id="orderDetail">
     <div class="form-wrap">
-      <el-row :gutter="20">
+      <el-row :gutter="20" v-if="patientId === undefined">
         <el-col :span="8">
           <div class="info-item">
             <span class="info-item__label">
@@ -160,11 +171,12 @@ export default {
       </el-row>
       <el-row :gutter="20">
         <el-col :span="8">
-          <div class="info-item">
+          <div class="info-item flex--vcenter">
             <span class="info-item__label">
               就诊人
             </span>
-            <el-select 
+            <el-select
+              v-if="patientId === undefined"
               class="info-item__content"
               v-model="selectPatient" 
               :disabled="!patientList"
@@ -176,6 +188,11 @@ export default {
                 :value="item.id">
               </el-option>
             </el-select>
+            <span 
+              v-else 
+              style="display: inline-block; height: 36px; line-height: 36px;">
+              {{ patientName }}
+            </span>
           </div>
         </el-col>
         <el-col :span="8">

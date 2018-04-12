@@ -17,7 +17,7 @@ export default {
 
 <template>
   <div id="user-order-add-wrap">
-    <OrderAdd :submitToPath="USER_DETAIL_INDEX"/>
+    <OrderAdd :submitToPath="USER_DETAIL_INDEX" :patientId="$route.params.patientId"/>
   </div>
 </template>
 
