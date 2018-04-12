@@ -210,9 +210,6 @@ export default {
 
     .el-table {
       margin-top: 20px;
-      td {
-        height: 80px;
-      }
     }
     .cover-img {
       vertical-align: middle;
