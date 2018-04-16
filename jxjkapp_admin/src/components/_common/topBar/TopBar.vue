@@ -59,6 +59,9 @@
       ...mapMutations({
         updateAccountInfo: UPDATE_ACCOUNTINFO // 更新vuex中的accountInfo和auth
       }),
+      handleNavBtnClick () {
+        this.$eventBus.$emit('left-nav-show', true)
+      },
       // 清除用户信息
       clearUserInfo () {
         Cookie.remove('login')
@@ -104,7 +107,10 @@
 
 <template>
   <div id="top-bar" class="flex--vcenter--sb">
-    <div class="page-title route-crumbs">
+    <div class="page-title route-crumbs flex--vcenter">
+      <i 
+        class="el-icon-menu left-nav-btn" 
+        @click="handleNavBtnClick"/>
       <template v-for="crumb in routeCrumbs">
         <router-link :to="crumb">{{ crumb.meta.label }}</router-link> &gt;
       </template>
@@ -150,12 +156,17 @@
 
 <style lang="scss">
   @import "../../../assets/style/variables/index";
-
   #top-bar {
     padding: 0 20px;
     width: 100%;
     height: $topBar_h;
     box-shadow: 0 8px 16px 0 rgba(7, 17, 27, 0.2);
+
+    .left-nav-btn {
+      display: none;
+      margin-right: 20px;
+      font-size: 1.2em;
+    }
 
     .icon-user2 {
       font-size: 18px;
@@ -169,6 +180,15 @@
     .route-crumbs {
       a {
         color: #20a0ff;
+      }
+    }
+  }
+
+  @media screen and (max-width: 1366px) {
+    #top-bar {
+      .left-nav-btn {
+        display: block;
+        color: #242e42;
       }
     }
   }

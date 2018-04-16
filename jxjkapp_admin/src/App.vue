@@ -65,7 +65,7 @@
   @import "~@/assets/style/variables/index";
 
   #app {
-    min-width: 1200px;
+    min-width: 1024px;
     height: calc(100vh - #{ $scollbar_w });
 
     .body-wrap {
