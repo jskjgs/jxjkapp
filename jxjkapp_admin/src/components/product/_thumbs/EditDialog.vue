@@ -14,9 +14,9 @@ const formInitData = {
   name: '',
   typeId: '',
   description: '',
-  cover: '',
-  showPrice: '',
-  salePrice: ''
+  cover: ''
+  // showPrice: '',
+  // salePrice: ''
 }
 
 import ImgUploader from '@/components/_common/imgUploader/ImgUploader.vue'
@@ -182,7 +182,7 @@ export default {
             </el-form-item>
           </el-col>
         </el-row>
-        <el-row :gutter="20">
+        <!-- <el-row :gutter="20">
           <el-col :span="8">
             <el-form-item
               label="显示价格"
@@ -209,7 +209,7 @@ export default {
               <el-input v-model="form.salesPrice" auto-complete="off"></el-input>
             </el-form-item>
           </el-col>
-        </el-row>
+        </el-row> -->
         <el-form-item
           label="描述"
           prop="description"

@@ -4,6 +4,9 @@
  * Date: 2017/8/29
  */
 import SearchTable from '@/components/_common/searchTable/SearchTable'
+import {
+  DISCOUNT
+} from './_consts/routers'
 
 import {
   updateProductApi,
@@ -157,6 +160,14 @@ export default {
       }
     },
     handleInfoEditSubmit () {
+    },
+    toDiscountLevel (rowData) {
+      this.$router.push({
+        name: DISCOUNT.name,
+        params: {
+          id: rowData.id
+        }
+      })
     }
   }
 }
@@ -230,6 +241,14 @@ export default {
         width="220">
         <template scope="scope">
           <div class="flex--center operate-items">
+            <span
+              class="operate-item">
+              <el-button 
+                type="text" 
+                @click="toDiscountLevel(scope.row)">
+                规格
+              </el-button>
+            </span>
             <span
               class="operate-item">
               <el-button 

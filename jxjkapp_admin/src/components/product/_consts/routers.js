@@ -11,7 +11,18 @@ export const INDEX = {
   path: MOUDLE_ROOT,
   name: `${MOUDLE_PREDIX}_root`,
   meta: {
-    permissionId: 'm_01',
     label: '项目管理'
+  }
+}
+
+// 折扣规格
+export const DISCOUNT = {
+  path: `${MOUDLE_ROOT}/discount/:id`,
+  name: `${MOUDLE_PREDIX}_discount`,
+  meta: {
+    label: '规格管理',
+    crumbsMaker ($route) {
+      return [INDEX]
+    }
   }
 }

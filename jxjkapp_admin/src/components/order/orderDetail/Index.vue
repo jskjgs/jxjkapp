@@ -12,7 +12,7 @@ export default {
   },
   data () {
     this.ITEMS = [{
-      label: '病人姓名',
+      label: '患者姓名',
       valueKey: 'name'
     }, {
       label: '项目名称',
@@ -31,19 +31,22 @@ export default {
         return DICT[value]
       }
     }, {
-      label: '购买数量',
+      label: '折扣规格',
+      valueKey: 'discountLevel'
+    }, {
+      label: '购买次数',
       valueKey: 'qty'
     }]
 
     this.priceItems = [{
-      label: '服务单价',
+      label: '折扣',
+      valueKey: 'discount'
+    }, {
+      label: '折后单价',
       valueKey: 'unitPrice',
       formatter (value) {
         return value == null ? '' : `￥${value}`
       }
-    }, {
-      label: '折扣',
-      valueKey: 'discount'
     }, {
       label: '总金额',
       valueKey: 'totalPrice',

@@ -5,6 +5,7 @@
  */
 import placeholderImg from '@/assets/images/placeholder.png'
 import SearchTable from '@/components/_common/searchTable/SearchTable'
+import SignBoard from '@/components/_common/signBoard/SignBoard'
 
 import {
   getUserInfoApi,
@@ -15,7 +16,8 @@ import {
 export default {
   name: 'addQueue',
   components: {
-    SearchTable
+    SearchTable,
+    SignBoard
   },
   data () {
     this.tableAttrs = {
@@ -65,7 +67,7 @@ export default {
                 class="operate-item">
                   <el-button
                     type="text"
-                    onClick={() => this.addToQueue(scope.row)}>
+                    onClick={() => this.openSignDialog(scope.row)}>
                     排队
                   </el-button>
               </span>
@@ -80,7 +82,8 @@ export default {
       userPhone: null,
       userType: null,
       tableData: [],
-      keyWords: null
+      keyWords: null,
+      signDialogVisible: false
     }
   },
   created () {
@@ -144,6 +147,16 @@ export default {
     handleSearch () {
       this.getUserInfoApi()
     },
+    openSignDialog (rowData) {
+      this.signDialogVisible = true
+    },
+    handleSignDialogClose () {
+      this.$refs.SignBoard.clearPath()
+    },
+    submitSign () {
+      const touchlist = this.$refs.SignBoard.getTouchlist()
+      console.log('touchlist', touchlist)
+    },
     addToQueue (rowData) {
       addToQueueApi({
         userId: rowData.userId,
@@ -189,6 +202,18 @@ export default {
         :initData="tableData">
       </search-table>
     </div>
+    <el-dialog 
+      class="dialog--center"
+      title="用户签名"
+      size="large"
+      :visible.sync="signDialogVisible"
+      @close="handleSignDialogClose">
+      <sign-board ref="SignBoard"/>
+      <span slot="footer" class="dialog-footer">
+        <el-button size="large" @click="$refs.SignBoard.clearPath()">重 写</el-button>
+        <el-button size="large" type="primary" @click="submitSign">提 交</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -253,6 +278,13 @@ export default {
     .pagination-wrap {
       margin-top: 30px;
       text-align: right;
+    }
+
+    .sign-board {
+      height: 400px;
+      canvas {
+        background: #eee;
+      }
     }
   }
 </style>

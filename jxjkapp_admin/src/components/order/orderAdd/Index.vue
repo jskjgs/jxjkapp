@@ -24,6 +24,8 @@ export default {
       userPhone: null,
       userIdNumber: null,
       productId: null,
+      discountLevel: null,
+      discountLevels: [],
       qty: 1,
       discount: 1,
       comments: null,
@@ -152,7 +154,7 @@ export default {
         <el-col :span="8">
           <div class="info-item">
             <span class="info-item__label">
-              用户手机号
+              *用户手机号
             </span>
             <el-input
               class="info-item__content"
@@ -168,12 +170,10 @@ export default {
             </el-button>
           </div>
         </el-col>
-      </el-row>
-      <el-row :gutter="20">
         <el-col :span="8">
           <div class="info-item flex--vcenter">
             <span class="info-item__label">
-              就诊人
+              *就诊人
             </span>
             <el-select
               v-if="patientId === undefined"
@@ -195,6 +195,8 @@ export default {
             </span>
           </div>
         </el-col>
+      </el-row>
+      <el-row :gutter="20">
         <el-col :span="8">
           <div class="info-item">
             <span class="info-item__label">
@@ -231,35 +233,27 @@ export default {
             </el-select>
           </div>
         </el-col>
+        <el-col :span="8">
+          <div class="info-item">
+            <span class="info-item__label">
+              *折扣规格
+            </span>
+            <el-select 
+              class="info-item__content"
+              v-model="discountLevel" 
+              placeholder="请选择">
+              <el-option
+                v-for="categroy in discountLevels"
+                :key="categroy.value"
+                :label="categroy.label"
+                :value="categroy.value">
+              </el-option>
+            </el-select>
+          </div>
+        </el-col>
       </el-row>
       <div class="price-wrap">
         <el-row :gutter="20">
-          <el-col :span="8">
-            <div class="info-item">
-              <span class="info-item__label">
-                服务单价
-              </span>
-              <el-input
-                class="info-item__content"
-                v-model="unitPrice"
-                :readonly=true
-                type="number">
-              </el-input>
-            </div>
-          </el-col>
-          <el-col :span="8">
-            <div class="info-item">
-              <span class="info-item__label">
-                *购买数量
-              </span>
-              <el-input
-                class="info-item__content"
-                v-model="qty"
-                placeholder="请输入数量"
-                type="number">
-              </el-input>
-            </div>
-          </el-col>
           <el-col :span="8">
             <div class="info-item">
               <span class="info-item__label">
@@ -268,8 +262,34 @@ export default {
               <el-input
                 class="info-item__content"
                 v-model="discount"
-                :disabled="!qty"
+                disabled
                 placeholder="0～1（打折请慎重）"
+                type="number">
+              </el-input>
+            </div>
+          </el-col>
+          <el-col :span="8">
+            <div class="info-item">
+              <span class="info-item__label">
+                折后单价
+              </span>
+              <el-input
+                class="info-item__content"
+                v-model="unitPrice"
+                disabled
+                type="number">
+              </el-input>
+            </div>
+          </el-col>
+          <el-col :span="8">
+            <div class="info-item">
+              <span class="info-item__label">
+                *购买次数
+              </span>
+              <el-input
+                class="info-item__content"
+                v-model="qty"
+                placeholder="请输入数量"
                 type="number">
               </el-input>
             </div>

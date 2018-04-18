@@ -112,7 +112,7 @@
         class="el-icon-menu left-nav-btn" 
         @click="handleNavBtnClick"/>
       <template v-for="crumb in routeCrumbs">
-        <router-link :to="crumb">{{ crumb.meta.label }}</router-link> &gt;
+        <router-link :to="crumb">{{ crumb.meta.label }}</router-link>&nbsp;&gt;
       </template>
       {{ $route.meta.label }}
     </div>
