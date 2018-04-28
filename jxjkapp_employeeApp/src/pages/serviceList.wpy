@@ -1,5 +1,12 @@
 <template>
   <view id="page-service-list">
+    <view class="list-top-tools flex--vcenter--sb">
+      <view></view>
+      <view class="scan-flex flex--vcenter">
+        <image class="scan-img" src="../assets/images/scan.png" mode="aspectFit"/>
+        <text class="scan-text" @tap="scanQrcode">扫一扫</text>
+      </view>
+    </view>
     <view class="scan-flex flex--center" style="height: 100vh;font-size: 15px;color: #fff;">
       <div 
         style="width: 240rpx;height: 240rpx;border-radius: 50%;background: #FFB400;" 
@@ -9,6 +16,11 @@
         <text class="scan-text">扫一扫</text>
       </div>
     </view>
+    <SearchPage 
+      :visible.sync="onSearchByTel"
+      :results.sync="patientList"
+      @search.user="handleSearchByTel"
+      @picked.user="handleSearchPicked" />
   </view>
   <!-- <CustomPage :isLastPage.sync="isLastPage">
     <view id="page-service-list">
@@ -51,6 +63,7 @@
 
   // import ServiceTypePicker from '@/components/serviceTypePicker'
   import CustomPage from '@/components/customPage'
+  import SearchPage from '@/components/searchPage'
 
   import listPageMixin from '@/mixins/listPage'
 
@@ -61,12 +74,15 @@
     }
     components = {
       // ServiceTypePicker,
-      CustomPage
+      CustomPage,
+      SearchPage
     }
 
     mixins = [listPageMixin]
 
     data = {
+      onSearchByTel: true,
+      patientList: [],
       serviceType: ''
     }
 
@@ -77,6 +93,12 @@
     }
 
     methods = {
+      handleSearchByTel (value) {
+        console.log('handleSearchByTel', value)
+      },
+      handleSearchPicked (patient) {
+        console.log('handleSearchPicked', patient)
+      },
       // 扫码
       scanQrcode () {
         wx.scanCode({
